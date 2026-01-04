@@ -3,8 +3,8 @@ import React from 'react';
 const Projects = () => {
   const projects = [
     {
-      title: 'E-Commerce Platform',
-      description: 'Full-stack e-commerce solution with Spring Boot backend, React frontend, and MySQL database. Features include user authentication, payment integration, and admin dashboard.',
+      title: 'Full-Stack E-Commerce Platform',
+      description: 'Complete e-commerce solution with user authentication, product catalog, shopping cart, payment integration, and admin dashboard. Features include JWT authentication, role-based access, and real-time inventory management.',
       tech: ['Java', 'Spring Boot', 'React', 'MySQL', 'REST APIs'],
       image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600',
       github: '#',
@@ -94,7 +94,17 @@ const Projects = () => {
                 }}>
                   {project.description}
                 </p>
+
+                <div className="project-tech">
+                  {project.tech.map(tech => (
+                    <span key={tech} className="tech-tag">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+
                 
+
                 <div className="project-tech">
                   {project.tech.map(tech => (
                     <span key={tech} className="tech-tag">

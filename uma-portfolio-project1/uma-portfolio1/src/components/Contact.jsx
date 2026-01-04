@@ -59,7 +59,7 @@ const Contact = () => {
                 marginBottom: '1.5rem'
               }}>
                 <FaEnvelope style={{ color: 'var(--primary-color)' }} />
-                <span>hello@fullstackdev.com</span>
+                <span>umalavanya@ruiks.com</span>
               </div>
               
               <div style={{ 
@@ -69,7 +69,7 @@ const Contact = () => {
                 marginBottom: '1.5rem'
               }}>
                 <FaPhone style={{ color: 'var(--primary-color)' }} />
-                <span>+1 (555) 123-4567</span>
+                <span>+1 (412) 123-4567</span>
               </div>
               
               <div style={{ 
@@ -78,7 +78,7 @@ const Contact = () => {
                 gap: '1rem'
               }}>
                 <FaMapMarkerAlt style={{ color: 'var(--primary-color)' }} />
-                <span>San Francisco, CA</span>
+                <span>Pittsburgh, PA</span>
               </div>
             </div>
           </div>
