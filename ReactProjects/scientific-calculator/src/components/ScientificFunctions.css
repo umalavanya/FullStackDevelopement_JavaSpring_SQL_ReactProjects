@@ -1,0 +1,88 @@
+.scientific-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-left: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scientific-header {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.scientific-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.scientific-row {
+    display: flex;
+    gap: 10px;
+}
+
+.scientific-button {
+    flex: 1;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    color: white;
+}
+
+.scientific-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.scientific-button:active {
+    transform: translateY(0);
+}
+
+.scientific-button.trig {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.scientific-button.trig:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+.scientific-button.constant {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.scientific-button.constant:hover {
+    background: linear-gradient(135deg, #f5576c, #f093fb);
+}
+
+.scientific-button.operation {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.scientific-button.operation:hover {
+    background: linear-gradient(135deg, #00f2fe, #4facfe);
+}
+
+.scientific-button.other {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.scientific-button.other:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
