@@ -1,0 +1,235 @@
+/* src/pages/Practice.css */
+.practice-page {
+    color: white;
+}
+
+.practice-container {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.problems-sidebar {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.problems-list {
+    margin-top: 1rem;
+}
+
+.problem-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.problem-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.problem-item.active {
+    background: linear-gradient(45deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    border-color: #667eea;
+}
+
+.problem-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.problem-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.difficulty-badge.easy {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.difficulty-badge.medium {
+    background: rgba(243, 156, 18, 0.2);
+    color: #f39c12;
+}
+
+.difficulty-badge.hard {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.problem-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.practice-main {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.problem-statement {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.problem-difficulty {
+    margin: 0.5rem 0 1rem 0;
+}
+
+.difficulty {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.difficulty.easy {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.difficulty.medium {
+    background: rgba(243, 156, 18, 0.2);
+    color: #f39c12;
+}
+
+.difficulty.hard {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.function-signature {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.function-signature code {
+    font-family: 'Courier New', monospace;
+    color: #4ecdc4;
+    font-size: 1rem;
+}
+
+.test-cases {
+    margin-top: 1.5rem;
+}
+
+.test-case {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.test-case-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1rem;
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+.test-case-content {
+    padding: 1rem;
+}
+
+.test-input,
+.test-expected {
+    margin-bottom: 0.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.code-editor-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.run-button {
+    background: linear-gradient(45deg, #2ecc71, #27ae60);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.run-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+.code-editor {
+    width: 100%;
+    height: 300px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    resize: vertical;
+    tab-size: 2;
+    line-height: 1.5;
+}
+
+.code-editor:focus {
+    outline: 2px solid #667eea;
+}
+
+.output-section {
+    margin-top: 1.5rem;
+}
+
+.output {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1rem;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}

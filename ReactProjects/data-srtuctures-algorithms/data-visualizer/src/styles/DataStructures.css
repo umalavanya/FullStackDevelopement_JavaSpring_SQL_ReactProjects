@@ -1,0 +1,67 @@
+/* DataStructures.css */
+.data-structures-page {
+    color: white;
+}
+
+.ds-container {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.ds-sidebar {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.ds-list {
+    list-style: none;
+}
+
+.ds-item {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ds-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ds-item.active {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.ds-visualizer {
+    flex: 2;
+}
+
+.complexity-table {
+    width: 100%;
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.complexity-table th {
+    background: #667eea;
+    color: white;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.complexity-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.complexity-table tr:nth-child(even) {
+    background: #f8f9fa;
+}
