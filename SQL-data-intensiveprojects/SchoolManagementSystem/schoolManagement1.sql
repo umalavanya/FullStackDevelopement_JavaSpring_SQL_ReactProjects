@@ -1290,3 +1290,780 @@ PRINT 'Total Tables: 20';
 PRINT 'Total Records Inserted: 1000+';
 PRINT 'Database is ready for use.';
 PRINT '=============================================';
+
+-- 1. Top 10 performing students
+SELECT TOP 10
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    AVG(g.MarksObtained) AS AverageMarks,
+    AVG(e.AttendancePercentage) AS AverageAttendance,
+    RANK() OVER (ORDER BY AVG(g.MarksObtained) DESC) AS Rank
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+JOIN Enrollment e ON s.StudentID = e.StudentID
+JOIN Grade g ON s.StudentID = g.StudentID
+WHERE g.MarksObtained IS NOT NULL
+GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName
+ORDER BY AverageMarks DESC;
+
+-- 2. Students needing academic support (marks < 60%)
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    sub.SubjectName,
+    AVG(g.MarksObtained) AS AverageMarks,
+    COUNT(g.GradeID) AS ExamsTaken
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+JOIN Grade g ON s.StudentID = g.StudentID
+JOIN Subject sub ON g.SubjectID = sub.SubjectID
+GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName, sub.SubjectName
+HAVING AVG(g.MarksObtained) < 60
+ORDER BY AverageMarks;
+
+-- 3. Subject-wise performance analysis
+SELECT 
+    sub.SubjectName,
+    d.DepartmentName,
+    COUNT(g.StudentID) AS StudentsEnrolled,
+    AVG(g.MarksObtained) AS AverageMarks,
+    MIN(g.MarksObtained) AS MinimumMarks,
+    MAX(g.MarksObtained) AS MaximumMarks,
+    COUNT(CASE WHEN g.MarksObtained >= 60 THEN 1 END) * 100.0 / COUNT(*) AS PassPercentage
+FROM Subject sub
+JOIN Department d ON sub.DepartmentID = d.DepartmentID
+JOIN Grade g ON sub.SubjectID = g.SubjectID
+GROUP BY sub.SubjectName, d.DepartmentName
+ORDER BY AverageMarks DESC;
+
+-- 4. Student progress over time
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    FORMAT(g.ExamDate, 'yyyy-MM') AS MonthYear,
+    AVG(g.MarksObtained) AS MonthlyAverage,
+    LAG(AVG(g.MarksObtained)) OVER (PARTITION BY s.StudentID ORDER BY FORMAT(g.ExamDate, 'yyyy-MM')) AS PreviousMonthAvg,
+    AVG(g.MarksObtained) - LAG(AVG(g.MarksObtained)) OVER (PARTITION BY s.StudentID ORDER BY FORMAT(g.ExamDate, 'yyyy-MM')) AS Improvement
+FROM Student s
+JOIN Grade g ON s.StudentID = g.StudentID
+JOIN Exam e ON g.ExamID = e.ExamID
+WHERE g.MarksObtained IS NOT NULL
+GROUP BY s.StudentID, s.FirstName, s.LastName, FORMAT(g.ExamDate, 'yyyy-MM')
+ORDER BY s.StudentID, MonthYear;
+
+
+
+-- 5. Attendance summary by class
+SELECT 
+    c.ClassName,
+    c.GradeLevel,
+    COUNT(DISTINCT a.StudentID) AS StudentsTracked,
+    COUNT(CASE WHEN a.Status = 'Present' THEN 1 END) AS DaysPresent,
+    COUNT(CASE WHEN a.Status = 'Absent' THEN 1 END) AS DaysAbsent,
+    COUNT(CASE WHEN a.Status = 'Late' THEN 1 END) AS DaysLate,
+    COUNT(*) AS TotalDays,
+    ROUND(COUNT(CASE WHEN a.Status = 'Present' THEN 1 END) * 100.0 / COUNT(*), 2) AS OverallAttendanceRate
+FROM Attendance a
+JOIN Class c ON a.ClassID = c.ClassID
+WHERE a.AttendanceDate BETWEEN '2024-01-01' AND '2024-01-31'
+GROUP BY c.ClassID, c.ClassName, c.GradeLevel
+ORDER BY OverallAttendanceRate DESC;
+
+-- 6. Students with poor attendance (< 80%)
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    COUNT(CASE WHEN a.Status = 'Present' THEN 1 END) AS DaysPresent,
+    COUNT(*) AS TotalDays,
+    ROUND(COUNT(CASE WHEN a.Status = 'Present' THEN 1 END) * 100.0 / COUNT(*), 2) AS AttendancePercentage,
+    p.GuardianName,
+    p.Phone AS GuardianPhone
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+JOIN Attendance a ON s.StudentID = a.StudentID
+JOIN Parent p ON s.StudentID = p.ParentID
+WHERE a.AttendanceDate BETWEEN '2024-01-01' AND '2024-01-31'
+GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName, p.GuardianName, p.Phone
+HAVING ROUND(COUNT(CASE WHEN a.Status = 'Present' THEN 1 END) * 100.0 / COUNT(*), 2) < 80
+ORDER BY AttendancePercentage;
+
+-- 7. Monthly attendance trend
+SELECT 
+    FORMAT(a.AttendanceDate, 'yyyy-MM') AS MonthYear,
+    c.GradeLevel,
+    COUNT(CASE WHEN a.Status = 'Present' THEN 1 END) * 100.0 / COUNT(*) AS AttendanceRate,
+    COUNT(CASE WHEN a.Status = 'Absent' THEN 1 END) AS TotalAbsences,
+    COUNT(CASE WHEN a.Status = 'Late' THEN 1 END) AS TotalLate
+FROM Attendance a
+JOIN Class c ON a.ClassID = c.ClassID
+GROUP BY FORMAT(a.AttendanceDate, 'yyyy-MM'), c.GradeLevel
+ORDER BY MonthYear, c.GradeLevel;
+
+-- 8. Fee collection summary by month
+SELECT 
+    YEAR(f.PaymentDate) AS Year,
+    MONTH(f.PaymentDate) AS Month,
+    DATENAME(MONTH, f.PaymentDate) AS MonthName,
+    f.FeeType,
+    COUNT(*) AS Transactions,
+    SUM(f.Amount) AS TotalAmount,
+    SUM(f.PaidAmount) AS CollectedAmount,
+    SUM(f.Amount - f.PaidAmount) AS PendingAmount,
+    ROUND(SUM(f.PaidAmount) * 100.0 / SUM(f.Amount), 2) AS CollectionRate
+FROM Fee f
+WHERE f.PaymentDate IS NOT NULL
+GROUP BY YEAR(f.PaymentDate), MONTH(f.PaymentDate), DATENAME(MONTH, f.PaymentDate), f.FeeType
+ORDER BY Year DESC, Month DESC;
+
+-- 9. Students with outstanding fees
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    p.GuardianName,
+    p.Phone AS GuardianPhone,
+    SUM(f.Amount) AS TotalFee,
+    SUM(f.PaidAmount) AS PaidAmount,
+    SUM(f.Amount - f.PaidAmount) AS OutstandingAmount,
+    COUNT(CASE WHEN f.Status = 'Pending' THEN 1 END) AS PendingBills
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+JOIN Fee f ON s.StudentID = f.StudentID
+JOIN Parent p ON s.StudentID = p.ParentID
+WHERE f.Status IN ('Pending', 'Partial')
+GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName, p.GuardianName, p.Phone
+HAVING SUM(f.Amount - f.PaidAmount) > 0
+ORDER BY OutstandingAmount DESC;
+
+-- 10. Fee defaulters (overdue by 30+ days)
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    f.FeeType,
+    f.Amount,
+    f.PaidAmount,
+    f.DueDate,
+    DATEDIFF(day, f.DueDate, GETDATE()) AS DaysOverdue,
+    (f.Amount - f.PaidAmount) AS DueAmount
+FROM Fee f
+JOIN Student s ON f.StudentID = s.StudentID
+JOIN Class c ON s.ClassID = c.ClassID
+WHERE f.Status IN ('Pending', 'Partial')
+    AND f.DueDate < GETDATE()
+    AND DATEDIFF(day, f.DueDate, GETDATE()) > 30
+ORDER BY DaysOverdue DESC;
+
+-- 11. Payment method analysis
+SELECT 
+    f.PaymentMethod,
+    COUNT(*) AS TransactionCount,
+    SUM(f.PaidAmount) AS TotalAmount,
+    AVG(f.PaidAmount) AS AveragePayment,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM Fee WHERE PaymentMethod IS NOT NULL), 2) AS Percentage
+FROM Fee f
+WHERE f.PaymentMethod IS NOT NULL
+GROUP BY f.PaymentMethod
+ORDER BY TotalAmount DESC;
+
+-- 12. Monthly revenue report
+SELECT 
+    YEAR(PaymentDate) AS Year,
+    MONTH(PaymentDate) AS Month,
+    DATENAME(MONTH, PaymentDate) AS MonthName,
+    SUM(PaidAmount) AS Revenue,
+    LAG(SUM(PaidAmount)) OVER (ORDER BY YEAR(PaymentDate), MONTH(PaymentDate)) AS PreviousMonthRevenue,
+    SUM(PaidAmount) - LAG(SUM(PaidAmount)) OVER (ORDER BY YEAR(PaymentDate), MONTH(PaymentDate)) AS MonthlyGrowth
+FROM Fee
+WHERE PaymentDate IS NOT NULL
+    AND Status = 'Paid'
+GROUP BY YEAR(PaymentDate), MONTH(PaymentDate), DATENAME(MONTH, PaymentDate)
+ORDER BY Year DESC, Month DESC;
+
+-- 13. Class-wise fee collection
+SELECT 
+    c.ClassName,
+    c.GradeLevel,
+    COUNT(DISTINCT s.StudentID) AS TotalStudents,
+    SUM(f.Amount) AS TotalFee,
+    SUM(f.PaidAmount) AS Collected,
+    ROUND(SUM(f.PaidAmount) * 100.0 / SUM(f.Amount), 2) AS CollectionRate
+FROM Class c
+JOIN Student s ON c.ClassID = s.ClassID
+JOIN Fee f ON s.StudentID = f.StudentID
+GROUP BY c.ClassID, c.ClassName, c.GradeLevel
+ORDER BY CollectionRate DESC;
+
+-- 18. Teacher workload analysis
+SELECT 
+    t.TeacherID,
+    st.FirstName + ' ' + st.LastName AS TeacherName,
+    d.DepartmentName,
+    st.Position,
+    COUNT(DISTINCT ta.ClassID) AS ClassesAssigned,
+    COUNT(DISTINCT ta.SubjectID) AS SubjectsAssigned,
+    SUM(ta.HoursPerWeek) AS TotalWeeklyHours,
+    COUNT(DISTINCT CASE WHEN t.IsClassTeacher = 1 THEN c.ClassID END) AS ClassTeacherFor,
+    COUNT(DISTINCT e.StudentID) AS TotalStudents
+FROM Teacher t
+JOIN Staff st ON t.StaffID = st.StaffID
+JOIN Department d ON st.DepartmentID = d.DepartmentID
+LEFT JOIN TeachingAssignment ta ON t.TeacherID = ta.TeacherID
+LEFT JOIN Class c ON t.TeacherID = c.ClassTeacherID
+LEFT JOIN Student s ON c.ClassID = s.ClassID
+LEFT JOIN Enrollment e ON s.StudentID = e.StudentID
+GROUP BY t.TeacherID, st.FirstName, st.LastName, d.DepartmentName, st.Position
+ORDER BY TotalWeeklyHours DESC;
+
+-- 19. Staff attendance and leaves
+SELECT 
+    s.StaffID,
+    s.FirstName + ' ' + s.LastName AS StaffName,
+    s.Position,
+    s.HireDate,
+    DATEDIFF(year, s.HireDate, GETDATE()) AS YearsOfService,
+    s.Salary,
+    CASE 
+        WHEN s.Status = 'Active' THEN 'Working'
+        ELSE s.Status
+    END AS CurrentStatus
+FROM Staff s
+WHERE s.Status = 'Active'
+ORDER BY YearsOfService DESC;
+
+-- 20. Department-wise staff distribution
+SELECT 
+    d.DepartmentName,
+    COUNT(s.StaffID) AS TotalStaff,
+    COUNT(CASE WHEN s.Position = 'Teacher' THEN 1 END) AS Teachers,
+    COUNT(CASE WHEN s.Position = 'Principal' OR s.Position = 'Vice Principal' THEN 1 END) AS Administrators,
+    COUNT(CASE WHEN s.Position NOT IN ('Teacher', 'Principal', 'Vice Principal') THEN 1 END) AS SupportStaff,
+    ROUND(AVG(s.Salary), 2) AS AverageSalary
+FROM Department d
+LEFT JOIN Staff s ON d.DepartmentID = s.DepartmentID
+WHERE s.Status = 'Active'
+GROUP BY d.DepartmentName
+ORDER BY TotalStaff DESC;
+
+-- 21. Classroom utilization
+SELECT 
+    c.RoomNumber,
+    c.ClassName,
+    c.GradeLevel,
+    c.CurrentStudents,
+    c.MaxStudents,
+    ROUND(c.CurrentStudents * 100.0 / c.MaxStudents, 2) AS UtilizationRate,
+    CASE 
+        WHEN ROUND(c.CurrentStudents * 100.0 / c.MaxStudents, 2) > 90 THEN 'Overcrowded'
+        WHEN ROUND(c.CurrentStudents * 100.0 / c.MaxStudents, 2) > 75 THEN 'Optimal'
+        WHEN ROUND(c.CurrentStudents * 100.0 / c.MaxStudents, 2) > 50 THEN 'Underutilized'
+        ELSE 'Poorly Utilized'
+    END AS UtilizationStatus
+FROM Class c
+ORDER BY UtilizationRate DESC;
+
+-- 22. Transport route efficiency
+SELECT 
+    t.RouteName,
+    t.VehicleNumber,
+    t.VehicleType,
+    t.Capacity,
+    COUNT(DISTINCT s.StudentID) AS StudentsUsing,
+    ROUND(COUNT(DISTINCT s.StudentID) * 100.0 / t.Capacity, 2) AS CapacityUtilization,
+    t.MorningPickup,
+    t.EveningDrop,
+    t.Status
+FROM Transport t
+LEFT JOIN Student s ON t.VehicleNumber LIKE '%' + RIGHT(s.Address, 3) + '%'  -- Simplified matching
+GROUP BY t.RouteName, t.VehicleNumber, t.VehicleType, t.Capacity, t.MorningPickup, t.EveningDrop, t.Status
+ORDER BY CapacityUtilization DESC;
+
+-- 23. Lab and resource usage
+SELECT 
+    'Library' AS ResourceType,
+    COUNT(lt.TransactionID) AS TotalTransactions,
+    COUNT(DISTINCT lt.StudentID) AS UniqueUsers,
+    AVG(DATEDIFF(day, lt.IssueDate, COALESCE(lt.ReturnDate, GETDATE()))) AS AvgUsageDays
+FROM LibraryTransaction lt
+WHERE YEAR(lt.IssueDate) = 2024
+UNION ALL
+SELECT 
+    'Computer Lab' AS ResourceType,
+    COUNT(DISTINCT a.AttendanceID) AS TotalSessions,
+    COUNT(DISTINCT a.StudentID) AS UniqueUsers,
+    NULL AS AvgUsageDays
+FROM Attendance a
+JOIN Subject sub ON a.SubjectID = sub.SubjectID
+WHERE sub.SubjectName LIKE '%Computer%' OR sub.SubjectName LIKE '%Lab%';
+
+-- 24. Parent engagement analysis
+SELECT 
+    p.ParentID,
+    p.FirstName + ' ' + p.LastName AS ParentName,
+    p.Occupation,
+    p.Relationship,
+    COUNT(DISTINCT sp.StudentID) AS ChildrenInSchool,
+    STRING_AGG(s.FirstName + ' ' + s.LastName, ', ') WITHIN GROUP (ORDER BY s.StudentID) AS ChildrenNames,
+    STRING_AGG(c.ClassName, ', ') WITHIN GROUP (ORDER BY s.StudentID) AS ChildrenClasses,
+    MAX(n.PublishedDate) AS LastNoticeReceived
+FROM Parent p
+JOIN StudentParent sp ON p.ParentID = sp.ParentID
+JOIN Student s ON sp.StudentID = s.StudentID
+JOIN Class c ON s.ClassID = c.ClassID
+LEFT JOIN Notice n ON n.TargetAudience IN ('Parents', 'All')
+GROUP BY p.ParentID, p.FirstName, p.LastName, p.Occupation, p.Relationship
+ORDER BY ChildrenInSchool DESC;
+
+-- 25. Communication log
+SELECT 
+    n.NoticeID,
+    n.Title,
+    n.Priority,
+    n.TargetAudience,
+    st.FirstName + ' ' + st.LastName AS PublishedBy,
+    n.PublishedDate,
+    n.ExpiryDate,
+    CASE 
+        WHEN n.ExpiryDate < GETDATE() THEN 'Expired'
+        ELSE 'Active'
+    END AS NoticeStatus,
+    LEFT(n.Content, 100) + '...' AS ContentPreview
+FROM Notice n
+JOIN Staff st ON n.PublishedBy = st.StaffID
+ORDER BY n.PublishedDate DESC;
+
+-- 26. Student retention prediction
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    AVG(e.AttendancePercentage) AS AvgAttendance,
+    AVG(g.MarksObtained) AS AvgMarks,
+    SUM(CASE WHEN a.Status = 'Absent' THEN 1 ELSE 0 END) AS TotalAbsences,
+    CASE 
+        WHEN AVG(e.AttendancePercentage) < 70 OR AVG(g.MarksObtained) < 50 THEN 'High Risk'
+        WHEN AVG(e.AttendancePercentage) BETWEEN 70 AND 80 OR AVG(g.MarksObtained) BETWEEN 50 AND 60 THEN 'Medium Risk'
+        ELSE 'Low Risk'
+    END AS RetentionRisk
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+LEFT JOIN Enrollment e ON s.StudentID = e.StudentID
+LEFT JOIN Grade g ON s.StudentID = g.StudentID
+LEFT JOIN Attendance a ON s.StudentID = a.StudentID
+GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName;
+
+-- 27. Growth trends analysis
+WITH MonthlyGrowth AS (
+    SELECT 
+        YEAR(EnrollmentDate) AS Year,
+        MONTH(EnrollmentDate) AS Month,
+        COUNT(*) AS NewEnrollments,
+        LAG(COUNT(*)) OVER (ORDER BY YEAR(EnrollmentDate), MONTH(EnrollmentDate)) AS PreviousMonthEnrollments
+    FROM Student
+    GROUP BY YEAR(EnrollmentDate), MONTH(EnrollmentDate)
+)
+SELECT 
+    Year,
+    Month,
+    DATENAME(MONTH, DATEFROMPARTS(Year, Month, 1)) AS MonthName,
+    NewEnrollments,
+    PreviousMonthEnrollments,
+    NewEnrollments - COALESCE(PreviousMonthEnrollments, 0) AS MonthlyGrowth,
+    ROUND((NewEnrollments - COALESCE(PreviousMonthEnrollments, 0)) * 100.0 / NULLIF(COALESCE(PreviousMonthEnrollments, 1), 0), 2) AS GrowthPercentage
+FROM MonthlyGrowth
+ORDER BY Year DESC, Month DESC;
+
+-- 28. School dashboard summary
+SELECT 
+    'Total Students' AS Metric,
+    COUNT(*) AS Value
+FROM Student
+WHERE Status = 'Active'
+UNION ALL
+SELECT 
+    'Total Staff',
+    COUNT(*) 
+FROM Staff 
+WHERE Status = 'Active'
+UNION ALL
+SELECT 
+    'Total Classes',
+    COUNT(*) 
+FROM Class
+UNION ALL
+SELECT 
+    'Fee Collection Rate',
+    ROUND(SUM(PaidAmount) * 100.0 / SUM(Amount), 2)
+FROM Fee
+WHERE AcademicYear = 2024
+UNION ALL
+SELECT 
+    'Average Attendance',
+    ROUND(AVG(AttendancePercentage), 2)
+FROM Enrollment
+WHERE Status = 'Enrolled'
+UNION ALL
+SELECT 
+    'Library Books Issued',
+    COUNT(*) 
+FROM LibraryTransaction 
+WHERE Status = 'Issued'
+UNION ALL
+SELECT 
+    'Upcoming Events',
+    COUNT(*) 
+FROM Event 
+WHERE EventDate >= GETDATE() 
+    AND EventDate <= DATEADD(month, 1, GETDATE());
+
+-- 29. Year-over-year comparison
+SELECT 
+    YEAR(e.EnrollmentDate) AS Year,
+    COUNT(DISTINCT s.StudentID) AS TotalStudents,
+    COUNT(DISTINCT CASE WHEN s.Gender = 'Male' THEN s.StudentID END) AS MaleStudents,
+    COUNT(DISTINCT CASE WHEN s.Gender = 'Female' THEN s.StudentID END) AS FemaleStudents,
+    ROUND(AVG(grade.MarksObtained), 2) AS AverageScore,
+    ROUND(AVG(en.AttendancePercentage), 2) AS AverageAttendance,
+    SUM(f.PaidAmount) AS TotalRevenue
+FROM Student s
+JOIN Enrollment e ON s.StudentID = e.StudentID
+LEFT JOIN (
+    SELECT StudentID, AVG(MarksObtained) AS MarksObtained 
+    FROM Grade 
+    GROUP BY StudentID
+) grade ON s.StudentID = grade.StudentID
+LEFT JOIN Enrollment en ON s.StudentID = en.StudentID
+LEFT JOIN Fee f ON s.StudentID = f.StudentID
+GROUP BY YEAR(e.EnrollmentDate)
+ORDER BY Year DESC;
+
+-- 30. Resource allocation efficiency
+SELECT 
+    d.DepartmentName,
+    COUNT(DISTINCT s.StaffID) AS StaffCount,
+    COUNT(DISTINCT sub.SubjectID) AS SubjectsOffered,
+    COUNT(DISTINCT c.ClassID) AS ClassesUsing,
+    ROUND(COUNT(DISTINCT sub.SubjectID) * 100.0 / NULLIF(COUNT(DISTINCT s.StaffID), 0), 2) AS SubjectsPerStaff,
+    ROUND(COUNT(DISTINCT c.ClassID) * 100.0 / NULLIF(COUNT(DISTINCT s.StaffID), 0), 2) AS ClassesPerStaff
+FROM Department d
+LEFT JOIN Staff s ON d.DepartmentID = s.DepartmentID AND s.Status = 'Active'
+LEFT JOIN Subject sub ON d.DepartmentID = sub.DepartmentID
+LEFT JOIN TeachingAssignment ta ON sub.SubjectID = ta.SubjectID
+LEFT JOIN Class c ON ta.ClassID = c.ClassID
+GROUP BY d.DepartmentName
+ORDER BY SubjectsPerStaff DESC;
+
+-- 31. Correlation between attendance and performance
+WITH StudentStats AS (
+    SELECT 
+        s.StudentID,
+        s.FirstName + ' ' + s.LastName AS StudentName,
+        c.ClassName,
+        AVG(e.AttendancePercentage) AS AvgAttendance,
+        AVG(g.MarksObtained) AS AvgMarks,
+        COUNT(g.GradeID) AS ExamsTaken
+    FROM Student s
+    JOIN Class c ON s.ClassID = c.ClassID
+    LEFT JOIN Enrollment e ON s.StudentID = e.StudentID
+    LEFT JOIN Grade g ON s.StudentID = g.StudentID
+    WHERE g.MarksObtained IS NOT NULL
+    GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName
+    HAVING COUNT(g.GradeID) >= 3
+)
+SELECT 
+    'Overall' AS Category,
+    COUNT(*) AS Students,
+    ROUND(AVG(AvgAttendance), 2) AS AvgAttendanceRate,
+    ROUND(AVG(AvgMarks), 2) AS AvgScore,
+    ROUND(
+        (SUM(AvgAttendance * AvgMarks) - SUM(AvgAttendance) * SUM(AvgMarks) / COUNT(*)) /
+        (SQRT(SUM(AvgAttendance * AvgAttendance) - SUM(AvgAttendance) * SUM(AvgAttendance) / COUNT(*)) *
+         SQRT(SUM(AvgMarks * AvgMarks) - SUM(AvgMarks) * SUM(AvgMarks) / COUNT(*))), 
+        4
+    ) AS AttendanceScoreCorrelation
+FROM StudentStats
+UNION ALL
+SELECT 
+    c.ClassName,
+    COUNT(*),
+    ROUND(AVG(ss.AvgAttendance), 2),
+    ROUND(AVG(ss.AvgMarks), 2),
+    NULL
+FROM StudentStats ss
+JOIN Student s ON ss.StudentID = s.StudentID
+JOIN Class c ON s.ClassID = c.ClassID
+GROUP BY c.ClassName
+ORDER BY Category;
+
+-- 32. Predictive analysis for exam results
+WITH StudentPerformance AS (
+    SELECT 
+        s.StudentID,
+        s.FirstName + ' ' + s.LastName AS StudentName,
+        c.ClassName,
+        AVG(g.MarksObtained) AS HistoricalAvg,
+        STDEV(g.MarksObtained) AS ScoreVolatility,
+        COUNT(g.GradeID) AS ExamsTaken,
+        DATEDIFF(month, MIN(e.EnrollmentDate), GETDATE()) AS MonthsInSchool,
+        AVG(en.AttendancePercentage) AS AvgAttendance
+    FROM Student s
+    JOIN Class c ON s.ClassID = c.ClassID
+    LEFT JOIN Grade g ON s.StudentID = g.StudentID
+    LEFT JOIN Enrollment e ON s.StudentID = e.StudentID
+    LEFT JOIN Enrollment en ON s.StudentID = en.StudentID
+    WHERE g.MarksObtained IS NOT NULL
+    GROUP BY s.StudentID, s.FirstName, s.LastName, c.ClassName
+    HAVING COUNT(g.GradeID) >= 2
+)
+SELECT 
+    StudentID,
+    StudentName,
+    ClassName,
+    HistoricalAvg,
+    ScoreVolatility,
+    ExamsTaken,
+    MonthsInSchool,
+    AvgAttendance,
+    CASE 
+        WHEN HistoricalAvg >= 80 AND ScoreVolatility < 10 THEN 'Consistent High Performer'
+        WHEN HistoricalAvg >= 80 AND ScoreVolatility >= 10 THEN 'Variable High Performer'
+        WHEN HistoricalAvg BETWEEN 60 AND 79 AND ScoreVolatility < 15 THEN 'Stable Average Performer'
+        WHEN HistoricalAvg BETWEEN 60 AND 79 AND ScoreVolatility >= 15 THEN 'Unstable Average Performer'
+        WHEN HistoricalAvg < 60 AND AvgAttendance < 75 THEN 'At Risk - Low Attendance'
+        WHEN HistoricalAvg < 60 THEN 'At Risk - Low Performance'
+        ELSE 'Needs Evaluation'
+    END AS PerformanceCategory,
+    ROUND(HistoricalAvg * 0.7 + AvgAttendance * 0.3, 2) AS PredictedFinalScore
+FROM StudentPerformance
+ORDER BY PredictedFinalScore DESC;
+
+-- 33. Time series analysis for enrollment
+WITH MonthlyData AS (
+    SELECT 
+        YEAR(EnrollmentDate) AS Year,
+        MONTH(EnrollmentDate) AS Month,
+        COUNT(*) AS Enrollments,
+        SUM(COUNT(*)) OVER (ORDER BY YEAR(EnrollmentDate), MONTH(EnrollmentDate) ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS RollingYearEnrollments
+    FROM Student
+    GROUP BY YEAR(EnrollmentDate), MONTH(EnrollmentDate)
+)
+SELECT 
+    Year,
+    Month,
+    DATENAME(MONTH, DATEFROMPARTS(Year, Month, 1)) AS MonthName,
+    Enrollments,
+    RollingYearEnrollments,
+    LAG(Enrollments) OVER (ORDER BY Year, Month) AS PreviousMonth,
+    Enrollments - LAG(Enrollments) OVER (ORDER BY Year, Month) AS MonthOverMonthChange,
+    ROUND((Enrollments - LAG(Enrollments) OVER (ORDER BY Year, Month)) * 100.0 / NULLIF(LAG(Enrollments) OVER (ORDER BY Year, Month), 0), 2) AS MoMGrowthRate
+FROM MonthlyData
+ORDER BY Year DESC, Month DESC;
+
+-- 34. Database health check
+SELECT 
+    'Table Sizes' AS CheckType,
+    t.name AS TableName,
+    p.rows AS RowCount,
+    SUM(a.total_pages) * 8 / 1024 AS SizeMB
+FROM sys.tables t
+INNER JOIN sys.indexes i ON t.object_id = i.object_id
+INNER JOIN sys.partitions p ON i.object_id = p.object_id AND i.index_id = p.index_id
+INNER JOIN sys.allocation_units a ON p.partition_id = a.container_id
+WHERE t.is_ms_shipped = 0
+    AND i.object_id > 255 
+    AND t.name IN (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE')
+GROUP BY t.name, p.rows
+ORDER BY SizeMB DESC;
+
+-- 35. Data integrity checks
+SELECT 
+    'Foreign Key Violations' AS CheckType,
+    OBJECT_NAME(fkc.parent_object_id) AS TableName,
+    COL_NAME(fkc.parent_object_id, fkc.parent_column_id) AS ColumnName,
+    COUNT(*) AS ViolationCount
+FROM sys.foreign_key_columns fkc
+LEFT JOIN sys.columns c ON fkc.parent_object_id = c.object_id AND fkc.parent_column_id = c.column_id
+GROUP BY fkc.parent_object_id, fkc.parent_column_id
+HAVING COUNT(*) > 0
+UNION ALL
+SELECT 
+    'NULL in Required Columns' AS CheckType,
+    'Student' AS TableName,
+    'Email' AS ColumnName,
+    COUNT(*) AS ViolationCount
+FROM Student
+WHERE Email IS NULL
+UNION ALL
+SELECT 
+    'Duplicate Emails' AS CheckType,
+    'Student' AS TableName,
+    'Email' AS ColumnName,
+    COUNT(*) - COUNT(DISTINCT Email) AS ViolationCount
+FROM Student
+WHERE Email IS NOT NULL;
+
+-- 36. Performance monitoring queries
+SELECT 
+    'Top 10 Slow Queries' AS Metric,
+    SUBSTRING(qt.text, (qs.statement_start_offset/2)+1, 
+        ((CASE qs.statement_end_offset 
+            WHEN -1 THEN DATALENGTH(qt.text)
+            ELSE qs.statement_end_offset 
+        END - qs.statement_start_offset)/2)+1) AS QueryText,
+    qs.execution_count AS Executions,
+    qs.total_worker_time/1000000 AS TotalCPUTime,
+    qs.total_elapsed_time/1000000 AS TotalDuration,
+    qs.total_logical_reads AS LogicalReads
+FROM sys.dm_exec_query_stats qs
+CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) qt
+ORDER BY qs.total_worker_time DESC;
+
+-- 37. Generate student report card
+DECLARE @StudentID INT = 1;
+
+SELECT 
+    s.StudentID,
+    s.FirstName + ' ' + s.LastName AS StudentName,
+    c.ClassName,
+    c.GradeLevel,
+    p.GuardianName,
+    p.Phone AS GuardianPhone,
+    sub.SubjectName,
+    g.MarksObtained,
+    g.Percentage,
+    g.Grade,
+    g.Remarks,
+    e.ExamName,
+    e.ExamDate
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+JOIN Parent p ON s.StudentID = p.ParentID
+JOIN Grade g ON s.StudentID = g.StudentID
+JOIN Subject sub ON g.SubjectID = sub.SubjectID
+JOIN Exam e ON g.ExamID = e.ExamID
+WHERE s.StudentID = @StudentID
+ORDER BY sub.SubjectName;
+
+-- 38. Teacher performance report
+DECLARE @TeacherID INT = 1;
+
+SELECT 
+    t.TeacherID,
+    st.FirstName + ' ' + st.LastName AS TeacherName,
+    d.DepartmentName,
+    sub.SubjectName,
+    c.ClassName,
+    COUNT(DISTINCT s.StudentID) AS StudentsTaught,
+    AVG(g.MarksObtained) AS AverageClassScore,
+    MIN(g.MarksObtained) AS MinimumScore,
+    MAX(g.MarksObtained) AS MaximumScore,
+    COUNT(CASE WHEN g.MarksObtained >= 60 THEN 1 END) * 100.0 / COUNT(*) AS PassRate
+FROM Teacher t
+JOIN Staff st ON t.StaffID = st.StaffID
+JOIN Department d ON st.DepartmentID = d.DepartmentID
+JOIN TeachingAssignment ta ON t.TeacherID = ta.TeacherID
+JOIN Subject sub ON ta.SubjectID = sub.SubjectID
+JOIN Class c ON ta.ClassID = c.ClassID
+JOIN Student s ON c.ClassID = s.ClassID
+LEFT JOIN Grade g ON s.StudentID = g.StudentID AND sub.SubjectID = g.SubjectID
+WHERE t.TeacherID = @TeacherID
+GROUP BY t.TeacherID, st.FirstName, st.LastName, d.DepartmentName, sub.SubjectName, c.ClassName
+ORDER BY AverageClassScore DESC;
+
+-- 39. School year summary report
+SELECT 
+    'Enrollment Statistics' AS Category,
+    COUNT(*) AS Total,
+    COUNT(CASE WHEN Gender = 'Male' THEN 1 END) AS Male,
+    COUNT(CASE WHEN Gender = 'Female' THEN 1 END) AS Female
+FROM Student
+WHERE Status = 'Active'
+UNION ALL
+SELECT 
+    'Academic Performance',
+    ROUND(AVG(AvgScore), 2),
+    ROUND(AVG(CASE WHEN Gender = 'Male' THEN AvgScore END), 2),
+    ROUND(AVG(CASE WHEN Gender = 'Female' THEN AvgScore END), 2)
+FROM (
+    SELECT s.StudentID, s.Gender, AVG(g.MarksObtained) AS AvgScore
+    FROM Student s
+    JOIN Grade g ON s.StudentID = g.StudentID
+    GROUP BY s.StudentID, s.Gender
+) AS Scores
+UNION ALL
+SELECT 
+    'Financial Summary',
+    SUM(PaidAmount),
+    NULL,
+    NULL
+FROM Fee
+WHERE AcademicYear = 2024
+UNION ALL
+SELECT 
+    'Attendance Rate',
+    ROUND(AVG(AttendancePercentage), 2),
+    ROUND(AVG(CASE WHEN Gender = 'Male' THEN AttendancePercentage END), 2),
+    ROUND(AVG(CASE WHEN Gender = 'Female' THEN AttendancePercentage END), 2)
+FROM Student s
+JOIN Enrollment e ON s.StudentID = e.StudentID;
+
+-- 40. Export data for external systems (CSV format)
+SELECT 
+    s.StudentID,
+    s.FirstName,
+    s.LastName,
+    s.DateOfBirth,
+    s.Gender,
+    s.Email,
+    s.Phone,
+    s.Address,
+    c.ClassName,
+    c.GradeLevel,
+    p.GuardianName,
+    p.Phone AS GuardianPhone,
+    p.Email AS GuardianEmail,
+    AVG(g.MarksObtained) AS AverageMarks,
+    AVG(e.AttendancePercentage) AS AverageAttendance,
+    SUM(f.PaidAmount) AS TotalPaid,
+    SUM(f.Amount - f.PaidAmount) AS OutstandingAmount
+FROM Student s
+JOIN Class c ON s.ClassID = c.ClassID
+JOIN Parent p ON s.StudentID = p.ParentID
+LEFT JOIN Grade g ON s.StudentID = g.StudentID
+LEFT JOIN Enrollment e ON s.StudentID = e.StudentID
+LEFT JOIN Fee f ON s.StudentID = f.StudentID
+WHERE s.Status = 'Active'
+GROUP BY s.StudentID, s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.Email, 
+         s.Phone, s.Address, c.ClassName, c.GradeLevel, p.GuardianName, p.Phone, p.Email
+ORDER BY s.StudentID;
+
+-- 41. API response format
+SELECT 
+    JSON_QUERY((
+        SELECT 
+            s.StudentID,
+            s.FirstName + ' ' + s.LastName AS FullName,
+            c.ClassName,
+            s.Email,
+            s.Phone,
+            (
+                SELECT sub.SubjectName, g.MarksObtained, g.Grade
+                FROM Grade g
+                JOIN Subject sub ON g.SubjectID = sub.SubjectID
+                WHERE g.StudentID = s.StudentID
+                FOR JSON PATH
+            ) AS Grades,
+            (
+                SELECT f.FeeType, f.Amount, f.PaidAmount, f.Status
+                FROM Fee f
+                WHERE f.StudentID = s.StudentID
+                FOR JSON PATH
+            ) AS Fees
+        FROM Student s
+        JOIN Class c ON s.ClassID = c.ClassID
+        WHERE s.StudentID = 1
+        FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+    )) AS StudentData;
