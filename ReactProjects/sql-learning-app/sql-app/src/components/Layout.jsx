@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Code, TrendingUp, Settings } from 'lucide-react';
+import { Home, BookOpen, Code, TrendingUp, Brain } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 const Layout = ({ children }) => {
@@ -10,6 +10,7 @@ const Layout = ({ children }) => {
     { path: '/learning-path', icon: BookOpen, label: 'Learning Path' },
     { path: '/practice', icon: Code, label: 'Practice' },
     { path: '/progress', icon: TrendingUp, label: 'Progress' },
+    { path: '/self-evaluation', icon: Brain, label: 'Self Evaluation' },
   ];
 
   return (

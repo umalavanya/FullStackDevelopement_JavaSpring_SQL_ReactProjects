@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import LearningPath from './pages/LearningPath';
 import Practice from './pages/Practice';
 import Progress from './pages/Progress';
+import SelfEvaluation from './pages/SelfEvaluation';
 import Layout from './components/Layout';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/learning-path" element={<LearningPath />} />
             <Route path="/practice" element={<Practice />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/self-evaluation" element={<SelfEvaluation />} />
           </Routes>
         </Layout>
       </Router>
