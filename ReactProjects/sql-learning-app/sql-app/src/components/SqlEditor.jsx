@@ -2,7 +2,9 @@ import { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { basicLight } from '@uiw/codemirror-theme-basic';
 import { Play, RotateCcw, Copy, Download } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const SqlEditor = ({ 
   initialCode = '', 
@@ -13,6 +15,7 @@ const SqlEditor = ({
 }) => {
   const [code, setCode] = useState(initialCode);
   const [editorHeight, setEditorHeight] = useState('200px');
+  const { isDarkMode } = useTheme();
 
   const handleRun = () => {
     onRun(code);
@@ -80,7 +83,7 @@ const SqlEditor = ({
         <CodeMirror
           value={code}
           height={editorHeight}
-          theme={oneDark}
+          theme={isDarkMode ? oneDark : basicLight}
           extensions={[sql()]}
           onChange={(value) => setCode(value)}
           basicSetup={{

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Code, TrendingUp } from 'lucide-react';
+import { Home, BookOpen, Code, TrendingUp, Settings } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -33,6 +34,22 @@ const Layout = ({ children }) => {
               </Link>
             );
           })}
+          
+          <div className="nav-divider"></div>
+          
+          <ThemeToggle />
+          
+          <div className="sidebar-footer">
+            <div className="user-profile">
+              <div className="avatar">
+                SQL
+              </div>
+              <div className="user-info">
+                <div className="user-name">SQL Learner</div>
+                <div className="user-status">Learning SQL</div>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
       <main className="main-content">
