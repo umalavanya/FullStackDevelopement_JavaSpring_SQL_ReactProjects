@@ -23,38 +23,18 @@ export const sampleDatabase = {
         { product_id: 105, product_name: 'Monitor', category: 'Electronics', price: 299.99, stock: 30 },
         { product_id: 106, product_name: 'Keyboard', category: 'Electronics', price: 79.99, stock: 50 },
       ]
-    },
-    orders: {
-      columns: ['order_id', 'customer_id', 'product_id', 'quantity', 'order_date', 'total'],
-      rows: [
-        { order_id: 1001, customer_id: 1, product_id: 101, quantity: 1, order_date: '2023-10-01', total: 999.99 },
-        { order_id: 1002, customer_id: 2, product_id: 102, quantity: 2, order_date: '2023-10-02', total: 59.98 },
-        { order_id: 1003, customer_id: 1, product_id: 103, quantity: 1, order_date: '2023-10-03', total: 199.99 },
-        { order_id: 1004, customer_id: 3, product_id: 105, quantity: 1, order_date: '2023-10-04', total: 299.99 },
-        { order_id: 1005, customer_id: 4, product_id: 106, quantity: 3, order_date: '2023-10-05', total: 239.97 },
-      ]
-    },
-    customers: {
-      columns: ['customer_id', 'customer_name', 'email', 'city', 'country'],
-      rows: [
-        { customer_id: 1, customer_name: 'John Smith', email: 'john@example.com', city: 'New York', country: 'USA' },
-        { customer_id: 2, customer_name: 'Maria Garcia', email: 'maria@example.com', city: 'Madrid', country: 'Spain' },
-        { customer_id: 3, customer_name: 'Chen Wei', email: 'chen@example.com', city: 'Beijing', country: 'China' },
-        { customer_id: 4, customer_name: 'Anna Müller', email: 'anna@example.com', city: 'Berlin', country: 'Germany' },
-        { customer_id: 5, customer_name: 'David Kim', email: 'david@example.com', city: 'Seoul', country: 'South Korea' },
-      ]
     }
   }
 };
 
-// SQL Parser and Executor
+// Simple SQL Executor
 export const executeSql = (sqlQuery, database) => {
   try {
     const query = sqlQuery.trim().toLowerCase();
     
-    // Simple SELECT query parser
+    // Handle SELECT queries
     if (query.startsWith('select')) {
-      // Basic SELECT * FROM table
+      // Extract table name (simple parsing)
       const fromMatch = query.match(/from\s+(\w+)/);
       if (fromMatch) {
         const tableName = fromMatch[1];
@@ -64,17 +44,17 @@ export const executeSql = (sqlQuery, database) => {
           return { error: `Table '${tableName}' does not exist` };
         }
         
-        // Check for WHERE clause
         let filteredRows = [...table.rows];
+        
+        // Check for WHERE clause (simple equality only)
         const whereMatch = query.match(/where\s+(.+)/);
         if (whereMatch) {
           const condition = whereMatch[1];
-          // Simple equality condition parser
-          const equalityMatch = condition.match(/(\w+)\s*=\s*['"]?([^'"]+)['"]?/);
-          if (equalityMatch) {
-            const [_, column, value] = equalityMatch;
+          // Simple equality: column = 'value'
+          if (condition.includes('=')) {
+            const [column, value] = condition.split('=').map(s => s.trim().replace(/['"]/g, ''));
             filteredRows = filteredRows.filter(row => 
-              String(row[column]) === value.replace(/['"]/g, '')
+              String(row[column]) === value
             );
           }
         }
@@ -91,15 +71,14 @@ export const executeSql = (sqlQuery, database) => {
           });
         }
         
-        return { rows: filteredRows, columns: table.columns };
+        return { rows: filteredRows };
       }
     }
     
     // SHOW TABLES
-    if (query === 'show tables') {
+    if (query === 'show tables' || query === 'show tables;') {
       return { 
-        rows: Object.keys(database.tables).map(name => ({ table_name: name })), 
-        columns: ['table_name'] 
+        rows: Object.keys(database.tables).map(name => ({ Tables: name }))
       };
     }
     
@@ -112,8 +91,7 @@ export const executeSql = (sqlQuery, database) => {
         return { error: `Table '${tableName}' does not exist` };
       }
       return {
-        rows: table.columns.map(col => ({ column: col, type: 'VARCHAR(255)' })),
-        columns: ['column', 'type']
+        rows: table.columns.map(col => ({ Field: col, Type: 'VARCHAR(255)' }))
       };
     }
     

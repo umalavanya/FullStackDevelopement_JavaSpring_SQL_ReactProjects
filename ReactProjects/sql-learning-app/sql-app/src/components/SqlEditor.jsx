@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
 import { oneDark } from '@codemirror/theme-one-dark';
@@ -112,7 +113,7 @@ const SqlEditor = ({
           <div className="results-header">
             <h4>Results</h4>
             <span className="results-info">
-              {results.rows ? `${results.rows.length} row(s) returned` : 'No results'}
+              {results.error ? 'Error' : results.rows ? `${results.rows.length} row(s) returned` : 'No results'}
             </span>
           </div>
           {results.error ? (
