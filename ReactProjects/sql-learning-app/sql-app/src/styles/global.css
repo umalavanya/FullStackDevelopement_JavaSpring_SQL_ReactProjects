@@ -2710,3 +2710,31 @@ body {
 [data-theme="light"] .user-profile {
     background-color: rgba(0, 0, 0, 0.05);
 }
+
+/* CodeMirror custom overrides for light theme */
+[data-theme="light"] .cm-theme {
+    --cm-background: #ffffff;
+    --cm-text: #1e293b;
+    --cm-gutter-background: #f8fafc;
+    --cm-gutter-text: #64748b;
+    --cm-active-line-background: #f1f5f9;
+    --cm-selection-background: #dbeafe;
+}
+
+[data-theme="light"] .cm-gutters {
+    background-color: var(--cm-gutter-background) !important;
+    color: var(--cm-gutter-text) !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .cm-activeLineGutter {
+    background-color: var(--cm-active-line-background) !important;
+}
+
+[data-theme="light"] .cm-activeLine {
+    background-color: var(--cm-active-line-background) !important;
+}
+
+[data-theme="light"] .cm-selectionBackground {
+    background-color: var(--cm-selection-background) !important;
+}
