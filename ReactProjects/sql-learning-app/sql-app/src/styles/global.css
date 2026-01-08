@@ -620,3 +620,574 @@ h4 {
     color: var(--text-secondary);
     font-size: 1.1rem;
 }
+
+
+/* Practice Environment Styles */
+.practice-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.practice-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-section {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.sidebar-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.challenges-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.challenge-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.challenge-card:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-color);
+}
+
+.challenge-card.active {
+    border-color: var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.challenge-card.completed {
+    border-color: var(--success-color);
+}
+
+.challenge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.challenge-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.challenge-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.challenge-completed {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--success-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.difficulty-badge.beginner {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+}
+
+.difficulty-badge.intermediate {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.difficulty-badge.advanced {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: var(--danger-color);
+}
+
+/* Database Schema */
+.database-schema {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.schema-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tables-count {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: var(--primary-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+.tables-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.table-schema {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    user-select: none;
+}
+
+.table-name {
+    flex: 1;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.row-count {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.table-columns {
+    padding: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.column-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.column-name {
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+}
+
+.column-type {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+}
+
+.schema-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Practice Main Area */
+.practice-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.challenge-info {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.challenge-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.challenge-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    align-items: center;
+}
+
+.completion-status {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.1);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tab-content {
+    flex: 1;
+}
+
+/* SQL Editor Styles */
+.sql-editor-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.editor-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.editor-title h3 {
+    margin: 0;
+}
+
+.db-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.editor-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-small {
+    padding: 0.5rem;
+    min-width: auto;
+}
+
+.btn-run {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.editor-wrapper {
+    position: relative;
+}
+
+.editor-resize {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.resize-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.resize-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Results Panel */
+.results-panel {
+    border-top: 1px solid var(--border-color);
+    padding: 1.5rem;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.results-header h4 {
+    margin: 0;
+}
+
+.results-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.error-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    color: #fca5a5;
+}
+
+.results-table-container {
+    overflow-x: auto;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table th {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+}
+
+.results-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.results-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.no-results {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.results-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.results-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+
+.results-summary h4 {
+    color: var(--success-color);
+    margin: 0;
+}
+
+/* Practice Page Styles */
+.practice-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.tabs {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    padding: 1rem 2rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.tab-content {
+    padding: 2rem;
+}
+
+.editor-preview,
+.challenges-preview,
+.results-preview {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.code-preview {
+    background-color: #1a1f2e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    color: #e2e8f0;
+    margin: 1rem 0;
+    border: 1px solid var(--border-color);
+}
+
+.challenge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.challenge-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.challenge-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+}
+
+.challenge-item h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.challenge-item p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.difficulty {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.difficulty.beginner {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.dashboard-card {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+}
+
+.dashboard-card h3 {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.dashboard-card p {
+    color: var(--text-secondary);
+}
