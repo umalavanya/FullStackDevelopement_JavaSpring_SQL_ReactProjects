@@ -3,6 +3,9 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import './styles/global.css';
+import SettingsPage from './pages/SettingsPage';
+import Notes from './pages/Notes';
+
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -16,6 +19,7 @@ import Profile from './pages/Profile';
 // Layout Components
 import MainLayout from './components/MainLayout';
 import AuthLayout from './components/AuthLayout';
+import { Settings } from 'lucide-react';
 
 function App() {
   return (
@@ -36,7 +40,8 @@ function App() {
               <Route path="/progress" element={<Progress />} />
               <Route path="/self-evaluation" element={<SelfEvaluation />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<div>Settings Page</div>} />
+              <Route path="/notes" element={<Notes />} />
+              <Route path="/settings" element={<div><SettingsPage /></div>} />
             </Route>
 
             {/* Catch all route */}

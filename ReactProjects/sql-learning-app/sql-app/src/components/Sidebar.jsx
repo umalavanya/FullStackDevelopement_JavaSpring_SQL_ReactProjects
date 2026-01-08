@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Code, TrendingUp, Brain, Settings } from 'lucide-react';
+import { Home, BookOpen, Code, TrendingUp, Brain, Settings, FileText } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,6 +12,7 @@ const Sidebar = () => {
     { path: '/learning-path', icon: BookOpen, label: 'Learning Path' },
     { path: '/practice', icon: Code, label: 'Practice' },
     { path: '/self-evaluation', icon: Brain, label: 'Self Evaluation' },
+    { path: '/notes', icon: FileText, label: 'Notes' },
     { path: '/progress', icon: TrendingUp, label: 'Progress' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
