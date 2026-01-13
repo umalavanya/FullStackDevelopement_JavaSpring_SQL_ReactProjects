@@ -1,0 +1,169 @@
+Hello world!
+This is from the file -- input.txt
+this is to check the reading the file in Java using BufferedReader and FileReader
+
+here my doubt is why should we keep the try(Here the buffered reader){} instead of try(){here}
+This is a crucial Java feature called try-with-resources (introduced in Java 7).
+Traditional Try-Catch (Before Java 7)
+BufferedReader br = null;  // Must declare outside
+try {
+    br = new BufferedReader(new FileReader("input.txt"));
+    String line;
+    while ((line = br.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    System.out.println("Error: " + e.getMessage());
+} finally {  // MUST close manually
+    try {
+        if (br != null) {
+            br.close();  // Manual closing required
+        }
+    } catch (IOException e) {
+        System.out.println("Error closing: " + e.getMessage());
+    }
+}
+Problems:
+Verbose and error-prone
+Must close resources in finally block
+Need nested try-catch for closing
+Easy to forget closing
+Try-With-Resources (Your Code)
+java
+try (BufferedReader br = new BufferedReader(new FileReader("input.txt"))) {
+    String line;
+    while ((line = br.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    System.out.println("Error reading file: " + e.getMessage());
+}
+Why try(resource){} instead of try(){}?
+
+1. Syntax Purpose:
+java
+try (ResourceType variable = new ResourceType(...)) {
+    // Use the resource here
+} catch (...) {
+    // Handle exceptions
+}
+Parentheses (): Declare resources that need automatic closing
+
+Braces {}: Contain the actual code that uses those resources
+
+2. How It Works:
+java
+try (BufferedReader br = new BufferedReader(new FileReader("input.txt"))) {
+    // ↓↓↓ Java automatically does this behind the scenes ↓↓↓
+    // 1. Creates BufferedReader
+    // 2. Executes your code in the try block
+    // 3. **Automatically calls br.close()** when done (even if exception occurs)
+    // 4. Handles any exceptions from closing automatically
+}
+3. Visual Comparison:
+text
+Traditional:          Try-With-Resources:
+┌────────────────┐    ┌────────────────────────────┐
+│ try {          │    │ try (Open Resource) {      │
+│   Open resource│    │   Use resource             │
+│   Use resource │    │ } // Auto-closes here!     │
+│ }              │    │ catch {                    │
+│ catch {        │    │   Handle errors            │
+│   Handle errors│    │ }                          │
+│ }              │    └────────────────────────────┘
+│ finally {      │
+│   Close resource│   **Cleaner, safer, automatic!**
+│ }              │
+└────────────────┘
+4. Multiple Resources:
+java
+// Can declare multiple resources
+try (
+    BufferedReader br1 = new BufferedReader(new FileReader("file1.txt"));
+    BufferedReader br2 = new BufferedReader(new FileReader("file2.txt"));
+    FileWriter fw = new FileWriter("output.txt")
+) {
+    // Use all resources
+    // All will be auto-closed in REVERSE order (fw → br2 → br1)
+} catch (IOException e) {
+    // Handle exception
+}
+5. What Types Can Go in try(...)?
+Only resources that implement AutoCloseable interface:
+
+java
+// BufferedReader implements:
+BufferedReader → Reader → Closeable → AutoCloseable
+
+// Other examples:
+try (FileInputStream fis = new FileInputStream("file.bin")) {...}
+try (Scanner scanner = new Scanner(System.in)) {...}
+try (Connection conn = DriverManager.getConnection(url)) {...}
+try (Statement stmt = conn.createStatement()) {...}
+6. What Happens Internally?
+Java translates your code to:
+
+java
+BufferedReader br = new BufferedReader(new FileReader("input.txt"));
+Throwable primaryException = null;
+
+try {
+    String line;
+    while ((line = br.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (Throwable t) {
+    primaryException = t;
+    throw t;
+} finally {
+    if (br != null) {
+        if (primaryException != null) {
+            try {
+                br.close();
+            } catch (Throwable closeException) {
+                primaryException.addSuppressed(closeException);
+            }
+        } else {
+            br.close();
+        }
+    }
+}
+Simple Analogy:
+Think of it like a self-closing door vs a manual door:
+
+Traditional (manual door):
+
+java
+Door door = openDoor();  // You open
+try {
+    walkThrough(door);
+} finally {
+    door.close();  // You MUST remember to close
+}
+Try-with-resources (automatic door):
+
+java
+try (Door door = openDoor()) {  // Auto-closing door
+    walkThrough(door);
+}  // Door closes automatically here
+Key Benefits:
+Automatic cleanup - No need for finally blocks
+
+Cleaner code - Less boilerplate
+Exception safety - Even if exception occurs, resources are closed
+Suppressed exceptions - Java handles multiple exceptions properly
+
+Common Mistake to Avoid:
+❌ Wrong:
+
+java
+try {
+    BufferedReader br = new BufferedReader(new FileReader("input.txt"));
+    // Resource NOT auto-closed!
+} catch (IOException e) { ... }
+✅ Correct:
+java
+try (BufferedReader br = new BufferedReader(new FileReader("input.txt"))) {
+    // Resource WILL be auto-closed
+} catch (IOException e) { ... }
+So in summary: try(resource){code} is Java's way of saying "automatically manage this resource's lifecycle for me" - it's a cleaner, safer alternative to manual resource management.
