@@ -1,0 +1,3 @@
+ hello, how are you, this is uma
+hope you are doing well. have a great day
+I am good thank you for asking. Let's see this message goes to file output.txt
