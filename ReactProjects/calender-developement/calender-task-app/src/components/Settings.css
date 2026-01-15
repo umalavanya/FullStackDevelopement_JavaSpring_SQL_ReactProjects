@@ -1,0 +1,95 @@
+.settings-container {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.1);
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.settings-container h2 {
+    color: #8a2be2;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.setting-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0e6ff;
+}
+
+.setting-section:last-child {
+    border-bottom: none;
+}
+
+.setting-section h3 {
+    color: #ff6bcb;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.theme-toggle {
+    background: linear-gradient(45deg, #ff6bcb, #8a2be2);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(142, 45, 226, 0.3);
+}
+
+.font-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.font-option {
+    padding: 10px 15px;
+    border: 2px solid #e0b0ff;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.font-option:hover {
+    border-color: #ff6bcb;
+    transform: translateY(-2px);
+}
+
+.font-option.active {
+    background: linear-gradient(45deg, #ff6bcb, #8a2be2);
+    color: white;
+    border-color: transparent;
+}
+
+.color-palette {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.color-sample {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border: 3px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.color-sample:hover {
+    transform: scale(1.2);
+}

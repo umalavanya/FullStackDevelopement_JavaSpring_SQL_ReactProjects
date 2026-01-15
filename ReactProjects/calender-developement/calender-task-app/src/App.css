@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.app.light {
+  background: linear-gradient(135deg, #f9f3ff 0%, #e6f0ff 100%);
+  color: #333;
+}
+
+.app.dark {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #f0f0f0;
+}
+
+.app.dark .calendar-header,
+.app.dark .day-header,
+.app.dark .settings-container,
+.app.dark .task-input-section,
+.app.dark .day-cell {
+  background: #2d2d44;
+  color: #f0f0f0;
+}
+
+.app.dark .task-box {
+  background: #3a3a5d;
+  color: #f0f0f0;
+}
+
+.app.dark .task-title,
+.app.dark .task-description {
+  color: #f0f0f0;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: linear-gradient(45deg, rgba(255, 107, 203, 0.1), rgba(138, 43, 226, 0.1));
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(138, 43, 226, 0.2);
+}
+
+.header-left h1 {
+  color: #8a2be2;
+  font-size: 2.2rem;
+  margin-bottom: 5px;
+}
+
+.header-left p {
+  color: #ff6bcb;
+  font-size: 1.1rem;
+}
+
+.header-right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.settings-button,
+.logout-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.settings-button {
+  background: #9370db;
+  color: white;
+}
+
+.logout-button {
+  background: #ff3860;
+  color: white;
+}
+
+.settings-button:hover,
+.logout-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.app-main {
+  padding: 20px;
+  min-height: calc(100vh - 160px);
+}
+
+.app-footer {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(45deg, rgba(138, 43, 226, 0.1), rgba(255, 107, 203, 0.1));
+  border-top: 2px solid rgba(138, 43, 226, 0.2);
+}
+
+.app-footer p {
+  color: #8a2be2;
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
