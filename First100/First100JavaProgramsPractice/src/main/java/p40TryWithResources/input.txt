@@ -1,0 +1,4 @@
+Hello This is from the file
+How are you?
+Hope you are doing great
+Congratulations, You just did the reading from a text file
