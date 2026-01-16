@@ -96,5 +96,13 @@ FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
 FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID)
 );
 
+--8.
+/*
+Add a check constraint to ensure Salary is positive in Employees table.
+*/
+
+ALTER TABLE Employees
+ADD CONSTRAINT con_check_Employees_Salary_positive
+CHECK(Salary > 0) ;
 
 
