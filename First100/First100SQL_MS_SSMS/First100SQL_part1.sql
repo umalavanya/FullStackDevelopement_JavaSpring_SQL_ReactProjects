@@ -294,3 +294,42 @@ Select employees order by last name then first name
 
 SELECT * FROM Employees
 ORDER BY LastName, FirstName ;
+
+
+--27
+/*
+Select employees with email ending with '@email.com'
+*/
+
+SELECT * FROM Employees
+WHERE Email LIKE '%@email.com' ;
+
+--28.
+/*
+Select employees with the phone number containing '456'
+*/
+
+SELECT * FROM Employees
+WHERE Phone LIKE '%456%' ;
+
+--29.
+/*
+Select employees hired in the year 2021
+*/
+
+SELECT * FROM Employees
+WHERE DATEPART(YEAR, HireDate) = 2021 ;
+
+
+--30.
+/*
+Select employees with salary not equal to 60000
+*/
+
+SELECT * FROM Employees
+WHERE NOT Salary = 60000 ;
+
+
+--==========================================
+--Section 3: Joins (Exercises 31-40)
+--==========================================
