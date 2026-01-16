@@ -50,6 +50,14 @@ DepartmentName NVARCHAR(100) NOT NULL UNIQUE,
 Location NVARCHAR(300)
 ) ;
 
+--5
+/*
+Add a foreign key constraint to Employees table referencing Departments(DepartmentID).
+*/
+
+ALTER TABLE Employees
+ADD CONSTRAINT fk_Employees_departmentid
+FOREIGN KEY(DepartmentID) REFERENCES Departments(DepartmentID) ;
 
 
-
+--6. 
