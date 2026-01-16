@@ -61,3 +61,40 @@ FOREIGN KEY(DepartmentID) REFERENCES Departments(DepartmentID) ;
 
 
 --6. 
+/*
+
+Create a Projects table with:
+ProjectID (int, primary key, identity)
+ProjectName (nvarchar(100), not null)
+StartDate (date)
+EndDate (date)
+Budget (decimal(15,2))
+*/
+
+CREATE TABLE Projects(
+	ProjectID INT PRIMARY KEY IDENTITY(1,1),
+	ProjectName NVARCHAR(100) NOT NULL,
+	StartDate DATE,
+	EndDate DATE,
+	Budget DECIMAL(15,2)
+);
+
+--7. 
+/*
+
+Create a junction table EmployeeProjects to handle many-to-many relationship between Employees and Projects.
+
+*/
+
+CREATE TABLE EmployeeProjects(
+EmployeeID INT,
+ProjectID INT,
+AssignmentDate DATE DEFAULT GETDATE(),
+HoursWorked DECIMAL(5,2),
+PRIMARY KEY(EmployeeID, ProjectID),
+FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID)
+);
+
+
+
