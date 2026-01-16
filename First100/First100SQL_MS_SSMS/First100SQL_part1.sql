@@ -1,6 +1,8 @@
 DROP DATABASE IF EXISTS CompanyDB ;
---------------------- First 100 SQL Part -1 ------------------
+--------------------- First 100 SQL Part -1 --------------
+--===========================================
 --Section1: Database & Table creation (1-15)
+--===========================================
 --Ex1. Create a database named CompanyDB
 
 CREATE DATABASE CompanyDB ;
@@ -121,3 +123,127 @@ Create  an index on LastName column in Employees table
 
 CREATE INDEX idx_Employees_LastName 
 ON Employees(LastName) ;
+
+--11.
+/*
+Insert 5 departments into Departments table.
+*/
+
+INSERT INTO Departments(DepartmentName, Location)
+VALUES
+('IT', 'New York'),
+('HR', 'Chicago'),
+('Finance', 'Boston'),
+('Marketing', 'Los Angeles'),
+('Sales', 'Miami');
+
+--12.
+/*
+Insert 10 employees into Employees table with different departments
+*/
+
+INSERT INTO Employees (FirstName, LastName, Email, Phone, HireDate, Salary, DepartmentID)
+VALUES
+('John', 'Doe', 'john.doe@email.com', '123-456-7890', '2020-01-15', 60000, 1),
+('Jane', 'Smith', 'jane.smith@email.com', '123-456-7891', '2019-03-22', 75000, 2),
+('Bob', 'Johnson', 'bob.johnson@email.com', '123-456-7892', '2021-07-10', 55000, 3),
+('Alice', 'Williams', 'alice.williams@email.com', '123-456-7893', '2018-11-05', 80000, 1),
+('Charlie', 'Brown', 'charlie.brown@email.com', '123-456-7894', '2022-02-28', 48000, 4),
+('Diana', 'Miller', 'diana.miller@email.com', '123-456-7895', '2020-09-14', 65000, 2),
+('Evan', 'Davis', 'evan.davis@email.com', '123-456-7896', '2017-12-01', 90000, 3),
+('Fiona', 'Garcia', 'fiona.garcia@email.com', '123-456-7897', '2021-04-18', 52000, 5),
+('George', 'Martinez', 'george.martinez@email.com', '123-456-7898', '2019-08-30', 72000, 4),
+('Helen', 'Lee', 'helen.lee@email.com', '123-456-7899', '2022-01-10', 58000, 1);
+
+
+--13.
+/*
+Insert 5 projects into Projects table.
+*/
+
+INSERT INTO Projects (ProjectName, StartDate, EndDate, Budget)
+VALUES
+('Website Redesign', '2023-01-15', '2023-06-30', 50000),
+('CRM Implementation', '2023-03-01', '2023-12-31', 150000),
+('Mobile App Development', '2023-02-01', '2023-09-30', 80000),
+('Data Migration', '2023-04-15', '2023-08-15', 40000),
+('Security Upgrade', '2023-05-01', '2023-10-31', 60000);
+
+--14. 
+/*
+Assign employees to projects in EmployeeProjects table.
+*/
+INSERT INTO EmployeeProjects (EmployeeID, ProjectID, HoursWorked)
+VALUES
+(1, 1, 120.5),
+(1, 2, 80.0),
+(2, 1, 95.0),
+(3, 3, 150.0),
+(4, 2, 200.0),
+(5, 4, 75.5),
+(6, 1, 110.0),
+(7, 5, 180.0),
+(8, 3, 90.0),
+(9, 4, 125.0),
+(10, 5, 140.0);
+
+
+--15
+/*
+Add a new column ManagerID to Employees for self-referencing
+*/
+
+ALTER TABLE Employees
+ADD ManagerID INT NULL ;
+
+ALTER TABLE Employees
+ADD CONSTRAINT FK_Employees_Manager
+FOREIGN KEY(ManagerID) REFERENCES Employees(EmployeeID) ;
+
+--===========================================
+--Section 2: Basic SELECT Queries (Exercises 16-30)
+
+--16.
+/*
+Select all columns from Employees table
+*/
+
+SELECT * FROM Employees ;
+
+--17.
+/*
+Select only FirstName, LastName, and Salary from Employees.
+*/
+
+SELECT 
+	FirstName,
+	LastName,
+	Salary
+FROM 
+	Employees ;
+
+--18. 
+/*
+Select employees with salary greater than 60000.
+*/
+
+SELECT *
+FROM Employees
+WHERE Salary > 60000 ;
+
+
+--19.
+/*
+Select employees hired after January 1, 2020.
+*/
+SELECT * FROM Employees
+WHERE HireDate > '2020-01-01' ;
+
+--20.
+/*
+Select employees whose last name starts with 'S'.
+*/
+
+SELECT * FROM Employees
+WHERE LastName LIKE 'S%' ;
+
