@@ -105,4 +105,19 @@ ALTER TABLE Employees
 ADD CONSTRAINT con_check_Employees_Salary_positive
 CHECK(Salary > 0) ;
 
+--9.
+/*
+Add a default constraint to set HireDate as current date if not provided
+*/
 
+ALTER TABLE Employees
+ADD CONSTRAINT con_df_Employees_HireDate
+DEFAULT GETDATE() FOR HireDate ;
+
+--10.
+/*
+Create  an index on LastName column in Employees table
+*/
+
+CREATE INDEX idx_Employees_LastName 
+ON Employees(LastName) ;
