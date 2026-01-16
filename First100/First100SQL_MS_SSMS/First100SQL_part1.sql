@@ -345,4 +345,102 @@ SELECT
 	d.DepartmentName
 FROM Employees e
 INNER JOIN Departments d ON d.DepartmentID = e.DepartmentID ;
+
+--32. 
+/*
+Show all departments and employees (including departments with no employees).
+*/
 	
+SELECT 
+	d.DepartmentName,
+	e.FirstName +' '+ e.LastName AS FullName
+FROM Departments d 
+LEFT JOIN Employees e ON d.DepartmentID = e.DepartmentID 
+ORDER BY DepartmentName ;
+
+--33.
+/*
+Show all employees and their projects
+*/
+
+SELECT *
+FROM Employees e
+INNER JOIN EmployeeProjects ep
+ON e.EmployeeID =  ep.EmployeeID 
+INNER JOIN Projects p
+ON ep.ProjectID = p.ProjectID ;
+
+--34.
+/*
+Show projects with no employees assigned
+*/
+
+SELECT p.ProjectName
+FROM Projects p
+LEFT JOIN EmployeeProjects ep ON p.ProjectID = ep.ProjectID
+WHERE ep.EmployeeID IS NULL ;
+
+--35.
+/*
+Show employees with their manager names
+*/
+
+SELECT e.FirstName AS EmployeeFirstName, 
+       e.LastName AS EmployeeLastName,
+       m.FirstName AS ManagerFirstName,
+       m.LastName AS ManagerLastName
+FROM Employees e
+LEFT JOIN Employees m ON e.ManagerID = m.EmployeeID;
+
+--36
+/*
+Show elmployees who work on more than one project
+*/
+
+SELECT e.FirstName AS EmployeeFirstName, 
+       e.LastName AS EmployeeLastName,
+       m.FirstName AS ManagerFirstName,
+       m.LastName AS ManagerLastName
+FROM Employees e
+LEFT JOIN Employees m ON e.ManagerID = m.EmployeeID;
+
+--37.
+/*
+Select full employee details with department and manager info
+*/
+
+SELECT 
+    e.FirstName,
+    e.LastName,
+    e.Email,
+    d.DepartmentName,
+    m.FirstName AS ManagerFirstName,
+    m.LastName AS ManagerLastName
+FROM Employees e
+LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+LEFT JOIN Employees m ON e.ManagerID = m.EmployeeID;
+
+SELECT * FROM Employees ;
+
+--39. 
+/*
+Show employees and all projects they are working on (including employees with no projects)
+*/
+
+SELECT 
+	e.FirstName, 
+	e.LastName, 
+	p.ProjectName
+FROM 
+	Employees e
+LEFT JOIN EmployeeProjects ep ON e.EmployeeID = ep.EmployeeID
+LEFT JOIN Projects p ON ep.ProjectID = p.ProjectID;
+
+--40
+/*
+Cross join Departments and Projects (Cartesian product).
+*/
+
+SELECT d.DepartmentName, p.ProjectName
+FROM Departments d
+CROSS JOIN Projects p;
