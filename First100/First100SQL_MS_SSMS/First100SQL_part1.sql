@@ -333,3 +333,16 @@ WHERE NOT Salary = 60000 ;
 --==========================================
 --Section 3: Joins (Exercises 31-40)
 --==========================================
+
+
+--31.
+/*
+Show employees with their department names using INNER JOIN
+*/
+
+SELECT 
+	e.FirstName +' '+ e.LastName AS Employee_Name,
+	d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d ON d.DepartmentID = e.DepartmentID ;
+	
