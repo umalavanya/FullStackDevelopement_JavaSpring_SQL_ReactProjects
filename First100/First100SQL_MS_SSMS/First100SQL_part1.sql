@@ -247,3 +247,50 @@ Select employees whose last name starts with 'S'.
 SELECT * FROM Employees
 WHERE LastName LIKE 'S%' ;
 
+--21
+/*
+Select employees with salary between 50000 and 70000
+*/
+
+SELECT * FROM Employees 
+WHERE Salary BETWEEN 50000 AND 70000 ;
+
+
+--22.
+/*
+Select employees from IT department (DepartmentID = 1).
+*/
+
+SELECT * FROM Employees
+WHERE DepartmentID = 1 ;
+
+--23.
+/*
+Select distinct departments from Employees
+*/
+
+SELECT DISTINCT DepartmentID FROM Employees ;
+
+--24.
+/*
+Select employees ordered by salary in descending order.
+*/
+
+SELECT * FROM Employees
+ORDER BY Salary DESC ;
+
+--25
+/*
+Select top 3 highest pain employees
+*/
+
+SELECT TOP 3 * FROM Employees
+ORDER By Salary DESC ;
+
+--26
+/*
+Select employees order by last name then first name
+*/
+
+SELECT * FROM Employees
+ORDER BY LastName, FirstName ;
