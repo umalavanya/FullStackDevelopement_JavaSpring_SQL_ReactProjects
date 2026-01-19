@@ -444,3 +444,180 @@ Cross join Departments and Projects (Cartesian product).
 SELECT d.DepartmentName, p.ProjectName
 FROM Departments d
 CROSS JOIN Projects p;
+
+--=======================================
+--Section 4: Aggregation Functions (Exercises 41-50)
+--========================================
+--41
+/*
+Calculate average salary of all employees.
+*/
+
+
+SELECT AVG(Salary) AS AverageSalary FROM Employees;
+
+--42
+/*
+Find total salary expenditure for company.
+*/
+
+SELECT SUM(Salary) AS TotalSalaryExpenditure FROM Employees;
+--43
+/*
+Count total number of employees.
+*/
+SELECT COUNT(*) AS TotalEmployees FROM Employees;
+
+--44
+/*
+Find highest and lowest salary.
+*/
+
+
+SELECT MAX(Salary) AS HighestSalary, 
+       MIN(Salary) AS LowestSalary 
+FROM Employees;
+--45
+/*
+Calculate average salary per department.
+*/
+
+SELECT d.DepartmentName, AVG(e.Salary) AS AverageSalary
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentID = d.DepartmentID
+GROUP BY d.DepartmentID, d.DepartmentName;
+--46
+/*
+Count employees per department.
+*/
+
+SELECT d.DepartmentName, COUNT(e.EmployeeID) AS EmployeeCount
+FROM Departments d
+LEFT JOIN Employees e ON d.DepartmentID = e.DepartmentID
+GROUP BY d.DepartmentID, d.DepartmentName;
+
+--47
+--Find departments with more than 2 employees.
+
+SELECT d.DepartmentName, COUNT(e.EmployeeID) AS EmployeeCount
+FROM Departments d
+INNER JOIN Employees e ON d.DepartmentID = e.DepartmentID
+GROUP BY d.DepartmentID, d.DepartmentName
+HAVING COUNT(e.EmployeeID) > 2;
+--48
+--Calculate total budget of all projects.
+
+SELECT SUM(Budget) AS TotalBudget FROM Projects;
+--49
+--Find average project budget.
+
+SELECT AVG(Budget) AS AverageBudget FROM Projects;
+--50
+--Calculate total hours worked per project.
+
+SELECT p.ProjectName, SUM(ep.HoursWorked) AS TotalHours
+FROM Projects p
+LEFT JOIN EmployeeProjects ep ON p.ProjectID = ep.ProjectID
+GROUP BY p.ProjectID, p.ProjectName;
+--=====================================
+--Section 5: Subqueries & Derived Tables (Exercises 51-60)
+--====================================
+--51
+--Find employees earning more than average salary.
+
+SELECT FirstName, LastName, Salary
+FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+--52
+--Find employees in the same department as 'John Doe'.
+
+SELECT FirstName, LastName, DepartmentID
+FROM Employees
+WHERE DepartmentID = (
+    SELECT DepartmentID 
+    FROM Employees 
+    WHERE FirstName = 'John' AND LastName = 'Doe'
+);
+--53
+--Find employees who earn the highest salary in their department.
+SELECT e.FirstName, e.LastName, e.Salary, e.DepartmentID
+FROM Employees e
+WHERE e.Salary = (
+    SELECT MAX(Salary)
+    FROM Employees
+    WHERE DepartmentID = e.DepartmentID
+);
+
+--54
+--Find departments with no employees using subquery.
+
+SELECT DepartmentName
+FROM Departments
+WHERE DepartmentID NOT IN (
+    SELECT DISTINCT DepartmentID 
+    FROM Employees 
+    WHERE DepartmentID IS NOT NULL
+);
+-- 55
+--Find employees who work on 'Website Redesign' project.
+SELECT e.FirstName, e.LastName
+FROM Employees e
+WHERE e.EmployeeID IN (
+    SELECT ep.EmployeeID
+    FROM EmployeeProjects ep
+    WHERE ep.ProjectID = (
+        SELECT ProjectID 
+        FROM Projects 
+        WHERE ProjectName = 'Website Redesign'
+    )
+);
+--56
+--Find employees who don't work on any project.
+
+SELECT FirstName, LastName
+FROM Employees
+WHERE EmployeeID NOT IN (
+    SELECT DISTINCT EmployeeID 
+    FROM EmployeeProjects
+);
+--57
+--Use correlated subquery to find employees earning more than department average.
+SELECT e.FirstName, e.LastName, e.Salary, e.DepartmentID
+FROM Employees e
+WHERE Salary > (
+    SELECT AVG(Salary)
+    FROM Employees
+    WHERE DepartmentID = e.DepartmentID
+);
+--58
+--Find second highest salary using subquery.
+SELECT MAX(Salary) AS SecondHighestSalary
+FROM Employees
+WHERE Salary < (
+    SELECT MAX(Salary) 
+    FROM Employees
+);
+--59
+--Use EXISTS to find employees with projects.
+
+SELECT FirstName, LastName
+FROM Employees e
+WHERE EXISTS (
+    SELECT 1 
+    FROM EmployeeProjects ep 
+    WHERE ep.EmployeeID = e.EmployeeID
+);
+</details>
+Exercise 60
+Use derived table to find department with highest average salary.
+
+<details> <summary>Answer</summary>
+sql
+SELECT TOP 1 DepartmentID, AvgSalary
+FROM (
+    SELECT DepartmentID, AVG(Salary) AS AvgSalary
+    FROM Employees
+    WHERE DepartmentID IS NOT NULL
+    GROUP BY DepartmentID
+) AS DeptAvg
+ORDER BY AvgSalary DESC;
