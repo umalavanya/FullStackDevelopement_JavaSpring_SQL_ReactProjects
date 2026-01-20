@@ -153,3 +153,17 @@ SELECT
 	o.OrderDate
 FROM Customers c
 INNER JOIN Orders o ON c.CustomerID = o.CustomerID ;
+
+--7. List All products ordered with total quatity sold
+
+SELECT
+	p.ProductName,
+	SUM(od.Quantity) AS TotalQuantitySold
+FROM
+	Products p
+INNER JOIN OrderDetails od
+	ON p.ProductID = od.ProductID
+GROUP BY p.ProductName ;
+
+--8. 
+
