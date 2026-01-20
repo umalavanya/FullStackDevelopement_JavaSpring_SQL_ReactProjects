@@ -148,6 +148,8 @@ ORDER BY Price DESC ;
 --6. Show CustomerName, OrderID, OrderDate
 
 SELECT 
-	*
+	c.CustomerName,
+	o.OrderID,
+	o.OrderDate
 FROM Customers c
-FULL JOIN Orders o ON c.CustomerID = o.CustomerID ;
+INNER JOIN Orders o ON c.CustomerID = o.CustomerID ;
