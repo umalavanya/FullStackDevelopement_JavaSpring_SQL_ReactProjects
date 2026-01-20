@@ -165,5 +165,7 @@ INNER JOIN OrderDetails od
 	ON p.ProductID = od.ProductID
 GROUP BY p.ProductName ;
 
---8. 
+--8. Find total amount spent for customer
+
+
 
