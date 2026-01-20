@@ -118,4 +118,13 @@ FROM
 WHERE 
 	Price > 10000 ;
 
---3. Find all orders placed in May 2030
+--3. Find all orders placed in May 2023
+
+SELECT
+	OrderID,
+	CustomerID,
+	OrderDate
+FROM 
+	Orders
+WHERE 
+	OrderDate BETWEEN '2023-05-01' AND '2023-05-31';
