@@ -91,7 +91,6 @@ INSERT INTO Employees VALUES
 
 ---------------------------------------------------------
 
--- Level 1 Questions -----------
 --1. Display all customers from Hyderabad
 
 SELECT
@@ -128,3 +127,27 @@ FROM
 	Orders
 WHERE 
 	OrderDate BETWEEN '2023-05-01' AND '2023-05-31';
+
+
+--4. Count total number of customers
+
+SELECT 
+	COUNT(*) AS Total_customers
+FROM 
+	Customers ;
+
+--5. Show product name and price sorted by price descending
+
+SELECT 
+	ProductName,
+	Price
+FROM 
+	Products
+ORDER BY Price DESC ;
+
+--6. Show CustomerName, OrderID, OrderDate
+
+SELECT 
+	*
+FROM Customers c
+FULL JOIN Orders o ON c.CustomerID = o.CustomerID ;
