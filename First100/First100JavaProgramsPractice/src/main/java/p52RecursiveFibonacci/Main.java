@@ -1,0 +1,16 @@
+package p52RecursiveFibonacci;
+
+public class Main {
+
+    public static int fibonacci(int n){
+        if (n<=1) return 1 ;
+        return fibonacci(n-1)+fibonacci(n-2);
+    }
+
+    public static void main(String[] args){
+        System.out.println("First 10 fibonacci numbers: ");
+        for(int i=0;i<10;i++){
+            System.out.println(fibonacci(i) + " ");
+        }
+    }
+}
