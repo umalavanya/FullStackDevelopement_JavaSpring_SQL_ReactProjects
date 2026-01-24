@@ -1,0 +1,13 @@
+body{
+    background-color: pink 
+}
+p{
+    color: blue;
+}
+
+.special{
+    font-weight: bold;
+}
+#unique{
+    border: 3px solid red;
+}
