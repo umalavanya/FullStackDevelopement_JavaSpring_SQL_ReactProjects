@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 9 - Header, Main, Footer</title>
+    <style>
+        body{
+            margin : 0 ;
+            padding : 0 ; 
+        }
+        header{
+            background-color: brown;
+            height: 50px ; 
+            display:flex
+        }
+        .nav-link{
+            color: white;
+            text-decoration: none;
+            margin: 20px;
+            font-size: 20px;
+            vertical-align: middle;
+        }
+        main{
+            background-color: lightgray;
+            min-height: 100px;
+            padding: 20px;
+            margin: 0;
+        }
+
+        section{
+            margin-bottom: 20px;
+        }
+        footer{
+            margin:0 ;
+            background-color: burlywood;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a class="nav-link" href="#home">Home</a>
+            <a class="nav-link" href="#about">About</a>
+            <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+    </header>
+    <main class="main">
+        <section class="section" id="home"></section>
+            <article class="article">
+                <h2 class="heading">Article Title</h2>
+                <p class="paragraph">Article content goes here....</p>
+            </article>
+        </section>
+        <section class="section" id="about">
+            <article class="article">
+                <h2 class="heading">About Us</h2>
+                <p class="paragraph">Information about us goes here....</p>
+            </article>
+        </section>
+        <section class="section" id="contact">
+            <article class="article">
+                <h2 class="heading">Contact Us</h2>
+                <p class="paragraph">Contact information goes here....</p>
+            </article>
+    </main>
+    <footer class="footer">
+        &copy; 2026 All rights reserved
+    </footer>
+    
+</body>
+</html>
