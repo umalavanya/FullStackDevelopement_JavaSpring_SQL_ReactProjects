@@ -1,0 +1,30 @@
+.container {
+    width: 200px;
+    height: 100px;
+    border: 2px solid #ccc;
+    position: relative;
+    overflow: hidden;
+}
+
+.box {
+    width: 100px;
+    height: 100px;
+    background-color: #FF5722;
+    position: absolute;
+    animation: moveRight 5s infinite linear;
+}
+
+@keyframes moveRight {
+    0% {
+        left: 0;
+        background-color: #FF5722;
+    }
+    50% {
+        left: 400px;
+        background-color: #4c4faf;
+    }
+    100% {
+        left: 0;
+        background-color: #22ff73;
+    }
+}

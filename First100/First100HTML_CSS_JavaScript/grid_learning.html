@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid: Complete Mastery Guide</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #7c3aed;
+            --accent: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.1) 26%, transparent 27%),
+                linear-gradient(90deg, transparent 74%, rgba(255, 255, 255, 0.1) 75%, rgba(255, 255, 255, 0.1) 76%, transparent 77%);
+            background-size: 100px 100px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+            font-size: 2rem;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px;
+            font-size: 1.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Grid Container Styles */
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Playground Grid */
+        .grid-playground {
+            display: grid;
+            gap: 15px;
+            min-height: 400px;
+            background: #f8fafc;
+            border: 3px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+        }
+
+        .grid-item {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            padding: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+            min-height: 80px;
+        }
+
+        .grid-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Controls */
+        .controls-panel {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid var(--accent);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        input[type="range"] {
+            padding: 0;
+        }
+
+        .value-display {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            grid-column: 1 / -1;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        button.reset {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        button.add {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        /* Code Display */
+        .code-display {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            margin: 25px 0;
+            overflow-x: auto;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .css-selector {
+            color: #f472b6;
+        }
+
+        .css-property {
+            color: #60a5fa;
+        }
+
+        .css-value {
+            color: #34d399;
+        }
+
+        .css-comment {
+            color: #9ca3af;
+        }
+
+        /* Examples Grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .example-grid {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+            min-height: 200px;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .comparison-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .comparison-table tr:hover {
+            background-color: #f0f9ff;
+        }
+
+        /* Grid Patterns */
+        .grid-pattern {
+            display: grid;
+            gap: 15px;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .pattern-item {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border-top: 4px solid var(--accent);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--dark) 0%, #111827 100%);
+            color: white;
+            border-radius: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .controls-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        .highlight {
+            background: linear-gradient(120deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tip {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid var(--accent);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Animation for grid items */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .grid-item.selected {
+            animation: pulse 2s infinite;
+            background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 100%);
+            box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-th"></i> CSS Grid</h1>
+            <p class="tagline">The Ultimate 2D Layout System for Modern Web Design</p>
+            <p>Create complex, responsive layouts with just a few lines of CSS</p>
+        </header>
+
+        <div class="section">
+            <h2><i class="fas fa-lightbulb"></i> What is CSS Grid?</h2>
+            <p>CSS Grid Layout is a <span class="highlight">two-dimensional layout system</span> for the web. It lets
+                you create complex layouts by dividing a page into major regions or defining relationships between HTML
+                elements.</p>
+
+            <div class="tip">
+                <strong>Key Insight:</strong> Grid works on two axes (rows AND columns) simultaneously, unlike Flexbox
+                which is one-dimensional (rows OR columns).
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-border-all"></i>
+                    </div>
+                    <h3>Two-Dimensional</h3>
+                    <p>Control both rows and columns at the same time. Perfect for complex layouts like dashboards,
+                        galleries, and full-page designs.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
+                    <h3>Precise Placement</h3>
+                    <p>Place items exactly where you want them using grid lines, areas, or automatic placement
+                        algorithms.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Responsive by Design</h3>
+                    <p>Create responsive layouts without media queries using features like auto-fit, minmax(), and
+                        repeat().</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-gamepad"></i> Interactive Grid Playground</h2>
+            <p>Adjust the controls below to see CSS Grid in action. Try creating different layouts!</p>
+
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label>Grid Template Columns:</label>
+                    <select id="gridTemplateColumns">
+                        <option value="1fr">1fr (Single Column)</option>
+                        <option value="repeat(3, 1fr)" selected>repeat(3, 1fr) (3 Equal Columns)</option>
+                        <option value="1fr 2fr 1fr">1fr 2fr 1fr (Middle Column 2x)</option>
+                        <option value="repeat(auto-fit, minmax(200px, 1fr))">Auto-fit Responsive</option>
+                        <option value="repeat(4, minmax(100px, 1fr))">4 Flexible Columns</option>
+                        <option value="200px 1fr 300px">Mixed Sizes</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Grid Template Rows:</label>
+                    <select id="gridTemplateRows">
+                        <option value="auto">auto (Default)</option>
+                        <option value="100px 200px 150px">Fixed Heights</option>
+                        <option value="repeat(3, 1fr)">3 Equal Rows</option>
+                        <option value="minmax(100px, auto)">Min 100px</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Justify Items (Horizontal Alignment):</label>
+                    <select id="justifyItems">
+                        <option value="stretch" selected>stretch</option>
+                        <option value="start">start</option>
+                        <option value="center">center</option>
+                        <option value="end">end</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Align Items (Vertical Alignment):</label>
+                    <select id="alignItems">
+                        <option value="stretch" selected>stretch</option>
+                        <option value="start">start</option>
+                        <option value="center">center</option>
+                        <option value="end">end</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Gap (Grid Gap):</label>
+                    <input type="range" id="gap" min="0" max="40" value="15">
+                    <span class="value-display" id="gapValue">15px</span>
+                </div>
+
+                <div class="control-group">
+                    <label>Justify Content:</label>
+                    <select id="justifyContent">
+                        <option value="stretch" selected>stretch</option>
+                        <option value="start">start</option>
+                        <option value="center">center</option>
+                        <option value="end">end</option>
+                        <option value="space-around">space-around</option>
+                        <option value="space-between">space-between</option>
+                        <option value="space-evenly">space-evenly</option>
+                    </select>
+                </div>
+
+                <div class="control-buttons">
+                    <button id="addItem"><i class="fas fa-plus"></i> Add Grid Item</button>
+                    <button id="removeItem"><i class="fas fa-minus"></i> Remove Item</button>
+                    <button class="reset" id="resetGrid"><i class="fas fa-redo"></i> Reset Grid</button>
+                </div>
+            </div>
+
+            <div class="grid-playground" id="gridPlayground">
+                <div class="grid-item">1</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">5</div>
+                <div class="grid-item">6</div>
+            </div>
+
+            <div class="code-display" id="currentCode">
+                <span class="css-comment">/* Current CSS for the grid container */</span><br>
+                <span class="css-selector">#gridPlayground</span> {<br>
+                &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">grid</span>;<br>
+                &nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span class="css-value">repeat(3,
+                    1fr)</span>;<br>
+                &nbsp;&nbsp;<span class="css-property">grid-template-rows</span>: <span
+                    class="css-value">auto</span>;<br>
+                &nbsp;&nbsp;<span class="css-property">justify-items</span>: <span class="css-value">stretch</span>;<br>
+                &nbsp;&nbsp;<span class="css-property">align-items</span>: <span class="css-value">stretch</span>;<br>
+                &nbsp;&nbsp;<span class="css-property">gap</span>: <span class="css-value">15px</span>;<br>
+                &nbsp;&nbsp;<span class="css-property">justify-content</span>: <span
+                    class="css-value">stretch</span>;<br>
+                }
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-cube"></i> Grid Container Properties</h2>
+            <p>These properties are applied to the grid container (parent element).</p>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h3><code>display: grid</code></h3>
+                    <p>Defines the element as a grid container.</p>
+                    <div class="example-grid" style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                        <div class="pattern-item">Item 1</div>
+                        <div class="pattern-item">Item 2</div>
+                        <div class="pattern-item">Item 3</div>
+                        <div class="pattern-item">Item 4</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h3><code>grid-template-columns</code></h3>
+                    <p>Defines the columns of the grid.</p>
+                    <div class="example-grid" style="display: grid; grid-template-columns: 100px 1fr 2fr;">
+                        <div class="pattern-item">100px</div>
+                        <div class="pattern-item">1fr</div>
+                        <div class="pattern-item">2fr</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h3><code>grid-template-rows</code></h3>
+                    <p>Defines the rows of the grid.</p>
+                    <div class="example-grid" style="display: grid; grid-template-rows: 50px 100px; gap: 10px;">
+                        <div class="pattern-item">50px</div>
+                        <div class="pattern-item">100px</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h3><code>grid-template-areas</code></h3>
+                    <p>Creates named grid areas for easy placement.</p>
+                    <div class="code-display" style="margin: 10px 0; padding: 15px;">
+                        <span class="css-selector">.container</span> {<br>
+                        &nbsp;&nbsp;<span class="css-property">grid-template-areas</span>: <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-value">"header header"<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp; "sidebar content"<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp; "footer footer"</span>;<br>
+                        }
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h3><code>gap</code> (grid-gap)</h3>
+                    <p>Sets the gaps (gutters) between rows and columns.</p>
+                    <div class="example-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div class="pattern-item">Gap</div>
+                        <div class="pattern-item">20px</div>
+                        <div class="pattern-item">Between</div>
+                        <div class="pattern-item">Items</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h3><code>justify-content</code> & <code>align-content</code></h3>
+                    <p>Aligns the entire grid within the container.</p>
+                    <div class="example-grid"
+                        style="display: grid; grid-template-columns: repeat(2, 100px); justify-content: center;">
+                        <div class="pattern-item">Centered</div>
+                        <div class="pattern-item">Grid</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-th-large"></i> Grid Item Properties</h2>
+            <p>These properties are applied to grid items (children of the container).</p>
+
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label>Select Grid Item:</label>
+                    <select id="selectItem">
+                        <option value="all">All Items</option>
+                        <option value="1">Item 1</option>
+                        <option value="2">Item 2</option>
+                        <option value="3">Item 3</option>
+                        <option value="4">Item 4</option>
+                        <option value="5">Item 5</option>
+                        <option value="6">Item 6</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Grid Column Start/End:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="gridColumnStart" min="1" max="6" placeholder="Start" style="flex: 1;">
+                        <input type="number" id="gridColumnEnd" min="1" max="7" placeholder="End" style="flex: 1;">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Grid Row Start/End:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="gridRowStart" min="1" max="6" placeholder="Start" style="flex: 1;">
+                        <input type="number" id="gridRowEnd" min="1" max="7" placeholder="End" style="flex: 1;">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Grid Area:</label>
+                    <select id="gridArea">
+                        <option value="">None</option>
+                        <option value="header">Header</option>
+                        <option value="sidebar">Sidebar</option>
+                        <option value="main">Main</option>
+                        <option value="footer">Footer</option>
+                    </select>
+                </div>
+
+                <div class="control-buttons">
+                    <button id="applyItemProps"><i class="fas fa-check"></i> Apply to Selected Item</button>
+                    <button id="clearItemProps"><i class="fas fa-times"></i> Clear Item Properties</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Grid Lines:</strong> Grid lines are the dividing lines that make up the grid. They're numbered
+                starting from 1. When you set <code>grid-column: 1 / 3</code>, the item spans from line 1 to line 3.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-code"></i> Real-World Grid Examples</h2>
+
+            <div class="example-card">
+                <h3>1. Holy Grail Layout (Header, Sidebar, Main, Footer)</h3>
+                <div class="code-display">
+                    <span class="css-selector">.layout</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">grid</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span class="css-value">200px
+                        1fr</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-template-rows</span>: <span class="css-value">auto 1fr
+                        auto</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-template-areas</span>: <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-value">"header header"<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp; "sidebar main"<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp; "footer footer"</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">min-height</span>: <span class="css-value">100vh</span>;<br>
+                    }
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3>2. Responsive Gallery (Auto-fit Pattern)</h3>
+                <div class="code-display">
+                    <span class="css-selector">.gallery</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">grid</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span
+                        class="css-value">repeat(auto-fit, minmax(250px, 1fr))</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">gap</span>: <span class="css-value">20px</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">padding</span>: <span class="css-value">20px</span>;<br>
+                    }
+                </div>
+
+                <div class="warning">
+                    <strong>auto-fit vs auto-fill:</strong> auto-fit expands items to fill available space, while
+                    auto-fill keeps empty tracks.
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h3>3. Dashboard with Overlapping Elements</h3>
+                <div class="code-display">
+                    <span class="css-selector">.dashboard</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">grid</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span
+                        class="css-value">repeat(4, 1fr)</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-template-rows</span>: <span class="css-value">repeat(3,
+                        150px)</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">gap</span>: <span class="css-value">20px</span>;<br>
+                    }<br><br>
+                    <span class="css-selector">.card-large</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-column</span>: <span class="css-value">span
+                        2</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">grid-row</span>: <span class="css-value">span 2</span>;<br>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-balance-scale"></i> Grid vs Flexbox</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>CSS Grid</th>
+                        <th>Flexbox</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dimensionality</strong></td>
+                        <td>Two-dimensional (rows AND columns)</td>
+                        <td>One-dimensional (rows OR columns)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td>Overall page layout, complex 2D layouts</td>
+                        <td>Component layout, aligning items in one direction</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Content vs Layout</strong></td>
+                        <td>Layout-first approach</td>
+                        <td>Content-first approach</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Overlap Control</strong></td>
+                        <td>Easy item overlapping with grid lines</td>
+                        <td>Difficult to overlap items</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Browser Support</strong></td>
+                        <td>Excellent (all modern browsers)</td>
+                        <td>Excellent (all modern browsers)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip">
+                <strong>When to use Grid:</strong> Page layouts, dashboards, galleries, complex forms.<br>
+                <strong>When to use Flexbox:</strong> Navigation bars, card components, centering items, single
+                rows/columns.
+            </div>
+        </div>
+
+        <footer>
+            <h3>Master CSS Grid Today!</h3>
+            <p>Practice with the interactive playground and experiment with different layouts.</p>
+            <p>Remember: Grid for layout, Flexbox for components!</p>
+            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+                <div><i class="fas fa-check-circle"></i> Modern Layouts</div>
+                <div><i class="fas fa-check-circle"></i> Less Code</div>
+                <div><i class="fas fa-check-circle"></i> Better Responsiveness</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const gridPlayground = document.getElementById('gridPlayground');
+        const currentCode = document.getElementById('currentCode');
+
+        // Container property controls
+        const gridTemplateColumns = document.getElementById('gridTemplateColumns');
+        const gridTemplateRows = document.getElementById('gridTemplateRows');
+        const justifyItems = document.getElementById('justifyItems');
+        const alignItems = document.getElementById('alignItems');
+        const gap = document.getElementById('gap');
+        const gapValue = document.getElementById('gapValue');
+        const justifyContent = document.getElementById('justifyContent');
+
+        // Item property controls
+        const selectItem = document.getElementById('selectItem');
+        const gridColumnStart = document.getElementById('gridColumnStart');
+        const gridColumnEnd = document.getElementById('gridColumnEnd');
+        const gridRowStart = document.getElementById('gridRowStart');
+        const gridRowEnd = document.getElementById('gridRowEnd');
+        const gridArea = document.getElementById('gridArea');
+
+        // Buttons
+        const addItemBtn = document.getElementById('addItem');
+        const removeItemBtn = document.getElementById('removeItem');
+        const resetGridBtn = document.getElementById('resetGrid');
+        const applyItemPropsBtn = document.getElementById('applyItemProps');
+        const clearItemPropsBtn = document.getElementById('clearItemProps');
+
+        // Initialize
+        updateGrid();
+        updateCodeDisplay();
+
+        // Update gap display
+        gap.addEventListener('input', function () {
+            gapValue.textContent = this.value + 'px';
+            updateGrid();
+        });
+
+        // Add event listeners to container controls
+        [gridTemplateColumns, gridTemplateRows, justifyItems, alignItems, justifyContent].forEach(control => {
+            control.addEventListener('change', updateGrid);
+        });
+
+        // Add item
+        addItemBtn.addEventListener('click', function () {
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            const newItem = document.createElement('div');
+            newItem.className = 'grid-item';
+            newItem.textContent = items.length + 1;
+            newItem.addEventListener('click', selectGridItem);
+            gridPlayground.appendChild(newItem);
+
+            // Update select item dropdown
+            updateItemSelect();
+        });
+
+        // Remove item
+        removeItemBtn.addEventListener('click', function () {
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            if (items.length > 1) {
+                gridPlayground.removeChild(items[items.length - 1]);
+                updateItemSelect();
+            }
+        });
+
+        // Reset grid
+        resetGridBtn.addEventListener('click', function () {
+            // Reset container properties
+            gridTemplateColumns.value = 'repeat(3, 1fr)';
+            gridTemplateRows.value = 'auto';
+            justifyItems.value = 'stretch';
+            alignItems.value = 'stretch';
+            justifyContent.value = 'stretch';
+            gap.value = '15';
+            gapValue.textContent = '15px';
+
+            // Reset item properties
+            selectItem.value = 'all';
+            gridColumnStart.value = '';
+            gridColumnEnd.value = '';
+            gridRowStart.value = '';
+            gridRowEnd.value = '';
+            gridArea.value = '';
+
+            // Reset all items
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            items.forEach(item => {
+                item.style.gridColumn = '';
+                item.style.gridRow = '';
+                item.style.gridArea = '';
+                item.classList.remove('selected');
+            });
+
+            // Reset to 6 items
+            while (items.length > 6) {
+                gridPlayground.removeChild(items[items.length - 1]);
+            }
+
+            // Update numbers
+            const newItems = gridPlayground.querySelectorAll('.grid-item');
+            newItems.forEach((item, index) => {
+                item.textContent = index + 1;
+            });
+
+            updateGrid();
+            updateItemSelect();
+        });
+
+        // Apply item properties
+        applyItemPropsBtn.addEventListener('click', function () {
+            const selectedValue = selectItem.value;
+
+            if (selectedValue === 'all') {
+                // Apply to all items
+                const items = gridPlayground.querySelectorAll('.grid-item');
+                items.forEach(item => {
+                    applyPropertiesToItem(item);
+                });
+            } else {
+                // Apply to specific item
+                const items = gridPlayground.querySelectorAll('.grid-item');
+                const itemIndex = parseInt(selectedValue) - 1;
+                if (items[itemIndex]) {
+                    applyPropertiesToItem(items[itemIndex]);
+                    // Highlight the selected item
+                    items.forEach(item => item.classList.remove('selected'));
+                    items[itemIndex].classList.add('selected');
+                }
+            }
+
+            updateCodeDisplay();
+        });
+
+        // Clear item properties
+        clearItemPropsBtn.addEventListener('click', function () {
+            const selectedValue = selectItem.value;
+
+            if (selectedValue === 'all') {
+                // Clear all items
+                const items = gridPlayground.querySelectorAll('.grid-item');
+                items.forEach(item => {
+                    item.style.gridColumn = '';
+                    item.style.gridRow = '';
+                    item.style.gridArea = '';
+                });
+            } else {
+                // Clear specific item
+                const items = gridPlayground.querySelectorAll('.grid-item');
+                const itemIndex = parseInt(selectedValue) - 1;
+                if (items[itemIndex]) {
+                    items[itemIndex].style.gridColumn = '';
+                    items[itemIndex].style.gridRow = '';
+                    items[itemIndex].style.gridArea = '';
+                }
+            }
+
+            updateCodeDisplay();
+        });
+
+        // Item selection
+        function selectGridItem(e) {
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            items.forEach(item => item.classList.remove('selected'));
+            this.classList.add('selected');
+
+            // Get item number
+            const itemNumber = this.textContent;
+            selectItem.value = itemNumber;
+
+            // Get current properties
+            const computedStyle = window.getComputedStyle(this);
+            const gridColumn = computedStyle.gridColumn;
+            const gridRow = computedStyle.gridRow;
+            const area = computedStyle.gridArea;
+
+            // Parse grid-column and grid-row
+            if (gridColumn !== 'auto') {
+                const [start, end] = gridColumn.split(' / ');
+                gridColumnStart.value = start || '';
+                gridColumnEnd.value = end || '';
+            } else {
+                gridColumnStart.value = '';
+                gridColumnEnd.value = '';
+            }
+
+            if (gridRow !== 'auto') {
+                const [start, end] = gridRow.split(' / ');
+                gridRowStart.value = start || '';
+                gridRowEnd.value = end || '';
+            } else {
+                gridRowStart.value = '';
+                gridRowEnd.value = '';
+            }
+
+            // Set grid area
+            if (area !== 'auto') {
+                gridArea.value = area;
+            } else {
+                gridArea.value = '';
+            }
+
+            e.stopPropagation();
+        }
+
+        // Apply properties to a specific item
+        function applyPropertiesToItem(item) {
+            // Apply grid-column
+            if (gridColumnStart.value || gridColumnEnd.value) {
+                const start = gridColumnStart.value || 'auto';
+                const end = gridColumnEnd.value || 'auto';
+                item.style.gridColumn = `${start} / ${end}`;
+            }
+
+            // Apply grid-row
+            if (gridRowStart.value || gridRowEnd.value) {
+                const start = gridRowStart.value || 'auto';
+                const end = gridRowEnd.value || 'auto';
+                item.style.gridRow = `${start} / ${end}`;
+            }
+
+            // Apply grid-area
+            if (gridArea.value) {
+                item.style.gridArea = gridArea.value;
+            }
+        }
+
+        // Update the grid based on controls
+        function updateGrid() {
+            // Update container styles
+            gridPlayground.style.gridTemplateColumns = gridTemplateColumns.value;
+            gridPlayground.style.gridTemplateRows = gridTemplateRows.value;
+            gridPlayground.style.justifyItems = justifyItems.value;
+            gridPlayground.style.alignItems = alignItems.value;
+            gridPlayground.style.justifyContent = justifyContent.value;
+            gridPlayground.style.gap = gap.value + 'px';
+
+            updateCodeDisplay();
+        }
+
+        // Update the code display
+        function updateCodeDisplay() {
+            const code = `<span class="css-comment">/* Current CSS for the grid container */</span><br>
+<span class="css-selector">#gridPlayground</span> {<br>
+&nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">grid</span>;<br>
+&nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span class="css-value">${gridTemplateColumns.value}</span>;<br>
+&nbsp;&nbsp;<span class="css-property">grid-template-rows</span>: <span class="css-value">${gridTemplateRows.value}</span>;<br>
+&nbsp;&nbsp;<span class="css-property">justify-items</span>: <span class="css-value">${justifyItems.value}</span>;<br>
+&nbsp;&nbsp;<span class="css-property">align-items</span>: <span class="css-value">${alignItems.value}</span>;<br>
+&nbsp;&nbsp;<span class="css-property">gap</span>: <span class="css-value">${gap.value}px</span>;<br>
+&nbsp;&nbsp;<span class="css-property">justify-content</span>: <span class="css-value">${justifyContent.value}</span>;<br>
+}`;
+
+            currentCode.innerHTML = code;
+        }
+
+        // Update the item select dropdown
+        function updateItemSelect() {
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            const currentValue = selectItem.value;
+
+            // Clear existing options except "all"
+            while (selectItem.options.length > 1) {
+                selectItem.remove(1);
+            }
+
+            // Add options for each item
+            items.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = (index + 1).toString();
+                option.textContent = `Item ${index + 1}`;
+                selectItem.appendChild(option);
+            });
+
+            // Restore previous selection if possible
+            if (currentValue !== 'all') {
+                const itemNum = parseInt(currentValue);
+                if (itemNum <= items.length) {
+                    selectItem.value = currentValue;
+                } else {
+                    selectItem.value = 'all';
+                }
+            }
+        }
+
+        // Attach click events to all grid items
+        function attachItemEvents() {
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            items.forEach(item => {
+                item.addEventListener('click', selectGridItem);
+            });
+        }
+
+        // Initialize item events
+        attachItemEvents();
+        updateItemSelect();
+
+        // Click outside to deselect
+        document.addEventListener('click', function () {
+            const items = gridPlayground.querySelectorAll('.grid-item');
+            items.forEach(item => item.classList.remove('selected'));
+        });
+    </script>
+</body>
+
+</html>

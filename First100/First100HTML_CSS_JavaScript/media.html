@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Media Queries: Complete Responsive Design Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(30px, 30px);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 40px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--accent);
+            font-size: 2.2rem;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px;
+            font-size: 1.6rem;
+        }
+
+        h4 {
+            color: var(--dark);
+            margin: 20px 0 10px;
+            font-size: 1.3rem;
+        }
+
+        /* Sections */
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Device Emulator */
+        .device-emulator {
+            background: #1f2937;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .device-screen {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            min-height: 400px;
+            font-family: monospace;
+            overflow: auto;
+            transition: all 0.3s ease;
+        }
+
+        .screen-content {
+            padding: 20px;
+        }
+
+        .device-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .screen-size {
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Demo */
+        .responsive-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .demo-item {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .demo-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Code Display */
+        .code-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            overflow-x: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-block {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #e5e7eb;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .css-atrule {
+            color: #f472b6;
+        }
+
+        .css-property {
+            color: #60a5fa;
+        }
+
+        .css-value {
+            color: #34d399;
+        }
+
+        .css-comment {
+            color: #9ca3af;
+        }
+
+        .css-selector {
+            color: #fbbf24;
+        }
+
+        /* Media Query Types */
+        .mq-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .mq-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .mq-card:hover {
+            background: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .mq-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* Breakpoint Visualizer */
+        .breakpoint-visualizer {
+            background: linear-gradient(to right, #10b981, #3b82f6, #8b5cf6, #f59e0b, #ef4444);
+            height: 60px;
+            border-radius: 12px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .breakpoint-marker {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .breakpoint-label {
+            position: absolute;
+            top: -30px;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Live Preview */
+        .live-preview {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 2px dashed var(--primary);
+        }
+
+        .preview-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .preview-item {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        /* Toggle Controls */
+        .toggle-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .comparison-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .status-inactive {
+            background-color: #9ca3af;
+        }
+
+        /* Info Boxes */
+        .tip-box {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--dark) 0%, #111827 100%);
+            color: white;
+            border-radius: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .preview-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .preview-content {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-item {
+                min-width: 100%;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .section {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #111827;
+                color: #e5e7eb;
+            }
+
+            .section {
+                background: #1f2937;
+            }
+
+            .mq-card {
+                background: #374151;
+            }
+        }
+
+        /* Motion Reduction */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            header::before {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-mobile-alt"></i> CSS Media Queries</h1>
+            <p style="font-size: 1.3rem; max-width: 800px; margin: 0 auto; opacity: 0.95;">
+                The Complete Guide to Responsive Web Design
+            </p>
+            <p style="margin-top: 15px;">Create websites that adapt to any device, screen size, or user preference</p>
+        </header>
+
+        <!-- Live Device Preview -->
+        <div class="section">
+            <h2><i class="fas fa-eye"></i> Live Media Query Preview</h2>
+            <p>Resize your browser window or use the controls below to see media queries in action.</p>
+
+            <div class="device-emulator">
+                <div class="device-screen" id="deviceScreen">
+                    <div class="screen-content">
+                        <div class="responsive-demo">
+                            <div class="demo-item">
+                                <i class="fas fa-columns fa-2x"></i>
+                                <h4>Flexible Grid</h4>
+                                <p>Items rearrange based on screen size</p>
+                            </div>
+                            <div class="demo-item">
+                                <i class="fas fa-text-height fa-2x"></i>
+                                <h4>Responsive Text</h4>
+                                <p>Font sizes adjust automatically</p>
+                            </div>
+                            <div class="demo-item">
+                                <i class="fas fa-image fa-2x"></i>
+                                <h4>Adaptive Images</h4>
+                                <p>Images scale with container</p>
+                            </div>
+                        </div>
+
+                        <div class="preview-content" id="previewContent">
+                            <div class="preview-item">Item 1</div>
+                            <div class="preview-item">Item 2</div>
+                            <div class="preview-item">Item 3</div>
+                            <div class="preview-item">Item 4</div>
+                        </div>
+
+                        <div class="toggle-controls">
+                            <div class="toggle-switch">
+                                <span class="toggle-label">Dark Mode</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="darkModeToggle">
+                                    <span class="slider"></span>
+                                </label>
+                                <span id="darkModeStatus" class="status-indicator status-inactive"></span>
+                            </div>
+
+                            <div class="toggle-switch">
+                                <span class="toggle-label">Reduced Motion</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="motionToggle">
+                                    <span class="slider"></span>
+                                </label>
+                                <span id="motionStatus" class="status-indicator status-inactive"></span>
+                            </div>
+
+                            <div class="toggle-switch">
+                                <span class="toggle-label">High Contrast</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="contrastToggle">
+                                    <span class="slider"></span>
+                                </label>
+                                <span id="contrastStatus" class="status-indicator status-inactive"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="device-controls">
+                    <div class="screen-size">
+                        <i class="fas fa-expand-alt"></i>
+                        <span id="screenSize">Width: <span id="currentWidth">800</span>px</span>
+                    </div>
+                    <div style="color: white;">
+                        <i class="fas fa-sun" id="lightIcon"></i>
+                        <i class="fas fa-moon" id="darkIcon" style="display: none;"></i>
+                        <span id="colorScheme">Light Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-container">
+                <div class="code-block" id="activeMediaQueries">
+                    <span class="css-comment">/* Active Media Queries */</span><br>
+                    <span id="mqStatus">No media queries active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Media Query Basics -->
+        <div class="section">
+            <h2><i class="fas fa-code"></i> Media Query Syntax</h2>
+            <p>Media queries use the <code>@media</code> rule to apply CSS only when certain conditions are met.</p>
+
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-comment">/* Basic Syntax */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">screen and (max-width: 768px)</span>
+                    {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.container</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">padding</span>: <span
+                        class="css-value">15px</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Multiple Conditions */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">screen and (min-width: 768px) and
+                        (max-width: 1024px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.container</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">max-width</span>: <span
+                        class="css-value">90%</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>Pro Tip:</strong> Always use a mobile-first approach. Start with styles for small screens, then
+                use <code>min-width</code> queries to add styles for larger screens.
+            </div>
+        </div>
+
+        <!-- Media Query Types -->
+        <div class="section">
+            <h2><i class="fas fa-filter"></i> Media Query Types</h2>
+            <p>Media queries can target different device characteristics and user preferences.</p>
+
+            <div class="mq-types">
+                <div class="mq-card">
+                    <div class="mq-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h4>Screen Size</h4>
+                    <p>Target specific screen widths and heights</p>
+                    <div class="code-container" style="margin: 15px 0 0; padding: 15px;">
+                        <span class="css-atrule">@media</span> <span class="css-value">(max-width: 768px)</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">(min-height: 600px)</span>
+                    </div>
+                </div>
+
+                <div class="mq-card">
+                    <div class="mq-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h4>Color Scheme</h4>
+                    <p>Detect light or dark mode preference</p>
+                    <div class="code-container" style="margin: 15px 0 0; padding: 15px;">
+                        <span class="css-atrule">@media</span> <span class="css-value">(prefers-color-scheme:
+                            dark)</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">(prefers-color-scheme:
+                            light)</span>
+                    </div>
+                </div>
+
+                <div class="mq-card">
+                    <div class="mq-icon">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h4>Media Types</h4>
+                    <p>Target specific output media</p>
+                    <div class="code-container" style="margin: 15px 0 0; padding: 15px;">
+                        <span class="css-atrule">@media</span> <span class="css-value">print</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">screen</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">speech</span>
+                    </div>
+                </div>
+
+                <div class="mq-card">
+                    <div class="mq-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4>User Preferences</h4>
+                    <p>Respect user accessibility settings</p>
+                    <div class="code-container" style="margin: 15px 0 0; padding: 15px;">
+                        <span class="css-atrule">@media</span> <span
+                            class="css-value">(prefers-reduced-motion)</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">(prefers-contrast: high)</span>
+                    </div>
+                </div>
+
+                <div class="mq-card">
+                    <div class="mq-icon">
+                        <i class="fas fa-mobile"></i>
+                    </div>
+                    <h4>Device Orientation</h4>
+                    <p>Detect portrait or landscape mode</p>
+                    <div class="code-container" style="margin: 15px 0 0; padding: 15px;">
+                        <span class="css-atrule">@media</span> <span class="css-value">(orientation:
+                            portrait)</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">(orientation: landscape)</span>
+                    </div>
+                </div>
+
+                <div class="mq-card">
+                    <div class="mq-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h4>Resolution & Display</h4>
+                    <p>Target high-resolution displays</p>
+                    <div class="code-container" style="margin: 15px 0 0; padding: 15px;">
+                        <span class="css-atrule">@media</span> <span class="css-value">(-webkit-min-device-pixel-ratio:
+                            2)</span><br>
+                        <span class="css-atrule">@media</span> <span class="css-value">(resolution: 2dppx)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breakpoints Guide -->
+        <div class="section">
+            <h2><i class="fas fa-ruler-combined"></i> Common Breakpoints</h2>
+            <p>Breakpoints are the screen sizes at which your design changes. Here are common breakpoints for responsive
+                design.</p>
+
+            <div class="breakpoint-visualizer">
+                <!-- Breakpoints will be added by JavaScript -->
+            </div>
+
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-comment">/* Common Breakpoints */</span><br>
+                    <span class="css-comment">/* Extra small devices (phones) */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(max-width: 576px)</span> { }<br><br>
+
+                    <span class="css-comment">/* Small devices (tablets) */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 577px) and (max-width:
+                        768px)</span> { }<br><br>
+
+                    <span class="css-comment">/* Medium devices (laptops) */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 769px) and (max-width:
+                        992px)</span> { }<br><br>
+
+                    <span class="css-comment">/* Large devices (desktops) */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 993px) and (max-width:
+                        1200px)</span> { }<br><br>
+
+                    <span class="css-comment">/* Extra large devices */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 1201px)</span> { }
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Don't design for specific devices! Design based on your content's needs. Use
+                breakpoints where your content breaks, not based on popular device sizes.
+            </div>
+        </div>
+
+        <!-- Practical Examples -->
+        <div class="section">
+            <h2><i class="fas fa-laptop-code"></i> Practical Examples</h2>
+
+            <h3>1. Mobile-First Navigation</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-comment">/* Base styles (mobile first) */</span><br>
+                    <span class="css-selector">.navbar</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">flex</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">flex-direction</span>: <span
+                        class="css-value">column</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">padding</span>: <span class="css-value">1rem</span>;<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Tablet and larger */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 768px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.navbar</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">flex-direction</span>: <span
+                        class="css-value">row</span>;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">justify-content</span>: <span
+                        class="css-value">space-between</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Desktop */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 1024px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.navbar</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">padding</span>: <span
+                        class="css-value">2rem</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <h3>2. Responsive Grid System</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-selector">.grid</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">grid</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">gap</span>: <span class="css-value">1rem</span>;<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Mobile: 1 column */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(max-width: 767px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.grid</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span
+                        class="css-value">1fr</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Tablet: 2 columns */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 768px) and (max-width:
+                        1023px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.grid</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span
+                        class="css-value">repeat(2, 1fr)</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Desktop: 4 columns */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(min-width: 1024px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.grid</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">grid-template-columns</span>: <span
+                        class="css-value">repeat(4, 1fr)</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <h3>3. Dark Mode Support</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-comment">/* Light mode (default) */</span><br>
+                    <span class="css-selector">body</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">background-color</span>: <span
+                        class="css-value">white</span>;<br>
+                    &nbsp;&nbsp;<span class="css-property">color</span>: <span class="css-value">#333</span>;<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Dark mode */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(prefers-color-scheme: dark)</span>
+                    {<br>
+                    &nbsp;&nbsp;<span class="css-selector">body</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">background-color</span>: <span
+                        class="css-value">#1a1a1a</span>;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">color</span>: <span
+                        class="css-value">#f0f0f0</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <h3>4. Print Styles</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-atrule">@media</span> <span class="css-value">print</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">body</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">font-size</span>: <span
+                        class="css-value">12pt</span>;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">line-height</span>: <span
+                        class="css-value">1.5</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;<span class="css-selector">.navbar, .footer, .ads</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">display</span>: <span
+                        class="css-value">none</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;<span class="css-selector">a</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">color</span>: <span
+                        class="css-value">black</span>;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">text-decoration</span>: <span
+                        class="css-value">none</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;<span class="css-selector">a::after</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">content</span>: <span class="css-value">" ("
+                        attr(href) ")"</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Techniques -->
+        <div class="section">
+            <h2><i class="fas fa-rocket"></i> Advanced Techniques</h2>
+
+            <h3>1. Container Queries (Modern CSS)</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-comment">/* Define container */</span><br>
+                    <span class="css-selector">.card-container</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">container-type</span>: <span
+                        class="css-value">inline-size</span>;<br>
+                    }<br><br>
+
+                    <span class="css-comment">/* Style based on container size */</span><br>
+                    <span class="css-atrule">@container</span> <span class="css-value">(min-width: 400px)</span> {<br>
+                    &nbsp;&nbsp;<span class="css-selector">.card</span> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">display</span>: <span
+                        class="css-value">flex</span>;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-property">gap</span>: <span
+                        class="css-value">1rem</span>;<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>Container Queries vs Media Queries:</strong> Container queries allow elements to respond to
+                their container's size, not just the viewport. This is perfect for reusable components.
+            </div>
+
+            <h3>2. Logical Operators</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-comment">/* AND operator (default) */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">screen and (min-width: 768px) and
+                        (max-width: 1024px)</span> { }<br><br>
+
+                    <span class="css-comment">/* OR operator (comma separated) */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">(max-width: 600px), (min-width:
+                        1200px)</span> { }<br><br>
+
+                    <span class="css-comment">/* NOT operator */</span><br>
+                    <span class="css-atrule">@media</span> <span class="css-value">not screen and (color)</span> { }
+                </div>
+            </div>
+
+            <h3>3. Responsive Typography with CSS Clamp</h3>
+            <div class="code-container">
+                <div class="code-block">
+                    <span class="css-selector">h1</span> {<br>
+                    &nbsp;&nbsp;<span class="css-comment">/* Minimum 2rem, ideal 5vw, maximum 3.5rem */</span><br>
+                    &nbsp;&nbsp;<span class="css-property">font-size</span>: <span class="css-value">clamp(2rem, 5vw,
+                        3.5rem)</span>;<br>
+                    }<br><br>
+
+                    <span class="css-selector">p</span> {<br>
+                    &nbsp;&nbsp;<span class="css-property">font-size</span>: <span class="css-value">clamp(1rem, 2.5vw,
+                        1.5rem)</span>;<br>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison & Best Practices -->
+        <div class="section">
+            <h2><i class="fas fa-check-circle"></i> Best Practices</h2>
+
+            <div class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Do</th>
+                        <th>Don't</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Use mobile-first approach</td>
+                        <td>Design for desktop first</td>
+                    </tr>
+                    <tr>
+                        <td>Use relative units (rem, em, %, vw, vh)</td>
+                        <td>Use too many fixed pixels (px)</td>
+                    </tr>
+                    <tr>
+                        <td>Test on real devices</td>
+                        <td>Rely only on browser resizing</td>
+                    </tr>
+                    <tr>
+                        <td>Use logical operators effectively</td>
+                        <td>Create too many breakpoints</td>
+                    </tr>
+                    <tr>
+                        <td>Consider accessibility preferences</td>
+                        <td>Ignore user preferences</td>
+                    </tr>
+                </tbody>
+            </div>
+
+            <div class="success-box">
+                <strong>Mobile-First Workflow:</strong><br>
+                1. Start with base styles for mobile<br>
+                2. Use <code>min-width</code> queries for larger screens<br>
+                3. Add enhancements progressively<br>
+                4. Test at every breakpoint
+            </div>
+        </div>
+
+        <footer>
+            <h3>Master Responsive Design</h3>
+            <p>Media queries are just the beginning. Combine them with flexible grids, responsive images, and modern CSS
+                features for truly adaptive designs.</p>
+            <div style="margin-top: 25px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                <div><i class="fas fa-lightbulb"></i> Mobile-First</div>
+                <div><i class="fas fa-users"></i> User-Centric</div>
+                <div><i class="fas fa-universal-access"></i> Accessible</div>
+                <div><i class="fas fa-bolt"></i> Performant</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const deviceScreen = document.getElementById('deviceScreen');
+        const currentWidth = document.getElementById('currentWidth');
+        const screenSize = document.getElementById('screenSize');
+        const activeMediaQueries = document.getElementById('activeMediaQueries');
+        const previewContent = document.getElementById('previewContent');
+        const previewItems = previewContent.querySelectorAll('.preview-item');
+
+        // Toggle elements
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const motionToggle = document.getElementById('motionToggle');
+        const contrastToggle = document.getElementById('contrastToggle');
+        const darkModeStatus = document.getElementById('darkModeStatus');
+        const motionStatus = document.getElementById('motionStatus');
+        const contrastStatus = document.getElementById('contrastStatus');
+        const colorScheme = document.getElementById('colorScheme');
+        const lightIcon = document.getElementById('lightIcon');
+        const darkIcon = document.getElementById('darkIcon');
+
+        // Breakpoints configuration
+        const breakpoints = [
+            { name: 'Mobile', width: 576, color: '#10b981' },
+            { name: 'Tablet', width: 768, color: '#3b82f6' },
+            { name: 'Laptop', width: 992, color: '#8b5cf6' },
+            { name: 'Desktop', width: 1200, color: '#f59e0b' },
+            { name: 'Large', width: 1400, color: '#ef4444' }
+        ];
+
+        // Initialize
+        updateScreenSize();
+        createBreakpointVisualizer();
+        setupEventListeners();
+
+        // Create breakpoint visualizer
+        function createBreakpointVisualizer() {
+            const visualizer = document.querySelector('.breakpoint-visualizer');
+            const maxWidth = 1400;
+
+            breakpoints.forEach(bp => {
+                const position = (bp.width / maxWidth) * 100;
+
+                const marker = document.createElement('div');
+                marker.className = 'breakpoint-marker';
+                marker.style.left = `${position}%`;
+
+                const label = document.createElement('div');
+                label.className = 'breakpoint-label';
+                label.textContent = `${bp.name} (${bp.width}px)`;
+                label.style.left = `${position}%`;
+                label.style.color = bp.color;
+
+                visualizer.appendChild(marker);
+                visualizer.appendChild(label);
+            });
+        }
+
+        // Update screen size display
+        function updateScreenSize() {
+            const width = window.innerWidth;
+            currentWidth.textContent = width;
+
+            // Update responsive preview
+            updateResponsivePreview(width);
+
+            // Check which media queries are active
+            checkMediaQueries(width);
+        }
+
+        // Update responsive preview based on screen size
+        function updateResponsivePreview(width) {
+            // Update grid columns based on width
+            if (width < 576) {
+                previewContent.style.gridTemplateColumns = '1fr';
+                previewItems.forEach(item => {
+                    item.style.backgroundColor = '#10b981';
+                });
+            } else if (width < 768) {
+                previewContent.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                previewItems.forEach(item => {
+                    item.style.backgroundColor = '#3b82f6';
+                });
+            } else if (width < 992) {
+                previewContent.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                previewItems.forEach(item => {
+                    item.style.backgroundColor = '#8b5cf6';
+                });
+            } else {
+                previewContent.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                previewItems.forEach(item => {
+                    item.style.backgroundColor = '#f59e0b';
+                });
+            }
+        }
+
+        // Check which media queries are active
+        function checkMediaQueries(width) {
+            const activeQueries = [];
+
+            // Check breakpoints
+            if (width < 576) {
+                activeQueries.push('<span class="css-value">(max-width: 576px)</span> - Mobile');
+            }
+
+            if (width >= 577 && width <= 768) {
+                activeQueries.push('<span class="css-value">(min-width: 577px) and (max-width: 768px)</span> - Small Tablet');
+            }
+
+            if (width >= 769 && width <= 992) {
+                activeQueries.push('<span class="css-value">(min-width: 769px) and (max-width: 992px)</span> - Tablet/Laptop');
+            }
+
+            if (width >= 993 && width <= 1200) {
+                activeQueries.push('<span class="css-value">(min-width: 993px) and (max-width: 1200px)</span> - Desktop');
+            }
+
+            if (width > 1200) {
+                activeQueries.push('<span class="css-value">(min-width: 1201px)</span> - Large Desktop');
+            }
+
+            // Check orientation
+            if (window.matchMedia('(orientation: portrait)').matches) {
+                activeQueries.push('<span class="css-value">(orientation: portrait)</span>');
+            } else {
+                activeQueries.push('<span class="css-value">(orientation: landscape)</span>');
+            }
+
+            // Update display
+            if (activeQueries.length > 0) {
+                const queriesHTML = activeQueries.map(query =>
+                    `<span class="css-atrule">@media</span> ${query}<br>`
+                ).join('');
+
+                activeMediaQueries.innerHTML =
+                    `<span class="css-comment">/* Active Media Queries */</span><br>` +
+                    queriesHTML;
+            } else {
+                activeMediaQueries.innerHTML =
+                    `<span class="css-comment">/* Active Media Queries */</span><br>` +
+                    `<span id="mqStatus">No media queries active</span>`;
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Window resize
+            window.addEventListener('resize', updateScreenSize);
+
+            // Dark mode toggle
+            darkModeToggle.addEventListener('change', function () {
+                if (this.checked) {
+                    deviceScreen.style.backgroundColor = '#1f2937';
+                    deviceScreen.style.color = '#e5e7eb';
+                    darkModeStatus.className = 'status-indicator status-active';
+                    colorScheme.textContent = 'Dark Mode';
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'inline-block';
+                } else {
+                    deviceScreen.style.backgroundColor = 'white';
+                    deviceScreen.style.color = '#1f2937';
+                    darkModeStatus.className = 'status-indicator status-inactive';
+                    colorScheme.textContent = 'Light Mode';
+                    lightIcon.style.display = 'inline-block';
+                    darkIcon.style.display = 'none';
+                }
+            });
+
+            // Reduced motion toggle
+            motionToggle.addEventListener('change', function () {
+                if (this.checked) {
+                    document.body.style.setProperty('--primary', '#2563eb');
+                    document.body.style.setProperty('--secondary', '#7c3aed');
+                    motionStatus.className = 'status-indicator status-active';
+
+                    // Disable animations
+                    const allElements = document.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        el.style.animation = 'none';
+                        el.style.transition = 'none';
+                    });
+                } else {
+                    document.body.style.setProperty('--primary', '#3b82f6');
+                    document.body.style.setProperty('--secondary', '#8b5cf6');
+                    motionStatus.className = 'status-indicator status-inactive';
+
+                    // Re-enable animations
+                    const allElements = document.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        el.style.animation = '';
+                        el.style.transition = '';
+                    });
+                }
+            });
+
+            // High contrast toggle
+            contrastToggle.addEventListener('change', function () {
+                if (this.checked) {
+                    // High contrast mode
+                    document.body.style.backgroundColor = 'black';
+                    document.body.style.color = 'white';
+                    contrastStatus.className = 'status-indicator status-active';
+
+                    // Update section backgrounds
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.style.backgroundColor = '#111';
+                        section.style.color = 'white';
+                    });
+                } else {
+                    // Normal mode
+                    document.body.style.backgroundColor = '';
+                    document.body.style.color = '';
+                    contrastStatus.className = 'status-indicator status-inactive';
+
+                    // Restore section styles
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.style.backgroundColor = '';
+                        section.style.color = '';
+                    });
+                }
+            });
+
+            // Simulate device screen resize on click
+            const sizeDisplay = document.querySelector('.screen-size');
+            sizeDisplay.addEventListener('click', function () {
+                // Cycle through common device sizes
+                const sizes = [320, 375, 768, 1024, 1200, 1400];
+                const currentSize = parseInt(currentWidth.textContent);
+                const nextIndex = (sizes.indexOf(currentSize) + 1) % sizes.length;
+                const nextSize = sizes[nextIndex];
+
+                // Simulate resize by adjusting viewport
+                window.dispatchEvent(new Event('resize'));
+
+                // Update display
+                currentWidth.textContent = nextSize;
+                updateResponsivePreview(nextSize);
+                checkMediaQueries(nextSize);
+            });
+        }
+
+        // Check system preferences on load
+        window.addEventListener('load', function () {
+            // Check for prefers-color-scheme
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                darkModeToggle.checked = true;
+                darkModeToggle.dispatchEvent(new Event('change'));
+            }
+
+            // Check for prefers-reduced-motion
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                motionToggle.checked = true;
+                motionToggle.dispatchEvent(new Event('change'));
+            }
+
+            // Initial media query check
+            updateScreenSize();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Keyframes & Animations: Complete Interactive Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            position: relative;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--primary);
+            }
+
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 30px var(--secondary), 0 0 40px var(--secondary);
+            }
+        }
+
+        h2 {
+            color: var(--accent);
+            margin: 50px 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary);
+            font-size: 2.5rem;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+            animation: slideIn 2s ease-in-out infinite alternate;
+        }
+
+        h3 {
+            color: var(--warning);
+            margin: 30px 0 20px;
+            font-size: 1.8rem;
+        }
+
+        h4 {
+            color: var(--light);
+            margin: 20px 0 10px;
+            font-size: 1.4rem;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animation Playground */
+        .playground {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 992px) {
+            .playground {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .animation-canvas {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-object {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            position: relative;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        select,
+        input,
+        button {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(30, 41, 59, 0.8);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        input[type="range"] {
+            padding: 0;
+            height: 40px;
+        }
+
+        .value-display {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.reset {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* Code Display */
+        .code-display {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 30px;
+            border-radius: 15px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            margin: 30px 0;
+            overflow-x: auto;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .css-atrule {
+            color: #f472b6;
+        }
+
+        .css-property {
+            color: #60a5fa;
+        }
+
+        .css-value {
+            color: #34d399;
+        }
+
+        .css-comment {
+            color: #94a3b8;
+        }
+
+        .css-selector {
+            color: #fbbf24;
+        }
+
+        .css-number {
+            color: #a78bfa;
+        }
+
+        /* Animation Examples Grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .example-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .example-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.2);
+        }
+
+        .example-animation {
+            width: 100%;
+            height: 150px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-object {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        /* Timeline Visualizer */
+        .timeline-visualizer {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            position: relative;
+            height: 100px;
+            overflow: hidden;
+        }
+
+        .timeline-track {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateY(-50%);
+            border-radius: 2px;
+        }
+
+        .keyframe-marker {
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .keyframe-marker:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            background: var(--accent);
+        }
+
+        .keyframe-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .playhead {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            z-index: 10;
+        }
+
+        /* Performance Monitor */
+        .performance-monitor {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .perf-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .perf-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .perf-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        /* Animation Properties Reference */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .property-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 25px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .property-name {
+            color: var(--warning);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 50px 0;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .comparison-table td {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: rgba(30, 41, 59, 0.5);
+        }
+
+        /* Info Boxes */
+        .tip-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 5px solid var(--accent);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 5px solid var(--warning);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 15px 15px 0;
+        }
+
+        /* Predefined Animations */
+        .animation-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .preset-btn {
+            padding: 12px 25px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .preset-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 50px;
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            color: white;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .performance-monitor {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Keyframes for header animations */
+        @keyframes slideIn {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 200px;
+            }
+        }
+
+        /* Floating animation for decorative elements */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Rotate animation */
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Bounce animation */
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
+        }
+
+        /* Shake animation */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-10px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(10px);
+            }
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Slide in from left */
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Color change animation */
+        @keyframes colorChange {
+            0% {
+                background-color: var(--primary);
+            }
+
+            25% {
+                background-color: var(--secondary);
+            }
+
+            50% {
+                background-color: var(--accent);
+            }
+
+            75% {
+                background-color: var(--warning);
+            }
+
+            100% {
+                background-color: var(--primary);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-play-circle"></i> CSS Keyframes & Animations</h1>
+            <p style="font-size: 1.5rem; max-width: 800px; margin: 0 auto; opacity: 0.95;">
+                Create stunning animations with pure CSS
+            </p>
+            <p style="margin-top: 20px; font-size: 1.1rem;">
+                No JavaScript required • GPU Accelerated • 60 FPS Performance
+            </p>
+        </header>
+
+        <!-- Interactive Playground -->
+        <div class="section">
+            <h2><i class="fas fa-gamepad"></i> Animation Playground</h2>
+            <p>Create and customize animations in real-time. Adjust the controls and see immediate results.</p>
+
+            <div class="playground">
+                <div class="animation-canvas">
+                    <div class="animated-object" id="animatedObject">
+                        <i class="fas fa-star"></i>
+                    </div>
+
+                    <!-- Timeline Visualizer -->
+                    <div class="timeline-visualizer" id="timelineVisualizer">
+                        <div class="timeline-track"></div>
+                        <!-- Keyframe markers will be added by JavaScript -->
+                        <div class="playhead" id="playhead"></div>
+                    </div>
+                </div>
+
+                <div class="controls-panel">
+                    <h3>Animation Controls</h3>
+
+                    <div class="control-group">
+                        <label>Animation Type:</label>
+                        <select id="animationType">
+                            <option value="bounce">Bounce</option>
+                            <option value="rotate">Rotate</option>
+                            <option value="pulse">Pulse</option>
+                            <option value="shake">Shake</option>
+                            <option value="slide">Slide</option>
+                            <option value="color">Color Change</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Duration: <span class="value-display" id="durationValue">2s</span></label>
+                        <input type="range" id="duration" min="0.5" max="10" step="0.5" value="2">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Delay: <span class="value-display" id="delayValue">0s</span></label>
+                        <input type="range" id="delay" min="0" max="5" step="0.5" value="0">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Iteration Count:</label>
+                        <select id="iterationCount">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="infinite" selected>Infinite</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Timing Function:</label>
+                        <select id="timingFunction">
+                            <option value="linear">linear</option>
+                            <option value="ease" selected>ease</option>
+                            <option value="ease-in">ease-in</option>
+                            <option value="ease-out">ease-out</option>
+                            <option value="ease-in-out">ease-in-out</option>
+                            <option value="cubic-bezier(0.68, -0.55, 0.27, 1.55)">bounce</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Direction:</label>
+                        <select id="direction">
+                            <option value="normal" selected>normal</option>
+                            <option value="reverse">reverse</option>
+                            <option value="alternate">alternate</option>
+                            <option value="alternate-reverse">alternate-reverse</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Fill Mode:</label>
+                        <select id="fillMode">
+                            <option value="none" selected>none</option>
+                            <option value="forwards">forwards</option>
+                            <option value="backwards">backwards</option>
+                            <option value="both">both</option>
+                        </select>
+                    </div>
+
+                    <div class="animation-presets">
+                        <div class="preset-btn" data-preset="bounce">Bounce</div>
+                        <div class="preset-btn" data-preset="rotate">Rotate</div>
+                        <div class="preset-btn" data-preset="pulse">Pulse</div>
+                        <div class="preset-btn" data-preset="shake">Shake</div>
+                        <div class="preset-btn" data-preset="slide">Slide</div>
+                        <div class="preset-btn" data-preset="color">Color</div>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button id="playAnimation"><i class="fas fa-play"></i> Play</button>
+                        <button id="pauseAnimation"><i class="fas fa-pause"></i> Pause</button>
+                        <button id="stopAnimation"><i class="fas fa-stop"></i> Stop</button>
+                        <button class="reset" id="resetAnimation"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="performance-monitor">
+                <div class="perf-indicator">
+                    <div class="perf-value" id="fpsCounter">60</div>
+                    <div class="perf-label">FPS</div>
+                </div>
+                <div class="perf-indicator">
+                    <div class="perf-value" id="animationState">Idle</div>
+                    <div class="perf-label">State</div>
+                </div>
+                <div class="perf-indicator">
+                    <div class="perf-value" id="iterationCounter">0</div>
+                    <div class="perf-label">Iterations</div>
+                </div>
+            </div>
+
+            <div class="code-display" id="currentCode">
+                <span class="css-comment">/* Current CSS Animation */</span><br>
+                <span class="css-atrule">@keyframes</span> <span class="css-selector">bounce</span> {<br>
+                &nbsp;&nbsp;<span class="css-value">0%</span> { <span class="css-property">transform</span>: <span
+                    class="css-value">translateY(0)</span>; }<br>
+                &nbsp;&nbsp;<span class="css-value">50%</span> { <span class="css-property">transform</span>: <span
+                    class="css-value">translateY(-30px)</span>; }<br>
+                &nbsp;&nbsp;<span class="css-value">100%</span> { <span class="css-property">transform</span>: <span
+                    class="css-value">translateY(0)</span>; }<br>
+                }<br><br>
+                <span class="css-selector">#animatedObject</span> {<br>
+                &nbsp;&nbsp;<span class="css-property">animation</span>: <span class="css-value">bounce 2s ease infinite
+                    normal none</span>;<br>
+                }
+            </div>
+        </div>
+
+        <!-- Keyframes Syntax -->
+        <div class="section">
+            <h2><i class="fas fa-code"></i> @keyframes Syntax</h2>
+            <p>The <code>@keyframes</code> rule defines the animation sequence by specifying styles at various points
+                during the animation.</p>
+
+            <div class="code-display">
+                <span class="css-comment">/* Basic Syntax */</span><br>
+                <span class="css-atrule">@keyframes</span> <span class="css-selector">animation-name</span> {<br>
+                &nbsp;&nbsp;<span class="css-comment">/* From/To syntax */</span><br>
+                &nbsp;&nbsp;<span class="css-value">from</span> { <span class="css-property">property</span>: <span
+                    class="css-value">value</span>; }<br>
+                &nbsp;&nbsp;<span class="css-value">to</span> { <span class="css-property">property</span>: <span
+                    class="css-value">value</span>; }<br>
+                }<br><br>
+                <span class="css-comment">/* Percentage syntax */</span><br>
+                <span class="css-atrule">@keyframes</span> <span class="css-selector">animation-name</span> {<br>
+                &nbsp;&nbsp;<span class="css-value">0%</span> { <span class="css-property">property</span>: <span
+                    class="css-value">value</span>; }<br>
+                &nbsp;&nbsp;<span class="css-value">50%</span> { <span class="css-property">property</span>: <span
+                    class="css-value">value</span>; }<br>
+                &nbsp;&nbsp;<span class="css-value">100%</span> { <span class="css-property">property</span>: <span
+                    class="css-value">value</span>; }<br>
+                }
+            </div>
+
+            <div class="tip-box">
+                <strong>Tip:</strong> You can use <code>from</code> and <code>to</code> as aliases for <code>0%</code>
+                and <code>100%</code>. For complex animations, use percentage values to define intermediate steps.
+            </div>
+        </div>
+
+        <!-- Animation Properties -->
+        <div class="section">
+            <h2><i class="fas fa-sliders-h"></i> Animation Properties</h2>
+            <p>These properties control how the animation behaves. They can be set individually or using the
+                <code>animation</code> shorthand.</p>
+
+            <div class="properties-grid">
+                <div class="property-card">
+                    <div class="property-name">animation-name</div>
+                    <p>Specifies the name of the @keyframes animation.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-name</span>: <span class="css-value">slideIn</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-duration</div>
+                    <p>How long one animation cycle takes.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-duration</span>: <span class="css-value">2s</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-timing-function</div>
+                    <p>How the animation progresses through each cycle.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-timing-function</span>: <span
+                            class="css-value">ease-in-out</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-delay</div>
+                    <p>Time to wait before starting the animation.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-delay</span>: <span class="css-value">1s</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-iteration-count</div>
+                    <p>How many times the animation runs.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-iteration-count</span>: <span
+                            class="css-value">infinite</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-direction</div>
+                    <p>Whether animation runs normally, reversed, or alternates.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-direction</span>: <span class="css-value">alternate</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-fill-mode</div>
+                    <p>What styles apply before/after animation.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-fill-mode</span>: <span class="css-value">forwards</span>;
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <div class="property-name">animation-play-state</div>
+                    <p>Whether animation is running or paused.</p>
+                    <div class="code-display" style="margin-top: 15px; padding: 15px;">
+                        <span class="css-property">animation-play-state</span>: <span class="css-value">paused</span>;
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-display" style="margin-top: 30px;">
+                <span class="css-comment">/* Shorthand syntax (order matters!) */</span><br>
+                <span class="css-property">animation</span>: <span class="css-value">name duration timing-function delay
+                    iteration-count direction fill-mode play-state</span>;<br><br>
+                <span class="css-comment">/* Example */</span><br>
+                <span class="css-property">animation</span>: <span class="css-value">slideIn 2s ease-in-out 0.5s
+                    infinite alternate forwards</span>;
+            </div>
+        </div>
+
+        <!-- Animation Examples -->
+        <div class="section">
+            <h2><i class="fas fa-star"></i> Common Animation Examples</h2>
+            <p>These are some of the most commonly used animations in web design.</p>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h4>1. Fade In</h4>
+                    <div class="example-animation">
+                        <div class="example-object" id="fadeExample"></div>
+                    </div>
+                    <div class="code-display" style="margin: 15px 0; padding: 15px;">
+                        <span class="css-atrule">@keyframes</span> <span class="css-selector">fadeIn</span> {<br>
+                        &nbsp;&nbsp;<span class="css-value">from</span> { <span class="css-property">opacity</span>:
+                        <span class="css-value">0</span>; }<br>
+                        &nbsp;&nbsp;<span class="css-value">to</span> { <span class="css-property">opacity</span>: <span
+                            class="css-value">1</span>; }<br>
+                        }
+                    </div>
+                    <button onclick="playExample('fadeExample', 'fadeIn 1s ease')">Play</button>
+                </div>
+
+                <div class="example-card">
+                    <h4>2. Slide In</h4>
+                    <div class="example-animation">
+                        <div class="example-object" id="slideExample"></div>
+                    </div>
+                    <div class="code-display" style="margin: 15px 0; padding: 15px;">
+                        <span class="css-atrule">@keyframes</span> <span class="css-selector">slideInLeft</span> {<br>
+                        &nbsp;&nbsp;<span class="css-value">from</span> { <span class="css-property">transform</span>:
+                        <span class="css-value">translateX(-100px)</span>; }<br>
+                        &nbsp;&nbsp;<span class="css-value">to</span> { <span class="css-property">transform</span>:
+                        <span class="css-value">translateX(0)</span>; }<br>
+                        }
+                    </div>
+                    <button onclick="playExample('slideExample', 'slideInLeft 1s ease')">Play</button>
+                </div>
+
+                <div class="example-card">
+                    <h4>3. Bounce</h4>
+                    <div class="example-animation">
+                        <div class="example-object" id="bounceExample"></div>
+                    </div>
+                    <div class="code-display" style="margin: 15px 0; padding: 15px;">
+                        <span class="css-atrule">@keyframes</span> <span class="css-selector">bounce</span> {<br>
+                        &nbsp;&nbsp;<span class="css-value">0%, 100%</span> { <span
+                            class="css-property">transform</span>: <span class="css-value">translateY(0)</span>; }<br>
+                        &nbsp;&nbsp;<span class="css-value">50%</span> { <span class="css-property">transform</span>:
+                        <span class="css-value">translateY(-30px)</span>; }<br>
+                        }
+                    </div>
+                    <button onclick="playExample('bounceExample', 'bounce 1s ease infinite')">Play</button>
+                </div>
+
+                <div class="example-card">
+                    <h4>4. Rotate</h4>
+                    <div class="example-animation">
+                        <div class="example-object" id="rotateExample"></div>
+                    </div>
+                    <div class="code-display" style="margin: 15px 0; padding: 15px;">
+                        <span class="css-atrule">@keyframes</span> <span class="css-selector">rotate</span> {<br>
+                        &nbsp;&nbsp;<span class="css-value">from</span> { <span class="css-property">transform</span>:
+                        <span class="css-value">rotate(0deg)</span>; }<br>
+                        &nbsp;&nbsp;<span class="css-value">to</span> { <span class="css-property">transform</span>:
+                        <span class="css-value">rotate(360deg)</span>; }<br>
+                        }
+                    </div>
+                    <button onclick="playExample('rotateExample', 'rotate 2s linear infinite')">Play</button>
+                </div>
+
+                <div class="example-card">
+                    <h4>5. Pulse</h4>
+                    <div class="example-animation">
+                        <div class="example-object" id="pulseExample"></div>
+                    </div>
+                    <div class="code-display" style="margin: 15px 0; padding: 15px;">
+                        <span class="css-atrule">@keyframes</span> <span class="css-selector">pulse</span> {<br>
+                        &nbsp;&nbsp;<span class="css-value">0%, 100%</span> { <span
+                            class="css-property">transform</span>: <span class="css-value">scale(1)</span>; }<br>
+                        &nbsp;&nbsp;<span class="css-value">50%</span> { <span class="css-property">transform</span>:
+                        <span class="css-value">scale(1.1)</span>; }<br>
+                        }
+                    </div>
+                    <button onclick="playExample('pulseExample', 'pulse 1.5s ease infinite')">Play</button>
+                </div>
+
+                <div class="example-card">
+                    <h4>6. Shake</h4>
+                    <div class="example-animation">
+                        <div class="example-object" id="shakeExample"></div>
+                    </div>
+                    <div class="code-display" style="margin: 15px 0; padding: 15px;">
+                        <span class="css-atrule">@keyframes</span> <span class="css-selector">shake</span> {<br>
+                        &nbsp;&nbsp;<span class="css-value">0%, 100%</span> { <span
+                            class="css-property">transform</span>: <span class="css-value">translateX(0)</span>; }<br>
+                        &nbsp;&nbsp;<span class="css-value">10%, 30%, 50%, 70%, 90%</span> { <span
+                            class="css-property">transform</span>: <span class="css-value">translateX(-10px)</span>;
+                        }<br>
+                        &nbsp;&nbsp;<span class="css-value">20%, 40%, 60%, 80%</span> { <span
+                            class="css-property">transform</span>: <span class="css-value">translateX(10px)</span>;
+                        }<br>
+                        }
+                    </div>
+                    <button onclick="playExample('shakeExample', 'shake 0.5s ease')">Play</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance & Best Practices -->
+        <div class="section">
+            <h2><i class="fas fa-tachometer-alt"></i> Performance & Best Practices</h2>
+
+            <div class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Good for Performance</th>
+                        <th>Bad for Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="css-property">transform</span>: translate, scale, rotate</td>
+                        <td><span class="css-property">width</span>, <span class="css-property">height</span>, <span
+                                class="css-property">margin</span>, <span class="css-property">padding</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="css-property">opacity</span></td>
+                        <td><span class="css-property">box-shadow</span> (heavy use)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="css-value">will-change: transform</span> (sparingly)</td>
+                        <td>Too many simultaneous animations</td>
+                    </tr>
+                    <tr>
+                        <td>Using <span class="css-value">requestAnimationFrame</span> for JS animations</td>
+                        <td>Using <span class="css-value">setInterval</span> for animations</td>
+                    </tr>
+                    <tr>
+                        <td>GPU accelerated properties</td>
+                        <td>Properties that cause layout reflow</td>
+                    </tr>
+                </tbody>
+            </div>
+
+            <div class="tip-box">
+                <strong>Performance Tip:</strong> Always animate with <code>transform</code> and <code>opacity</code>
+                when possible. These properties can be hardware-accelerated by the GPU, making animations smoother and
+                more efficient.
+            </div>
+
+            <div class="warning-box">
+                <strong>A11Y Warning:</strong> Respect user preferences with
+                <code>@media (prefers-reduced-motion: reduce)</code>. Some users may experience motion sickness or
+                distractions from animations.
+            </div>
+        </div>
+
+        <!-- Advanced Techniques -->
+        <div class="section">
+            <h2><i class="fas fa-magic"></i> Advanced Techniques</h2>
+
+            <h3>1. Multiple Animations</h3>
+            <div class="code-display">
+                <span class="css-selector">.element</span> {<br>
+                &nbsp;&nbsp;<span class="css-comment">/* Apply multiple animations */</span><br>
+                &nbsp;&nbsp;<span class="css-property">animation</span>: <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="css-value">slideIn 1s ease,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;fadeIn 2s ease,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;colorChange 3s linear infinite</span>;<br>
+                }
+            </div>
+
+            <h3>2. Step Animations</h3>
+            <div class="code-display">
+                <span class="css-atrule">@keyframes</span> <span class="css-selector">stepsAnimation</span> {<br>
+                &nbsp;&nbsp;<span class="css-value">0%</span> { <span class="css-property">background-position</span>:
+                <span class="css-value">0 0</span>; }<br>
+                &nbsp;&nbsp;<span class="css-value">100%</span> { <span class="css-property">background-position</span>:
+                <span class="css-value">-1600px 0</span>; }<br>
+                }<br><br>
+                <span class="css-selector">.sprite</span> {<br>
+                &nbsp;&nbsp;<span class="css-property">animation</span>: <span class="css-value">stepsAnimation 1s
+                    steps(8) infinite</span>;<br>
+                }
+            </div>
+
+            <h3>3. Animation Events (JavaScript)</h3>
+            <div class="code-display">
+                <span class="css-comment">// JavaScript animation events</span><br>
+                <span class="css-selector">element</span>.<span class="css-property">addEventListener</span>(<span
+                    class="css-value">'animationstart'</span>, <span class="css-value">()</span> => {<br>
+                &nbsp;&nbsp;<span class="css-value">console</span>.<span class="css-property">log</span>(<span
+                    class="css-value">'Animation started'</span>);<br>
+                });<br><br>
+                <span class="css-selector">element</span>.<span class="css-property">addEventListener</span>(<span
+                    class="css-value">'animationiteration'</span>, <span class="css-value">()</span> => {<br>
+                &nbsp;&nbsp;<span class="css-value">console</span>.<span class="css-property">log</span>(<span
+                    class="css-value">'Animation repeated'</span>);<br>
+                });<br><br>
+                <span class="css-selector">element</span>.<span class="css-property">addEventListener</span>(<span
+                    class="css-value">'animationend'</span>, <span class="css-value">()</span> => {<br>
+                &nbsp;&nbsp;<span class="css-value">console</span>.<span class="css-property">log</span>(<span
+                    class="css-value">'Animation ended'</span>);<br>
+                });
+            </div>
+        </div>
+
+        <footer>
+            <h3>Animate with Purpose</h3>
+            <p>CSS animations should enhance user experience, not distract from it. Use animations purposefully to guide
+                attention, provide feedback, and create delightful interactions.</p>
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                <div><i class="fas fa-bolt"></i> 60 FPS Target</div>
+                <div><i class="fas fa-heart"></i> User Experience First</div>
+                <div><i class="fas fa-universal-access"></i> Accessible</div>
+                <div><i class="fas fa-paint-brush"></i> Purposeful</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const animatedObject = document.getElementById('animatedObject');
+        const timelineVisualizer = document.getElementById('timelineVisualizer');
+        const playhead = document.getElementById('playhead');
+
+        // Control elements
+        const animationType = document.getElementById('animationType');
+        const duration = document.getElementById('duration');
+        const durationValue = document.getElementById('durationValue');
+        const delay = document.getElementById('delay');
+        const delayValue = document.getElementById('delayValue');
+        const iterationCount = document.getElementById('iterationCount');
+        const timingFunction = document.getElementById('timingFunction');
+        const direction = document.getElementById('direction');
+        const fillMode = document.getElementById('fillMode');
+
+        // Button elements
+        const playButton = document.getElementById('playAnimation');
+        const pauseButton = document.getElementById('pauseAnimation');
+        const stopButton = document.getElementById('stopAnimation');
+        const resetButton = document.getElementById('resetAnimation');
+
+        // Performance elements
+        const fpsCounter = document.getElementById('fpsCounter');
+        const animationState = document.getElementById('animationState');
+        const iterationCounter = document.getElementById('iterationCounter');
+        const currentCode = document.getElementById('currentCode');
+
+        // Preset buttons
+        const presetButtons = document.querySelectorAll('.preset-btn');
+
+        // Animation state
+        let isPlaying = false;
+        let animationIterations = 0;
+        let currentAnimationName = 'bounce';
+
+        // Predefined keyframes
+        const keyframes = {
+            bounce: `
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}`,
+            rotate: `
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}`,
+            pulse: `
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}`,
+            shake: `
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
+}`,
+            slide: `
+@keyframes slide {
+  0% { transform: translateX(-100px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}`,
+            color: `
+@keyframes colorChange {
+  0% { background-color: #8b5cf6; }
+  25% { background-color: #3b82f6; }
+  50% { background-color: #10b981; }
+  75% { background-color: #f59e0b; }
+  100% { background-color: #8b5cf6; }
+}`,
+            custom: `
+@keyframes custom {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(100px, 0) rotate(90deg); }
+  50% { transform: translate(100px, 100px) rotate(180deg); }
+  75% { transform: translate(0, 100px) rotate(270deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}`
+        };
+
+        // Initialize
+        setupEventListeners();
+        createTimelineMarkers();
+        updateCodeDisplay();
+        startFPSCounter();
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Control inputs
+            duration.addEventListener('input', function () {
+                durationValue.textContent = this.value + 's';
+                updateAnimation();
+            });
+
+            delay.addEventListener('input', function () {
+                delayValue.textContent = this.value + 's';
+                updateAnimation();
+            });
+
+            animationType.addEventListener('change', function () {
+                currentAnimationName = this.value;
+                updateAnimation();
+                updatePresetButtons();
+            });
+
+            [iterationCount, timingFunction, direction, fillMode].forEach(control => {
+                control.addEventListener('change', updateAnimation);
+            });
+
+            // Control buttons
+            playButton.addEventListener('click', function () {
+                animatedObject.style.animationPlayState = 'running';
+                isPlaying = true;
+                animationState.textContent = 'Playing';
+            });
+
+            pauseButton.addEventListener('click', function () {
+                animatedObject.style.animationPlayState = 'paused';
+                isPlaying = false;
+                animationState.textContent = 'Paused';
+            });
+
+            stopButton.addEventListener('click', function () {
+                animatedObject.style.animation = 'none';
+                isPlaying = false;
+                animationIterations = 0;
+                iterationCounter.textContent = '0';
+                animationState.textContent = 'Stopped';
+                resetPlayhead();
+            });
+
+            resetButton.addEventListener('click', function () {
+                // Reset controls
+                animationType.value = 'bounce';
+                duration.value = '2';
+                durationValue.textContent = '2s';
+                delay.value = '0';
+                delayValue.textContent = '0s';
+                iterationCount.value = 'infinite';
+                timingFunction.value = 'ease';
+                direction.value = 'normal';
+                fillMode.value = 'none';
+
+                // Reset animation
+                currentAnimationName = 'bounce';
+                updateAnimation();
+                updatePresetButtons();
+
+                // Reset state
+                isPlaying = false;
+                animationIterations = 0;
+                iterationCounter.textContent = '0';
+                animationState.textContent = 'Idle';
+                resetPlayhead();
+            });
+
+            // Preset buttons
+            presetButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const preset = this.getAttribute('data-preset');
+                    animationType.value = preset;
+                    currentAnimationName = preset;
+                    updateAnimation();
+                    updatePresetButtons();
+                });
+            });
+
+            // Animation events
+            animatedObject.addEventListener('animationstart', function () {
+                animationState.textContent = 'Playing';
+            });
+
+            animatedObject.addEventListener('animationiteration', function () {
+                animationIterations++;
+                iterationCounter.textContent = animationIterations;
+            });
+
+            animatedObject.addEventListener('animationend', function () {
+                if (iterationCount.value !== 'infinite') {
+                    animationState.textContent = 'Finished';
+                    isPlaying = false;
+                }
+            });
+        }
+
+        // Update the animation based on controls
+        function updateAnimation() {
+            const animationCSS = `
+                ${currentAnimationName} 
+                ${duration.value}s 
+                ${timingFunction.value} 
+                ${delay.value}s 
+                ${iterationCount.value} 
+                ${direction.value} 
+                ${fillMode.value}
+            `;
+
+            animatedObject.style.animation = animationCSS;
+            isPlaying = true;
+            animatedObject.style.animationPlayState = 'running';
+            animationState.textContent = 'Playing';
+
+            updateCodeDisplay();
+            updateTimeline();
+        }
+
+        // Update the code display
+        function updateCodeDisplay() {
+            const keyframeCode = keyframes[currentAnimationName] || keyframes.bounce;
+
+            const animationCSS = `
+<span class="css-selector">#animatedObject</span> {<br>
+&nbsp;&nbsp;<span class="css-property">animation</span>: <span class="css-value">${currentAnimationName} ${duration.value}s ${timingFunction.value} ${delay.value}s ${iterationCount.value} ${direction.value} ${fillMode.value}</span>;<br>
+}
+            `;
+
+            currentCode.innerHTML =
+                `<span class="css-comment">/* Current CSS Animation */</span><br>` +
+                keyframeCode +
+                `<br><br>` +
+                animationCSS;
+        }
+
+        // Create timeline markers
+        function createTimelineMarkers() {
+            const timelineTrack = timelineVisualizer.querySelector('.timeline-track');
+
+            // Clear existing markers
+            const existingMarkers = timelineVisualizer.querySelectorAll('.keyframe-marker');
+            existingMarkers.forEach(marker => marker.remove());
+
+            // Create markers at 0%, 25%, 50%, 75%, 100%
+            const percentages = [0, 25, 50, 75, 100];
+
+            percentages.forEach(percent => {
+                const marker = document.createElement('div');
+                marker.className = 'keyframe-marker';
+                marker.style.left = `${percent}%`;
+                marker.setAttribute('data-percent', percent);
+
+                const label = document.createElement('div');
+                label.className = 'keyframe-label';
+                label.textContent = `${percent}%`;
+
+                marker.appendChild(label);
+                timelineVisualizer.appendChild(marker);
+
+                // Add click event to jump to keyframe
+                marker.addEventListener('click', function () {
+                    const percent = parseInt(this.getAttribute('data-percent'));
+                    // In a real implementation, you would seek to this percentage
+                    console.log(`Jump to ${percent}%`);
+                });
+            });
+        }
+
+        // Update timeline animation
+        function updateTimeline() {
+            const durationMs = parseFloat(duration.value) * 1000;
+            const delayMs = parseFloat(delay.value) * 1000;
+            const totalDuration = durationMs + delayMs;
+
+            // Reset playhead
+            resetPlayhead();
+
+            // Animate playhead if animation is playing
+            if (isPlaying && iterationCount.value !== '0') {
+                playhead.style.transition = `left ${duration.value}s ${timingFunction.value} ${delay.value}s`;
+                playhead.style.left = '100%';
+
+                // Reset playhead when animation completes (for infinite animations)
+                if (iterationCount.value === 'infinite') {
+                    playhead.addEventListener('transitionend', function reset() {
+                        if (isPlaying) {
+                            playhead.style.transition = 'none';
+                            playhead.style.left = '0%';
+                            void playhead.offsetWidth; // Trigger reflow
+                            playhead.style.transition = `left ${duration.value}s ${timingFunction.value} ${delay.value}s`;
+                            playhead.style.left = '100%';
+                        }
+                    }, { once: true });
+                }
+            }
+        }
+
+        // Reset playhead position
+        function resetPlayhead() {
+            playhead.style.transition = 'none';
+            playhead.style.left = '0%';
+        }
+
+        // Update preset buttons active state
+        function updatePresetButtons() {
+            presetButtons.forEach(button => {
+                if (button.getAttribute('data-preset') === currentAnimationName) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // FPS counter
+        function startFPSCounter() {
+            let frameCount = 0;
+            let lastTime = performance.now();
+            let fps = 60;
+
+            function updateFPS() {
+                frameCount++;
+                const currentTime = performance.now();
+
+                if (currentTime >= lastTime + 1000) {
+                    fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                    fpsCounter.textContent = fps;
+                    frameCount = 0;
+                    lastTime = currentTime;
+                }
+
+                requestAnimationFrame(updateFPS);
+            }
+
+            updateFPS();
+        }
+
+        // Example animation player
+        window.playExample = function (elementId, animationCSS) {
+            const element = document.getElementById(elementId);
+            element.style.animation = 'none';
+
+            // Trigger reflow
+            void element.offsetWidth;
+
+            // Apply animation
+            element.style.animation = animationCSS;
+
+            // Reset after animation completes
+            const duration = parseFloat(animationCSS.match(/(\d+(\.\d+)?)s/)[1]) * 1000;
+            setTimeout(() => {
+                element.style.animation = 'none';
+            }, duration);
+        };
+
+        // Initialize with bounce animation
+        updateAnimation();
+    </script>
+</body>
+
+</html>
