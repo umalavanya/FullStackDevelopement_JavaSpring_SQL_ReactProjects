@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 26 JavaScript Functions</title>
+</head>
+<body>
+    <script>
+        //1. Function Declaration
+        function addNumbers(a,b){
+            return a+b ;
+        }
+
+        //2. Function Expression
+        const multiplyNumbers = function(a,b){
+            return a*b ;
+        }
+        //3. Arrow Function
+        const subtractNumbers = (a,b) => {
+            return a-b ;
+        }
+        //4. Arrow Function (concise body)
+        const divideNumbers = (a,b) => a/b ;
+
+        // Shorter arrow function (implicit return)
+            const cubeNumber = num => num * num * num;
+
+        // Testing the functions
+        console.log("Addition (5 + 3):", addNumbers(5,3));
+        console.log("Multiplication (5 * 3):", multiplyNumbers(5,3));
+        console.log("Subtraction (5 - 3):", subtractNumbers(5,3));
+        console.log("Division (6 / 3):", divideNumbers(6,3));
+        console.log("Cube of 4:", cubeNumber(4));
+
+        // Function with default parameters
+        function greet(name="Guest"){
+            return "Hello, " + name + "!" ;
+        }
+
+        console.log(greet("Alice"));
+        console.log(greet());
+
+        //Rest parameters
+        function sumAll(...numbers){
+            return numbers.reduce((acc, curr) => acc + curr, 0);
+        }
+
+        console.log("Sum of all numbers (1,2,3,4,5):", sumAll(1,2,3,4,5));
+
+        // Higher-order function
+            function createMultiplier(multiplier) {
+                return function (number) {
+                    return number * multiplier;
+                };
+            }
+            const double = createMultiplier(2);
+            const triple = createMultiplier(3);
+            console.log("Double of 5:", double(5));
+            console.log("Triple of 5:", triple(5));
+
+        // IIFE (Immediately Invoked Function Expression)
+        (function(){
+            console.log("This is an IIFE - runs immediately upon definition.");
+        })();
+
+        // Recursive function
+        function factorial(n){
+            if(n <= 1) return 1;
+            return n * factorial(n - 1);
+        }
+
+        console.log("Factorial of 5:", factorial(5));
+
+        // Function scope vs Block scope
+        function scopeTest(){
+            if(true){
+                var functionScoped = "I am function scoped (var)";
+                let blockScoped = "I am block scoped (let)";
+                console.log(blockScoped); // Accessible here
+            }
+            console.log(functionScoped); // Accessible here
+            // console.log(blockScoped); // Error: blockScoped is not defined
+        }
+
+        scopeTest();
+
+        // Callback function
+        function fetchData(callback){
+            setTimeout(() => {
+                const data = "Sample Data";
+                callback(data);
+            }, 1000);
+        }
+
+        fetchData(function(data){
+            console.log("Fetched Data:", data);
+        });
+
+        // Callback function with arrow function
+        fetchData((data) => {
+            console.log("Fetched Data with arrow function:", data);
+        });
+
+        // Function hoisting
+        console.log("Hoisted Function Call (subtract 10 - 4):", hoistedFunction(10, 4));
+        function hoistedFunction(a,b){
+            return a - b ;
+        }
+
+        // Non-hoisted function expression
+        // console.log("Non-hoisted Function Call (multiply 10 * 4):", nonHoistedFunction(10, 4)); // Error
+        const nonHoistedFunction = function(a,b){
+            return a * b ;
+        }
+
+        console.log("Non-hoisted Function Call (multiply 10 * 4):", nonHoistedFunction(10, 4));
+
+        // Function returning another function
+        function outerFunction(greeting){
+            return function(name){
+                return greeting + ", " + name + "!" ;
+            }
+        }
+
+        const sayHello = outerFunction("Hello");
+        console.log(sayHello("Bob"));
+
+        // Named function expression
+        const namedFunction = function factorialNamed(n){
+            if(n <= 1) return 1;
+            return n * factorialNamed(n - 1);
+        }
+
+        console.log("Factorial of 6 using named function expression:", namedFunction(6));
+
+        // Function with object parameter
+        function printPerson({name, age, city}){
+            console.log(`Name: ${name}, Age: ${age}, City: ${city}`);
+        }
+
+        printPerson({name: "Charlie", age: 28, city: "Los Angeles"});
+
+        // Function with array parameter
+        function printColors(colors){
+            colors.forEach(color => console.log(color));
+        }
+
+        // Testing printColors function
+        printColors(["red", "green", "blue"]);
+
+        // Function with rest and default parameters
+        function buildName(firstName, lastName="Smith", ...titles){
+            return `${firstName} ${lastName}, ${titles.join(" ")}`;
+        }
+
+        console.log(buildName("John", "Doe", "PhD", "Esq."));
+        console.log(buildName("Jane"));
+
+        // Async function
+        async function fetchAsyncData(){
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve("Async Data Fetched");
+                }, 1500);
+            });
+        }
+
+        fetchAsyncData().then(data => console.log(data));
+
+        // Async function with await
+        async function getData(){
+            const data = await fetchAsyncData();
+            console.log("Data from async function with await:", data);
+        }
+        getData();
+
+        // Function with try-catch
+        function safeDivide(a, b){
+            try {
+                if(b === 0) throw new Error("Division by zero");
+                return a / b ;
+            } catch (error) {
+                return error.message ;
+            }
+        }
+
+        console.log("Safe Divide (10 / 2):", safeDivide(10, 2));
+        console.log("Safe Divide (10 / 0):", safeDivide(10, 0));
+
+        // Function with closure
+        function makeCounter(){
+            let count = 0 ;
+            return function(){
+                count++;
+                return count ;
+            }
+        }
+
+        // Testing closure
+        const counter = makeCounter();
+
+        console.log("Counter:", counter());
+
+        console.log("Counter:", counter());
+
+        console.log("Counter:", counter());
+
+        console.log("Counter:", counter());
+
+        // Another counter instance
+        const anotherCounter = makeCounter();
+        console.log("Another Counter:", anotherCounter());
+        console.log("Another Counter:", anotherCounter());
+        
+
+    </script>
+    
+</body>
+</html>
