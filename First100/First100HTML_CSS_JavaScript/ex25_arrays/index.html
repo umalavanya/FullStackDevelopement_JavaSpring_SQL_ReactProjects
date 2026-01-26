@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 25</title>
+</head>
+
+<body>
+    <script>
+        // 1. Create an array of 5 fruits
+        let fruits = ["apple", "banana", "orange", "grape", "mango"];
+        console.log("Original array:", fruits);
+
+        // 2. Add/remove items from beginning and end
+
+        // Add to end
+        fruits.push("strawberry");
+        console.log("After push:", fruits);
+
+        // Remove from end
+        let lastFruit = fruits.pop();
+        console.log("After pop:", fruits);
+        console.log("Removed fruit:", lastFruit);
+
+        // Add to beginning
+        fruits.unshift("kiwi");
+        console.log("After unshift:", fruits);
+
+        // Remove from beginning
+        let firstFruit = fruits.shift();
+        console.log("After shift:", fruits);
+        console.log("Removed fruit:", firstFruit);
+
+        // 3. Find the index of a specific fruit
+        let orangeIndex = fruits.indexOf("orange");
+        console.log("Index of 'orange':", orangeIndex);
+
+        // If fruit doesn't exist
+        let watermelonIndex = fruits.indexOf("watermelon");
+        console.log("Index of 'watermelon':", watermelonIndex); // -1
+
+        // 4. Other useful array methods
+        fruits.splice(2, 0, "pineapple"); // Add at index 2
+        console.log("After splice (add):", fruits);
+
+        fruits.splice(3, 1); // Remove 1 item at index 3
+        console.log("After splice (remove):", fruits);
+
+        // Slice to get a portion
+        let someFruits = fruits.slice(1, 3);
+        console.log("Slice (1-3):", someFruits);
+
+        // Check if array includes an item
+        console.log("Includes 'banana'?", fruits.includes("banana"));
+
+        // Reverse array
+        let reversed = [...fruits].reverse();
+        console.log("Reversed array:", reversed);
+
+        // Join array elements
+        let fruitString = fruits.join(", ");
+        console.log("Joined string:", fruitString);
+    </script>
+</body>
+
+</html>
