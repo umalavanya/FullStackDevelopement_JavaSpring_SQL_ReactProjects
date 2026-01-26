@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 24</title>
+</head>
+
+<body>
+    <script>
+        // For loop: Print numbers 1-10
+        console.log("Numbers 1-10 using for loop:");
+        for (let i = 1; i <= 10; i++) {
+            console.log(i);
+        }
+
+        // While loop: Print even numbers up to 20
+        console.log("\nEven numbers up to 20 using while loop:");
+        let num = 2;
+        while (num <= 20) {
+            console.log(num);
+            num += 2;
+        }
+
+        // Do-while loop: Runs at least once
+        console.log("\nCountdown using do-while loop:");
+        let count = 5;
+        do {
+            console.log(count);
+            count--;
+        } while (count > 0);
+
+        // ForEach: Iterate through array
+        console.log("\nArray iteration using forEach:");
+        const fruits = ["apple", "banana", "cherry", "date", "elderberry"];
+
+        fruits.forEach(function (fruit, index) {
+            console.log(index + ": " + fruit);
+        });
+
+        // For...of loop (modern way)
+        console.log("\nUsing for...of loop:");
+        for (const fruit of fruits) {
+            console.log(fruit);
+        }
+
+        // For...in loop (for objects)
+        console.log("\nObject iteration using for...in:");
+        const person = { name: "John", age: 30, city: "New York" };
+        for (const key in person) {
+            console.log(key + ": " + person[key]);
+        }
+    </script>
+</body>
+
+</html>
