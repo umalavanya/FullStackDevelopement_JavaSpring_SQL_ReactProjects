@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 23</title>
+</head>
+
+<body>
+    <script>
+        function checkNumber(num) {
+            if (num > 0) {
+                console.log(num + " is positive");
+            } else if (num < 0) {
+                console.log(num + " is negative");
+            } else {
+                console.log("The number is zero");
+            }
+        }
+
+        // Test cases
+        checkNumber(10);
+        checkNumber(-5);
+        checkNumber(0);
+
+        // Another example with multiple conditions
+        let temperature = 25;
+        let isRaining = false;
+
+        if (temperature > 30 && !isRaining) {
+            console.log("Perfect beach day!");
+        } else if (temperature > 20 && temperature <= 30) {
+            console.log("Nice weather for a walk");
+        } else if (temperature > 0 && temperature <= 20) {
+            console.log("Better wear a jacket");
+        } else if (temperature <= 0) {
+            console.log("It's freezing cold!");
+        }
+
+        // Ternary operator example
+        let age = 18;
+        let canVote = age >= 18 ? "Yes, can vote" : "No, cannot vote";
+        console.log(canVote);
+    </script>
+</body>
+
+</html>

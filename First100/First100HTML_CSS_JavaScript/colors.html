@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Hunt | Beautiful Color Palettes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            color: #222;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: #ff5a5f;
+        }
+
+        .logo span {
+            background: linear-gradient(90deg, #ff5a5f, #4373e6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ff5a5f;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border: 2px solid #eaeaea;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4373e6;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background-color: #fff;
+            border: 2px solid #eaeaea;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background-color: #4373e6;
+            color: white;
+            border-color: #4373e6;
+        }
+
+        /* Color Palettes Grid */
+        .palettes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .palette-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .palette-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .palette-colors {
+            display: flex;
+            height: 180px;
+        }
+
+        .color-box {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+            transition: flex-grow 0.3s;
+        }
+
+        .color-box:hover {
+            flex-grow: 1.2;
+        }
+
+        .color-code {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .color-box:hover .color-code {
+            opacity: 1;
+        }
+
+        .palette-info {
+            padding: 20px;
+        }
+
+        .palette-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #222;
+        }
+
+        .palette-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .likes {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .likes i {
+            color: #ff5a5f;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: #ddd;
+            padding: 40px 0;
+            margin-top: 30px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-section p {
+            margin-bottom: 15px;
+            max-width: 300px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: #4373e6;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .palettes-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .search-filter {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .palettes-container {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-palette"></i>
+                    <span> ColorHunt</span>
+                </a>
+
+                <nav>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-fire"></i> Popular</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> New</a></li>
+                        <li><a href="#"><i class="fas fa-random"></i> Random</a></li>
+                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Search and Filter -->
+        <div class="search-filter">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search for colors (e.g., 'blue', 'warm', 'pastel')">
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="popular">Popular</button>
+                <button class="filter-btn" data-filter="new">New</button>
+                <button class="filter-btn" data-filter="warm">Warm</button>
+                <button class="filter-btn" data-filter="cool">Cool</button>
+                <button class="filter-btn" data-filter="pastel">Pastel</button>
+            </div>
+        </div>
+
+        <!-- Color Palettes Grid -->
+        <div class="palettes-container" id="palettesContainer">
+            <!-- Color palettes will be generated by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About ColorHunt</h3>
+                    <p>Discover the newest hand-picked color palettes. Get inspired by thousands of beautiful color
+                        schemes and create perfect designs.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Useful Links</h3>
+                    <p><a href="#" style="color: #ddd; text-decoration: none;">Color Tools</a></p>
+                    <p><a href="#" style="color: #ddd; text-decoration: none;">Color Theory</a></p>
+                    <p><a href="#" style="color: #ddd; text-decoration: none;">Color Converter</a></p>
+                    <p><a href="#" style="color: #ddd; text-decoration: none;">Contributors</a></p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Have feedback or suggestions?</p>
+                    <p>Email us at: <a href="mailto:hello@colorhunt.com"
+                            style="color: #ddd; text-decoration: none;">hello@colorhunt.com</a></p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2023 ColorHunt. All rights reserved. | Made with <i class="fas fa-heart"
+                        style="color: #ff5a5f;"></i> for designers and developers</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Color palette data
+        const colorPalettes = [
+            {
+                id: 1,
+                name: "Ocean Breeze",
+                colors: ["#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
+                likes: 245,
+                date: "2 days ago",
+                tags: ["cool", "popular"]
+            },
+            {
+                id: 2,
+                name: "Sunset Glow",
+                colors: ["#FF9A8B", "#FF6B6B", "#FFD166", "#06D6A0", "#118AB2"],
+                likes: 189,
+                date: "1 week ago",
+                tags: ["warm", "popular"]
+            },
+            {
+                id: 3,
+                name: "Pastel Dreams",
+                colors: ["#FFAFCC", "#FFC8DD", "#CDB4DB", "#BDE0FE", "#A2D2FF"],
+                likes: 312,
+                date: "3 days ago",
+                tags: ["pastel", "cool", "popular"]
+            },
+            {
+                id: 4,
+                name: "Forest Walk",
+                colors: ["#606C38", "#283618", "#FEFAE0", "#DDA15E", "#BC6C25"],
+                likes: 156,
+                date: "5 days ago",
+                tags: ["warm", "new"]
+            },
+            {
+                id: 5,
+                name: "Midnight Sky",
+                colors: ["#003049", "#D62828", "#F77F00", "#FCBF49", "#EAE2B7"],
+                likes: 278,
+                date: "1 day ago",
+                tags: ["cool", "new"]
+            },
+            {
+                id: 6,
+                name: "Cotton Candy",
+                colors: ["#FFADAD", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#9BF6FF"],
+                likes: 421,
+                date: "4 days ago",
+                tags: ["pastel", "popular"]
+            },
+            {
+                id: 7,
+                name: "Autumn Leaves",
+                colors: ["#D8E2DC", "#FFE5D9", "#FFCAD4", "#F4ACB7", "#9D8189"],
+                likes: 134,
+                date: "2 weeks ago",
+                tags: ["warm"]
+            },
+            {
+                id: 8,
+                name: "Arctic Chill",
+                colors: ["#8ECAE6", "#219EBC", "#023047", "#FFB703", "#FB8500"],
+                likes: 198,
+                date: "6 days ago",
+                tags: ["cool"]
+            },
+            {
+                id: 9,
+                name: "Berry Smoothie",
+                colors: ["#EF476F", "#FFD166", "#06D6A0", "#118AB2", "#073B4C"],
+                likes: 267,
+                date: "3 days ago",
+                tags: ["warm", "popular"]
+            },
+            {
+                id: 10,
+                name: "Mint Fresh",
+                colors: ["#CCD5AE", "#E9EDC9", "#FEFAE0", "#FAEDCD", "#D4A373"],
+                likes: 178,
+                date: "1 week ago",
+                tags: ["pastel", "cool"]
+            },
+            {
+                id: 11,
+                name: "Crimson Tide",
+                colors: ["#7400B8", "#6930C3", "#5E60CE", "#5390D9", "#4EA8DE"],
+                likes: 305,
+                date: "2 days ago",
+                tags: ["cool", "new"]
+            },
+            {
+                id: 12,
+                name: "Golden Hour",
+                colors: ["#FF9E00", "#FF9100", "#FF8500", "#FF7900", "#FF6D00"],
+                likes: 222,
+                date: "5 days ago",
+                tags: ["warm", "popular"]
+            }
+        ];
+
+        // DOM Elements
+        const palettesContainer = document.getElementById('palettesContainer');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const searchInput = document.getElementById('searchInput');
+
+        // Generate palette cards
+        function generatePalettes(palettes) {
+            palettesContainer.innerHTML = '';
+
+            palettes.forEach(palette => {
+                const paletteCard = document.createElement('div');
+                paletteCard.className = 'palette-card';
+                paletteCard.dataset.tags = palette.tags.join(' ');
+
+                // Create color boxes
+                let colorBoxesHTML = '';
+                palette.colors.forEach(color => {
+                    colorBoxesHTML += `
+                        <div class="color-box" style="background-color: ${color};">
+                            <span class="color-code">${color}</span>
+                        </div>
+                    `;
+                });
+
+                // Create palette card HTML
+                paletteCard.innerHTML = `
+                    <div class="palette-colors">
+                        ${colorBoxesHTML}
+                    </div>
+                    <div class="palette-info">
+                        <h3 class="palette-title">${palette.name}</h3>
+                        <div class="palette-meta">
+                            <span>${palette.date}</span>
+                            <div class="likes">
+                                <i class="fas fa-heart"></i>
+                                <span>${palette.likes}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add click event to copy color code
+                paletteCard.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('color-box') || e.target.classList.contains('color-code')) {
+                        const colorCode = e.target.classList.contains('color-box')
+                            ? e.target.querySelector('.color-code').textContent
+                            : e.target.textContent;
+
+                        // Copy to clipboard
+                        navigator.clipboard.writeText(colorCode).then(() => {
+                            // Show a temporary message
+                            const originalColor = e.target.style.backgroundColor;
+                            if (e.target.classList.contains('color-box')) {
+                                e.target.style.backgroundColor = '#4CAF50';
+                                setTimeout(() => {
+                                    e.target.style.backgroundColor = originalColor;
+                                }, 300);
+                            }
+                        });
+                    }
+                });
+
+                palettesContainer.appendChild(paletteCard);
+            });
+        }
+
+        // Filter palettes based on selected filter
+        function filterPalettes(filter) {
+            if (filter === 'all') {
+                return colorPalettes;
+            } else {
+                return colorPalettes.filter(palette => palette.tags.includes(filter));
+            }
+        }
+
+        // Search palettes by name or color
+        function searchPalettes(searchTerm) {
+            searchTerm = searchTerm.toLowerCase();
+
+            if (!searchTerm) {
+                return colorPalettes;
+            }
+
+            return colorPalettes.filter(palette => {
+                // Check palette name
+                if (palette.name.toLowerCase().includes(searchTerm)) {
+                    return true;
+                }
+
+                // Check color codes
+                for (const color of palette.colors) {
+                    if (color.toLowerCase().includes(searchTerm)) {
+                        return true;
+                    }
+                }
+
+                // Check tags
+                for (const tag of palette.tags) {
+                    if (tag.toLowerCase().includes(searchTerm)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+        }
+
+        // Initialize the page with all palettes
+        generatePalettes(colorPalettes);
+
+        // Add event listeners to filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+                const filteredPalettes = filterPalettes(filter);
+                generatePalettes(filteredPalettes);
+            });
+        });
+
+        // Add event listener to search input
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value;
+            const searchedPalettes = searchPalettes(searchTerm);
+
+            // Also update active filter button if needed
+            if (searchTerm) {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                filterButtons[0].classList.add('active'); // Set "All" as active
+            }
+
+            generatePalettes(searchedPalettes);
+        });
+
+        // Add some interactivity to color boxes on hover
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorBoxes = document.querySelectorAll('.color-box');
+
+            colorBoxes.forEach(box => {
+                box.addEventListener('mouseenter', function () {
+                    this.style.flexGrow = '1.5';
+                });
+
+                box.addEventListener('mouseleave', function () {
+                    this.style.flexGrow = '1';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
