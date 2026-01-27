@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 39</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .demo-section,
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .section-title i {
+            color: #1e3c72;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #1e3c72;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-weight: 600;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #1e3c72;
+            outline: none;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        }
+
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-wrap: break-word;
+            position: relative;
+        }
+
+        .result-title {
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background-color: white;
+            padding: 0 10px;
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 14px;
+        }
+
+        .error-result {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .success-result {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+
+        .finally-result {
+            border-color: #FF9800;
+            background-color: #fff3e0;
+        }
+
+        .status-indicator {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .status-error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .error-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .error-type {
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .error-type:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-type.syntax {
+            border-color: #f44336;
+        }
+
+        .error-type.reference {
+            border-color: #9C27B0;
+        }
+
+        .error-type.type {
+            border-color: #2196F3;
+        }
+
+        .error-type.range {
+            border-color: #FF9800;
+        }
+
+        .error-type.custom {
+            border-color: #4CAF50;
+        }
+
+        .error-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .error-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .code-example {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        .code-keyword {
+            color: #569cd6;
+        }
+
+        .code-function {
+            color: #dcdcaa;
+        }
+
+        .code-string {
+            color: #ce9178;
+        }
+
+        .code-comment {
+            color: #6a9955;
+        }
+
+        .console-output {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .console-error {
+            color: #f44747;
+        }
+
+        .console-log {
+            color: #4fc1ff;
+        }
+
+        .console-warn {
+            color: #ffcc00;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .error-log {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .log-entry {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .log-entry.error {
+            color: #f44336;
+        }
+
+        .log-entry.success {
+            color: #4CAF50;
+        }
+
+        .log-entry.info {
+            color: #2196F3;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.5s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bug"></i> Error Handling with Try-Catch</h1>
+            <p class="subtitle">Learn how to handle errors gracefully in JavaScript</p>
+        </div>
+
+        <div class="main-content">
+            <div class="demo-section">
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-flask"></i>
+                        <h2>Error Simulation</h2>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="numerator">
+                            <i class="fas fa-divide"></i> Numerator:
+                        </label>
+                        <input type="number" id="numerator" value="10" min="0" max="100">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="denominator">
+                            <i class="fas fa-divide"></i> Denominator:
+                        </label>
+                        <input type="number" id="denominator" value="0" min="0" max="100">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="arrayIndex">
+                            <i class="fas fa-list-ol"></i> Array Index (0-4):
+                        </label>
+                        <input type="number" id="arrayIndex" value="5" min="0" max="10">
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" id="divideBtn">
+                            <i class="fas fa-calculator"></i> Perform Division
+                        </button>
+                        <button class="btn" id="arrayAccessBtn">
+                            <i class="fas fa-database"></i> Access Array
+                        </button>
+                        <button class="btn btn-danger" id="throwErrorBtn">
+                            <i class="fas fa-exclamation-triangle"></i> Throw Custom Error
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-code"></i>
+                        <h2>Try-Catch-Finally Result</h2>
+                    </div>
+
+                    <div class="result-area" id="tryCatchResult">
+                        <div class="result-title">Execution Result</div>
+                        Click a button to see try-catch in action
+                    </div>
+
+                    <div class="status-indicator" id="statusIndicator">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Ready for execution</span>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="successCount">0</div>
+                            <div class="stat-label">Success</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="errorCount">0</div>
+                            <div class="stat-label">Errors</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="finallyCount">0</div>
+                            <div class="stat-label">Finally Executed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-list"></i>
+                        <h2>Error Log</h2>
+                    </div>
+
+                    <div class="error-log" id="errorLog">
+                        <!-- Error log entries will appear here -->
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-warning" id="clearLogBtn">
+                            <i class="fas fa-eraser"></i> Clear Log
+                        </button>
+                        <button class="btn" id="testAsyncBtn">
+                            <i class="fas fa-sync-alt"></i> Test Async Error
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h2>Error Types</h2>
+                    </div>
+
+                    <div class="error-types">
+                        <div class="error-type syntax" data-error="syntax">
+                            <div class="error-name">SyntaxError</div>
+                            <div class="error-desc">Invalid JavaScript syntax</div>
+                        </div>
+
+                        <div class="error-type reference" data-error="reference">
+                            <div class="error-name">ReferenceError</div>
+                            <div class="error-desc">Undefined variable reference</div>
+                        </div>
+
+                        <div class="error-type type" data-error="type">
+                            <div class="error-name">TypeError</div>
+                            <div class="error-desc">Incompatible type operation</div>
+                        </div>
+
+                        <div class="error-type range" data-error="range">
+                            <div class="error-name">RangeError</div>
+                            <div class="error-desc">Numeric value out of range</div>
+                        </div>
+
+                        <div class="error-type custom" data-error="custom">
+                            <div class="error-name">Custom Error</div>
+                            <div class="error-desc">User-defined error object</div>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <span class="code-keyword">try</span> {<br>
+                        &nbsp;&nbsp;<span class="code-comment">// Code that might throw an error</span><br>
+                        &nbsp;&nbsp;<span class="code-function">riskyOperation</span>();<br>
+                        } <span class="code-keyword">catch</span> (error) {<br>
+                        &nbsp;&nbsp;<span class="code-comment">// Handle the error</span><br>
+                        &nbsp;&nbsp;console.<span class="code-function">error</span>(error.<span
+                            class="code-function">message</span>);<br>
+                        } <span class="code-keyword">finally</span> {<br>
+                        &nbsp;&nbsp;<span class="code-comment">// Always executes</span><br>
+                        &nbsp;&nbsp;<span class="code-function">cleanup</span>();<br>
+                        }
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-terminal"></i>
+                        <h2>Console Output</h2>
+                    </div>
+
+                    <div class="console-output" id="consoleOutput">
+                        <div class="console-log">Console output will appear here...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        <h2>Best Practices</h2>
+                    </div>
+
+                    <ul style="padding-left: 20px; color: #555; line-height: 1.6;">
+                        <li>Always use specific error types when possible</li>
+                        <li>Don't swallow errors silently</li>
+                        <li>Use finally for cleanup operations</li>
+                        <li>Log errors with context information</li>
+                        <li>Throw meaningful error messages</li>
+                        <li>Use try-catch for unexpected errors only</li>
+                    </ul>
+
+                    <div class="btn-group">
+                        <button class="btn btn-success" id="bestPracticeBtn">
+                            <i class="fas fa-check-circle"></i> Show Best Practice Example
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // 1. Create function that might throw error
+        // 2. Wrap in try-catch block
+        // 3. Finally block to clean up
+
+        // DOM Elements
+        const numeratorInput = document.getElementById('numerator');
+        const denominatorInput = document.getElementById('denominator');
+        const arrayIndexInput = document.getElementById('arrayIndex');
+        const divideBtn = document.getElementById('divideBtn');
+        const arrayAccessBtn = document.getElementById('arrayAccessBtn');
+        const throwErrorBtn = document.getElementById('throwErrorBtn');
+        const clearLogBtn = document.getElementById('clearLogBtn');
+        const testAsyncBtn = document.getElementById('testAsyncBtn');
+        const bestPracticeBtn = document.getElementById('bestPracticeBtn');
+
+        // Result elements
+        const tryCatchResult = document.getElementById('tryCatchResult');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const consoleOutput = document.getElementById('consoleOutput');
+        const errorLog = document.getElementById('errorLog');
+
+        // Stats elements
+        const successCount = document.getElementById('successCount');
+        const errorCount = document.getElementById('errorCount');
+        const finallyCount = document.getElementById('finallyCount');
+
+        // Error type buttons
+        const errorTypes = document.querySelectorAll('.error-type');
+
+        // Notification
+        const notification = document.getElementById('notification');
+
+        // State
+        let successCounter = 0;
+        let errorCounter = 0;
+        let finallyCounter = 0;
+        let logEntries = [];
+
+        // Sample array
+        const sampleArray = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = 'notification show';
+
+            const colors = {
+                'info': '#2196F3',
+                'success': '#4CAF50',
+                'warning': '#FF9800',
+                'error': '#f44336'
+            };
+
+            notification.style.backgroundColor = colors[type] || colors.info;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update stats
+        function updateStats() {
+            successCount.textContent = successCounter;
+            errorCount.textContent = errorCounter;
+            finallyCount.textContent = finallyCounter;
+        }
+
+        // Add to error log
+        function addLogEntry(message, type = 'info') {
+            const entry = {
+                timestamp: new Date().toLocaleTimeString(),
+                message: message,
+                type: type
+            };
+
+            logEntries.unshift(entry); // Add to beginning
+
+            // Keep only last 10 entries
+            if (logEntries.length > 10) {
+                logEntries.pop();
+            }
+
+            updateErrorLog();
+        }
+
+        // Update error log display
+        function updateErrorLog() {
+            errorLog.innerHTML = '';
+
+            logEntries.forEach(entry => {
+                const logDiv = document.createElement('div');
+                logDiv.className = `log-entry ${entry.type}`;
+                logDiv.innerHTML = `
+                    <span style="color: #666; font-size: 10px;">[${entry.timestamp}]</span>
+                    ${entry.message}
+                `;
+                errorLog.appendChild(logDiv);
+            });
+        }
+
+        // Add to console output
+        function addConsoleOutput(message, type = 'log') {
+            const outputDiv = document.createElement('div');
+            outputDiv.className = `console-${type}`;
+            outputDiv.textContent = `> ${message}`;
+
+            consoleOutput.prepend(outputDiv);
+
+            // Keep only last 10 lines
+            const lines = consoleOutput.querySelectorAll('div');
+            if (lines.length > 10) {
+                consoleOutput.removeChild(lines[lines.length - 1]);
+            }
+        }
+
+        // 1. Function that might throw error
+        function divideNumbers(a, b) {
+            if (b === 0) {
+                throw new Error('Division by zero is not allowed!');
+            }
+
+            if (isNaN(a) || isNaN(b)) {
+                throw new TypeError('Both inputs must be numbers');
+            }
+
+            return a / b;
+        }
+
+        // Another risky function
+        function accessArrayElement(arr, index) {
+            if (!Array.isArray(arr)) {
+                throw new TypeError('First argument must be an array');
+            }
+
+            if (index < 0 || index >= arr.length) {
+                throw new RangeError(`Index ${index} is out of bounds. Array length is ${arr.length}`);
+            }
+
+            return arr[index];
+        }
+
+        // Custom error function
+        function throwCustomError(message) {
+            throw new Error(message || 'This is a custom error!');
+        }
+
+        // Perform division with error handling
+        function performDivision() {
+            const a = parseFloat(numeratorInput.value);
+            const b = parseFloat(denominatorInput.value);
+
+            // 2. Wrap in try-catch block
+            try {
+                addConsoleOutput(`Attempting division: ${a} / ${b}`, 'log');
+
+                // This might throw an error
+                const result = divideNumbers(a, b);
+
+                // Update UI for success
+                tryCatchResult.className = 'result-area success-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">Division Result</div>
+                    <strong>Success!</strong><br>
+                    ${a} ÷ ${b} = <strong>${result.toFixed(2)}</strong>
+                `;
+
+                statusIndicator.className = 'status-indicator status-success';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>Division completed successfully</span>
+                `;
+
+                successCounter++;
+                updateStats();
+                addLogEntry(`Division successful: ${a} ÷ ${b} = ${result.toFixed(2)}`, 'success');
+                showNotification('Division completed successfully!', 'success');
+
+            } catch (error) {
+                // Handle different error types
+                tryCatchResult.className = 'result-area error-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">Error Caught</div>
+                    <strong>${error.name}:</strong> ${error.message}<br><br>
+                    <small>Error handled gracefully!</small>
+                `;
+
+                statusIndicator.className = 'status-indicator status-error';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Error handled: ${error.message}</span>
+                `;
+
+                errorCounter++;
+                updateStats();
+                addLogEntry(`${error.name}: ${error.message}`, 'error');
+                addConsoleOutput(`${error.name}: ${error.message}`, 'error');
+                showNotification(`Error handled: ${error.message}`, 'warning');
+
+            } finally {
+                // 3. Finally block to clean up
+                finallyCounter++;
+                updateStats();
+                addConsoleOutput('Finally block executed - cleanup completed', 'log');
+
+                // Visual feedback for finally
+                setTimeout(() => {
+                    tryCatchResult.classList.add('finally-result');
+                    statusIndicator.classList.add('status-info');
+                }, 100);
+            }
+        }
+
+        // Access array element with error handling
+        function accessArray() {
+            const index = parseInt(arrayIndexInput.value);
+
+            try {
+                addConsoleOutput(`Attempting to access array at index ${index}`, 'log');
+
+                const element = accessArrayElement(sampleArray, index);
+
+                tryCatchResult.className = 'result-area success-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">Array Access Result</div>
+                    <strong>Success!</strong><br>
+                    Array[${index}] = <strong>"${element}"</strong><br><br>
+                    Full array: [${sampleArray.map(item => `"${item}"`).join(', ')}]
+                `;
+
+                statusIndicator.className = 'status-indicator status-success';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>Array access successful</span>
+                `;
+
+                successCounter++;
+                updateStats();
+                addLogEntry(`Array access successful: sampleArray[${index}] = "${element}"`, 'success');
+                showNotification('Array element retrieved successfully!', 'success');
+
+            } catch (error) {
+                tryCatchResult.className = 'result-area error-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">Error Caught</div>
+                    <strong>${error.name}:</strong> ${error.message}<br><br>
+                    Array: [${sampleArray.map(item => `"${item}"`).join(', ')}]<br>
+                    Length: ${sampleArray.length}
+                `;
+
+                statusIndicator.className = 'status-indicator status-error';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Error handled: ${error.message}</span>
+                `;
+
+                errorCounter++;
+                updateStats();
+                addLogEntry(`${error.name}: ${error.message}`, 'error');
+                addConsoleOutput(`${error.name}: ${error.message}`, 'error');
+                showNotification(`Error handled: ${error.message}`, 'warning');
+
+            } finally {
+                finallyCounter++;
+                updateStats();
+                addConsoleOutput('Finally block executed', 'log');
+
+                setTimeout(() => {
+                    tryCatchResult.classList.add('finally-result');
+                    statusIndicator.classList.add('status-info');
+                }, 100);
+            }
+        }
+
+        // Throw custom error
+        function triggerCustomError() {
+            try {
+                addConsoleOutput('Throwing custom error...', 'log');
+                throwCustomError('This error was intentionally thrown for demonstration!');
+
+            } catch (error) {
+                tryCatchResult.className = 'result-area error-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">Custom Error Caught</div>
+                    <strong>${error.name}:</strong> ${error.message}<br><br>
+                    <small>Stack trace:</small><br>
+                    <pre style="font-size: 12px; white-space: pre-wrap;">${error.stack}</pre>
+                `;
+
+                statusIndicator.className = 'status-indicator status-error';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Custom error handled</span>
+                `;
+
+                errorCounter++;
+                updateStats();
+                addLogEntry(`${error.name}: ${error.message}`, 'error');
+                addConsoleOutput(`${error.name}: ${error.message}`, 'error');
+                showNotification('Custom error handled successfully', 'info');
+
+            } finally {
+                finallyCounter++;
+                updateStats();
+                addConsoleOutput('Finally block executed', 'log');
+
+                setTimeout(() => {
+                    tryCatchResult.classList.add('finally-result');
+                    statusIndicator.classList.add('status-info');
+                }, 100);
+            }
+        }
+
+        // Demonstrate different error types
+        function demonstrateErrorType(errorType) {
+            try {
+                addConsoleOutput(`Demonstrating ${errorType} error...`, 'log');
+
+                switch (errorType) {
+                    case 'syntax':
+                        // This would cause a SyntaxError if evaluated
+                        eval('const x = ;'); // Invalid syntax
+                        break;
+
+                    case 'reference':
+                        // ReferenceError
+                        console.log(undefinedVariable);
+                        break;
+
+                    case 'type':
+                        // TypeError
+                        const obj = null;
+                        obj.someMethod();
+                        break;
+
+                    case 'range':
+                        // RangeError
+                        const arr = new Array(-1);
+                        break;
+
+                    case 'custom':
+                        // Custom error
+                        throw new Error('This is a custom error message');
+
+                    default:
+                        throw new Error('Unknown error type');
+                }
+
+            } catch (error) {
+                tryCatchResult.className = 'result-area error-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">${error.name} Demo</div>
+                    <strong>${error.name}:</strong> ${error.message}<br><br>
+                    <small>This error was caught and handled gracefully.</small>
+                `;
+
+                statusIndicator.className = 'status-indicator status-error';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>${error.name} handled</span>
+                `;
+
+                errorCounter++;
+                updateStats();
+                addLogEntry(`${error.name} demonstration: ${error.message}`, 'error');
+                addConsoleOutput(`${error.name}: ${error.message}`, 'error');
+                showNotification(`Demonstrated ${error.name} handling`, 'info');
+
+            } finally {
+                finallyCounter++;
+                updateStats();
+                addConsoleOutput('Finally block executed', 'log');
+            }
+        }
+
+        // Test async error handling
+        async function testAsyncError() {
+            try {
+                addConsoleOutput('Testing async error handling...', 'log');
+
+                // Simulate async operation
+                const result = await new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        reject(new Error('Async operation failed!'));
+                    }, 1000);
+                });
+
+            } catch (error) {
+                tryCatchResult.className = 'result-area error-result';
+                tryCatchResult.innerHTML = `
+                    <div class="result-title">Async Error Caught</div>
+                    <strong>${error.name}:</strong> ${error.message}<br><br>
+                    <small>Async errors can be caught with try-catch too!</small>
+                `;
+
+                statusIndicator.className = 'status-indicator status-error';
+                statusIndicator.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Async error handled</span>
+                `;
+
+                errorCounter++;
+                updateStats();
+                addLogEntry(`Async error: ${error.message}`, 'error');
+                addConsoleOutput(`Async ${error.name}: ${error.message}`, 'error');
+                showNotification('Async error handled successfully', 'info');
+
+            } finally {
+                finallyCounter++;
+                updateStats();
+                addConsoleOutput('Async finally block executed', 'log');
+            }
+        }
+
+        // Show best practice example
+        function showBestPractice() {
+            const example = `
+// BEST PRACTICE EXAMPLE
+function getUserData(userId) {
+    try {
+        // Validate input
+        if (!userId || typeof userId !== 'string') {
+            throw new TypeError('User ID must be a non-empty string');
+        }
+        
+        // Simulate API call
+        const user = database.getUser(userId);
+        
+        if (!user) {
+            throw new Error(\`User \${userId} not found\`);
+        }
+        
+        return user;
+        
+    } catch (error) {
+        // Log error with context
+        console.error(\`getUserData failed for userId: \${userId}\`, error);
+        
+        // Re-throw for higher level handling
+        throw new Error(\`Failed to get user data: \${error.message}\`);
+        
+    } finally {
+        // Cleanup resources
+        database.closeConnection();
+        console.log('Database connection closed');
+    }
+}
+            `;
+
+            tryCatchResult.className = 'result-area success-result';
+            tryCatchResult.innerHTML = `
+                <div class="result-title">Best Practice Example</div>
+                <pre style="font-size: 12px; white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${example}</pre>
+            `;
+
+            statusIndicator.className = 'status-indicator status-info';
+            statusIndicator.innerHTML = `
+                <i class="fas fa-lightbulb"></i>
+                <span>Best practice example loaded</span>
+            `;
+
+            showNotification('Best practice example displayed', 'success');
+        }
+
+        // Event Listeners
+        divideBtn.addEventListener('click', performDivision);
+        arrayAccessBtn.addEventListener('click', accessArray);
+        throwErrorBtn.addEventListener('click', triggerCustomError);
+        clearLogBtn.addEventListener('click', () => {
+            logEntries = [];
+            updateErrorLog();
+            showNotification('Error log cleared', 'info');
+        });
+        testAsyncBtn.addEventListener('click', testAsyncError);
+        bestPracticeBtn.addEventListener('click', showBestPractice);
+
+        // Error type buttons
+        errorTypes.forEach(type => {
+            type.addEventListener('click', () => {
+                const errorType = type.getAttribute('data-error');
+                demonstrateErrorType(errorType);
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch (e.key) {
+                    case 'd':
+                        e.preventDefault();
+                        performDivision();
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        accessArray();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        triggerCustomError();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        logEntries = [];
+                        updateErrorLog();
+                        break;
+                }
+            }
+        });
+
+        // Initialize
+        addConsoleOutput('Error handling demo initialized. Try causing some errors!', 'log');
+        addLogEntry('Application started', 'info');
+        showNotification('Try causing errors to see try-catch in action!', 'info');
+    </script>
+</body>
+
+</html>
