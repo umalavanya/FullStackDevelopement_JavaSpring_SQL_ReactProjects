@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 32</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .counter-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .counter-description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .counter-display {
+            font-size: 72px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 30px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .counter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .counter-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .counter-btn i {
+            font-size: 20px;
+        }
+
+        .decrement-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .decrement-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .decrement-btn:active {
+            transform: translateY(0);
+        }
+
+        .increment-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .increment-btn:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .increment-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .reset-btn:hover {
+            background-color: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .counter-history {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .history-title {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background-color: #f5f5f5;
+            padding: 8px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .counter-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .positive {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .negative {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .zero {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .counter-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="counter-container">
+        <h1>Interactive Counter</h1>
+        <p class="counter-description">Click buttons to increase or decrease the count</p>
+
+        <div class="counter-display" id="counter">0</div>
+
+        <div class="counter-buttons">
+            <button class="counter-btn decrement-btn" id="decrementBtn">
+                <i class="fas fa-minus"></i> Decrement
+            </button>
+            <button class="counter-btn increment-btn" id="incrementBtn">
+                <i class="fas fa-plus"></i> Increment
+            </button>
+            <button class="counter-btn reset-btn" id="resetBtn">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+
+        <div class="counter-message" id="counterMessage"></div>
+
+        <div class="counter-stats">
+            <div class="stat">
+                <div class="stat-value" id="totalOperations">0</div>
+                <div class="stat-label">Operations</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="maxCount">0</div>
+                <div class="stat-label">Max Count</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="minCount">0</div>
+                <div class="stat-label">Min Count</div>
+            </div>
+        </div>
+
+        <div class="counter-history">
+            <div class="history-title">Recent Changes:</div>
+            <ul class="history-list" id="historyList"></ul>
+        </div>
+    </div>
+
+    <script>
+        // 1. Display a number (starting at 0)
+        // 2. Add increment and decrement buttons
+        // 3. Update display when buttons are clicked
+
+        // DOM elements
+        const counterElement = document.getElementById('counter');
+        const decrementBtn = document.getElementById('decrementBtn');
+        const incrementBtn = document.getElementById('incrementBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const counterMessage = document.getElementById('counterMessage');
+        const historyList = document.getElementById('historyList');
+        const totalOperationsElement = document.getElementById('totalOperations');
+        const maxCountElement = document.getElementById('maxCount');
+        const minCountElement = document.getElementById('minCount');
+
+        // Counter state
+        let count = 0;
+        let totalOperations = 0;
+        let maxCount = 0;
+        let minCount = 0;
+        let history = [];
+
+        // Update the counter display
+        function updateCounter() {
+            counterElement.textContent = count;
+            updateCounterStyle();
+            updateStats();
+        }
+
+        // Update counter style based on value
+        function updateCounterStyle() {
+            // Change color based on count
+            if (count > 0) {
+                counterElement.style.color = '#4CAF50';
+            } else if (count < 0) {
+                counterElement.style.color = '#f44336';
+            } else {
+                counterElement.style.color = '#667eea';
+            }
+
+            // Add scale animation
+            counterElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                counterElement.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // Show message based on counter value
+        function showMessage() {
+            let message = '';
+            let className = '';
+
+            if (count > 0) {
+                message = 'Positive count! 🎉';
+                className = 'positive';
+            } else if (count < 0) {
+                message = 'Negative count! 📉';
+                className = 'negative';
+            } else {
+                message = 'Back to zero! 🔄';
+                className = 'zero';
+            }
+
+            counterMessage.textContent = message;
+            counterMessage.className = `counter-message ${className}`;
+            counterMessage.style.opacity = '1';
+
+            // Hide message after 2 seconds
+            setTimeout(() => {
+                counterMessage.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Add to history
+        function addToHistory(operation) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const historyItem = {
+                time: timeString,
+                operation: operation,
+                value: count
+            };
+
+            history.unshift(historyItem); // Add to beginning
+
+            // Keep only last 5 items
+            if (history.length > 5) {
+                history.pop();
+            }
+
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.textContent = `${item.time} - ${item.operation}: ${item.value}`;
+                historyList.appendChild(li);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            totalOperationsElement.textContent = totalOperations;
+            maxCountElement.textContent = maxCount;
+            minCountElement.textContent = minCount;
+        }
+
+        // Increment function
+        function increment() {
+            count++;
+            totalOperations++;
+
+            if (count > maxCount) {
+                maxCount = count;
+            }
+
+            updateCounter();
+            showMessage();
+            addToHistory('Increment');
+        }
+
+        // Decrement function
+        function decrement() {
+            count--;
+            totalOperations++;
+
+            if (count < minCount) {
+                minCount = count;
+            }
+
+            updateCounter();
+            showMessage();
+            addToHistory('Decrement');
+        }
+
+        // Reset function
+        function resetCounter() {
+            count = 0;
+            totalOperations = 0;
+            maxCount = 0;
+            minCount = 0;
+            history = [];
+
+            updateCounter();
+            showMessage();
+            updateHistoryDisplay();
+            updateStats();
+
+            // Special reset message
+            counterMessage.textContent = 'Counter reset to zero! 🔄';
+            counterMessage.className = 'counter-message zero';
+            counterMessage.style.opacity = '1';
+
+            setTimeout(() => {
+                counterMessage.style.opacity = '0';
+            }, 2000);
+        }
+
+        // 2. Add increment button click handler
+        incrementBtn.addEventListener('click', increment);
+
+        // 3. Add decrement button click handler
+        decrementBtn.addEventListener('click', decrement);
+
+        // Add reset button click handler
+        resetBtn.addEventListener('click', resetCounter);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowUp' || event.key === '+') {
+                increment();
+                event.preventDefault(); // Prevent default behavior
+            } else if (event.key === 'ArrowDown' || event.key === '-') {
+                decrement();
+                event.preventDefault();
+            } else if (event.key === 'r' || event.key === 'R') {
+                resetCounter();
+            }
+        });
+
+        // Initialize
+        updateCounter();
+        updateStats();
+
+        // Additional feature: Step value input
+        const stepContainer = document.createElement('div');
+        stepContainer.style.cssText = `
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+        `;
+
+        stepContainer.innerHTML = `
+            <label for="stepValue" style="display: block; margin-bottom: 8px; color: #666;">Step Value:</label>
+            <input type="range" id="stepValue" min="1" max="10" value="1" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                <span>1</span>
+                <span id="currentStepValue">1</span>
+                <span>10</span>
+            </div>
+        `;
+
+        document.querySelector('.counter-buttons').parentNode.insertBefore(stepContainer, document.querySelector('.counter-message'));
+
+        const stepValueInput = document.getElementById('stepValue');
+        const currentStepValue = document.getElementById('currentStepValue');
+
+        stepValueInput.addEventListener('input', function () {
+            currentStepValue.textContent = this.value;
+        });
+
+        // Update increment and decrement to use step value
+        const originalIncrement = increment;
+        const originalDecrement = decrement;
+
+        increment = function () {
+            count += parseInt(stepValueInput.value);
+            totalOperations++;
+
+            if (count > maxCount) {
+                maxCount = count;
+            }
+
+            updateCounter();
+            showMessage();
+            addToHistory(`Increment by ${stepValueInput.value}`);
+        };
+
+        decrement = function () {
+            count -= parseInt(stepValueInput.value);
+            totalOperations++;
+
+            if (count < minCount) {
+                minCount = count;
+            }
+
+            updateCounter();
+            showMessage();
+            addToHistory(`Decrement by ${stepValueInput.value}`);
+        };
+    </script>
+</body>
+
+</html>
