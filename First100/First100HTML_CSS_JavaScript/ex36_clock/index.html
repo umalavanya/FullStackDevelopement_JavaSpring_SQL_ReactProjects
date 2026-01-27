@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 36</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .clock-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .clock-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .clock-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .clock-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .clock-main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .clock-section {
+            background-color: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+            color: #2c3e50;
+            font-size: 22px;
+        }
+
+        .section-title i {
+            color: #1a2980;
+        }
+
+        .digital-clock {
+            text-align: center;
+        }
+
+        .digital-time {
+            font-size: 64px;
+            font-weight: 700;
+            color: #1a2980;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .digital-date {
+            font-size: 24px;
+            color: #666;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .digital-day {
+            font-size: 20px;
+            color: #1a2980;
+            font-weight: 600;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .analog-clock {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .analog-face {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background-color: white;
+            border: 8px solid #2c3e50;
+            position: relative;
+            box-shadow:
+                inset 0 0 20px rgba(0, 0, 0, 0.1),
+                0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .analog-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #f44336;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .hour-hand,
+        .minute-hand,
+        .second-hand {
+            position: absolute;
+            transform-origin: bottom center;
+            border-radius: 10px 10px 0 0;
+            left: 50%;
+            bottom: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hour-hand {
+            width: 8px;
+            height: 80px;
+            background-color: #2c3e50;
+            z-index: 3;
+        }
+
+        .minute-hand {
+            width: 6px;
+            height: 110px;
+            background-color: #444;
+            z-index: 2;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 120px;
+            background-color: #f44336;
+            z-index: 1;
+        }
+
+        .hour-mark {
+            position: absolute;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            transform: translate(-50%, -50%);
+        }
+
+        .hour-line {
+            position: absolute;
+            background-color: #2c3e50;
+            width: 4px;
+            height: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .timezone-selector {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        #timezoneSelect {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+        }
+
+        #timezoneSelect:focus {
+            border-color: #1a2980;
+            outline: none;
+        }
+
+        .world-clock {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .world-city {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .world-city:hover {
+            transform: translateY(-3px);
+        }
+
+        .city-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .city-flag {
+            width: 40px;
+            height: 25px;
+            border-radius: 3px;
+            object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .city-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .city-time {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #1a2980;
+            font-size: 18px;
+        }
+
+        .time-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .detail-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .detail-title {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .detail-value {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a2980;
+        }
+
+        .clock-footer {
+            background-color: #f8f9fa;
+            padding: 25px 40px;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(26, 41, 128, 0.3);
+        }
+
+        .time-since {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @keyframes tick {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .ticking {
+            animation: tick 1s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .clock-main {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .digital-time {
+                font-size: 48px;
+            }
+
+            .analog-face {
+                width: 220px;
+                height: 220px;
+            }
+
+            .hour-hand {
+                height: 60px;
+            }
+
+            .minute-hand {
+                height: 85px;
+            }
+
+            .second-hand {
+                height: 95px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="clock-container">
+        <div class="clock-header">
+            <h1><i class="fas fa-clock"></i> JavaScript Clock</h1>
+            <p>Real-time date and time display with multiple formats</p>
+        </div>
+
+        <div class="clock-main">
+            <div class="clock-section digital-clock">
+                <div class="section-title">
+                    <i class="fas fa-digital-tachograph"></i>
+                    <h2>Digital Clock</h2>
+                </div>
+
+                <div class="digital-time" id="digitalTime">
+                    Loading...
+                </div>
+
+                <div class="digital-date" id="digitalDate">
+                    Loading...
+                </div>
+
+                <div class="digital-day" id="digitalDay">
+                    Loading...
+                </div>
+
+                <div class="timezone-selector">
+                    <select id="timezoneSelect">
+                        <option value="local">Local Time</option>
+                        <option value="UTC">UTC</option>
+                        <option value="America/New_York">New York (EST)</option>
+                        <option value="America/Los_Angeles">Los Angeles (PST)</option>
+                        <option value="Europe/London">London (GMT)</option>
+                        <option value="Europe/Paris">Paris (CET)</option>
+                        <option value="Asia/Tokyo">Tokyo (JST)</option>
+                        <option value="Asia/Dubai">Dubai (GST)</option>
+                        <option value="Australia/Sydney">Sydney (AEST)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="clock-section analog-clock">
+                <div class="section-title">
+                    <i class="fas fa-clock"></i>
+                    <h2>Analog Clock</h2>
+                </div>
+
+                <div class="analog-face" id="analogClock">
+                    <!-- Clock face will be generated by JavaScript -->
+                    <div class="analog-center"></div>
+                    <div class="hour-hand" id="hourHand"></div>
+                    <div class="minute-hand" id="minuteHand"></div>
+                    <div class="second-hand" id="secondHand"></div>
+                </div>
+            </div>
+
+            <div class="clock-section world-clock">
+                <div class="section-title">
+                    <i class="fas fa-globe-americas"></i>
+                    <h2>World Clocks</h2>
+                </div>
+
+                <div class="world-city" id="cityNewYork">
+                    <div class="city-info">
+                        <img src="https://flagcdn.com/w40/us.png" alt="USA Flag" class="city-flag">
+                        <div>
+                            <div class="city-name">New York</div>
+                            <div class="city-timezone">EST (UTC-5)</div>
+                        </div>
+                    </div>
+                    <div class="city-time">00:00:00</div>
+                </div>
+
+                <div class="world-city" id="cityLondon">
+                    <div class="city-info">
+                        <img src="https://flagcdn.com/w40/gb.png" alt="UK Flag" class="city-flag">
+                        <div>
+                            <div class="city-name">London</div>
+                            <div class="city-timezone">GMT (UTC+0)</div>
+                        </div>
+                    </div>
+                    <div class="city-time">00:00:00</div>
+                </div>
+
+                <div class="world-city" id="cityTokyo">
+                    <div class="city-info">
+                        <img src="https://flagcdn.com/w40/jp.png" alt="Japan Flag" class="city-flag">
+                        <div>
+                            <div class="city-name">Tokyo</div>
+                            <div class="city-timezone">JST (UTC+9)</div>
+                        </div>
+                    </div>
+                    <div class="city-time">00:00:00</div>
+                </div>
+
+                <div class="world-city" id="citySydney">
+                    <div class="city-info">
+                        <img src="https://flagcdn.com/w40/au.png" alt="Australia Flag" class="city-flag">
+                        <div>
+                            <div class="city-name">Sydney</div>
+                            <div class="city-timezone">AEST (UTC+10)</div>
+                        </div>
+                    </div>
+                    <div class="city-time">00:00:00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="time-details">
+            <div class="detail-card">
+                <div class="detail-title">Unix Timestamp</div>
+                <div class="detail-value" id="unixTimestamp">0</div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-title">Day of Year</div>
+                <div class="detail-value" id="dayOfYear">0</div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-title">Week Number</div>
+                <div class="detail-value" id="weekNumber">0</div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-title">Leap Year</div>
+                <div class="detail-value" id="isLeapYear">No</div>
+            </div>
+        </div>
+
+        <div class="clock-footer">
+            <div class="time-since">
+                Last updated: <span id="lastUpdate">Just now</span>
+            </div>
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Manual Refresh
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Display current date and time
+        // 2. Format it as "Day, Month Date, Year"
+        // 3. Update every second
+
+        // DOM Elements
+        const digitalTime = document.getElementById('digitalTime');
+        const digitalDate = document.getElementById('digitalDate');
+        const digitalDay = document.getElementById('digitalDay');
+        const timezoneSelect = document.getElementById('timezoneSelect');
+        const analogClock = document.getElementById('analogClock');
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const secondHand = document.getElementById('secondHand');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const lastUpdate = document.getElementById('lastUpdate');
+
+        // Time details
+        const unixTimestamp = document.getElementById('unixTimestamp');
+        const dayOfYear = document.getElementById('dayOfYear');
+        const weekNumber = document.getElementById('weekNumber');
+        const isLeapYear = document.getElementById('isLeapYear');
+
+        // World clock elements
+        const cityNewYork = document.getElementById('cityNewYork').querySelector('.city-time');
+        const cityLondon = document.getElementById('cityLondon').querySelector('.city-time');
+        const cityTokyo = document.getElementById('cityTokyo').querySelector('.city-time');
+        const citySydney = document.getElementById('citySydney').querySelector('.city-time');
+
+        // Timezone
+        let currentTimezone = 'local';
+        let updateInterval;
+
+        // Format number with leading zero
+        function padZero(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        // Get day suffix (st, nd, rd, th)
+        function getDaySuffix(day) {
+            if (day >= 11 && day <= 13) return 'th';
+            switch (day % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        }
+
+        // Get current date based on timezone
+        function getCurrentDate(timezone = 'local') {
+            const now = new Date();
+
+            if (timezone === 'UTC') {
+                return new Date(now.toUTCString());
+            } else if (timezone !== 'local') {
+                try {
+                    return new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+                } catch (e) {
+                    console.error('Invalid timezone:', timezone);
+                    return now;
+                }
+            }
+
+            return now;
+        }
+
+        // Update digital clock
+        function updateDigitalClock() {
+            const now = getCurrentDate(currentTimezone);
+
+            // Format time
+            const hours = padZero(now.getHours());
+            const minutes = padZero(now.getMinutes());
+            const seconds = padZero(now.getSeconds());
+
+            // Format date
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+
+            const dayName = days[now.getDay()];
+            const monthName = months[now.getMonth()];
+            const date = now.getDate();
+            const year = now.getFullYear();
+
+            // Update displays
+            digitalTime.textContent = `${hours}:${minutes}:${seconds}`;
+            digitalDate.textContent = `${monthName} ${date}${getDaySuffix(date)}, ${year}`;
+            digitalDay.textContent = dayName;
+
+            // Add blinking colon effect
+            digitalTime.classList.toggle('ticking');
+
+            // Update time details
+            updateTimeDetails(now);
+
+            // Update last update time
+            lastUpdate.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        // Update analog clock
+        function updateAnalogClock() {
+            const now = getCurrentDate(currentTimezone);
+
+            // Calculate angles
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const milliseconds = now.getMilliseconds();
+
+            // Smooth movement for seconds (including milliseconds)
+            const smoothSeconds = seconds + milliseconds / 1000;
+
+            const hourAngle = (hours * 30) + (minutes * 0.5); // 360/12 = 30 degrees per hour
+            const minuteAngle = (minutes * 6) + (seconds * 0.1); // 360/60 = 6 degrees per minute
+            const secondAngle = smoothSeconds * 6; // 360/60 = 6 degrees per second
+
+            // Apply rotations
+            hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+            secondHand.style.transform = `translateX(-50%) rotate(${secondAngle}deg)`;
+        }
+
+        // Update world clocks
+        function updateWorldClocks() {
+            const timezones = [
+                { id: cityNewYork, zone: 'America/New_York' },
+                { id: cityLondon, zone: 'Europe/London' },
+                { id: cityTokyo, zone: 'Asia/Tokyo' },
+                { id: citySydney, zone: 'Australia/Sydney' }
+            ];
+
+            timezones.forEach(item => {
+                try {
+                    const time = new Date().toLocaleTimeString('en-US', {
+                        timeZone: item.zone,
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    item.id.textContent = time;
+                } catch (e) {
+                    item.id.textContent = '--:--:--';
+                }
+            });
+        }
+
+        // Update time details
+        function updateTimeDetails(date) {
+            // Unix timestamp (seconds since Jan 1, 1970)
+            unixTimestamp.textContent = Math.floor(date.getTime() / 1000);
+
+            // Day of year
+            const start = new Date(date.getFullYear(), 0, 0);
+            const diff = date - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const day = Math.floor(diff / oneDay);
+            dayOfYear.textContent = day;
+
+            // Week number
+            const firstDay = new Date(date.getFullYear(), 0, 1);
+            const pastDays = (date - firstDay) / 86400000;
+            const week = Math.ceil((pastDays + firstDay.getDay() + 1) / 7);
+            weekNumber.textContent = week;
+
+            // Leap year check
+            const year = date.getFullYear();
+            const isLeap = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            isLeapYear.textContent = isLeap ? 'Yes' : 'No';
+            isLeapYear.style.color = isLeap ? '#4CAF50' : '#f44336';
+        }
+
+        // Create analog clock face
+        function createAnalogClockFace() {
+            // Add hour marks
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i * 30) * (Math.PI / 180); // Convert to radians
+                const radius = 120;
+                const x = 140 + radius * Math.sin(angle);
+                const y = 140 - radius * Math.cos(angle);
+
+                const hourMark = document.createElement('div');
+                hourMark.className = 'hour-mark';
+                hourMark.textContent = i;
+                hourMark.style.left = `${x}px`;
+                hourMark.style.top = `${y}px`;
+                analogClock.appendChild(hourMark);
+            }
+
+            // Add minute lines
+            for (let i = 0; i < 60; i++) {
+                if (i % 5 !== 0) { // Skip hours (every 5 minutes)
+                    const angle = (i * 6) * (Math.PI / 180);
+                    const radius = 130;
+                    const x = 140 + radius * Math.sin(angle);
+                    const y = 140 - radius * Math.cos(angle);
+
+                    const line = document.createElement('div');
+                    line.className = 'hour-line';
+                    line.style.left = `${x}px`;
+                    line.style.top = `${y}px`;
+                    line.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+                    line.style.height = '10px';
+                    line.style.width = '2px';
+                    line.style.backgroundColor = '#666';
+                    analogClock.appendChild(line);
+                }
+            }
+        }
+
+        // Update all clocks
+        function updateAllClocks() {
+            updateDigitalClock();
+            updateAnalogClock();
+            updateWorldClocks();
+        }
+
+        // Manual refresh
+        function manualRefresh() {
+            updateAllClocks();
+
+            // Visual feedback
+            refreshBtn.innerHTML = '<i class="fas fa-check"></i> Refreshed!';
+            refreshBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)';
+
+            setTimeout(() => {
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Manual Refresh';
+                refreshBtn.style.background = 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)';
+            }, 1000);
+        }
+
+        // Initialize
+        function init() {
+            // Create analog clock face
+            createAnalogClockFace();
+
+            // Set initial timezone
+            timezoneSelect.value = currentTimezone;
+
+            // Update clocks immediately
+            updateAllClocks();
+
+            // Start update interval (every 50ms for smooth analog second hand)
+            updateInterval = setInterval(updateAllClocks, 50);
+
+            // Event listeners
+            timezoneSelect.addEventListener('change', function () {
+                currentTimezone = this.value;
+                updateAllClocks();
+            });
+
+            refreshBtn.addEventListener('click', manualRefresh);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    manualRefresh();
+                } else if (e.code === 'KeyR' && e.ctrlKey) {
+                    e.preventDefault();
+                    manualRefresh();
+                }
+            });
+        }
+
+        // Start when page loads
+        window.addEventListener('load', init);
+
+        // Clean up interval when page is hidden (for performance)
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                clearInterval(updateInterval);
+            } else {
+                updateInterval = setInterval(updateAllClocks, 50);
+            }
+        });
+    </script>
+</body>
+
+</html>
