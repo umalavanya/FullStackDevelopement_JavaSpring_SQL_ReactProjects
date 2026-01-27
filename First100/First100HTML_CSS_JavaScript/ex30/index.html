@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 30</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        #colorBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #colorBtn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        #messageBtn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        #messageBtn:hover {
+            background-color: #0b7dda;
+            transform: translateY(-2px);
+        }
+
+        #counterBtn {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        #counterBtn:hover {
+            background-color: #e68900;
+            transform: translateY(-2px);
+        }
+
+        #resetBtn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #resetBtn:hover {
+            background-color: #da190b;
+            transform: translateY(-2px);
+        }
+
+        #clickCount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px;
+        }
+
+        .color-box {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            border: 2px solid #333;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .log {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>DOM Click Events</h1>
+
+        <div class="color-box" id="colorBox"></div>
+
+        <p id="clickCount">Clicks: 0</p>
+
+        <button id="colorBtn">Change Background Color</button>
+        <button id="messageBtn">Show Message</button>
+        <button id="counterBtn">Increment Counter</button>
+        <button id="resetBtn">Reset All</button>
+
+        <div class="log">
+            <h3>Event Log:</h3>
+            <div id="eventLog"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const colorBtn = document.getElementById('colorBtn');
+        const messageBtn = document.getElementById('messageBtn');
+        const counterBtn = document.getElementById('counterBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const colorBox = document.getElementById('colorBox');
+        const clickCount = document.getElementById('clickCount');
+        const eventLog = document.getElementById('eventLog');
+
+        // Initialize variables
+        let clickCounter = 0;
+        let colorIndex = 0;
+        const colors = ['#ffebee', '#e8f5e9', '#e3f2fd', '#fff3e0', '#f3e5f5'];
+        const messages = [
+            "Button clicked!",
+            "Event handled successfully!",
+            "Another click registered!",
+            "Keep clicking!",
+            "Great job!"
+        ];
+
+        // Function to add log entry
+        function addLogEntry(message) {
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+            logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            eventLog.prepend(logItem); // Add to beginning
+
+            // Keep only last 10 log entries
+            const items = eventLog.querySelectorAll('.log-item');
+            if (items.length > 10) {
+                eventLog.removeChild(items[items.length - 1]);
+            }
+        }
+
+        // 1. Add click event listener to change page background color
+        colorBtn.addEventListener('click', function () {
+            // Change body background color
+            document.body.style.backgroundColor = colors[colorIndex % colors.length];
+
+            // Update color box
+            colorBox.style.backgroundColor = colors[colorIndex % colors.length];
+
+            // Cycle to next color
+            colorIndex++;
+
+            // Log the event
+            console.log(`Background color changed to: ${colors[(colorIndex - 1) % colors.length]}`);
+            addLogEntry(`Background color changed to: ${colors[(colorIndex - 1) % colors.length]}`);
+        });
+
+        // 2. Add click event listener to show message
+        messageBtn.addEventListener('click', function () {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+            // Show alert
+            alert(randomMessage);
+
+            // Log the event
+            console.log(`Message shown: "${randomMessage}"`);
+            addLogEntry(`Message shown: "${randomMessage}"`);
+
+            // Change button text temporarily
+            const originalText = this.textContent;
+            this.textContent = "Message Sent!";
+            this.style.backgroundColor = "#4CAF50";
+
+            setTimeout(() => {
+                this.textContent = originalText;
+                this.style.backgroundColor = "";
+            }, 1000);
+        });
+
+        // 3. Add click event listener to increment counter
+        counterBtn.addEventListener('click', function () {
+            clickCounter++;
+            clickCount.textContent = `Clicks: ${clickCounter}`;
+
+            // Update counter color based on count
+            if (clickCounter >= 10) {
+                clickCount.style.color = "red";
+            } else if (clickCounter >= 5) {
+                clickCount.style.color = "orange";
+            }
+
+            // Add animation effect
+            this.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                this.style.transform = "";
+            }, 100);
+
+            // Log the event
+            console.log(`Counter incremented to: ${clickCounter}`);
+            addLogEntry(`Counter incremented to: ${clickCounter}`);
+        });
+
+        // 4. Add click event listener to reset button
+        resetBtn.addEventListener('click', function () {
+            // Reset counter
+            clickCounter = 0;
+            clickCount.textContent = "Clicks: 0";
+            clickCount.style.color = "#333";
+
+            // Reset background color
+            document.body.style.backgroundColor = "";
+            colorBox.style.backgroundColor = "";
+            colorIndex = 0;
+
+            // Clear log
+            eventLog.innerHTML = '<h3>Event Log:</h3>';
+
+            // Log the event
+            console.log("All values reset!");
+            addLogEntry("All values reset!");
+
+            // Add confirmation effect
+            this.textContent = "Reset Complete!";
+            setTimeout(() => {
+                this.textContent = "Reset All";
+            }, 1000);
+        });
+
+        // 5. Additional event listeners
+
+        // Double click event on color box
+        colorBox.addEventListener('dblclick', function () {
+            this.style.borderRadius = this.style.borderRadius === "50%" ? "5px" : "50%";
+            console.log("Color box shape toggled");
+            addLogEntry("Color box shape toggled");
+        });
+
+        // Right-click (contextmenu) event on container
+        document.querySelector('.container').addEventListener('contextmenu', function (e) {
+            e.preventDefault(); // Prevent default right-click menu
+            console.log("Right-click detected at:", e.clientX, e.clientY);
+            addLogEntry(`Right-click detected at (${e.clientX}, ${e.clientY})`);
+        });
+
+        // Mouse enter/leave events on buttons
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function () {
+                this.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+            });
+
+            button.addEventListener('mouseleave', function () {
+                this.style.boxShadow = "";
+            });
+        });
+
+        // Initial log entry
+        addLogEntry("Page loaded and ready!");
+        console.log("Page loaded and ready!");
+    </script>
+</body>
+
+</html>
