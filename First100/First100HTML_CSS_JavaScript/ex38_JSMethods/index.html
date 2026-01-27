@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 38</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .section-title i {
+            color: #f5576c;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-label {
+            font-weight: 600;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .text-input {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .text-input:focus {
+            border-color: #f5576c;
+            outline: none;
+        }
+
+        .search-input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        }
+
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .result-card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .result-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-content.highlight {
+            background-color: #fff9e6;
+        }
+
+        .result-content.highlight span {
+            background-color: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .method-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .method-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .method-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .method-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f5576c;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .word-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .word-item {
+            padding: 8px 12px;
+            background-color: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .word-item:hover {
+            transform: scale(1.1);
+            background-color: #f5576c;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 25px 40px;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .examples {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background-color: white;
+            border: 2px solid #eaeaea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .example-btn:hover {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.5s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-text-height"></i> JavaScript String Methods</h1>
+            <p class="subtitle">Explore and practice essential string manipulation methods</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-keyboard"></i>
+                        <h2>Input Text</h2>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="textInput">
+                            <i class="fas fa-align-left"></i> Enter your text:
+                        </label>
+                        <textarea id="textInput" class="text-input" placeholder="Type or paste your text here...">
+Welcome to JavaScript String Methods practice! 
+This is a sample text to demonstrate various string operations.
+You can modify this text and see how different methods work.
+JavaScript provides powerful string manipulation capabilities.
+Try changing this text and clicking the buttons below!</textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" id="clearBtn">
+                            <i class="fas fa-eraser"></i> Clear Text
+                        </button>
+                        <button class="btn" id="sampleBtn">
+                            <i class="fas fa-redo"></i> Reset to Sample
+                        </button>
+                        <button class="btn" id="pasteBtn">
+                            <i class="fas fa-paste"></i> Paste from Clipboard
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-search"></i>
+                        <h2>Search & Replace</h2>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="searchInput">
+                            <i class="fas fa-search"></i> Search for:
+                        </label>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Enter text to search...">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="replaceInput">
+                            <i class="fas fa-exchange-alt"></i> Replace with:
+                        </label>
+                        <input type="text" id="replaceInput" class="search-input"
+                            placeholder="Enter replacement text...">
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" id="searchBtn">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <button class="btn" id="replaceBtn">
+                            <i class="fas fa-exchange-alt"></i> Replace All
+                        </button>
+                        <button class="btn" id="caseSensitiveBtn">
+                            <i class="fas fa-font"></i> Toggle Case Sensitivity
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-cogs"></i>
+                        <h2>Common Operations</h2>
+                    </div>
+
+                    <div class="method-grid">
+                        <div class="method-item" data-method="toUpperCase">
+                            <div class="method-name">toUpperCase()</div>
+                            <div class="method-desc">Convert to uppercase</div>
+                        </div>
+
+                        <div class="method-item" data-method="toLowerCase">
+                            <div class="method-name">toLowerCase()</div>
+                            <div class="method-desc">Convert to lowercase</div>
+                        </div>
+
+                        <div class="method-item" data-method="trim">
+                            <div class="method-name">trim()</div>
+                            <div class="method-desc">Remove whitespace</div>
+                        </div>
+
+                        <div class="method-item" data-method="reverse">
+                            <div class="method-name">Reverse</div>
+                            <div class="method-desc">Reverse the string</div>
+                        </div>
+
+                        <div class="method-item" data-method="capitalize">
+                            <div class="method-name">Capitalize</div>
+                            <div class="method-desc">Capitalize each word</div>
+                        </div>
+
+                        <div class="method-item" data-method="removeSpaces">
+                            <div class="method-name">Remove Spaces</div>
+                            <div class="method-desc">Delete all spaces</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="result-card">
+                    <h3><i class="fas fa-chart-bar"></i> Text Statistics</h3>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="charCount">0</div>
+                            <div class="stat-label">Characters</div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-value" id="wordCount">0</div>
+                            <div class="stat-label">Words</div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-value" id="lineCount">0</div>
+                            <div class="stat-label">Lines</div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-value" id="sentenceCount">0</div>
+                            <div class="stat-label">Sentences</div>
+                        </div>
+                    </div>
+
+                    <div class="word-cloud" id="wordCloud">
+                        <!-- Word cloud will be generated here -->
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3><i class="fas fa-search-plus"></i> Search Results</h3>
+                    <div class="result-content" id="searchResult">
+                        Enter search term and click Search
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3><i class="fas fa-code"></i> Method Results</h3>
+                    <div class="result-content" id="methodResult">
+                        Click on any method to see the result
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3><i class="fas fa-list"></i> Split into Array</h3>
+                    <div class="result-content" id="splitResult">
+                        <!-- Will show split results -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="examples">
+                <button class="example-btn" data-example="lorem">Lorem Ipsum</button>
+                <button class="example-btn" data-example="code">Code Example</button>
+                <button class="example-btn" data-example="poem">Poem</button>
+                <button class="example-btn" data-example="url">URL Example</button>
+                <button class="example-btn" data-example="json">JSON Example</button>
+            </div>
+
+            <div class="info-text">
+                <i class="fas fa-info-circle"></i> Click methods or use buttons to manipulate text
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // 1. Convert string to uppercase
+        // 2. Check if string contains specific word
+        // 3. Split string into array of words
+
+        // DOM Elements
+        const textInput = document.getElementById('textInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const sampleBtn = document.getElementById('sampleBtn');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const searchInput = document.getElementById('searchInput');
+        const replaceInput = document.getElementById('replaceInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const replaceBtn = document.getElementById('replaceBtn');
+        const caseSensitiveBtn = document.getElementById('caseSensitiveBtn');
+
+        // Result elements
+        const charCount = document.getElementById('charCount');
+        const wordCount = document.getElementById('wordCount');
+        const lineCount = document.getElementById('lineCount');
+        const sentenceCount = document.getElementById('sentenceCount');
+        const wordCloud = document.getElementById('wordCloud');
+        const searchResult = document.getElementById('searchResult');
+        const methodResult = document.getElementById('methodResult');
+        const splitResult = document.getElementById('splitResult');
+
+        // Method items
+        const methodItems = document.querySelectorAll('.method-item');
+
+        // Example buttons
+        const exampleButtons = document.querySelectorAll('.example-btn');
+
+        // Notification
+        const notification = document.getElementById('notification');
+
+        // State
+        let isCaseSensitive = false;
+        let currentText = '';
+
+        // Sample text
+        const sampleText = `Welcome to JavaScript String Methods practice! 
+This is a sample text to demonstrate various string operations.
+You can modify this text and see how different methods work.
+JavaScript provides powerful string manipulation capabilities.
+Try changing this text and clicking the buttons below!`;
+
+        // Initialize
+        textInput.value = sampleText;
+        currentText = sampleText;
+        updateStatistics();
+        updateSplitResult();
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = 'notification show';
+
+            // Set color based on type
+            const colors = {
+                'info': '#2196F3',
+                'success': '#4CAF50',
+                'warning': '#FF9800',
+                'error': '#f44336'
+            };
+
+            notification.style.backgroundColor = colors[type] || colors.info;
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update text statistics
+        function updateStatistics() {
+            const text = textInput.value;
+            currentText = text;
+
+            // Character count
+            charCount.textContent = text.length;
+
+            // Word count
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            wordCount.textContent = words.length;
+
+            // Line count
+            const lines = text.split('\n').filter(line => line.trim().length > 0);
+            lineCount.textContent = lines.length;
+
+            // Sentence count (simplified)
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            sentenceCount.textContent = sentences.length;
+
+            // Word frequency for word cloud
+            updateWordCloud(words);
+        }
+
+        // Update word cloud
+        function updateWordCloud(words) {
+            wordCloud.innerHTML = '';
+
+            // Count word frequencies
+            const wordFreq = {};
+            words.forEach(word => {
+                const cleanWord = word.toLowerCase().replace(/[^\w]/g, '');
+                if (cleanWord.length > 0) {
+                    wordFreq[cleanWord] = (wordFreq[cleanWord] || 0) + 1;
+                }
+            });
+
+            // Get top 20 words
+            const topWords = Object.entries(wordFreq)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 20);
+
+            // Create word cloud items
+            topWords.forEach(([word, freq]) => {
+                const wordDiv = document.createElement('div');
+                wordDiv.className = 'word-item';
+                wordDiv.textContent = word;
+                wordDiv.title = `Frequency: ${freq}`;
+
+                // Adjust size based on frequency
+                const size = 12 + (freq * 2);
+                wordDiv.style.fontSize = `${Math.min(size, 24)}px`;
+                wordDiv.style.opacity = 0.7 + (freq / 10);
+
+                wordCloud.appendChild(wordDiv);
+            });
+        }
+
+        // Update split result
+        function updateSplitResult() {
+            const text = textInput.value;
+
+            // Show different split operations
+            const splits = {
+                'Split by spaces': text.split(' '),
+                'Split by lines': text.split('\n'),
+                'Split by words': text.split(/\s+/).filter(w => w.length > 0),
+                'Split by sentences': text.split(/[.!?]+/).filter(s => s.trim().length > 0)
+            };
+
+            let resultHTML = '';
+            Object.entries(splits).forEach(([label, array]) => {
+                resultHTML += `<strong>${label}:</strong><br>`;
+                resultHTML += `[${array.slice(0, 10).map(item => `"${item}"`).join(', ')}`;
+                if (array.length > 10) resultHTML += `, ... (+${array.length - 10} more)`;
+                resultHTML += ']<br><br>';
+            });
+
+            splitResult.innerHTML = resultHTML;
+        }
+
+        // Apply string method
+        function applyStringMethod(method) {
+            const text = textInput.value;
+            let result = '';
+
+            switch (method) {
+                case 'toUpperCase':
+                    result = text.toUpperCase();
+                    break;
+
+                case 'toLowerCase':
+                    result = text.toLowerCase();
+                    break;
+
+                case 'trim':
+                    result = text.trim();
+                    break;
+
+                case 'reverse':
+                    result = text.split('').reverse().join('');
+                    break;
+
+                case 'capitalize':
+                    result = text.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+                    break;
+
+                case 'removeSpaces':
+                    result = text.replace(/\s+/g, '');
+                    break;
+
+                default:
+                    result = `Method "${method}" not implemented`;
+            }
+
+            methodResult.textContent = result;
+            showNotification(`Applied ${method}() method`, 'success');
+        }
+
+        // Perform search
+        function performSearch() {
+            const text = textInput.value;
+            const searchTerm = searchInput.value.trim();
+
+            if (!searchTerm) {
+                searchResult.textContent = 'Please enter a search term';
+                return;
+            }
+
+            let searchText = text;
+            let term = searchTerm;
+
+            if (!isCaseSensitive) {
+                searchText = text.toLowerCase();
+                term = searchTerm.toLowerCase();
+            }
+
+            if (searchText.includes(term)) {
+                const index = searchText.indexOf(term);
+                const before = text.substring(Math.max(0, index - 20), index);
+                const match = text.substring(index, index + term.length);
+                const after = text.substring(index + term.length, Math.min(text.length, index + term.length + 20));
+
+                searchResult.innerHTML = `
+                    <div style="color: #4CAF50; margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> Found at position ${index}
+                    </div>
+                    <div class="highlight">
+                        ...${before}<span>${match}</span>${after}...
+                    </div>
+                    <div style="margin-top: 10px; color: #666;">
+                        Total occurrences: ${countOccurrences(searchText, term)}
+                    </div>
+                `;
+
+                showNotification(`Found "${searchTerm}" in text`, 'success');
+            } else {
+                searchResult.innerHTML = `
+                    <div style="color: #f44336;">
+                        <i class="fas fa-times-circle"></i> Not found
+                    </div>
+                    <div style="margin-top: 10px;">
+                        "${searchTerm}" was not found in the text
+                    </div>
+                `;
+                showNotification(`"${searchTerm}" not found in text`, 'warning');
+            }
+        }
+
+        // Count occurrences
+        function countOccurrences(text, term) {
+            let count = 0;
+            let pos = text.indexOf(term);
+
+            while (pos !== -1) {
+                count++;
+                pos = text.indexOf(term, pos + 1);
+            }
+
+            return count;
+        }
+
+        // Perform replace
+        function performReplace() {
+            const text = textInput.value;
+            const searchTerm = searchInput.value.trim();
+            const replaceTerm = replaceInput.value;
+
+            if (!searchTerm) {
+                showNotification('Please enter a search term', 'warning');
+                return;
+            }
+
+            let newText;
+            if (isCaseSensitive) {
+                const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                newText = text.replace(regex, replaceTerm);
+            } else {
+                const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+                newText = text.replace(regex, replaceTerm);
+            }
+
+            if (newText !== text) {
+                textInput.value = newText;
+                updateStatistics();
+                updateSplitResult();
+                showNotification(`Replaced "${searchTerm}" with "${replaceTerm}"`, 'success');
+            } else {
+                showNotification(`"${searchTerm}" not found in text`, 'warning');
+            }
+        }
+
+        // Load example
+        function loadExample(exampleName) {
+            const examples = {
+                'lorem': `Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.`,
+
+                'code': `function calculateSum(a, b) {
+    // This function adds two numbers
+    const sum = a + b;
+    return sum;
+}
+
+const result = calculateSum(5, 10);
+console.log("Result:", result);`,
+
+                'poem': `The Road Not Taken
+By Robert Frost
+
+Two roads diverged in a yellow wood,
+And sorry I could not travel both
+And be one traveler, long I stood
+And looked down one as far as I could`,
+
+                'url': `https://www.example.com/path/to/resource?query=string&param=value
+mailto:user@example.com
+ftp://server.com/file.txt`,
+
+                'json': `{
+    "name": "John Doe",
+    "age": 30,
+    "email": "john@example.com",
+    "skills": ["JavaScript", "HTML", "CSS"],
+    "address": {
+        "street": "123 Main St",
+        "city": "New York"
+    }
+}`
+            };
+
+            if (examples[exampleName]) {
+                textInput.value = examples[exampleName];
+                updateStatistics();
+                updateSplitResult();
+                showNotification(`Loaded ${exampleName} example`, 'info');
+            }
+        }
+
+        // Event Listeners
+        textInput.addEventListener('input', () => {
+            updateStatistics();
+            updateSplitResult();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            textInput.value = '';
+            updateStatistics();
+            updateSplitResult();
+            showNotification('Text cleared', 'info');
+        });
+
+        sampleBtn.addEventListener('click', () => {
+            textInput.value = sampleText;
+            updateStatistics();
+            updateSplitResult();
+            showNotification('Reset to sample text', 'info');
+        });
+
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                textInput.value = text;
+                updateStatistics();
+                updateSplitResult();
+                showNotification('Pasted from clipboard', 'success');
+            } catch (err) {
+                showNotification('Failed to paste from clipboard', 'error');
+                console.error('Failed to paste:', err);
+            }
+        });
+
+        searchBtn.addEventListener('click', performSearch);
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        replaceBtn.addEventListener('click', performReplace);
+
+        caseSensitiveBtn.addEventListener('click', () => {
+            isCaseSensitive = !isCaseSensitive;
+            caseSensitiveBtn.innerHTML = isCaseSensitive ?
+                '<i class="fas fa-font"></i> Case Sensitive: ON' :
+                '<i class="fas fa-font"></i> Case Sensitive: OFF';
+            caseSensitiveBtn.style.background = isCaseSensitive ?
+                'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' :
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+
+            showNotification(`Case sensitivity ${isCaseSensitive ? 'enabled' : 'disabled'}`, 'info');
+        });
+
+        // Method item click handlers
+        methodItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const method = item.getAttribute('data-method');
+                applyStringMethod(method);
+            });
+        });
+
+        // Example button click handlers
+        exampleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const example = button.getAttribute('data-example');
+                loadExample(example);
+            });
+        });
+
+        // Additional string method demonstrations
+        function demonstrateMoreMethods() {
+            const text = textInput.value;
+            const methods = [
+                { name: 'charAt(0)', value: text.charAt(0), desc: 'First character' },
+                { name: 'charCodeAt(0)', value: text.charCodeAt(0), desc: 'ASCII of first char' },
+                { name: 'includes("JavaScript")', value: text.includes('JavaScript'), desc: 'Contains "JavaScript"' },
+                { name: 'indexOf("text")', value: text.indexOf('text'), desc: 'Position of "text"' },
+                { name: 'lastIndexOf("a")', value: text.lastIndexOf('a'), desc: 'Last position of "a"' },
+                { name: 'replaceAll(" ", "_")', value: text.replaceAll(' ', '_'), desc: 'Spaces to underscores' },
+                { name: 'slice(0, 50)', value: text.slice(0, 50) + '...', desc: 'First 50 chars' },
+                { name: 'substring(10, 30)', value: text.substring(10, 30), desc: 'Characters 10-30' },
+                { name: 'startsWith("Welcome")', value: text.startsWith('Welcome'), desc: 'Starts with "Welcome"' },
+                { name: 'endsWith("!")', value: text.endsWith('!'), desc: 'Ends with "!"' }
+            ];
+
+            console.table(methods);
+        }
+
+        // Show additional methods on double-click
+        textInput.addEventListener('dblclick', demonstrateMoreMethods);
+
+        // Initial notification
+        setTimeout(() => {
+            showNotification('Try clicking on methods or using the search feature!', 'info');
+        }, 1000);
+    </script>
+</body>
+
+</html>

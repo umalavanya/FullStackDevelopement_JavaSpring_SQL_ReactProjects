@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 37</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #34495e;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .array-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        .array-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-value {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .original-array {
+            background-color: #e8f4fd;
+            border-left-color: #2196F3;
+        }
+
+        .map-result {
+            background-color: #e8f5e9;
+            border-left-color: #4CAF50;
+        }
+
+        .filter-result {
+            background-color: #fff3e0;
+            border-left-color: #FF9800;
+        }
+
+        .reduce-result {
+            background-color: #fce4ec;
+            border-left-color: #E91E63;
+        }
+
+        .method-example {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .array-item {
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .array-item.original {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+
+        .array-item.mapped {
+            background-color: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .array-item.filtered {
+            background-color: #fff3e0;
+            border-color: #FF9800;
+        }
+
+        .item-index {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-table th {
+            background-color: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .comparison-table .original {
+            background-color: #e3f2fd;
+        }
+
+        .comparison-table .mapped {
+            background-color: #e8f5e9;
+        }
+
+        .comparison-table .filtered {
+            background-color: #fff3e0;
+        }
+
+        .method-info {
+            margin-top: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .info-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 5px;
+        }
+
+        .info-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1><i class="fas fa-code"></i> JavaScript Array Methods</h1>
+        <p class="subtitle">Learn and practice map(), filter(), and reduce() with interactive examples</p>
+    </div>
+
+    <div class="container">
+        <!-- Original Array Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+                <div class="card-title">Original Array</div>
+            </div>
+
+            <div class="card-description">
+                Enter comma-separated numbers to create your array. Example: 1, 2, 3, 4, 5
+            </div>
+
+            <div class="input-section">
+                <label class="input-label" for="arrayInput">Your Array:</label>
+                <input type="text" id="arrayInput" class="array-input"
+                    placeholder="Enter numbers separated by commas..." value="1, 2, 3, 4, 5, 6, 7, 8, 9, 10">
+            </div>
+
+            <button class="btn" id="generateBtn">
+                <i class="fas fa-play"></i> Process Array
+            </button>
+
+            <div class="result-section original-array">
+                <div class="result-title">
+                    <i class="fas fa-database"></i> Original Array:
+                </div>
+                <div class="result-value" id="originalArray">[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</div>
+
+                <div class="array-visualization" id="originalVisualization">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Method Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </div>
+                <div class="card-title">map() Method</div>
+            </div>
+
+            <div class="card-description">
+                Creates a new array with the results of calling a provided function on every element.
+            </div>
+
+            <div class="method-example">
+                // Doubling each number<br>
+                array.map(num => num * 2)
+            </div>
+
+            <div class="result-section map-result">
+                <div class="result-title">
+                    <i class="fas fa-arrow-right"></i> Mapped Array (doubled):
+                </div>
+                <div class="result-value" id="mappedArray">[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]</div>
+
+                <div class="array-visualization" id="mappedVisualization">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Method Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <div class="card-title">filter() Method</div>
+            </div>
+
+            <div class="card-description">
+                Creates a new array with all elements that pass the test implemented by the provided function.
+            </div>
+
+            <div class="method-example">
+                // Getting even numbers only<br>
+                array.filter(num => num % 2 === 0)
+            </div>
+
+            <div class="result-section filter-result">
+                <div class="result-title">
+                    <i class="fas fa-check-circle"></i> Filtered Array (even numbers):
+                </div>
+                <div class="result-value" id="filteredArray">[2, 4, 6, 8, 10]</div>
+
+                <div class="array-visualization" id="filteredVisualization">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Reduce Method Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="card-title">reduce() Method</div>
+            </div>
+
+            <div class="card-description">
+                Executes a reducer function on each element, resulting in a single output value.
+            </div>
+
+            <div class="method-example">
+                // Summing all numbers<br>
+                array.reduce((sum, num) => sum + num, 0)
+            </div>
+
+            <div class="result-section reduce-result">
+                <div class="result-title">
+                    <i class="fas fa-sigma"></i> Reduced Result (sum):
+                </div>
+                <div class="result-value" id="reducedResult">55</div>
+
+                <div class="method-example" style="margin-top: 15px;">
+                    // Additional reduce operations:<br>
+                    • Max value: Math.max(...array)<br>
+                    • Min value: Math.min(...array)<br>
+                    • Average: sum / array.length
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="method-info">
+        <div class="info-card">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">Array Methods Comparison</h2>
+
+            <table class="comparison-table" id="comparisonTable">
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Original</th>
+                        <th>map() ×2</th>
+                        <th>filter() Even</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-title">map()</div>
+                    <div class="info-desc">
+                        Transforms each element. Always returns a new array with the same length.
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-title">filter()</div>
+                    <div class="info-desc">
+                        Selects elements based on a condition. Returns a new array with equal or fewer elements.
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-title">reduce()</div>
+                    <div class="info-desc">
+                        Accumulates values. Returns a single value (can also return an array or object).
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-title">Chaining</div>
+                    <div class="info-desc">
+                        Methods can be chained: array.map(...).filter(...).reduce(...)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Use map to double each number in an array
+        // 2. Use filter to get even numbers
+        // 3. Use reduce to sum all numbers
+
+        // DOM Elements
+        const arrayInput = document.getElementById('arrayInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const originalArray = document.getElementById('originalArray');
+        const mappedArray = document.getElementById('mappedArray');
+        const filteredArray = document.getElementById('filteredArray');
+        const reducedResult = document.getElementById('reducedResult');
+        const comparisonTable = document.getElementById('comparisonTable').querySelector('tbody');
+
+        // Visualization containers
+        const originalVisualization = document.getElementById('originalVisualization');
+        const mappedVisualization = document.getElementById('mappedVisualization');
+        const filteredVisualization = document.getElementById('filteredVisualization');
+
+        // Parse input string to array of numbers
+        function parseArray(input) {
+            return input.split(',')
+                .map(item => item.trim())
+                .filter(item => item !== '')
+                .map(Number)
+                .filter(num => !isNaN(num));
+        }
+
+        // Format array for display
+        function formatArray(arr) {
+            return `[${arr.join(', ')}]`;
+        }
+
+        // Create array visualization
+        function createArrayVisualization(arr, container, type) {
+            container.innerHTML = '';
+
+            arr.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `array-item ${type}`;
+                itemDiv.textContent = item;
+
+                const indexSpan = document.createElement('span');
+                indexSpan.className = 'item-index';
+                indexSpan.textContent = index;
+
+                itemDiv.appendChild(indexSpan);
+                container.appendChild(itemDiv);
+            });
+
+            if (arr.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.textContent = 'No items';
+                emptyMsg.style.color = '#999';
+                emptyMsg.style.fontStyle = 'italic';
+                container.appendChild(emptyMsg);
+            }
+        }
+
+        // Update comparison table
+        function updateComparisonTable(original, mapped, filtered) {
+            comparisonTable.innerHTML = '';
+
+            // Find maximum length for iteration
+            const maxLength = Math.max(original.length, mapped.length, filtered.length);
+
+            for (let i = 0; i < maxLength; i++) {
+                const row = document.createElement('tr');
+
+                // Index cell
+                const indexCell = document.createElement('td');
+                indexCell.textContent = i < original.length ? i : '';
+                indexCell.style.fontWeight = '600';
+                indexCell.style.color = '#555';
+                row.appendChild(indexCell);
+
+                // Original value cell
+                const originalCell = document.createElement('td');
+                originalCell.className = 'original';
+                originalCell.textContent = i < original.length ? original[i] : '';
+                row.appendChild(originalCell);
+
+                // Mapped value cell
+                const mappedCell = document.createElement('td');
+                mappedCell.className = 'mapped';
+                mappedCell.textContent = i < original.length ? mapped[i] : '';
+                row.appendChild(mappedCell);
+
+                // Filtered value cell
+                const filteredCell = document.createElement('td');
+                filteredCell.className = 'filtered';
+
+                // Find if this original value is in filtered array
+                const originalValue = original[i];
+                const isInFiltered = filtered.includes(originalValue);
+                filteredCell.textContent = isInFiltered ? originalValue : '';
+                filteredCell.style.opacity = isInFiltered ? '1' : '0.3';
+
+                row.appendChild(filteredCell);
+
+                comparisonTable.appendChild(row);
+            }
+        }
+
+        // Process the array
+        function processArray() {
+            // Get and parse input
+            const input = arrayInput.value;
+            const original = parseArray(input);
+
+            if (original.length === 0) {
+                alert('Please enter valid numbers!');
+                return;
+            }
+
+            // 1. Use map to double each number
+            const mapped = original.map(num => num * 2);
+
+            // 2. Use filter to get even numbers
+            const filtered = original.filter(num => num % 2 === 0);
+
+            // 3. Use reduce to sum all numbers
+            const reduced = original.reduce((sum, num) => sum + num, 0);
+
+            // Additional reduce examples
+            const maxValue = original.reduce((max, num) => Math.max(max, num), -Infinity);
+            const minValue = original.reduce((min, num) => Math.min(min, num), Infinity);
+            const average = reduced / original.length;
+
+            // Update displays
+            originalArray.textContent = formatArray(original);
+            mappedArray.textContent = formatArray(mapped);
+            filteredArray.textContent = formatArray(filtered);
+            reducedResult.innerHTML = `
+                <strong>Sum:</strong> ${reduced}<br>
+                <strong>Max:</strong> ${maxValue}<br>
+                <strong>Min:</strong> ${minValue}<br>
+                <strong>Average:</strong> ${average.toFixed(2)}
+            `;
+
+            // Update visualizations
+            createArrayVisualization(original, originalVisualization, 'original');
+            createArrayVisualization(mapped, mappedVisualization, 'mapped');
+            createArrayVisualization(filtered, filteredVisualization, 'filtered');
+
+            // Update comparison table
+            updateComparisonTable(original, mapped, filtered);
+
+            // Log to console for debugging
+            console.log('Original:', original);
+            console.log('Mapped (doubled):', mapped);
+            console.log('Filtered (even):', filtered);
+            console.log('Reduced (sum):', reduced);
+        }
+
+        // Initialize with example
+        processArray();
+
+        // Event Listeners
+        generateBtn.addEventListener('click', processArray);
+
+        // Process on Enter key
+        arrayInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                processArray();
+            }
+        });
+
+        // Additional examples
+        function showExample(exampleName) {
+            const examples = {
+                'basic': '1, 2, 3, 4, 5',
+                'decimals': '1.5, 2.3, 3.7, 4.1, 5.9',
+                'negatives': '-5, -3, -1, 2, 4, 6',
+                'large': '100, 200, 300, 400, 500',
+                'mixed': '15, 23, 7, 42, 18, 36, 9'
+            };
+
+            if (examples[exampleName]) {
+                arrayInput.value = examples[exampleName];
+                processArray();
+            }
+        }
+
+        // Add example buttons
+        const exampleContainer = document.createElement('div');
+        exampleContainer.style.cssText = `
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        `;
+
+        const exampleLabels = {
+            'basic': 'Basic (1-5)',
+            'decimals': 'Decimals',
+            'negatives': 'With Negatives',
+            'large': 'Large Numbers',
+            'mixed': 'Mixed Numbers'
+        };
+
+        Object.keys(exampleLabels).forEach(key => {
+            const btn = document.createElement('button');
+            btn.textContent = exampleLabels[key];
+            btn.style.cssText = `
+                padding: 8px 16px;
+                background-color: #f0f0f0;
+                border: 2px solid #ddd;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: all 0.2s;
+            `;
+            btn.addEventListener('mouseenter', () => {
+                btn.style.backgroundColor = '#667eea';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#667eea';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.backgroundColor = '#f0f0f0';
+                btn.style.color = '#333';
+                btn.style.borderColor = '#ddd';
+            });
+            btn.addEventListener('click', () => showExample(key));
+            exampleContainer.appendChild(btn);
+        });
+
+        document.querySelector('.input-section').appendChild(exampleContainer);
+
+        // Add method chaining example
+        function showChainExample() {
+            const original = parseArray(arrayInput.value);
+            const chainedResult = original
+                .map(num => num * 3) // Triple each number
+                .filter(num => num > 10) // Keep numbers > 10
+                .reduce((sum, num) => sum + num, 0); // Sum them
+
+            alert(`Chained operation (triple → filter >10 → sum):\n\n` +
+                `Original: [${original.join(', ')}]\n` +
+                `Result: ${chainedResult}\n\n` +
+                `Code: array.map(n => n*3).filter(n => n>10).reduce((s,n) => s+n, 0)`);
+        }
+
+        // Add chain example button
+        const chainBtn = document.createElement('button');
+        chainBtn.innerHTML = '<i class="fas fa-link"></i> Show Method Chaining Example';
+        chainBtn.style.cssText = `
+            margin-top: 15px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        `;
+        chainBtn.addEventListener('click', showChainExample);
+        document.querySelector('.card:last-child .result-section').appendChild(chainBtn);
+    </script>
+</body>
+
+</html>
