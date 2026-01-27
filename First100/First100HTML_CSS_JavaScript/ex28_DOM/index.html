@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 28</title>
+    <style>
+        .highlight {
+            color: blue;
+            font-weight: bold;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="main-title">DOM Manipulation</h1>
+
+    <div class="content">First content div</div>
+    <div class="content">Second content div</div>
+    <div class="content">Third content div</div>
+
+    <p>This is a paragraph to hide.</p>
+    <p>Another paragraph to hide.</p>
+
+    <button onclick="changeContent()">Change Content</button>
+    <button onclick="changeColors()">Change Colors</button>
+    <button onclick="hideElements()">Hide Paragraphs</button>
+
+    <script>
+        // 1. Select element by ID and change its text
+        function changeContent() {
+            const title = document.getElementById("main-title");
+            title.textContent = "DOM Manipulation - Updated!";
+            title.style.color = "red";
+        }
+
+        // 2. Select elements by class name and change their color
+        function changeColors() {
+            const contentDivs = document.getElementsByClassName("content");
+
+            // HTMLCollection to Array (modern way)
+            Array.from(contentDivs).forEach((div, index) => {
+                div.classList.add("highlight");
+                div.textContent = `Updated content ${index + 1}`;
+            });
+     
+        }
+
+        // 3. Select elements by tag name and hide them
+        function hideElements() {
+            const paragraphs = document.getElementsByTagName("p");
+
+            for (let p of paragraphs) {
+                p.classList.add("hide");
+            }
+
+            // Alternative: using style directly
+            // for (let p of paragraphs) {
+            //     p.style.display = "none";
+            // }
+        }
+
+        // Additional DOM selection methods
+        console.log("Using querySelector:");
+        const firstDiv = document.querySelector(".content");
+        console.log(firstDiv);
+
+        console.log("\nUsing querySelectorAll:");
+        const allDivs = document.querySelectorAll(".content");
+        allDivs.forEach(div => console.log(div.textContent));
+
+        // Select parent, children, siblings
+        const body = document.body;
+        console.log("\nBody children:", body.children);
+
+        const firstContentDiv = document.querySelector(".content");
+        console.log("Parent of first div:", firstContentDiv.parentElement);
+    </script>
+</body>
+
+</html>

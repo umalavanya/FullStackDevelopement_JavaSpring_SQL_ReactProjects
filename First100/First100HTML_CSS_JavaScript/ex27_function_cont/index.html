@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 27</title>
+</head>
+
+<body>
+    <script>
+        // 1. Create a person object
+        const person = {
+            firstName: "John",
+            lastName: "Doe",
+            age: 30,
+            city: "New York",
+
+            // 2. Add a method to the object
+            getFullName: function () {
+                return this.firstName + " " + this.lastName;
+            },
+
+            // Short method syntax (ES6)
+            greet() {
+                return `Hello, my name is ${this.firstName} and I'm ${this.age} years old.`;
+            },
+
+            // Arrow function (be careful with 'this' in arrow functions)
+            describeCity: () => {
+                return `I live in ${person.city}`;
+            }
+        };
+
+        // 3. Access and modify object properties
+        console.log("First name:", person.firstName);
+        console.log("Age:", person.age);
+
+        // Call methods
+        console.log("Full name:", person.getFullName());
+        console.log("Greeting:", person.greet());
+        console.log("City description:", person.describeCity());
+
+        // Modify properties
+        person.age = 31;
+        person.job = "Developer";
+
+        console.log("\nAfter modification:");
+        console.log("New age:", person.age);
+        console.log("New job:", person.job);
+
+        // Access properties using bracket notation
+        console.log("\nUsing bracket notation:");
+        let propertyName = "lastName";
+        console.log("Last name:", person[propertyName]);
+
+        // Check if property exists
+        console.log("\nProperty checks:");
+        console.log("Has firstName?", "firstName" in person);
+        console.log("Has country?", "country" in person);
+
+        // Object methods
+        console.log("\nObject.keys():", Object.keys(person));
+        console.log("Object.values():", Object.values(person));
+        console.log("Object.entries():", Object.entries(person));
+
+        // Loop through object properties
+        console.log("\nLooping through properties:");
+        for (let key in person) {
+            console.log(`${key}: ${person[key]}`);
+        }
+
+        // Nested objects
+        const car = {
+            brand: "Toyota",
+            model: "Camry",
+            year: 2020,
+            owner: person, // Using the person object
+            specs: {
+                color: "red",
+                horsepower: 203,
+                transmission: "automatic"
+            }
+        };
+
+        console.log("\nCar owner:", car.owner.getFullName());
+        console.log("Car color:", car.specs.color);
+    </script>
+</body>
+
+</html>
