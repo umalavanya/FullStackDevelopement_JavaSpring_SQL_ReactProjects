@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 29</title>
+    <style>
+        .title{
+            text-align: center;
+            color: #333;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            margin-top: 20px;
+            font-size: 28px;
+
+        }
+        .container {
+            border: 2px solid #333;
+            padding: 20px;
+            margin: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .new-item {
+            background-color: #e3f2fd;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .highlight {
+            background-color: #fff8e1;
+            font-weight: bold;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: aquamarine;
+            border-radius: 5px;
+            border: 1px solid gray;
+            box-shadow: #2196f3 2px 2px 5px;
+        }
+
+        button:hover {
+            background-color: rgb(7, 149, 102);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="title">Creating and Appending Elements</h1>
+
+    <div id="main-container" class="container">
+        <p>This is the original content.</p>
+    </div>
+
+    <button onclick="addNewElement()">Add New Element</button>
+    <button onclick="addMultipleElements()">Add Multiple Elements</button>
+    <button onclick="removeLastElement()">Remove Last Element</button>
+    <button onclick="clearAll()">Clear All</button>
+
+    <script>
+        // 1. Create a new div element
+        // 2. Add text content and class to it
+        // 3. Append it to an existing element in the DOM
+
+        function addNewElement() {
+            // Create new element
+            const newDiv = document.createElement("div");
+
+            // Add text content
+            newDiv.textContent = "This is a newly created div element!";
+
+            // Add class
+            newDiv.className = "new-item";
+
+            // Add additional attributes
+            newDiv.setAttribute("data-created", new Date().toLocaleTimeString());
+
+            // Append to container
+            const container = document.getElementById("main-container");
+            container.appendChild(newDiv);
+
+            console.log("New element added!");
+        }
+
+        function addMultipleElements() {
+            const container = document.getElementById("main-container");
+
+            // Create multiple elements at once
+            for (let i = 1; i <= 3; i++) {
+                const item = document.createElement("div");
+                item.className = "new-item";
+                item.textContent = `List item ${i} added at ${new Date().toLocaleTimeString()}`;
+
+                // Add click event to each new item
+                item.addEventListener("click", function () {
+                    this.classList.toggle("highlight");
+                    console.log(`Clicked item: ${this.textContent}`);
+                });
+
+                container.appendChild(item);
+            }
+        }
+
+        function removeLastElement() {
+            const container = document.getElementById("main-container");
+            const items = container.getElementsByClassName("new-item");
+
+            if (items.length > 0) {
+                const lastItem = items[items.length - 1];
+                container.removeChild(lastItem);
+                console.log("Last element removed!");
+            } else {
+                console.log("No elements to remove!");
+            }
+        }
+
+        function clearAll() {
+            const container = document.getElementById("main-container");
+
+            // Remove all .new-item elements
+            const items = container.getElementsByClassName("new-item");
+
+            // Convert to array and remove in reverse order
+            Array.from(items).reverse().forEach(item => {
+                container.removeChild(item);
+            });
+
+            // Alternative: set innerHTML (less efficient but simpler)
+            // const originalContent = container.innerHTML;
+            // const originalParagraph = container.querySelector("p");
+            // container.innerHTML = "";
+            // if (originalParagraph) {
+            //     container.appendChild(originalParagraph);
+            // }
+
+            console.log("All new elements cleared!");
+        }
+
+        // Additional methods for element manipulation
+        function insertElementAtBeginning() {
+            const container = document.getElementById("main-container");
+            const newElement = document.createElement("div");
+            newElement.className = "new-item";
+            newElement.textContent = "Inserted at beginning!";
+
+            // Insert before first child
+            container.insertBefore(newElement, container.firstChild);
+        }
+
+        function replaceElement() {
+            const container = document.getElementById("main-container");
+            const items = container.getElementsByClassName("new-item");
+
+            if (items.length > 0) {
+                const newElement = document.createElement("div");
+                newElement.className = "new-item";
+                newElement.textContent = "Replaced element!";
+
+                container.replaceChild(newElement, items[0]);
+            }
+        }
+
+        // Create element with HTML content
+        function createElementWithHTML() {
+            const container = document.getElementById("main-container");
+            const complexElement = document.createElement("div");
+
+            complexElement.innerHTML = `
+                <h3>Complex Element</h3>
+                <p>This element contains <strong>HTML</strong> content.</p>
+                <ul>
+                    <li>List item 1</li>
+                    <li>List item 2</li>
+                </ul>
+            `;
+            complexElement.className = "new-item";
+
+            container.appendChild(complexElement);
+        }
+    </script>
+</body>
+
+</html>
