@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 43 - Fetch API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            min-height: 600px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1a2980;
+            font-size: 22px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .api-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .endpoint-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .endpoint-btn {
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .endpoint-btn:hover {
+            background-color: #e3f2fd;
+            border-color: #1a2980;
+            transform: translateY(-2px);
+        }
+
+        .endpoint-btn.active {
+            background-color: #1a2980;
+            color: white;
+            border-color: #1a2980;
+        }
+
+        .fetch-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .fetch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(26, 41, 128, 0.3);
+        }
+
+        .fetch-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .status-indicator {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .status-loading {
+            background-color: #fff3e0;
+            color: #F57C00;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .data-display {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-y: auto;
+            border: 2px solid #eaeaea;
+            min-height: 400px;
+        }
+
+        .data-display pre {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .user-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #eaeaea;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: #1a2980;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .user-details {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .user-details div {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background-color: #e3f2fd;
+            border-color: #1a2980;
+        }
+
+        .page-btn.active {
+            background-color: #1a2980;
+            color: white;
+            border-color: #1a2980;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #eaeaea;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2980;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .filter-input:focus {
+            border-color: #1a2980;
+            outline: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fa-spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cloud-download-alt"></i> Fetch API Practice</h1>
+            <p class="subtitle">Practice fetching data from JSONPlaceholder API</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="section-title">
+                    <i class="fas fa-sliders-h"></i>
+                    <h2>API Controls</h2>
+                </div>
+
+                <div class="api-controls">
+                    <div class="endpoint-buttons">
+                        <button class="endpoint-btn active" data-endpoint="users">
+                            <i class="fas fa-users"></i> Users
+                        </button>
+                        <button class="endpoint-btn" data-endpoint="posts">
+                            <i class="fas fa-newspaper"></i> Posts
+                        </button>
+                        <button class="endpoint-btn" data-endpoint="comments">
+                            <i class="fas fa-comments"></i> Comments
+                        </button>
+                        <button class="endpoint-btn" data-endpoint="albums">
+                            <i class="fas fa-images"></i> Albums
+                        </button>
+                        <button class="endpoint-btn" data-endpoint="photos">
+                            <i class="fas fa-camera"></i> Photos
+                        </button>
+                        <button class="endpoint-btn" data-endpoint="todos">
+                            <i class="fas fa-tasks"></i> Todos
+                        </button>
+                    </div>
+
+                    <button class="fetch-btn" id="fetchBtn">
+                        <i class="fas fa-download"></i> Fetch Data
+                    </button>
+
+                    <button class="fetch-btn" id="fetchErrorBtn"
+                        style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%);">
+                        <i class="fas fa-exclamation-triangle"></i> Test Error
+                    </button>
+
+                    <div class="status-indicator" id="statusIndicator">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Ready to fetch data</span>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="dataCount">0</div>
+                            <div class="stat-label">Items</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="fetchTime">0</div>
+                            <div class="stat-label">Time (ms)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="fetchCount">0</div>
+                            <div class="stat-label">Fetches</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="section-title">
+                    <i class="fas fa-database"></i>
+                    <h2>Data Display</h2>
+                </div>
+
+                <div class="filter-controls">
+                    <input type="text" id="searchInput" class="filter-input" placeholder="Search data...">
+                    <select id="sortSelect" class="filter-input" style="width: auto;">
+                        <option value="">Sort by</option>
+                        <option value="name">Name</option>
+                        <option value="id">ID</option>
+                    </select>
+                </div>
+
+                <div class="data-display" id="dataDisplay">
+                    <div class="empty-state">
+                        <i class="fas fa-cloud"></i>
+                        <h3>No Data Loaded</h3>
+                        <p>Select an endpoint and click "Fetch Data"</p>
+                    </div>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be added by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Fetch data from JSONPlaceholder API
+        // 2. Display user names in a list
+        // 3. Handle errors
+
+        // DOM Elements
+        const endpointButtons = document.querySelectorAll('.endpoint-btn');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const fetchErrorBtn = document.getElementById('fetchErrorBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const dataDisplay = document.getElementById('dataDisplay');
+        const pagination = document.getElementById('pagination');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+
+        // Stats elements
+        const dataCount = document.getElementById('dataCount');
+        const fetchTime = document.getElementById('fetchTime');
+        const fetchCount = document.getElementById('fetchCount');
+
+        // API Configuration
+        const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
+        const endpoints = {
+            users: { url: '/users', name: 'Users' },
+            posts: { url: '/posts', name: 'Posts' },
+            comments: { url: '/comments', name: 'Comments' },
+            albums: { url: '/albums', name: 'Albums' },
+            photos: { url: '/photos', name: 'Photos' },
+            todos: { url: '/todos', name: 'Todos' }
+        };
+
+        // State
+        let currentEndpoint = 'users';
+        let currentData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let totalFetches = 0;
+
+        // Set active endpoint
+        function setActiveEndpoint(endpoint) {
+            endpointButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.endpoint === endpoint) {
+                    btn.classList.add('active');
+                }
+            });
+
+            currentEndpoint = endpoint;
+            currentPage = 1;
+        }
+
+        // Update status indicator
+        function updateStatus(message, type = 'info') {
+            const icons = {
+                info: 'info-circle',
+                loading: 'spinner fa-spin',
+                success: 'check-circle',
+                error: 'exclamation-triangle'
+            };
+
+            const colors = {
+                info: { bg: '#e3f2fd', text: '#1565c0' },
+                loading: { bg: '#fff3e0', text: '#F57C00' },
+                success: { bg: '#e8f5e9', text: '#2e7d32' },
+                error: { bg: '#ffebee', text: '#c62828' }
+            };
+
+            statusIndicator.innerHTML = `<i class="fas fa-${icons[type]}"></i> <span>${message}</span>`;
+            statusIndicator.className = `status-indicator status-${type}`;
+            statusIndicator.style.backgroundColor = colors[type].bg;
+            statusIndicator.style.color = colors[type].text;
+        }
+
+        // Fetch data from API
+        async function fetchData(endpoint, testError = false) {
+            const startTime = Date.now();
+            updateStatus('Fetching data...', 'loading');
+
+            fetchBtn.disabled = true;
+            fetchErrorBtn.disabled = true;
+
+            try {
+                let url = `${API_BASE_URL}${endpoints[endpoint].url}`;
+
+                if (testError) {
+                    url = `${API_BASE_URL}/invalid-endpoint`; // This will cause a 404
+                }
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                const endTime = Date.now();
+                const fetchDuration = endTime - startTime;
+
+                // Update stats
+                totalFetches++;
+                fetchCount.textContent = totalFetches;
+                fetchTime.textContent = fetchDuration;
+                dataCount.textContent = data.length;
+
+                // Update state
+                currentData = data;
+                filteredData = [...data];
+
+                // Update UI
+                updateStatus(`Successfully fetched ${data.length} ${endpoints[endpoint].name.toLowerCase()}`, 'success');
+                renderData();
+                renderPagination();
+
+                return data;
+
+            } catch (error) {
+                const endTime = Date.now();
+                const fetchDuration = endTime - startTime;
+                fetchTime.textContent = fetchDuration;
+
+                updateStatus(`Error: ${error.message}`, 'error');
+                showError(error);
+
+                // Reset data display
+                dataDisplay.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error Fetching Data</h3>
+                        <p>${error.message}</p>
+                        <p>Please try again or check your connection</p>
+                    </div>
+                `;
+
+                return null;
+            } finally {
+                fetchBtn.disabled = false;
+                fetchErrorBtn.disabled = false;
+            }
+        }
+
+        // Show error details
+        function showError(error) {
+            console.error('Fetch error:', error);
+
+            // In a real app, you might want to log this to an error tracking service
+        }
+
+        // Render data based on current endpoint
+        function renderData() {
+            if (filteredData.length === 0) {
+                dataDisplay.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No Results Found</h3>
+                        <p>Try adjusting your search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            switch (currentEndpoint) {
+                case 'users':
+                    renderUsers(pageData);
+                    break;
+                case 'posts':
+                    renderPosts(pageData);
+                    break;
+                case 'comments':
+                    renderComments(pageData);
+                    break;
+                case 'albums':
+                    renderAlbums(pageData);
+                    break;
+                case 'photos':
+                    renderPhotos(pageData);
+                    break;
+                case 'todos':
+                    renderTodos(pageData);
+                    break;
+                default:
+                    renderJSON(pageData);
+            }
+        }
+
+        // Render users as cards
+        function renderUsers(users) {
+            let html = '<div class="user-list">';
+
+            users.forEach(user => {
+                const initials = user.name.split(' ')
+                    .map(name => name[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+
+                html += `
+                    <div class="user-card">
+                        <div class="user-avatar">${initials}</div>
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-details">
+                            <div><i class="fas fa-envelope"></i> ${user.email}</div>
+                            <div><i class="fas fa-phone"></i> ${user.phone}</div>
+                            <div><i class="fas fa-globe"></i> ${user.website}</div>
+                            <div><i class="fas fa-building"></i> ${user.company.name}</div>
+                            <div><i class="fas fa-map-marker-alt"></i> ${user.address.city}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            dataDisplay.innerHTML = html;
+        }
+
+        // Render posts
+        function renderPosts(posts) {
+            let html = '';
+
+            posts.forEach(post => {
+                html += `
+                    <div class="user-card" style="margin-bottom: 20px;">
+                        <div class="user-name">${post.title}</div>
+                        <div class="user-details">
+                            <div><strong>Post ID:</strong> ${post.id}</div>
+                            <div><strong>User ID:</strong> ${post.userId}</div>
+                            <div style="margin-top: 10px;">${post.body.substring(0, 150)}...</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            dataDisplay.innerHTML = html;
+        }
+
+        // Render comments
+        function renderComments(comments) {
+            let html = '';
+
+            comments.forEach(comment => {
+                html += `
+                    <div class="user-card" style="margin-bottom: 20px;">
+                        <div class="user-name">${comment.name}</div>
+                        <div class="user-details">
+                            <div><strong>Comment ID:</strong> ${comment.id}</div>
+                            <div><strong>Post ID:</strong> ${comment.postId}</div>
+                            <div><strong>Email:</strong> ${comment.email}</div>
+                            <div style="margin-top: 10px;">${comment.body}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            dataDisplay.innerHTML = html;
+        }
+
+        // Render albums
+        function renderAlbums(albums) {
+            let html = '<div class="user-list">';
+
+            albums.forEach(album => {
+                html += `
+                    <div class="user-card">
+                        <div class="user-avatar">A${album.id}</div>
+                        <div class="user-name">${album.title}</div>
+                        <div class="user-details">
+                            <div><i class="fas fa-user"></i> User ID: ${album.userId}</div>
+                            <div><i class="fas fa-hashtag"></i> Album ID: ${album.id}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            dataDisplay.innerHTML = html;
+        }
+
+        // Render photos
+        function renderPhotos(photos) {
+            let html = '<div class="user-list">';
+
+            photos.forEach(photo => {
+                html += `
+                    <div class="user-card">
+                        <div style="width: 100%; height: 150px; background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); border-radius: 10px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">
+                            <i class="fas fa-image" style="font-size: 48px;"></i>
+                        </div>
+                        <div class="user-name">${photo.title}</div>
+                        <div class="user-details">
+                            <div><i class="fas fa-hashtag"></i> Photo ID: ${photo.id}</div>
+                            <div><i class="fas fa-images"></i> Album ID: ${photo.albumId}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            dataDisplay.innerHTML = html;
+        }
+
+        // Render todos
+        function renderTodos(todos) {
+            let html = '';
+
+            todos.forEach(todo => {
+                const statusIcon = todo.completed ?
+                    '<i class="fas fa-check-circle" style="color: #4CAF50;"></i>' :
+                    '<i class="fas fa-clock" style="color: #FF9800;"></i>';
+
+                const statusText = todo.completed ? 'Completed' : 'Pending';
+
+                html += `
+                    <div class="user-card" style="margin-bottom: 20px; border-left: 4px solid ${todo.completed ? '#4CAF50' : '#FF9800'};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div class="user-name" style="margin: 0;">${todo.title}</div>
+                            <div style="display: flex; align-items: center; gap: 5px; font-size: 14px; color: #666;">
+                                ${statusIcon} ${statusText}
+                            </div>
+                        </div>
+                        <div class="user-details">
+                            <div><strong>Todo ID:</strong> ${todo.id}</div>
+                            <div><strong>User ID:</strong> ${todo.userId}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            dataDisplay.innerHTML = html;
+        }
+
+        // Render raw JSON
+        function renderJSON(data) {
+            dataDisplay.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            // Previous button
+            html += `
+                <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            // Next button
+            html += `
+                <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+                        onclick="changePage(${currentPage + 1})" 
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        // Change page
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+            if (page < 1 || page > totalPages) return;
+
+            currentPage = page;
+            renderData();
+            renderPagination();
+
+            // Scroll to top of data display
+            dataDisplay.scrollTop = 0;
+        }
+
+        // Filter and sort data
+        function filterAndSortData() {
+            let filtered = [...currentData];
+
+            // Apply search filter
+            const searchTerm = searchInput.value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(item => {
+                    // Search in all string properties
+                    return Object.values(item).some(value => {
+                        if (typeof value === 'string') {
+                            return value.toLowerCase().includes(searchTerm);
+                        } else if (typeof value === 'object' && value !== null) {
+                            // Search in nested objects (like user company)
+                            return Object.values(value).some(nestedValue => {
+                                if (typeof nestedValue === 'string') {
+                                    return nestedValue.toLowerCase().includes(searchTerm);
+                                }
+                                return false;
+                            });
+                        }
+                        return false;
+                    });
+                });
+            }
+
+            // Apply sorting
+            const sortBy = sortSelect.value;
+            if (sortBy === 'name') {
+                filtered.sort((a, b) => {
+                    const nameA = a.name || a.title || '';
+                    const nameB = b.name || b.title || '';
+                    return nameA.localeCompare(nameB);
+                });
+            } else if (sortBy === 'id') {
+                filtered.sort((a, b) => a.id - b.id);
+            }
+
+            filteredData = filtered;
+            currentPage = 1;
+            renderData();
+            renderPagination();
+            dataCount.textContent = filteredData.length;
+        }
+
+        // Event Listeners
+        endpointButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setActiveEndpoint(btn.dataset.endpoint);
+                fetchData(btn.dataset.endpoint);
+            });
+        });
+
+        fetchBtn.addEventListener('click', () => {
+            fetchData(currentEndpoint);
+        });
+
+        fetchErrorBtn.addEventListener('click', () => {
+            fetchData(currentEndpoint, true);
+        });
+
+        searchInput.addEventListener('input', filterAndSortData);
+        sortSelect.addEventListener('change', filterAndSortData);
+
+        // Initialize
+        setActiveEndpoint('users');
+        fetchData('users');
+
+        // Make changePage function globally available for onclick handlers
+        window.changePage = changePage;
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch (e.key) {
+                    case '1':
+                        e.preventDefault();
+                        setActiveEndpoint('users');
+                        fetchData('users');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        setActiveEndpoint('posts');
+                        fetchData('posts');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        setActiveEndpoint('comments');
+                        fetchData('comments');
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        fetchData(currentEndpoint);
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        fetchData(currentEndpoint, true);
+                        break;
+                }
+            }
+        });
+
+        // Add auto-refresh option
+        setTimeout(() => {
+            const autoRefreshDiv = document.createElement('div');
+            autoRefreshDiv.style.marginTop = '20px';
+            autoRefreshDiv.style.padding = '15px';
+            autoRefreshDiv.style.backgroundColor = '#f5f5f5';
+            autoRefreshDiv.style.borderRadius = '10px';
+            autoRefreshDiv.innerHTML = `
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="autoRefresh">
+                    <span>Auto-refresh every 30 seconds</span>
+                </label>
+            `;
+
+            document.querySelector('.sidebar').appendChild(autoRefreshDiv);
+
+            let autoRefreshInterval;
+            const autoRefreshCheckbox = document.getElementById('autoRefresh');
+
+            autoRefreshCheckbox.addEventListener('change', function () {
+                if (this.checked) {
+                    autoRefreshInterval = setInterval(() => {
+                        fetchData(currentEndpoint);
+                    }, 30000);
+                } else {
+                    clearInterval(autoRefreshInterval);
+                }
+            });
+        }, 1000);
+    </script>
+</body>
+
+</html>
