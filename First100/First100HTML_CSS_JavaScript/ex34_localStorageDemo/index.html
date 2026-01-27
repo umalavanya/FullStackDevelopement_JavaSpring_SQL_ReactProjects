@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 34</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .storage-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        .storage-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .storage-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .storage-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .storage-tabs {
+            display: flex;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            background-color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-content {
+            padding: 30px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 2px solid #eaeaea;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .display-area {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 100px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .display-area h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .data-display {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .status-indicator {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .status-saving {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-loaded {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-cleared {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .storage-info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .storage-info h4 {
+            margin-bottom: 10px;
+            color: #1565c0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(21, 101, 192, 0.1);
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #1565c0;
+        }
+
+        .json-example {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            font-family: monospace;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="storage-container">
+        <div class="storage-header">
+            <h1><i class="fas fa-database"></i> LocalStorage Demo</h1>
+            <p>Store, retrieve, and manage data in your browser</p>
+        </div>
+
+        <div class="storage-tabs">
+            <button class="tab-btn active" data-tab="string-tab">
+                <i class="fas fa-font"></i> String Storage
+            </button>
+            <button class="tab-btn" data-tab="object-tab">
+                <i class="fas fa-object-group"></i> Object Storage
+            </button>
+            <button class="tab-btn" data-tab="clear-tab">
+                <i class="fas fa-broom"></i> Clear Storage
+            </button>
+        </div>
+
+        <!-- String Storage Tab -->
+        <div class="tab-content active" id="string-tab">
+            <div class="input-group">
+                <label for="stringInput"><i class="fas fa-keyboard"></i> Enter Text to Save:</label>
+                <input type="text" id="stringInput" placeholder="Type something here...">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="saveStringBtn">
+                    <i class="fas fa-save"></i> Save to LocalStorage
+                </button>
+                <button class="btn btn-secondary" id="loadStringBtn">
+                    <i class="fas fa-download"></i> Load from LocalStorage
+                </button>
+            </div>
+
+            <div class="display-area">
+                <h3><i class="fas fa-file-alt"></i> Stored Text:</h3>
+                <div class="data-display" id="stringDisplay">
+                    <div class="empty-state">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>No text stored yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="storage-info">
+                <h4><i class="fas fa-info-circle"></i> About String Storage</h4>
+                <p>LocalStorage can store string data that persists even after closing the browser.</p>
+            </div>
+        </div>
+
+        <!-- Object Storage Tab -->
+        <div class="tab-content" id="object-tab">
+            <div class="input-group">
+                <label for="objectName"><i class="fas fa-user"></i> Name:</label>
+                <input type="text" id="objectName" placeholder="Enter your name">
+            </div>
+
+            <div class="input-group">
+                <label for="objectEmail"><i class="fas fa-envelope"></i> Email:</label>
+                <input type="email" id="objectEmail" placeholder="Enter your email">
+            </div>
+
+            <div class="input-group">
+                <label for="objectPreferences"><i class="fas fa-cog"></i> Preferences (JSON format):</label>
+                <textarea id="objectPreferences" placeholder='{"theme": "dark", "notifications": true}'>
+{"theme": "dark", "notifications": true, "language": "en"}</textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="saveObjectBtn">
+                    <i class="fas fa-save"></i> Save Object
+                </button>
+                <button class="btn btn-secondary" id="loadObjectBtn">
+                    <i class="fas fa-download"></i> Load Object
+                </button>
+            </div>
+
+            <div class="display-area">
+                <h3><i class="fas fa-database"></i> Stored Object:</h3>
+                <div class="data-display" id="objectDisplay">
+                    <div class="empty-state">
+                        <i class="fas fa-database"></i>
+                        <p>No object stored yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="json-example">
+                <strong>JSON Example:</strong><br>
+                {<br>
+                &nbsp;&nbsp;"name": "John Doe",<br>
+                &nbsp;&nbsp;"email": "john@example.com",<br>
+                &nbsp;&nbsp;"preferences": {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"theme": "dark",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"notifications": true<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+        </div>
+
+        <!-- Clear Storage Tab -->
+        <div class="tab-content" id="clear-tab">
+            <div class="status-indicator status-loaded" id="clearStatus">
+                <i class="fas fa-check-circle"></i>
+                <span>Storage is ready</span>
+            </div>
+
+            <div class="display-area">
+                <h3><i class="fas fa-clipboard-list"></i> Current Storage Contents:</h3>
+                <div class="data-display" id="storageContents">
+                    Loading...
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-danger" id="clearStorageBtn">
+                    <i class="fas fa-trash"></i> Clear All LocalStorage
+                </button>
+                <button class="btn btn-secondary" id="refreshBtn">
+                    <i class="fas fa-sync"></i> Refresh View
+                </button>
+            </div>
+
+            <div class="storage-info">
+                <h4><i class="fas fa-chart-bar"></i> Storage Information</h4>
+                <div class="info-grid" id="storageInfo">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Save a string to localStorage
+        // 2. Retrieve and display it
+        // 3. Clear the stored data with a button
+
+        // DOM Elements
+        const stringInput = document.getElementById('stringInput');
+        const saveStringBtn = document.getElementById('saveStringBtn');
+        const loadStringBtn = document.getElementById('loadStringBtn');
+        const stringDisplay = document.getElementById('stringDisplay');
+
+        const objectName = document.getElementById('objectName');
+        const objectEmail = document.getElementById('objectEmail');
+        const objectPreferences = document.getElementById('objectPreferences');
+        const saveObjectBtn = document.getElementById('saveObjectBtn');
+        const loadObjectBtn = document.getElementById('loadObjectBtn');
+        const objectDisplay = document.getElementById('objectDisplay');
+
+        const clearStorageBtn = document.getElementById('clearStorageBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const storageContents = document.getElementById('storageContents');
+        const storageInfo = document.getElementById('storageInfo');
+        const clearStatus = document.getElementById('clearStatus');
+
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Tab switching
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Update active tab button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Update active tab content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+
+                // If on clear tab, update the view
+                if (tabId === 'clear-tab') {
+                    updateStorageView();
+                }
+            });
+        });
+
+        // 1. Save string to localStorage
+        saveStringBtn.addEventListener('click', () => {
+            const text = stringInput.value.trim();
+
+            if (text === '') {
+                showStatus('Please enter some text to save!', 'error');
+                return;
+            }
+
+            localStorage.setItem('demoString', text);
+            showStatus('Text saved to localStorage!', 'saving');
+
+            // Clear input
+            stringInput.value = '';
+
+            // Update display
+            displayString();
+        });
+
+        // 2. Load string from localStorage
+        loadStringBtn.addEventListener('click', () => {
+            displayString();
+        });
+
+        // Display string from localStorage
+        function displayString() {
+            const savedText = localStorage.getItem('demoString');
+
+            if (savedText) {
+                stringDisplay.innerHTML = `
+                    <div class="status-indicator status-loaded">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Loaded from localStorage</span>
+                    </div>
+                    <div style="margin-top: 10px; padding: 15px; background: white; border-radius: 5px;">
+                        <strong>Stored Text:</strong><br>
+                        <p style="margin-top: 10px; font-size: 16px;">"${savedText}"</p>
+                        <div style="margin-top: 15px; font-size: 12px; color: #666;">
+                            <i class="fas fa-clock"></i> Last saved: ${new Date().toLocaleTimeString()}
+                        </div>
+                    </div>
+                `;
+                showStatus('Text loaded successfully!', 'loaded');
+            } else {
+                stringDisplay.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>No text stored yet. Save something first!</p>
+                    </div>
+                `;
+                showStatus('No text found in localStorage', 'error');
+            }
+        }
+
+        // Save object to localStorage
+        saveObjectBtn.addEventListener('click', () => {
+            const name = objectName.value.trim();
+            const email = objectEmail.value.trim();
+
+            if (name === '' || email === '') {
+                showStatus('Please fill in name and email!', 'error');
+                return;
+            }
+
+            let preferences;
+            try {
+                preferences = JSON.parse(objectPreferences.value);
+            } catch (error) {
+                showStatus('Invalid JSON in preferences!', 'error');
+                return;
+            }
+
+            const userObject = {
+                name: name,
+                email: email,
+                preferences: preferences,
+                lastUpdated: new Date().toISOString()
+            };
+
+            localStorage.setItem('userObject', JSON.stringify(userObject));
+            showStatus('Object saved to localStorage!', 'saving');
+
+            // Clear inputs
+            objectName.value = '';
+            objectEmail.value = '';
+
+            // Update display
+            displayObject();
+        });
+
+        // Load object from localStorage
+        loadObjectBtn.addEventListener('click', () => {
+            displayObject();
+        });
+
+        // Display object from localStorage
+        function displayObject() {
+            const savedObject = localStorage.getItem('userObject');
+
+            if (savedObject) {
+                try {
+                    const parsedObject = JSON.parse(savedObject);
+                    const formattedJSON = JSON.stringify(parsedObject, null, 2);
+
+                    objectDisplay.innerHTML = `
+                        <div class="status-indicator status-loaded">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Object loaded from localStorage</span>
+                        </div>
+                        <div style="margin-top: 10px; padding: 15px; background: white; border-radius: 5px;">
+                            <strong>Stored Object:</strong><br>
+                            <pre style="margin-top: 10px; font-family: monospace; font-size: 14px; line-height: 1.4; background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">${formattedJSON}</pre>
+                            <div style="margin-top: 15px; font-size: 12px; color: #666;">
+                                <i class="fas fa-clock"></i> Last updated: ${new Date(parsedObject.lastUpdated).toLocaleString()}
+                            </div>
+                        </div>
+                    `;
+                    showStatus('Object loaded successfully!', 'loaded');
+                } catch (error) {
+                    objectDisplay.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error parsing stored object!</p>
+                        </div>
+                    `;
+                    showStatus('Error parsing object data', 'error');
+                }
+            } else {
+                objectDisplay.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-database"></i>
+                        <p>No object stored yet. Save an object first!</p>
+                    </div>
+                `;
+                showStatus('No object found in localStorage', 'error');
+            }
+        }
+
+        // 3. Clear localStorage
+        clearStorageBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear ALL localStorage data for this site? This action cannot be undone.')) {
+                localStorage.clear();
+                updateStorageView();
+                showStatus('LocalStorage cleared successfully!', 'cleared');
+
+                // Also update other tabs
+                displayString();
+                displayObject();
+            }
+        });
+
+        // Refresh storage view
+        refreshBtn.addEventListener('click', () => {
+            updateStorageView();
+            showStatus('Storage view refreshed!', 'loaded');
+        });
+
+        // Update storage view
+        function updateStorageView() {
+            // Show all localStorage contents
+            let contentHTML = '';
+            let totalSize = 0;
+
+            if (localStorage.length === 0) {
+                contentHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-database"></i>
+                        <p>LocalStorage is empty</p>
+                    </div>
+                `;
+            } else {
+                contentHTML = '<ul style="list-style: none; padding: 0;">';
+
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    const size = new Blob([value]).size;
+                    totalSize += size;
+
+                    contentHTML += `
+                        <li style="margin-bottom: 15px; padding: 15px; background: white; border-radius: 5px; border-left: 4px solid #667eea;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <strong style="color: #333;">${key}</strong>
+                                <span style="font-size: 12px; color: #666;">${size} bytes</span>
+                            </div>
+                            <div style="font-size: 13px; color: #666; background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto;">
+                                ${value.length > 100 ? value.substring(0, 100) + '...' : value}
+                            </div>
+                        </li>
+                    `;
+                }
+
+                contentHTML += '</ul>';
+            }
+
+            storageContents.innerHTML = contentHTML;
+
+            // Update storage info
+            const itemsCount = localStorage.length;
+            const maxStorage = 5 * 1024 * 1024; // 5MB typical limit
+
+            storageInfo.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">Items Stored:</span>
+                    <span class="info-value">${itemsCount}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Total Size:</span>
+                    <span class="info-value">${formatBytes(totalSize)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Storage Used:</span>
+                    <span class="info-value">${((totalSize / maxStorage) * 100).toFixed(2)}%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Available:</span>
+                    <span class="info-value">${formatBytes(maxStorage - totalSize)}</span>
+                </div>
+            `;
+        }
+
+        // Helper function to format bytes
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusMessages = {
+                saving: { icon: 'fa-save', text: 'Saving...', class: 'status-saving' },
+                loaded: { icon: 'fa-check-circle', text: message, class: 'status-loaded' },
+                cleared: { icon: 'fa-trash', text: message, class: 'status-cleared' },
+                error: { icon: 'fa-exclamation-triangle', text: message, class: 'status-error' }
+            };
+
+            const status = statusMessages[type];
+
+            clearStatus.innerHTML = `
+                <i class="fas ${status.icon}"></i>
+                <span>${status.text}</span>
+            `;
+            clearStatus.className = `status-indicator ${status.class}`;
+
+            // Auto-hide success messages after 3 seconds
+            if (type === 'loaded' || type === 'cleared') {
+                setTimeout(() => {
+                    clearStatus.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <span>Storage is ready</span>
+                    `;
+                    clearStatus.className = 'status-indicator status-loaded';
+                }, 3000);
+            }
+        }
+
+        // Initialize
+        displayString();
+        displayObject();
+        updateStorageView();
+
+        // Auto-save on Enter key for string input
+        stringInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveStringBtn.click();
+            }
+        });
+
+        // Load data on page load
+        window.addEventListener('load', () => {
+            showStatus('LocalStorage demo loaded successfully!', 'loaded');
+        });
+
+        // Demonstrate localStorage events (in real apps, this works across tabs)
+        window.addEventListener('storage', (e) => {
+            console.log('Storage changed:', e.key, e.newValue);
+            showStatus('Storage updated from another tab!', 'loaded');
+            updateStorageView();
+        });
+    </script>
+</body>
+
+</html>

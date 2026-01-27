@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 33</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .todo-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .todo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .todo-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .todo-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .todo-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .todo-input-container {
+            padding: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        #taskInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        #taskInput:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        #addTaskBtn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        #addTaskBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .todo-filters {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            gap: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: white;
+            border: 2px solid #eaeaea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+        }
+
+        .todo-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .todo-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .todo-item.completed {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+
+        .todo-checkbox {
+            margin-right: 15px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .todo-item.completed .task-text {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            color: #4CAF50;
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .delete-btn {
+            color: #f44336;
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .todo-footer {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-btn {
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .clear-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .todo-item {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Scrollbar styling */
+        .todo-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .todo-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        /* Priority styling */
+        .priority-high {
+            border-left: 4px solid #f44336;
+        }
+
+        .priority-medium {
+            border-left: 4px solid #ff9800;
+        }
+
+        .priority-low {
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="todo-container">
+        <div class="todo-header">
+            <h1><i class="fas fa-tasks"></i> Todo List</h1>
+            <p>Stay organized and get things done</p>
+        </div>
+
+        <div class="todo-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="pendingTasks">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <div class="todo-input-container">
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="Add a new task...">
+                <select id="prioritySelect" style="padding: 15px; border: 2px solid #eaeaea; border-radius: 10px;">
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <button id="addTaskBtn">Add Task</button>
+            </div>
+        </div>
+
+        <div class="todo-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <button class="filter-btn" data-filter="high">High Priority</button>
+        </div>
+
+        <div class="todo-list" id="todoList">
+            <!-- Tasks will be added here dynamically -->
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>No tasks yet</h3>
+                <p>Add a task to get started!</p>
+            </div>
+        </div>
+
+        <div class="todo-footer">
+            <button class="clear-btn" id="clearCompletedBtn">
+                <i class="fas fa-trash"></i> Clear Completed
+            </button>
+            <div class="date-time" id="currentDateTime"></div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Input field to add new tasks
+        // 2. Button to add task to list
+        // 3. Ability to mark tasks as completed
+
+        // DOM elements
+        const taskInput = document.getElementById('taskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const todoList = document.getElementById('todoList');
+        const emptyState = document.getElementById('emptyState');
+        const totalTasksElement = document.getElementById('totalTasks');
+        const completedTasksElement = document.getElementById('completedTasks');
+        const pendingTasksElement = document.getElementById('pendingTasks');
+        const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+        const prioritySelect = document.getElementById('prioritySelect');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const currentDateTimeElement = document.getElementById('currentDateTime');
+
+        // Tasks array
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let currentFilter = 'all';
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const dateString = now.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric'
+            });
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            currentDateTimeElement.textContent = `${dateString} • ${timeString}`;
+        }
+
+        // Update task statistics
+        function updateStats() {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(task => task.completed).length;
+            const pendingTasks = totalTasks - completedTasks;
+
+            totalTasksElement.textContent = totalTasks;
+            completedTasksElement.textContent = completedTasks;
+            pendingTasksElement.textContent = pendingTasks;
+        }
+
+        // Save tasks to localStorage
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // Create task element
+        function createTaskElement(task) {
+            const taskElement = document.createElement('div');
+            taskElement.className = `todo-item ${task.completed ? 'completed' : ''} priority-${task.priority}`;
+            taskElement.dataset.id = task.id;
+
+            taskElement.innerHTML = `
+                <input type="checkbox" class="todo-checkbox" ${task.completed ? 'checked' : ''}>
+                <span class="task-text">${task.text}</span>
+                <div class="todo-actions">
+                    <button class="action-btn edit-btn" title="Edit task">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete-btn" title="Delete task">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            // Add event listeners
+            const checkbox = taskElement.querySelector('.todo-checkbox');
+            const editBtn = taskElement.querySelector('.edit-btn');
+            const deleteBtn = taskElement.querySelector('.delete-btn');
+            const taskText = taskElement.querySelector('.task-text');
+
+            // Toggle completion
+            checkbox.addEventListener('change', function () {
+                task.completed = this.checked;
+                taskElement.classList.toggle('completed');
+                updateStats();
+                saveTasks();
+                filterTasks();
+            });
+
+            // Edit task
+            editBtn.addEventListener('click', function () {
+                const newText = prompt('Edit task:', task.text);
+                if (newText !== null && newText.trim() !== '') {
+                    task.text = newText.trim();
+                    taskText.textContent = task.text;
+                    saveTasks();
+                }
+            });
+
+            // Delete task
+            deleteBtn.addEventListener('click', function () {
+                if (confirm('Are you sure you want to delete this task?')) {
+                    tasks = tasks.filter(t => t.id !== task.id);
+                    taskElement.remove();
+                    updateStats();
+                    saveTasks();
+                    checkEmptyState();
+                }
+            });
+
+            return taskElement;
+        }
+
+        // Render tasks
+        function renderTasks() {
+            todoList.innerHTML = '';
+
+            // Filter tasks based on current filter
+            let filteredTasks = tasks;
+            if (currentFilter === 'pending') {
+                filteredTasks = tasks.filter(task => !task.completed);
+            } else if (currentFilter === 'completed') {
+                filteredTasks = tasks.filter(task => task.completed);
+            } else if (currentFilter === 'high') {
+                filteredTasks = tasks.filter(task => task.priority === 'high');
+            }
+
+            if (filteredTasks.length === 0) {
+                todoList.appendChild(emptyState);
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                filteredTasks.forEach(task => {
+                    const taskElement = createTaskElement(task);
+                    todoList.appendChild(taskElement);
+                });
+            }
+        }
+
+        // Filter tasks
+        function filterTasks() {
+            renderTasks();
+            updateStats();
+        }
+
+        // Check empty state
+        function checkEmptyState() {
+            if (tasks.length === 0) {
+                emptyState.style.display = 'block';
+                todoList.appendChild(emptyState);
+            }
+        }
+
+        // Add new task
+        function addTask() {
+            const text = taskInput.value.trim();
+            const priority = prioritySelect.value;
+
+            if (text === '') {
+                alert('Please enter a task!');
+                return;
+            }
+
+            const task = {
+                id: Date.now(),
+                text: text,
+                priority: priority,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            tasks.push(task);
+            saveTasks();
+            renderTasks();
+            updateStats();
+
+            // Clear input
+            taskInput.value = '';
+            taskInput.focus();
+        }
+
+        // Clear completed tasks
+        function clearCompletedTasks() {
+            if (confirm('Are you sure you want to clear all completed tasks?')) {
+                tasks = tasks.filter(task => !task.completed);
+                saveTasks();
+                renderTasks();
+                updateStats();
+            }
+        }
+
+        // Event Listeners
+        addTaskBtn.addEventListener('click', addTask);
+
+        taskInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        clearCompletedBtn.addEventListener('click', clearCompletedTasks);
+
+        // Filter button event listeners
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                // Set current filter
+                currentFilter = this.dataset.filter;
+                filterTasks();
+            });
+        });
+
+        // Initialize
+        updateDateTime();
+        updateStats();
+        renderTasks();
+
+        // Update time every minute
+        setInterval(updateDateTime, 60000);
+
+        // Demo tasks (if no tasks exist)
+        if (tasks.length === 0) {
+            tasks = [
+                { id: 1, text: 'Learn JavaScript fundamentals', priority: 'high', completed: true },
+                { id: 2, text: 'Build a todo list app', priority: 'high', completed: false },
+                { id: 3, text: 'Read documentation', priority: 'medium', completed: false },
+                { id: 4, text: 'Practice coding exercises', priority: 'medium', completed: false },
+                { id: 5, text: 'Take a break', priority: 'low', completed: false }
+            ];
+            saveTasks();
+            renderTasks();
+            updateStats();
+        }
+    </script>
+</body>
+
+</html>
