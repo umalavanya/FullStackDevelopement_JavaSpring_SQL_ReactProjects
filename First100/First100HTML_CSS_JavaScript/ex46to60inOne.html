@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Challenges Hub (46-60)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #ffba08;
+            --danger: #f94144;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.shrink {
+            padding: 10px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eaeaea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Exercise specific styles */
+
+        /* Exercise 46: Debounce Search */
+        .search-container {
+            margin: 20px 0;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-results {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border: 1px solid #eaeaea;
+        }
+
+        .result-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .result-item:hover {
+            background: #e9ecef;
+        }
+
+        /* Exercise 47: Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #38b000);
+            width: 0%;
+            border-radius: 15px;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            min-width: 30px;
+        }
+
+        .progress-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Exercise 48: Sortable List */
+        .sortable-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .sortable-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #eaeaea;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .sortable-item:hover {
+            border-color: var(--primary);
+        }
+
+        .sortable-item.dragging {
+            opacity: 0.5;
+            background: #f8f9fa;
+            border-style: dashed;
+        }
+
+        .drag-handle {
+            color: var(--gray);
+            cursor: grab;
+        }
+
+        /* Exercise 49: Quiz App */
+        .quiz-container {
+            margin: 20px 0;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background: #f8f9fa;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(76, 201, 240, 0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--danger);
+            background: rgba(249, 65, 68, 0.1);
+        }
+
+        .quiz-score {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 20px;
+        }
+
+        /* Exercise 50: Password Generator */
+        .password-container {
+            margin: 20px 0;
+        }
+
+        .password-display {
+            background: #f8f9fa;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-family: monospace;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .password-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Exercise 51: Accordion */
+        .accordion {
+            margin: 20px 0;
+        }
+
+        .accordion-item {
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 18px 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .accordion-header.active {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .accordion-content.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        /* Exercise 52: Tabs */
+        .tabs-container {
+            margin: 20px 0;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .tab-header {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-header.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-panel {
+            padding: 25px 0;
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Exercise 53: Infinite Scroll */
+        .infinite-scroll-container {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .scroll-item {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+
+        /* Exercise 54: Countdown Timer */
+        .countdown-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .countdown-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .countdown-unit {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 100px;
+        }
+
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Exercise 55: Drawing Board */
+        .drawing-container {
+            margin: 20px 0;
+        }
+
+        .drawing-tools {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            background: white;
+            cursor: crosshair;
+            display: block;
+            max-width: 100%;
+        }
+
+        /* Exercise 56: Weather App */
+        .weather-container {
+            margin: 20px 0;
+        }
+
+        .weather-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .weather-card {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .weather-icon {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .weather-temp {
+            font-size: 3.5rem;
+            font-weight: 700;
+        }
+
+        /* Exercise 57: Carousel */
+        .carousel-container {
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            padding: 60px 40px;
+            text-align: center;
+            background: var(--primary);
+            color: white;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Exercise 58: Sticky Header - already implemented */
+
+        /* Exercise 59: Parallax */
+        .parallax-container {
+            height: 400px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Exercise 60: Filterable Gallery */
+        .gallery-container {
+            margin: 20px 0;
+        }
+
+        .gallery-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .exercise-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--gray);
+            padding: 20px;
+            border-top: 1px solid #eaeaea;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Exercise 58: Sticky Header -->
+    <header id="mainHeader">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span>JS Challenges 46-60</span>
+            </div>
+
+            <!-- Exercise 52: Tabs Component -->
+            <div class="nav-tabs" id="mainTabs">
+                <button class="tab-btn active" data-tab="group1">Group 1</button>
+                <button class="tab-btn" data-tab="group2">Group 2</button>
+                <button class="tab-btn" data-tab="group3">Group 3</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Group 1 Tab -->
+        <div class="tab-content active" id="group1">
+            <h1 class="section-title"><i class="fas fa-layer-group"></i> Exercises 46-50</h1>
+
+            <div class="exercise-group">
+                <!-- Exercise 46: Debounce Search -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-search"></i> Exercise 46: Debounce Search</h2>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="Type to search...">
+                        <div class="search-results" id="searchResults">
+                            <!-- Results will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 47: Progress Bar -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i> Exercise 47: Progress Bar</h2>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill">0%</div>
+                        </div>
+                        <div class="progress-controls">
+                            <button class="btn btn-primary" id="startProgress">
+                                <i class="fas fa-play"></i> Start
+                            </button>
+                            <button class="btn btn-danger" id="resetProgress">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 48: Sortable List -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-bars"></i> Exercise 48: Sortable List</h2>
+                    <ul class="sortable-list" id="sortableList">
+                        <li class="sortable-item" data-id="1">
+                            <i class="fas fa-grip-vertical drag-handle"></i>
+                            <span>Item 1: JavaScript Fundamentals</span>
+                        </li>
+                        <li class="sortable-item" data-id="2">
+                            <i class="fas fa-grip-vertical drag-handle"></i>
+                            <span>Item 2: DOM Manipulation</span>
+                        </li>
+                        <li class="sortable-item" data-id="3">
+                            <i class="fas fa-grip-vertical drag-handle"></i>
+                            <span>Item 3: Event Handling</span>
+                        </li>
+                        <li class="sortable-item" data-id="4">
+                            <i class="fas fa-grip-vertical drag-handle"></i>
+                            <span>Item 4: Async Programming</span>
+                        </li>
+                        <li class="sortable-item" data-id="5">
+                            <i class="fas fa-grip-vertical drag-handle"></i>
+                            <span>Item 5: ES6+ Features</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Exercise 49: Quiz App -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-question-circle"></i> Exercise 49: Quiz App</h2>
+                    <div class="quiz-container">
+                        <div class="question" id="quizQuestion">
+                            What is the result of 2 + 2 in JavaScript?
+                        </div>
+                        <div class="options" id="quizOptions">
+                            <div class="option" data-value="1">3</div>
+                            <div class="option" data-value="2">4</div>
+                            <div class="option" data-value="3">"22"</div>
+                            <div class="option" data-value="4">NaN</div>
+                        </div>
+                        <button class="btn btn-primary" id="submitAnswer">Submit Answer</button>
+                        <button class="btn btn-success" id="nextQuestion">Next Question</button>
+                        <div class="quiz-score" id="quizScore">Score: 0/0</div>
+                    </div>
+                </div>
+
+                <!-- Exercise 50: Password Generator -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-key"></i> Exercise 50: Password Generator</h2>
+                    <div class="password-container">
+                        <div class="password-display">
+                            <span id="generatedPassword">Click Generate</span>
+                            <button class="btn btn-primary" id="copyPassword">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="password-options">
+                            <div class="option-group">
+                                <label for="passwordLength">Length:</label>
+                                <input type="range" id="passwordLength" min="6" max="30" value="12">
+                                <span id="lengthValue">12</span>
+                            </div>
+                            <div class="option-group">
+                                <input type="checkbox" id="includeUppercase" checked>
+                                <label for="includeUppercase">Uppercase Letters</label>
+                            </div>
+                            <div class="option-group">
+                                <input type="checkbox" id="includeLowercase" checked>
+                                <label for="includeLowercase">Lowercase Letters</label>
+                            </div>
+                            <div class="option-group">
+                                <input type="checkbox" id="includeNumbers" checked>
+                                <label for="includeNumbers">Numbers</label>
+                            </div>
+                            <div class="option-group">
+                                <input type="checkbox" id="includeSymbols">
+                                <label for="includeSymbols">Symbols</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="generatePassword">
+                            <i class="fas fa-sync-alt"></i> Generate Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Group 2 Tab -->
+        <div class="tab-content" id="group2">
+            <h1 class="section-title"><i class="fas fa-layer-group"></i> Exercises 51-55</h1>
+
+            <div class="exercise-group">
+                <!-- Exercise 51: Accordion FAQ -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-question"></i> Exercise 51: Accordion FAQ</h2>
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                What is JavaScript?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                JavaScript is a programming language that enables interactive web pages. It is an
+                                essential part of web applications.
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                What is the DOM?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                The Document Object Model (DOM) is a programming interface for web documents. It
+                                represents the structure of a document as a tree of objects.
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                What is debouncing?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                Debouncing is a programming practice used to ensure that time-consuming tasks do not
+                                fire so often, improving performance.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 52: Tabs Component -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-folder-open"></i> Exercise 52: Tabs Component</h2>
+                    <div class="tabs-container">
+                        <div class="tabs-header">
+                            <div class="tab-header active" data-tab="tab1">JavaScript</div>
+                            <div class="tab-header" data-tab="tab2">HTML</div>
+                            <div class="tab-header" data-tab="tab3">CSS</div>
+                        </div>
+                        <div class="tab-panel active" id="tab1">
+                            <h3>JavaScript</h3>
+                            <p>JavaScript is a versatile programming language used for web development, game
+                                development, mobile apps, and more.</p>
+                        </div>
+                        <div class="tab-panel" id="tab2">
+                            <h3>HTML</h3>
+                            <p>HTML (HyperText Markup Language) is the standard markup language for documents designed
+                                to be displayed in a web browser.</p>
+                        </div>
+                        <div class="tab-panel" id="tab3">
+                            <h3>CSS</h3>
+                            <p>CSS (Cascading Style Sheets) is a style sheet language used for describing the
+                                presentation of a document written in HTML.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 53: Infinite Scroll -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-scroll"></i> Exercise 53: Infinite Scroll</h2>
+                    <div class="infinite-scroll-container" id="infiniteScroll">
+                        <!-- Items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Exercise 54: Countdown Timer -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-clock"></i> Exercise 54: Countdown Timer</h2>
+                    <div class="countdown-container">
+                        <div class="countdown-display">
+                            <div class="countdown-unit">
+                                <div class="countdown-value" id="days">00</div>
+                                <div class="countdown-label">Days</div>
+                            </div>
+                            <div class="countdown-unit">
+                                <div class="countdown-value" id="hours">00</div>
+                                <div class="countdown-label">Hours</div>
+                            </div>
+                            <div class="countdown-unit">
+                                <div class="countdown-value" id="minutes">00</div>
+                                <div class="countdown-label">Minutes</div>
+                            </div>
+                            <div class="countdown-unit">
+                                <div class="countdown-value" id="seconds">00</div>
+                                <div class="countdown-label">Seconds</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="setCountdown">
+                            <i class="fas fa-calendar-alt"></i> Set to Next Month
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Exercise 55: Drawing Board -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-paint-brush"></i> Exercise 55: Drawing Board</h2>
+                    <div class="drawing-container">
+                        <div class="drawing-tools">
+                            <input type="color" id="drawingColor" value="#4361ee">
+                            <input type="range" id="brushSize" min="1" max="20" value="5">
+                            <span>Brush Size: <span id="brushSizeValue">5</span></span>
+                            <button class="btn btn-danger" id="clearCanvas">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                        <canvas id="drawingCanvas" width="600" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Group 3 Tab -->
+        <div class="tab-content" id="group3">
+            <h1 class="section-title"><i class="fas fa-layer-group"></i> Exercises 56-60</h1>
+
+            <div class="exercise-group">
+                <!-- Exercise 56: Weather App -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-cloud-sun"></i> Exercise 56: Weather App</h2>
+                    <div class="weather-container">
+                        <div class="weather-search">
+                            <input type="text" id="weatherCity" placeholder="Enter city name" class="search-input"
+                                value="London">
+                            <button class="btn btn-primary" id="searchWeather">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        <div class="weather-card" id="weatherCard">
+                            <div class="weather-icon">
+                                <i class="fas fa-sun"></i>
+                            </div>
+                            <div class="weather-temp" id="weatherTemp">24°C</div>
+                            <div class="weather-city" id="weatherCityName">London</div>
+                            <div class="weather-desc" id="weatherDesc">Sunny</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 57: Carousel -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-images"></i> Exercise 57: Carousel with Autoplay</h2>
+                    <div class="carousel-container">
+                        <div class="carousel-slides" id="carouselSlides">
+                            <div class="carousel-slide" style="background: #4361ee;">
+                                <h3>JavaScript</h3>
+                                <p>The language of the web</p>
+                            </div>
+                            <div class="carousel-slide" style="background: #3a0ca3;">
+                                <h3>HTML</h3>
+                                <p>The structure of web pages</p>
+                            </div>
+                            <div class="carousel-slide" style="background: #7209b7;">
+                                <h3>CSS</h3>
+                                <p>The style of the web</p>
+                            </div>
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="btn btn-primary" id="prevSlide">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </button>
+                            <button class="btn btn-primary" id="pauseCarousel">
+                                <i class="fas fa-pause"></i> Pause
+                            </button>
+                            <button class="btn btn-primary" id="nextSlide">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 58: Sticky Header - Already implemented at the top -->
+
+                <!-- Exercise 59: Parallax -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-mountain"></i> Exercise 59: Parallax Scrolling</h2>
+                    <div class="parallax-container" id="parallaxContainer">
+                        <div class="parallax-layer" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                        </div>
+                        <div class="parallax-layer"
+                            style="background: linear-gradient(135deg, #7209b7, #560bad); transform: translateY(20px);">
+                        </div>
+                        <div class="parallax-layer"
+                            style="background: linear-gradient(135deg, #480ca8, #3a0ca3); transform: translateY(40px);">
+                        </div>
+                    </div>
+                    <div style="height: 800px; padding: 20px;">
+                        <h3>Scroll to see parallax effect</h3>
+                        <p>This area is intentionally tall to demonstrate the parallax scrolling effect.</p>
+                        <p>As you scroll, the background layers move at different speeds creating a depth effect.</p>
+                    </div>
+                </div>
+
+                <!-- Exercise 60: Filterable Gallery -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-th"></i> Exercise 60: Filterable Gallery</h2>
+                    <div class="gallery-container">
+                        <div class="gallery-filters">
+                            <button class="btn btn-primary filter-btn active" data-filter="all">All</button>
+                            <button class="btn btn-primary filter-btn" data-filter="nature">Nature</button>
+                            <button class="btn btn-primary filter-btn" data-filter="city">City</button>
+                            <button class="btn btn-primary filter-btn" data-filter="tech">Tech</button>
+                        </div>
+                        <div class="gallery-grid" id="galleryGrid">
+                            <!-- Gallery items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>JavaScript Challenges 46-60 | Created with HTML, CSS & Vanilla JavaScript</p>
+    </footer>
+
+    <script>
+        // Exercise 46: Debounce Search
+        function debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        const sampleData = [
+            "JavaScript Tutorial",
+            "React Framework",
+            "Vue.js Guide",
+            "Angular Development",
+            "Node.js Backend",
+            "TypeScript Introduction",
+            "CSS Flexbox Guide",
+            "HTML5 Semantics",
+            "Webpack Configuration",
+            "ES6 Features"
+        ];
+
+        function performSearch(query) {
+            searchResults.innerHTML = '';
+
+            if (!query.trim()) {
+                searchResults.innerHTML = '<div class="result-item">Type to search...</div>';
+                return;
+            }
+
+            const filtered = sampleData.filter(item =>
+                item.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                searchResults.innerHTML = '<div class="result-item">No results found</div>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                div.textContent = item;
+                searchResults.appendChild(div);
+            });
+        }
+
+        const debouncedSearch = debounce(function (e) {
+            performSearch(e.target.value);
+        }, 500);
+
+        searchInput.addEventListener('input', debouncedSearch);
+        searchResults.innerHTML = '<div class="result-item">Type to search...</div>';
+
+        // Exercise 47: Progress Bar
+        const progressFill = document.getElementById('progressFill');
+        const startProgressBtn = document.getElementById('startProgress');
+        const resetProgressBtn = document.getElementById('resetProgress');
+
+        let progressInterval;
+        let progress = 0;
+
+        function updateProgressBar() {
+            progress += 1;
+            progressFill.style.width = `${progress}%`;
+            progressFill.textContent = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                startProgressBtn.disabled = false;
+            }
+        }
+
+        startProgressBtn.addEventListener('click', function () {
+            if (progress >= 100) return;
+
+            this.disabled = true;
+            progressInterval = setInterval(updateProgressBar, 50);
+        });
+
+        resetProgressBtn.addEventListener('click', function () {
+            clearInterval(progressInterval);
+            progress = 0;
+            progressFill.style.width = '0%';
+            progressFill.textContent = '0%';
+            startProgressBtn.disabled = false;
+        });
+
+        // Exercise 48: Sortable List
+        const sortableList = document.getElementById('sortableList');
+        let draggedItem = null;
+
+        sortableList.addEventListener('dragstart', function (e) {
+            if (e.target.classList.contains('sortable-item') ||
+                e.target.parentElement.classList.contains('sortable-item')) {
+                draggedItem = e.target.classList.contains('sortable-item')
+                    ? e.target
+                    : e.target.parentElement;
+
+                setTimeout(() => {
+                    draggedItem.classList.add('dragging');
+                }, 0);
+
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', draggedItem.innerHTML);
+            }
+        });
+
+        sortableList.addEventListener('dragover', function (e) {
+            e.preventDefault();
+
+            const afterElement = getDragAfterElement(sortableList, e.clientY);
+            const draggingElement = document.querySelector('.dragging');
+
+            if (afterElement == null) {
+                sortableList.appendChild(draggingElement);
+            } else {
+                sortableList.insertBefore(draggingElement, afterElement);
+            }
+        });
+
+        sortableList.addEventListener('dragend', function (e) {
+            const draggingElement = document.querySelector('.dragging');
+            if (draggingElement) {
+                draggingElement.classList.remove('dragging');
+            }
+            draggedItem = null;
+
+            // Log new order
+            const items = Array.from(sortableList.children);
+            const order = items.map(item => item.dataset.id);
+            console.log('New order:', order);
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Make list items draggable
+        document.querySelectorAll('.sortable-item').forEach(item => {
+            item.setAttribute('draggable', 'true');
+        });
+
+        // Exercise 49: Quiz App
+        const quizQuestion = document.getElementById('quizQuestion');
+        const quizOptions = document.getElementById('quizOptions');
+        const submitAnswerBtn = document.getElementById('submitAnswer');
+        const nextQuestionBtn = document.getElementById('nextQuestion');
+        const quizScore = document.getElementById('quizScore');
+
+        const quizData = [
+            {
+                question: "What is the result of 2 + 2 in JavaScript?",
+                options: ["3", "4", "\"22\"", "NaN"],
+                answer: 1
+            },
+            {
+                question: "Which keyword is used to declare a variable in JavaScript?",
+                options: ["var", "let", "const", "All of the above"],
+                answer: 3
+            },
+            {
+                question: "What does 'DOM' stand for?",
+                options: [
+                    "Document Object Model",
+                    "Digital Object Management",
+                    "Desktop Operating Model",
+                    "Display Object Manager"
+                ],
+                answer: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let totalAnswered = 0;
+
+        function loadQuestion(index) {
+            const q = quizData[index];
+            quizQuestion.textContent = q.question;
+
+            quizOptions.innerHTML = '';
+            q.options.forEach((option, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.dataset.value = i;
+                div.textContent = option;
+                quizOptions.appendChild(div);
+            });
+
+            submitAnswerBtn.disabled = false;
+            nextQuestionBtn.disabled = true;
+
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+        }
+
+        quizOptions.addEventListener('click', function (e) {
+            if (e.target.classList.contains('option')) {
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                e.target.classList.add('selected');
+            }
+        });
+
+        submitAnswerBtn.addEventListener('click', function () {
+            const selectedOption = document.querySelector('.option.selected');
+            if (!selectedOption) return;
+
+            const selectedValue = parseInt(selectedOption.dataset.value);
+            const correctAnswer = quizData[currentQuestion].answer;
+
+            // Show correct/incorrect
+            document.querySelectorAll('.option').forEach(option => {
+                const value = parseInt(option.dataset.value);
+                if (value === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (value === selectedValue && value !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            // Update score
+            if (selectedValue === correctAnswer) {
+                score++;
+            }
+            totalAnswered++;
+
+            // Update score display
+            quizScore.textContent = `Score: ${score}/${totalAnswered}`;
+
+            // Disable further selection
+            submitAnswerBtn.disabled = true;
+            nextQuestionBtn.disabled = false;
+        });
+
+        nextQuestionBtn.addEventListener('click', function () {
+            currentQuestion = (currentQuestion + 1) % quizData.length;
+            loadQuestion(currentQuestion);
+        });
+
+        // Initialize quiz
+        loadQuestion(0);
+
+        // Exercise 50: Password Generator
+        const generatedPassword = document.getElementById('generatedPassword');
+        const copyPasswordBtn = document.getElementById('copyPassword');
+        const passwordLength = document.getElementById('passwordLength');
+        const lengthValue = document.getElementById('lengthValue');
+        const includeUppercase = document.getElementById('includeUppercase');
+        const includeLowercase = document.getElementById('includeLowercase');
+        const includeNumbers = document.getElementById('includeNumbers');
+        const includeSymbols = document.getElementById('includeSymbols');
+        const generatePasswordBtn = document.getElementById('generatePassword');
+
+        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+        const numberChars = '0123456789';
+        const symbolChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+        passwordLength.addEventListener('input', function () {
+            lengthValue.textContent = this.value;
+        });
+
+        function generatePassword() {
+            let chars = '';
+            let password = '';
+
+            if (includeUppercase.checked) chars += uppercaseChars;
+            if (includeLowercase.checked) chars += lowercaseChars;
+            if (includeNumbers.checked) chars += numberChars;
+            if (includeSymbols.checked) chars += symbolChars;
+
+            if (chars === '') {
+                generatedPassword.textContent = 'Select at least one character type';
+                return;
+            }
+
+            for (let i = 0; i < parseInt(passwordLength.value); i++) {
+                const randomIndex = Math.floor(Math.random() * chars.length);
+                password += chars[randomIndex];
+            }
+
+            generatedPassword.textContent = password;
+        }
+
+        generatePasswordBtn.addEventListener('click', generatePassword);
+
+        copyPasswordBtn.addEventListener('click', function () {
+            const password = generatedPassword.textContent;
+            if (password && password !== 'Click Generate' && password !== 'Select at least one character type') {
+                navigator.clipboard.writeText(password).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        });
+
+        // Generate initial password
+        generatePassword();
+
+        // Exercise 51: Accordion FAQ
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function () {
+                // Close all other accordion items
+                accordionHeaders.forEach(otherHeader => {
+                    if (otherHeader !== this) {
+                        otherHeader.classList.remove('active');
+                        otherHeader.nextElementSibling.classList.remove('active');
+                    }
+                });
+
+                // Toggle current accordion item
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                content.classList.toggle('active');
+
+                // Update chevron icon
+                const icon = this.querySelector('i');
+                if (this.classList.contains('active')) {
+                    icon.className = 'fas fa-chevron-up';
+                } else {
+                    icon.className = 'fas fa-chevron-down';
+                }
+            });
+        });
+
+        // Exercise 52: Tabs Component
+        const tabHeaders = document.querySelectorAll('.tab-header');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabHeaders.forEach(header => {
+            header.addEventListener('click', function () {
+                const tabId = this.dataset.tab;
+
+                // Update active tab header
+                tabHeaders.forEach(h => h.classList.remove('active'));
+                this.classList.add('active');
+
+                // Show corresponding tab panel
+                tabPanels.forEach(panel => {
+                    panel.classList.remove('active');
+                    if (panel.id === tabId) {
+                        panel.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Exercise 53: Infinite Scroll
+        const infiniteScroll = document.getElementById('infiniteScroll');
+        let itemCount = 0;
+        const itemsPerLoad = 10;
+        let isLoading = false;
+
+        function loadMoreItems() {
+            if (isLoading) return;
+
+            isLoading = true;
+
+            // Show loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.className = 'loading-indicator';
+            loadingIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading more items...';
+            infiniteScroll.appendChild(loadingIndicator);
+
+            // Simulate API delay
+            setTimeout(() => {
+                // Remove loading indicator
+                loadingIndicator.remove();
+
+                // Add new items
+                for (let i = 0; i < itemsPerLoad; i++) {
+                    itemCount++;
+                    const item = document.createElement('div');
+                    item.className = 'scroll-item';
+                    item.innerHTML = `<h4>Item ${itemCount}</h4><p>This is item number ${itemCount} loaded via infinite scroll.</p>`;
+                    infiniteScroll.appendChild(item);
+                }
+
+                isLoading = false;
+            }, 1000);
+        }
+
+        infiniteScroll.addEventListener('scroll', function () {
+            const scrollTop = this.scrollTop;
+            const scrollHeight = this.scrollHeight;
+            const clientHeight = this.clientHeight;
+
+            if (scrollTop + clientHeight >= scrollHeight - 50) {
+                loadMoreItems();
+            }
+        });
+
+        // Load initial items
+        loadMoreItems();
+
+        // Exercise 54: Countdown Timer
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        const setCountdownBtn = document.getElementById('setCountdown');
+
+        let targetDate = new Date();
+        targetDate.setMonth(targetDate.getMonth() + 1);
+        targetDate.setHours(0, 0, 0, 0);
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                // Countdown finished
+                daysElement.textContent = '00';
+                hoursElement.textContent = '00';
+                minutesElement.textContent = '00';
+                secondsElement.textContent = '00';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            daysElement.textContent = days.toString().padStart(2, '0');
+            hoursElement.textContent = hours.toString().padStart(2, '0');
+            minutesElement.textContent = minutes.toString().padStart(2, '0');
+            secondsElement.textContent = seconds.toString().padStart(2, '0');
+        }
+
+        setCountdownBtn.addEventListener('click', function () {
+            targetDate = new Date();
+            targetDate.setMonth(targetDate.getMonth() + 1);
+            targetDate.setHours(0, 0, 0, 0);
+            updateCountdown();
+        });
+
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+
+        // Exercise 55: Drawing Board
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const drawingColor = document.getElementById('drawingColor');
+        const brushSize = document.getElementById('brushSize');
+        const brushSizeValue = document.getElementById('brushSizeValue');
+        const clearCanvasBtn = document.getElementById('clearCanvas');
+
+        // Set initial canvas background
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getMousePos(canvas, e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            e.preventDefault();
+            const [x, y] = getMousePos(canvas, e);
+
+            ctx.beginPath();
+            ctx.lineWidth = brushSize.value;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = drawingColor.value;
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function getMousePos(canvas, e) {
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+
+            if (e.type.includes('touch')) {
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+            } else {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+            }
+
+            return [x, y];
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events for mobile
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDrawing(e);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            draw(e);
+        });
+
+        canvas.addEventListener('touchend', stopDrawing);
+
+        brushSize.addEventListener('input', function () {
+            brushSizeValue.textContent = this.value;
+        });
+
+        clearCanvasBtn.addEventListener('click', function () {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Exercise 56: Weather App
+        const weatherCityInput = document.getElementById('weatherCity');
+        const searchWeatherBtn = document.getElementById('searchWeather');
+        const weatherTemp = document.getElementById('weatherTemp');
+        const weatherCityName = document.getElementById('weatherCityName');
+        const weatherDesc = document.getElementById('weatherDesc');
+        const weatherIcon = document.querySelector('.weather-icon i');
+
+        const weatherData = {
+            'London': { temp: '18°C', desc: 'Cloudy', icon: 'fa-cloud' },
+            'New York': { temp: '22°C', desc: 'Sunny', icon: 'fa-sun' },
+            'Tokyo': { temp: '25°C', desc: 'Partly Cloudy', icon: 'fa-cloud-sun' },
+            'Paris': { temp: '20°C', desc: 'Rainy', icon: 'fa-cloud-rain' },
+            'Sydney': { temp: '28°C', desc: 'Sunny', icon: 'fa-sun' }
+        };
+
+        function updateWeather(city) {
+            if (weatherData[city]) {
+                const data = weatherData[city];
+                weatherTemp.textContent = data.temp;
+                weatherCityName.textContent = city;
+                weatherDesc.textContent = data.desc;
+                weatherIcon.className = `fas ${data.icon}`;
+
+                // Change background based on weather
+                const weatherCard = document.getElementById('weatherCard');
+                if (data.desc.toLowerCase().includes('sunny')) {
+                    weatherCard.style.background = 'linear-gradient(135deg, #ff9d00, #ff5400)';
+                } else if (data.desc.toLowerCase().includes('cloudy')) {
+                    weatherCard.style.background = 'linear-gradient(135deg, #4361ee, #3a0ca3)';
+                } else if (data.desc.toLowerCase().includes('rainy')) {
+                    weatherCard.style.background = 'linear-gradient(135deg, #4a4e69, #22223b)';
+                }
+            } else {
+                weatherCityName.textContent = 'City not found';
+                weatherTemp.textContent = '--°C';
+                weatherDesc.textContent = 'Unknown';
+                weatherIcon.className = 'fas fa-question';
+            }
+        }
+
+        searchWeatherBtn.addEventListener('click', function () {
+            updateWeather(weatherCityInput.value);
+        });
+
+        weatherCityInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                updateWeather(this.value);
+            }
+        });
+
+        // Initialize with default city
+        updateWeather('London');
+
+        // Exercise 57: Carousel with Autoplay
+        const carouselSlides = document.getElementById('carouselSlides');
+        const prevSlideBtn = document.getElementById('prevSlide');
+        const nextSlideBtn = document.getElementById('nextSlide');
+        const pauseCarouselBtn = document.getElementById('pauseCarousel');
+
+        let currentSlide = 0;
+        let autoPlayInterval;
+        let isPaused = false;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.carousel-slide');
+            if (index >= slides.length) currentSlide = 0;
+            if (index < 0) currentSlide = slides.length - 1;
+
+            carouselSlides.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 5000);
+            pauseCarouselBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            isPaused = false;
+        }
+
+        function pauseAutoPlay() {
+            clearInterval(autoPlayInterval);
+            pauseCarouselBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+            isPaused = true;
+        }
+
+        nextSlideBtn.addEventListener('click', nextSlide);
+        prevSlideBtn.addEventListener('click', prevSlide);
+
+        pauseCarouselBtn.addEventListener('click', function () {
+            if (isPaused) {
+                startAutoPlay();
+            } else {
+                pauseAutoPlay();
+            }
+        });
+
+        // Pause on hover
+        const carouselContainer = document.querySelector('.carousel-container');
+        carouselContainer.addEventListener('mouseenter', pauseAutoPlay);
+        carouselContainer.addEventListener('mouseleave', function () {
+            if (!isPaused) {
+                startAutoPlay();
+            }
+        });
+
+        // Start autoplay
+        startAutoPlay();
+
+        // Exercise 58: Sticky Header
+        const mainHeader = document.getElementById('mainHeader');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', function () {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Shrink header on scroll down
+            if (scrollTop > 50) {
+                mainHeader.classList.add('shrink');
+            } else {
+                mainHeader.classList.remove('shrink');
+            }
+
+            lastScrollTop = scrollTop;
+        });
+
+        // Exercise 59: Parallax Scrolling
+        const parallaxContainer = document.getElementById('parallaxContainer');
+        const parallaxLayers = document.querySelectorAll('.parallax-layer');
+
+        window.addEventListener('scroll', function () {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+
+            parallaxLayers.forEach((layer, index) => {
+                const speed = 0.5 + (index * 0.1);
+                const yPos = -(rate * speed);
+                layer.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // Exercise 60: Filterable Gallery
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const galleryGrid = document.getElementById('galleryGrid');
+
+        const galleryItems = [
+            { category: 'nature', color: '#2d6a4f' },
+            { category: 'nature', color: '#40916c' },
+            { category: 'city', color: '#6c757d' },
+            { category: 'city', color: '#495057' },
+            { category: 'tech', color: '#3a0ca3' },
+            { category: 'nature', color: '#52b788' },
+            { category: 'tech', color: '#4361ee' },
+            { category: 'city', color: '#adb5bd' },
+            { category: 'tech', color: '#7209b7' },
+            { category: 'nature', color: '#1b4332' },
+            { category: 'city', color: '#343a40' },
+            { category: 'tech', color: '#4cc9f0' }
+        ];
+
+        function renderGallery(filter = 'all') {
+            galleryGrid.innerHTML = '';
+
+            const filteredItems = filter === 'all'
+                ? galleryItems
+                : galleryItems.filter(item => item.category === filter);
+
+            filteredItems.forEach((item, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.dataset.category = item.category;
+
+                galleryItem.innerHTML = `
+                    <div style="background: ${item.color}; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        ${item.category.charAt(0).toUpperCase() + item.category.slice(1)} ${index + 1}
+                    </div>
+                `;
+
+                galleryGrid.appendChild(galleryItem);
+            });
+        }
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter gallery
+                const filter = this.dataset.filter;
+                renderGallery(filter);
+            });
+        });
+
+        // Initialize gallery
+        renderGallery();
+
+        // Main Tabs Navigation
+        const mainTabButtons = document.querySelectorAll('.tab-btn');
+        const mainTabContents = document.querySelectorAll('.tab-content');
+
+        mainTabButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const tabId = this.dataset.tab;
+
+                // Update active tab button
+                mainTabButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // Show corresponding tab content
+                mainTabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

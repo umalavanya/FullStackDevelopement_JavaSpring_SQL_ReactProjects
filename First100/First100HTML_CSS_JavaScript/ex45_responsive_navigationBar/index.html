@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Exercise 45 - Responsive Navbar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 80px;
+            /* Space for fixed navbar */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 80px;
+            transition: height 0.3s ease;
+        }
+
+        .navbar.scrolled .navbar-container {
+            height: 70px;
+        }
+
+        /* Logo */
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .navbar.scrolled .navbar-logo {
+            color: #667eea;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        /* Desktop Menu */
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 10px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar.scrolled .nav-link {
+            color: #666;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .navbar.scrolled .nav-link:hover {
+            color: #667eea;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: white;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .navbar.scrolled .nav-link::after {
+            background: #667eea;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: white;
+        }
+
+        .navbar.scrolled .nav-link.active {
+            color: #667eea;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 10px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 12px 25px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-link:hover {
+            background: #f5f5f5;
+            color: #667eea;
+            padding-left: 30px;
+        }
+
+        .dropdown-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* CTA Button */
+        .navbar-cta {
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .navbar.scrolled .navbar-cta {
+            background: #667eea;
+            color: white;
+        }
+
+        .navbar-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar.scrolled .mobile-menu-toggle {
+            color: #667eea;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mobile-nav-link {
+            display: block;
+            padding: 15px 20px;
+            color: #666;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+            background: #f5f5f5;
+            color: #667eea;
+        }
+
+        .mobile-dropdown-content {
+            padding-left: 30px;
+            display: none;
+        }
+
+        .mobile-dropdown-content.active {
+            display: block;
+        }
+
+        .mobile-dropdown-link {
+            display: block;
+            padding: 10px 20px;
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-dropdown-link:hover {
+            color: #667eea;
+            padding-left: 30px;
+        }
+
+        /* Main Content */
+        .hero {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 100px 0;
+            text-align: center;
+            margin-bottom: 60px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .content-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .navbar-menu {
+                gap: 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .navbar-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .navbar-container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121212;
+                color: #e0e0e0;
+            }
+
+            .hero {
+                background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            }
+
+            .hero h1 {
+                color: white;
+            }
+
+            .hero p {
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            .content-card {
+                background: #1e1e1e;
+                color: #e0e0e0;
+            }
+
+            .mobile-menu {
+                background: #1e1e1e;
+            }
+
+            .mobile-nav-link {
+                color: #e0e0e0;
+            }
+
+            .mobile-nav-link:hover,
+            .mobile-nav-link.active {
+                background: #2d2d2d;
+            }
+
+            .dropdown-content {
+                background: #1e1e1e;
+            }
+
+            .dropdown-link {
+                color: #e0e0e0;
+            }
+
+            .dropdown-link:hover {
+                background: #2d2d2d;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Demo Controls */
+        .demo-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .demo-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container navbar-container">
+            <!-- Logo -->
+            <a href="#" class="navbar-logo">
+                <i class="fas fa-code logo-icon"></i>
+                <span>NavBar</span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="navbar-menu">
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-section="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-section="features">Features</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="nav-link">
+                            Services <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                        </a>
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-link"><i class="fas fa-laptop-code"></i> Web Development</a>
+                            <a href="#" class="dropdown-link"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+                            <a href="#" class="dropdown-link"><i class="fas fa-chart-line"></i> Digital Marketing</a>
+                            <a href="#" class="dropdown-link"><i class="fas fa-palette"></i> UI/UX Design</a>
+                        </div>
+                    </li>
+                    <li><a href="#" class="nav-link" data-section="about">About</a></li>
+                    <li><a href="#" class="nav-link" data-section="contact">Contact</a></li>
+                </ul>
+
+                <a href="#" class="navbar-cta">Get Started</a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <ul class="mobile-nav-links">
+                <li><a href="#" class="mobile-nav-link active" data-section="home">Home</a></li>
+                <li><a href="#" class="mobile-nav-link" data-section="features">Features</a></li>
+                <li>
+                    <a href="#" class="mobile-nav-link" id="mobileServicesToggle">
+                        Services <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>
+                    </a>
+                    <div class="mobile-dropdown-content" id="mobileServices">
+                        <a href="#" class="mobile-dropdown-link">Web Development</a>
+                        <a href="#" class="mobile-dropdown-link">Mobile Apps</a>
+                        <a href="#" class="mobile-dropdown-link">Digital Marketing</a>
+                        <a href="#" class="mobile-dropdown-link">UI/UX Design</a>
+                    </div>
+                </li>
+                <li><a href="#" class="mobile-nav-link" data-section="about">About</a></li>
+                <li><a href="#" class="mobile-nav-link" data-section="contact">Contact</a></li>
+                <li><a href="#" class="mobile-nav-link"
+                        style="background: #667eea; color: white; text-align: center;">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="container">
+                <h1 class="fade-in">Responsive Navigation Bar</h1>
+                <p class="fade-in">A fully responsive navbar with dropdown menus, mobile hamburger menu, and smooth
+                    animations.</p>
+                <button class="demo-btn" onclick="scrollToSection('features')">Explore Features</button>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="container" id="features">
+            <h2 style="text-align: center; margin-bottom: 40px; color: #667eea;">Features</h2>
+            <div class="content-grid">
+                <div class="content-card slide-in">
+                    <h3><i class="fas fa-mobile-alt"></i> Responsive Design</h3>
+                    <p>Automatically adapts to different screen sizes. Try resizing your browser window!</p>
+                </div>
+                <div class="content-card slide-in">
+                    <h3><i class="fas fa-bars"></i> Hamburger Menu</h3>
+                    <p>Mobile-friendly hamburger menu with smooth animations and transitions.</p>
+                </div>
+                <div class="content-card slide-in">
+                    <h3><i class="fas fa-layer-group"></i> Dropdown Menus</h3>
+                    <p>Elegant dropdown menus with hover effects for desktop and touch for mobile.</p>
+                </div>
+                <div class="content-card slide-in">
+                    <h3><i class="fas fa-scroll"></i> Scroll Effects</h3>
+                    <p>Navbar changes style on scroll and shows progress indicator.</p>
+                </div>
+                <div class="content-card slide-in">
+                    <h3><i class="fas fa-bolt"></i> Smooth Animations</h3>
+                    <p>All transitions are smooth with CSS animations for better user experience.</p>
+                </div>
+                <div class="content-card slide-in">
+                    <h3><i class="fas fa-moon"></i> Dark Mode Ready</h3>
+                    <p>Automatically adapts to system dark mode preferences.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="container" id="about" style="padding: 60px 0;">
+            <h2 style="text-align: center; margin-bottom: 40px; color: #667eea;">About This Navbar</h2>
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <p style="font-size: 18px; line-height: 1.8; margin-bottom: 30px;">
+                    This responsive navbar is built with pure HTML, CSS, and JavaScript. It includes all modern features
+                    expected from a navigation component including mobile responsiveness, dropdown menus, scroll
+                    effects, and smooth animations.
+                </p>
+                <div class="content-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="content-card">
+                        <h4>Technologies Used</h4>
+                        <ul style="text-align: left; margin-top: 15px; padding-left: 20px;">
+                            <li>HTML5 Semantic Elements</li>
+                            <li>CSS3 Flexbox & Grid</li>
+                            <li>CSS Transitions & Animations</li>
+                            <li>Vanilla JavaScript</li>
+                            <li>Font Awesome Icons</li>
+                        </ul>
+                    </div>
+                    <div class="content-card">
+                        <h4>Browser Support</h4>
+                        <ul style="text-align: left; margin-top: 15px; padding-left: 20px;">
+                            <li>Chrome 60+</li>
+                            <li>Firefox 55+</li>
+                            <li>Safari 12+</li>
+                            <li>Edge 79+</li>
+                            <li>iOS Safari 12+</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" style="background: #f5f7fa; padding: 80px 0; border-radius: 30px 30px 0 0;">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 40px; color: #667eea;">Try It Yourself</h2>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto 40px; font-size: 18px;">
+                    Use the controls below to test different navbar behaviors and see how it responds.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+        <button class="demo-btn" onclick="toggleMobileMenu()">Toggle Mobile Menu</button>
+        <button class="demo-btn" onclick="toggleScrolled()">Toggle Scroll Effect</button>
+        <button class="demo-btn" onclick="changeTheme()">Toggle Theme</button>
+    </div>
+
+    <script>
+        // 1. Hamburger menu for mobile
+        // 2. Smooth dropdown for desktop
+        // 3. CSS transitions for menu opening
+
+        // DOM Elements
+        const navbar = document.getElementById('navbar');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileServicesToggle = document.getElementById('mobileServicesToggle');
+        const mobileServices = document.getElementById('mobileServices');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        const scrollProgress = document.getElementById('scrollProgress');
+
+        // State
+        let isMobileMenuOpen = false;
+        let isServicesOpen = false;
+        let isScrolled = false;
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+
+            if (isMobileMenuOpen) {
+                mobileMenu.classList.add('active');
+                mobileMenuToggle.innerHTML = '<i class="fas fa-times"></i>';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            } else {
+                mobileMenu.classList.remove('active');
+                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }
+        }
+
+        // Toggle mobile services dropdown
+        function toggleMobileServices() {
+            isServicesOpen = !isServicesOpen;
+
+            if (isServicesOpen) {
+                mobileServices.classList.add('active');
+                mobileServicesToggle.innerHTML = 'Services <i class="fas fa-chevron-up" style="float: right; margin-top: 5px;"></i>';
+            } else {
+                mobileServices.classList.remove('active');
+                mobileServicesToggle.innerHTML = 'Services <i class="fas fa-chevron-down" style="float: right; margin-top: 5px;"></i>';
+            }
+        }
+
+        // Update navbar on scroll
+        function updateNavbarOnScroll() {
+            const scrollY = window.scrollY;
+
+            // Update scroll progress
+            const winHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const scrollPercent = (scrollY / (docHeight - winHeight)) * 100;
+            scrollProgress.style.width = `${scrollPercent}%`;
+
+            // Add/remove scrolled class
+            if (scrollY > 50 && !isScrolled) {
+                navbar.classList.add('scrolled');
+                isScrolled = true;
+            } else if (scrollY <= 50 && isScrolled) {
+                navbar.classList.remove('scrolled');
+                isScrolled = false;
+            }
+        }
+
+        // Set active nav link
+        function setActiveNavLink(section) {
+            // Update desktop nav links
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === section) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update mobile nav links
+            mobileNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === section) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Scroll to section
+            const targetSection = document.getElementById(section);
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+
+            // Close mobile menu if open
+            if (isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        // Scroll to section
+        function scrollToSection(section) {
+            setActiveNavLink(section);
+        }
+
+        // Toggle scroll effect (for demo)
+        function toggleScrolled() {
+            if (isScrolled) {
+                navbar.classList.remove('scrolled');
+                isScrolled = false;
+            } else {
+                navbar.classList.add('scrolled');
+                isScrolled = true;
+            }
+        }
+
+        // Change theme (for demo)
+        function changeTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdowns = document.querySelectorAll('.dropdown');
+            let isClickInsideDropdown = false;
+
+            dropdowns.forEach(dropdown => {
+                if (dropdown.contains(event.target)) {
+                    isClickInsideDropdown = true;
+                }
+            });
+
+            if (!isClickInsideDropdown) {
+                // Close all dropdowns (optional - they close on mouseleave by default)
+            }
+        });
+
+        // Event Listeners
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+
+        mobileServicesToggle.addEventListener('click', function (event) {
+            event.preventDefault();
+            toggleMobileServices();
+        });
+
+        // Nav link clicks
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                const section = this.dataset.section;
+                setActiveNavLink(section);
+            });
+        });
+
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                if (this !== mobileServicesToggle) {
+                    event.preventDefault();
+                    const section = this.dataset.section;
+                    if (section) {
+                        setActiveNavLink(section);
+                    }
+                }
+            });
+        });
+
+        // Window scroll event
+        window.addEventListener('scroll', updateNavbarOnScroll);
+
+        // Window resize event
+        window.addEventListener('resize', function () {
+            // Close mobile menu on resize to desktop
+            if (window.innerWidth > 768 && isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+
+            // Tab key navigation trap for mobile menu
+            if (isMobileMenuOpen && event.key === 'Tab') {
+                const focusableElements = mobileMenu.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (event.shiftKey) {
+                    // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        event.preventDefault();
+                        lastElement.focus();
+                    }
+                } else {
+                    // Tab
+                    if (document.activeElement === lastElement) {
+                        event.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        });
+
+        // Initialize
+        updateNavbarOnScroll();
+
+        // Add animation delay to content cards
+        document.querySelectorAll('.content-card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Add demo content dynamically
+        setTimeout(() => {
+            const contactSection = document.getElementById('contact');
+            const demoContainer = document.createElement('div');
+            demoContainer.className = 'container';
+            demoContainer.innerHTML = `
+                <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <div class="content-card" style="text-align: center;">
+                        <h4><i class="fas fa-mobile-alt"></i> Test Responsiveness</h4>
+                        <p>Resize your browser window or use device emulation in developer tools to see the responsive behavior.</p>
+                    </div>
+                    <div class="content-card" style="text-align: center;">
+                        <h4><i class="fas fa-mouse-pointer"></i> Try Dropdowns</h4>
+                        <p>Hover over "Services" in the desktop menu to see the dropdown. On mobile, tap to expand.</p>
+                    </div>
+                    <div class="content-card" style="text-align: center;">
+                        <h4><i class="fas fa-scroll"></i> Scroll Down</h4>
+                        <p>Scroll down to see the navbar transform and the progress bar at the top.</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">Navbar Features Checklist</h3>
+                    <div style="display: inline-block; text-align: left; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
+                        <div style="margin-bottom: 15px;">
+                            <input type="checkbox" id="feature1" checked disabled>
+                            <label for="feature1" style="margin-left: 10px;">Responsive Design</label>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <input type="checkbox" id="feature2" checked disabled>
+                            <label for="feature2" style="margin-left: 10px;">Hamburger Menu</label>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <input type="checkbox" id="feature3" checked disabled>
+                            <label for="feature3" style="margin-left: 10px;">Dropdown Menus</label>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <input type="checkbox" id="feature4" checked disabled>
+                            <label for="feature4" style="margin-left: 10px;">Scroll Effects</label>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <input type="checkbox" id="feature5" checked disabled>
+                            <label for="feature5" style="margin-left: 10px;">Smooth Animations</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="feature6" checked disabled>
+                            <label for="feature6" style="margin-left: 10px;">Dark Mode Support</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            contactSection.querySelector('.container').appendChild(demoContainer);
+        }, 500);
+    </script>
+</body>
+
+</html>
