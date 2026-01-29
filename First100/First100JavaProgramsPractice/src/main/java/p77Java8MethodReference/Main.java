@@ -14,5 +14,5 @@ public class Main {
 
         people.forEach(System.out::println);
     }
-    
+
 }

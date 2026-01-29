@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elizabeth - CSS Portrait Art</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: #f8f8f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #f8e9a1;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            font-weight: normal;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a8d0e6;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(248, 233, 161, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #f8e9a1;
+            border: 1px solid rgba(248, 233, 161, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* Main Content */
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        /* Portrait Container */
+        .portrait-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .portrait-frame {
+            width: 400px;
+            height: 500px;
+            position: relative;
+            margin: 0 auto 30px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Elizabeth Portrait - Pure CSS */
+        .elizabeth {
+            position: relative;
+            width: 300px;
+            height: 400px;
+        }
+
+        /* Face */
+        .face {
+            position: absolute;
+            width: 180px;
+            height: 220px;
+            background: #f8dbc1;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 60px;
+            left: 60px;
+            box-shadow:
+                inset 0 -15px 20px rgba(0, 0, 0, 0.1),
+                0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        /* Hair */
+        .hair {
+            position: absolute;
+            width: 220px;
+            height: 250px;
+            background: #8b4513;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 40px;
+            left: 40px;
+            box-shadow:
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                inset 0 -10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
+
+        .hair:before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            background: #8b4513;
+            border-radius: 100px 100px 0 0;
+            top: -30px;
+            left: 10px;
+        }
+
+        .hair-front {
+            position: absolute;
+            width: 200px;
+            height: 120px;
+            background: #a0522d;
+            border-radius: 100px 100px 0 0;
+            top: 40px;
+            left: 50px;
+            z-index: 15;
+            box-shadow:
+                inset 0 -10px 10px rgba(0, 0, 0, 0.2),
+                0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Eyes */
+        .eye {
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            background: #1a1a2e;
+            border-radius: 50%;
+            top: 100px;
+            z-index: 20;
+        }
+
+        .eye-left {
+            left: 85px;
+        }
+
+        .eye-right {
+            left: 155px;
+        }
+
+        .eye:before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 4px;
+            left: 9px;
+        }
+
+        .eyelid {
+            position: absolute;
+            width: 40px;
+            height: 15px;
+            background: #f8dbc1;
+            border-radius: 50%;
+            top: 95px;
+            z-index: 19;
+        }
+
+        .eyelid-left {
+            left: 80px;
+        }
+
+        .eyelid-right {
+            left: 150px;
+        }
+
+        /* Eyebrows */
+        .eyebrow {
+            position: absolute;
+            width: 40px;
+            height: 10px;
+            background: #8b4513;
+            border-radius: 10px;
+            top: 85px;
+            z-index: 18;
+        }
+
+        .eyebrow-left {
+            left: 80px;
+            transform: rotate(-5deg);
+        }
+
+        .eyebrow-right {
+            left: 150px;
+            transform: rotate(5deg);
+        }
+
+        /* Nose */
+        .nose {
+            position: absolute;
+            width: 15px;
+            height: 30px;
+            background: #f0c9a8;
+            border-radius: 50%;
+            top: 125px;
+            left: 142px;
+            z-index: 20;
+            box-shadow: inset 0 -5px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mouth */
+        .mouth {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: #d47a7a;
+            border-radius: 0 0 40px 40px;
+            top: 160px;
+            left: 130px;
+            z-index: 20;
+            box-shadow:
+                inset 0 -5px 5px rgba(0, 0, 0, 0.1),
+                0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .mouth:before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 10px;
+            background: #f8dbc1;
+            border-radius: 50%;
+            top: -5px;
+            left: 5px;
+        }
+
+        /* Ears */
+        .ear {
+            position: absolute;
+            width: 20px;
+            height: 30px;
+            background: #f8dbc1;
+            border-radius: 50%;
+            top: 110px;
+            z-index: 9;
+        }
+
+        .ear-left {
+            left: 50px;
+            transform: rotate(-10deg);
+        }
+
+        .ear-right {
+            left: 210px;
+            transform: rotate(10deg);
+        }
+
+        /* Neck */
+        .neck {
+            position: absolute;
+            width: 60px;
+            height: 70px;
+            background: #f0c9a8;
+            border-radius: 0 0 20px 20px;
+            top: 250px;
+            left: 120px;
+            z-index: 9;
+            box-shadow: inset 0 -10px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Body/Dress */
+        .dress {
+            position: absolute;
+            width: 180px;
+            height: 150px;
+            background: #374785;
+            border-radius: 50% 50% 0 0;
+            top: 300px;
+            left: 60px;
+            z-index: 8;
+            box-shadow:
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                inset 0 -10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dress:before {
+            content: '';
+            position: absolute;
+            width: 160px;
+            height: 50px;
+            background: #2a3c6d;
+            border-radius: 50%;
+            top: -20px;
+            left: 10px;
+        }
+
+        /* Shoulders */
+        .shoulder {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: #f8dbc1;
+            border-radius: 50%;
+            top: 280px;
+            z-index: 7;
+        }
+
+        .shoulder-left {
+            left: 70px;
+            transform: rotate(-20deg);
+        }
+
+        .shoulder-right {
+            left: 170px;
+            transform: rotate(20deg);
+        }
+
+        /* Jewelry */
+        .necklace {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            border: 2px solid #f8e9a1;
+            border-radius: 50%;
+            top: 285px;
+            left: 110px;
+            z-index: 10;
+        }
+
+        .necklace:before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f8e9a1;
+            border-radius: 50%;
+            top: 18px;
+            left: 35px;
+            box-shadow: 0 0 10px #f8e9a1;
+        }
+
+        /* Blush */
+        .blush {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background: rgba(255, 182, 193, 0.4);
+            border-radius: 50%;
+            top: 135px;
+            z-index: 11;
+        }
+
+        .blush-left {
+            left: 100px;
+        }
+
+        .blush-right {
+            left: 160px;
+        }
+
+        /* Hair Details */
+        .hair-detail {
+            position: absolute;
+            background: #a0522d;
+            border-radius: 50%;
+            z-index: 6;
+        }
+
+        .detail-1 {
+            width: 40px;
+            height: 60px;
+            top: 50px;
+            left: 30px;
+            transform: rotate(30deg);
+        }
+
+        .detail-2 {
+            width: 50px;
+            height: 70px;
+            top: 40px;
+            left: 180px;
+            transform: rotate(-20deg);
+        }
+
+        /* Eyelashes */
+        .eyelash {
+            position: absolute;
+            background: #8b4513;
+            width: 2px;
+            z-index: 21;
+        }
+
+        .eyelash-left {
+            height: 8px;
+            top: 95px;
+            transform: rotate(-45deg);
+        }
+
+        .eyelash-left-1 {
+            left: 82px;
+        }
+
+        .eyelash-left-2 {
+            left: 86px;
+            height: 6px;
+        }
+
+        .eyelash-left-3 {
+            left: 90px;
+            height: 4px;
+        }
+
+        .eyelash-right {
+            height: 8px;
+            top: 95px;
+            transform: rotate(45deg);
+        }
+
+        .eyelash-right-1 {
+            left: 152px;
+            height: 4px;
+        }
+
+        .eyelash-right-2 {
+            left: 156px;
+            height: 6px;
+        }
+
+        .eyelash-right-3 {
+            left: 160px;
+        }
+
+        /* Animations */
+        @keyframes blink {
+
+            0%,
+            90%,
+            100% {
+                height: 20px;
+            }
+
+            95% {
+                height: 5px;
+            }
+        }
+
+        @keyframes subtle-smile {
+
+            0%,
+            100% {
+                height: 20px;
+            }
+
+            50% {
+                height: 15px;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                box-shadow: 0 0 10px #f8e9a1;
+            }
+
+            50% {
+                opacity: 1;
+                box-shadow: 0 0 20px #f8e9a1;
+            }
+        }
+
+        /* Apply animations */
+        .eye {
+            animation: blink 5s infinite;
+        }
+
+        .mouth {
+            animation: subtle-smile 8s infinite;
+        }
+
+        .portrait-frame {
+            animation: float 6s infinite ease-in-out;
+        }
+
+        .necklace:before {
+            animation: sparkle 3s infinite;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #f8e9a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title i {
+            color: #a8d0e6;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-label span {
+            font-weight: 600;
+            color: #a8d0e6;
+        }
+
+        .control-value {
+            color: #f8e9a1;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f8e9a1;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(248, 233, 161, 0.5);
+            transition: all 0.3s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #f7dc6f;
+            transform: scale(1.2);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #374785, #2a3c6d);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(55, 71, 133, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #a8d0e6;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Explanation Section */
+        .explanation {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .explanation-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #f8e9a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .explanation-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .explanation-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 4px solid #f8e9a1;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #a8d0e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: #f76c6c;
+        }
+
+        .card-text {
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        /* CSS Code Display */
+        .code-section {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .code-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #f8e9a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            color: #d4d4d4;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid #333;
+        }
+
+        .css-selector {
+            color: #569cd6;
+        }
+
+        .css-property {
+            color: #9cdcfe;
+        }
+
+        .css-value {
+            color: #ce9178;
+        }
+
+        .css-comment {
+            color: #6a9955;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #a8d0e6;
+            font-size: 0.9rem;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .footer-links a {
+            color: #f8e9a1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #a8d0e6;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .portrait-frame {
+                width: 350px;
+                height: 450px;
+            }
+
+            .elizabeth {
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .portrait-frame {
+                width: 300px;
+                height: 400px;
+                padding: 15px;
+            }
+
+            .elizabeth {
+                transform: scale(0.8);
+            }
+
+            .control-panel,
+            .explanation {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Background decorative elements */
+        .bg-ornament {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(248, 233, 161, 0.05) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(20px);
+        }
+
+        .ornament-1 {
+            top: 10%;
+            left: 5%;
+        }
+
+        .ornament-2 {
+            bottom: 10%;
+            right: 5%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Ornaments -->
+    <div class="bg-ornament ornament-1"></div>
+    <div class="bg-ornament ornament-2"></div>
+
+    <div class="container">
+        <header>
+            <h1>Elizabeth</h1>
+            <p class="subtitle">A detailed CSS portrait created entirely with HTML and CSS. Every feature is rendered
+                using pure code - no images used.</p>
+            <span class="tag">CSS Art | Portrait | Pure Code Illustration</span>
+        </header>
+
+        <div class="content">
+            <!-- Elizabeth Portrait -->
+            <div class="portrait-container">
+                <div class="portrait-frame">
+                    <div class="elizabeth">
+                        <!-- Hair -->
+                        <div class="hair"></div>
+                        <div class="hair-front"></div>
+                        <div class="hair-detail detail-1"></div>
+                        <div class="hair-detail detail-2"></div>
+
+                        <!-- Face -->
+                        <div class="face"></div>
+
+                        <!-- Ears -->
+                        <div class="ear ear-left"></div>
+                        <div class="ear ear-right"></div>
+
+                        <!-- Eyes -->
+                        <div class="eyelid eyelid-left"></div>
+                        <div class="eyelid eyelid-right"></div>
+                        <div class="eyebrow eyebrow-left"></div>
+                        <div class="eyebrow eyebrow-right"></div>
+                        <div class="eye eye-left"></div>
+                        <div class="eye eye-right"></div>
+
+                        <!-- Eyelashes -->
+                        <div class="eyelash eyelash-left eyelash-left-1"></div>
+                        <div class="eyelash eyelash-left eyelash-left-2"></div>
+                        <div class="eyelash eyelash-left eyelash-left-3"></div>
+                        <div class="eyelash eyelash-right eyelash-right-1"></div>
+                        <div class="eyelash eyelash-right eyelash-right-2"></div>
+                        <div class="eyelash eyelash-right eyelash-right-3"></div>
+
+                        <!-- Nose -->
+                        <div class="nose"></div>
+
+                        <!-- Mouth -->
+                        <div class="mouth"></div>
+
+                        <!-- Blush -->
+                        <div class="blush blush-left"></div>
+                        <div class="blush blush-right"></div>
+
+                        <!-- Neck -->
+                        <div class="neck"></div>
+
+                        <!-- Shoulders -->
+                        <div class="shoulder shoulder-left"></div>
+                        <div class="shoulder shoulder-right"></div>
+
+                        <!-- Dress -->
+                        <div class="dress"></div>
+
+                        <!-- Jewelry -->
+                        <div class="necklace"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h2 class="panel-title">
+                    <i class="fas fa-palette"></i>
+                    <span>Portrait Controls</span>
+                </h2>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Blinking Speed</span>
+                            <span class="control-value" id="blinkValue">Normal</span>
+                        </div>
+                        <input type="range" min="2" max="10" value="5" class="slider" id="blinkSlider">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Hair Color</span>
+                            <span class="control-value" id="hairColorValue">Chestnut</span>
+                        </div>
+                        <input type="range" min="1" max="5" value="3" class="slider" id="hairColorSlider">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Dress Color</span>
+                            <span class="control-value" id="dressColorValue">Royal Blue</span>
+                        </div>
+                        <input type="range" min="1" max="5" value="3" class="slider" id="dressColorSlider">
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="btn btn-primary" id="animateBtn">
+                            <i class="fas fa-play"></i>
+                            <span>More Animation</span>
+                        </button>
+                        <button class="btn btn-secondary" id="resetBtn">
+                            <i class="fas fa-redo"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Explanation Section -->
+        <div class="explanation">
+            <h2 class="explanation-title">
+                <i class="fas fa-lightbulb"></i>
+                <span>CSS Techniques Used</span>
+            </h2>
+
+            <div class="explanation-content">
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-shapes"></i>
+                        <span>CSS Shapes</span>
+                    </h3>
+                    <p class="card-text">The face, eyes, hair, and other features are created using CSS border-radius
+                        with specific percentages to achieve organic, curved shapes.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Layering & Z-index</span>
+                    </h3>
+                    <p class="card-text">Multiple div elements are layered using z-index to create depth - hair behind
+                        face, eyes on top, eyelashes on top of eyes, etc.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-magic"></i>
+                        <span>CSS Animations</span>
+                    </h3>
+                    <p class="card-text">Subtle animations bring Elizabeth to life: blinking eyes, gentle smile,
+                        floating motion, and sparkling jewelry.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-box-shadow"></i>
+                        <span>Box Shadows</span>
+                    </h3>
+                    <p class="card-text">Multiple box shadows create depth, highlights, and contours - both outer
+                        shadows for depth and inner shadows for recessed areas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS Code Display -->
+        <div class="code-section">
+            <h2 class="code-title">
+                <i class="fas fa-code"></i>
+                <span>CSS Code Snippet</span>
+            </h2>
+
+            <div class="code-block">
+                <pre><code><span class="css-comment">/* Face - oval shape with gradients */</span>
+<span class="css-selector">.face</span> {
+    <span class="css-property">position</span>: <span class="css-value">absolute</span>;
+    <span class="css-property">width</span>: <span class="css-value">180px</span>;
+    <span class="css-property">height</span>: <span class="css-value">220px</span>;
+    <span class="css-property">background</span>: <span class="css-value">#f8dbc1</span>;
+    <span class="css-property">border-radius</span>: <span class="css-value">50% 50% 50% 50% / 60% 60% 40% 40%</span>;
+    <span class="css-property">box-shadow</span>: 
+        <span class="css-value">inset 0 -15px 20px rgba(0, 0, 0, 0.1),
+        0 5px 15px rgba(0, 0, 0, 0.2)</span>;
+    <span class="css-property">z-index</span>: <span class="css-value">10</span>;
+}
+
+<span class="css-comment">/* Hair - layered elements for volume */</span>
+<span class="css-selector">.hair</span> {
+    <span class="css-property">position</span>: <span class="css-value">absolute</span>;
+    <span class="css-property">width</span>: <span class="css-value">220px</span>;
+    <span class="css-property">height</span>: <span class="css-value">250px</span>;
+    <span class="css-property">background</span>: <span class="css-value">#8b4513</span>;
+    <span class="css-property">border-radius</span>: <span class="css-value">50% 50% 50% 50% / 60% 60% 40% 40%</span>;
+    <span class="css-property">box-shadow</span>: 
+        <span class="css-value">0 10px 20px rgba(0, 0, 0, 0.3),
+        inset 0 -10px 20px rgba(0, 0, 0, 0.2)</span>;
+    <span class="css-property">z-index</span>: <span class="css-value">5</span>;
+}
+
+<span class="css-comment">/* Eyes with blinking animation */</span>
+<span class="css-selector">.eye</span> {
+    <span class="css-property">position</span>: <span class="css-value">absolute</span>;
+    <span class="css-property">width</span>: <span class="css-value">30px</span>;
+    <span class="css-property">height</span>: <span class="css-value">20px</span>;
+    <span class="css-property">background</span>: <span class="css-value">#1a1a2e</span>;
+    <span class="css-property">border-radius</span>: <span class="css-value">50%</span>;
+    <span class="css-property">z-index</span>: <span class="css-value">20</span>;
+    <span class="css-property">animation</span>: <span class="css-value">blink 5s infinite</span>;
+}
+
+<span class="css-selector">@keyframes blink</span> {
+    <span class="css-selector">0%, 90%, 100%</span> {
+        <span class="css-property">height</span>: <span class="css-value">20px</span>;
+    }
+    <span class="css-selector">95%</span> {
+        <span class="css-property">height</span>: <span class="css-value">5px</span>;
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <footer>
+            <p>Elizabeth - CSS Portrait Art | Created with pure HTML & CSS | No images used</p>
+            <div class="footer-links">
+                <a href="#">
+                    <i class="fab fa-codepen"></i>
+                    <span>CodePen</span>
+                </a>
+                <a href="#">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-heart"></i>
+                    <span>Like this art</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const blinkSlider = document.getElementById('blinkSlider');
+        const blinkValue = document.getElementById('blinkValue');
+        const hairColorSlider = document.getElementById('hairColorSlider');
+        const hairColorValue = document.getElementById('hairColorValue');
+        const dressColorSlider = document.getElementById('dressColorSlider');
+        const dressColorValue = document.getElementById('dressColorValue');
+        const animateBtn = document.getElementById('animateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const eyes = document.querySelectorAll('.eye');
+        const hairElements = document.querySelectorAll('.hair, .hair-front, .eyebrow, .hair-detail');
+        const dressElement = document.querySelector('.dress');
+        const dressBefore = document.querySelector('.dress:before');
+
+        // Hair color options
+        const hairColors = [
+            { name: 'Blonde', base: '#d4b483', front: '#e6c9a0' },
+            { name: 'Red', base: '#a52a2a', front: '#c04040' },
+            { name: 'Chestnut', base: '#8b4513', front: '#a0522d' },
+            { name: 'Brown', base: '#654321', front: '#8b4513' },
+            { name: 'Black', base: '#2c1810', front: '#3a2418' }
+        ];
+
+        // Dress color options
+        const dressColors = [
+            { name: 'Emerald', main: '#2d5a27', accent: '#1e3f1a' },
+            { name: 'Ruby', main: '#9b1b30', accent: '#7a1526' },
+            { name: 'Royal Blue', main: '#374785', accent: '#2a3c6d' },
+            { name: 'Purple', main: '#6a457a', accent: '#523461' },
+            { name: 'Burgundy', main: '#800020', accent: '#660019' }
+        ];
+
+        // Initialize the app
+        function initApp() {
+            // Set up event listeners
+            setupEventListeners();
+
+            // Update initial values
+            updateBlinkDisplay();
+            updateHairColorDisplay();
+            updateDressColorDisplay();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Blink speed slider
+            blinkSlider.addEventListener('input', function () {
+                updateBlinkSpeed(this.value);
+                updateBlinkDisplay();
+            });
+
+            // Hair color slider
+            hairColorSlider.addEventListener('input', function () {
+                updateHairColor(this.value);
+                updateHairColorDisplay();
+            });
+
+            // Dress color slider
+            dressColorSlider.addEventListener('input', function () {
+                updateDressColor(this.value);
+                updateDressColorDisplay();
+            });
+
+            // Animate button
+            animateBtn.addEventListener('click', toggleExtraAnimation);
+
+            // Reset button
+            resetBtn.addEventListener('click', resetToDefaults);
+        }
+
+        // Update blink speed
+        function updateBlinkSpeed(value) {
+            // Convert slider value (2-10) to animation duration
+            const duration = 12 - value; // 10s to 2s
+
+            eyes.forEach(eye => {
+                eye.style.animationDuration = `${duration}s`;
+            });
+        }
+
+        // Update hair color
+        function updateHairColor(value) {
+            const index = parseInt(value) - 1;
+            const colorSet = hairColors[index];
+
+            hairElements.forEach(element => {
+                if (element.classList.contains('hair-front')) {
+                    element.style.backgroundColor = colorSet.front;
+                } else if (element.classList.contains('hair-detail')) {
+                    element.style.backgroundColor = colorSet.front;
+                } else {
+                    element.style.backgroundColor = colorSet.base;
+                }
+            });
+        }
+
+        // Update dress color
+        function updateDressColor(value) {
+            const index = parseInt(value) - 1;
+            const colorSet = dressColors[index];
+
+            dressElement.style.backgroundColor = colorSet.main;
+
+            // Update the before pseudo-element
+            if (dressBefore) {
+                dressBefore.style.backgroundColor = colorSet.accent;
+            }
+        }
+
+        // Toggle extra animations
+        function toggleExtraAnimation() {
+            const portraitFrame = document.querySelector('.portrait-frame');
+            const isAnimating = portraitFrame.style.animationPlayState === 'paused';
+
+            if (isAnimating) {
+                // Resume animations
+                portraitFrame.style.animationPlayState = 'running';
+                eyes.forEach(eye => {
+                    eye.style.animationPlayState = 'running';
+                });
+                document.querySelector('.mouth').style.animationPlayState = 'running';
+                document.querySelector('.necklace:before').style.animationPlayState = 'running';
+
+                animateBtn.innerHTML = '<i class="fas fa-pause"></i><span>Pause Animation</span>';
+            } else {
+                // Pause animations
+                portraitFrame.style.animationPlayState = 'paused';
+                eyes.forEach(eye => {
+                    eye.style.animationPlayState = 'paused';
+                });
+                document.querySelector('.mouth').style.animationPlayState = 'paused';
+                document.querySelector('.necklace:before').style.animationPlayState = 'paused';
+
+                animateBtn.innerHTML = '<i class="fas fa-play"></i><span>Resume Animation</span>';
+            }
+        }
+
+        // Reset to default values
+        function resetToDefaults() {
+            // Reset sliders
+            blinkSlider.value = 5;
+            hairColorSlider.value = 3;
+            dressColorSlider.value = 3;
+
+            // Reset animations
+            const portraitFrame = document.querySelector('.portrait-frame');
+            portraitFrame.style.animationPlayState = 'running';
+            eyes.forEach(eye => {
+                eye.style.animationPlayState = 'running';
+            });
+            document.querySelector('.mouth').style.animationPlayState = 'running';
+            document.querySelector('.necklace:before').style.animationPlayState = 'running';
+
+            animateBtn.innerHTML = '<i class="fas fa-pause"></i><span>Pause Animation</span>';
+
+            // Reset colors and speeds
+            updateBlinkSpeed(5);
+            updateHairColor(3);
+            updateDressColor(3);
+
+            // Update displays
+            updateBlinkDisplay();
+            updateHairColorDisplay();
+            updateDressColorDisplay();
+        }
+
+        // Update blink display
+        function updateBlinkDisplay() {
+            const value = blinkSlider.value;
+            let displayText = '';
+
+            if (value < 3) {
+                displayText = 'Very Slow';
+            } else if (value < 5) {
+                displayText = 'Slow';
+            } else if (value < 7) {
+                displayText = 'Normal';
+            } else if (value < 9) {
+                displayText = 'Fast';
+            } else {
+                displayText = 'Very Fast';
+            }
+
+            blinkValue.textContent = displayText;
+        }
+
+        // Update hair color display
+        function updateHairColorDisplay() {
+            const index = parseInt(hairColorSlider.value) - 1;
+            hairColorValue.textContent = hairColors[index].name;
+        }
+
+        // Update dress color display
+        function updateDressColorDisplay() {
+            const index = parseInt(dressColorSlider.value) - 1;
+            dressColorValue.textContent = dressColors[index].name;
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Add interactive mouse effects
+        const elizabeth = document.querySelector('.elizabeth');
+
+        document.addEventListener('mousemove', function (e) {
+            // Calculate mouse position relative to viewport
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            // Calculate subtle movements based on mouse position
+            const moveX = (x - 0.5) * 10; // -5 to +5 px
+            const moveY = (y - 0.5) * 10; // -5 to +5 px
+
+            // Move eyes slightly based on mouse position
+            const eyeLeft = document.querySelector('.eye-left');
+            const eyeRight = document.querySelector('.eye-right');
+
+            if (eyeLeft && eyeRight) {
+                eyeLeft.style.transform = `translate(${moveX * 0.5}px, ${moveY * 0.3}px)`;
+                eyeRight.style.transform = `translate(${moveX * 0.5}px, ${moveY * 0.3}px)`;
+            }
+        });
+
+        // Reset eye position when mouse leaves window
+        document.addEventListener('mouseleave', function () {
+            const eyeLeft = document.querySelector('.eye-left');
+            const eyeRight = document.querySelector('.eye-right');
+
+            if (eyeLeft && eyeRight) {
+                eyeLeft.style.transform = 'translate(0, 0)';
+                eyeRight.style.transform = 'translate(0, 0)';
+            }
+        });
+    </script>
+</body>
+
+</html>

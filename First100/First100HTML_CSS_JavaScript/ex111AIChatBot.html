@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #10b981;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #9ca3af;
+            --user-msg-bg: #3b82f6;
+            --bot-msg-bg: #f3f4f6;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            height: 85vh;
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .chat-header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bot-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .bot-info h2 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .bot-info p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+        }
+
+        /* Chat Body */
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 15px;
+            border-radius: 18px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--user-msg-bg);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: var(--bot-msg-bg);
+            color: var(--dark-color);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            margin-top: 8px;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-self: flex-start;
+            background-color: var(--bot-msg-bg);
+            padding: 15px;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+            width: 60px;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            background-color: var(--gray-color);
+            display: inline-block;
+            margin-right: 5px;
+            animation: typing 1.5s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Quick Suggestions */
+        .quick-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .suggestion-btn {
+            background-color: #e5e7eb;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .suggestion-btn:hover {
+            background-color: #d1d5db;
+            transform: translateY(-2px);
+        }
+
+        /* Chat Footer */
+        .chat-footer {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #d1d5db;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .message-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .send-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f3e7ff 0%, #e3eeff 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 90vh;
+                border-radius: 15px;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .chat-header {
+                padding: 15px;
+            }
+
+            .bot-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .bot-info h2 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .message {
+                max-width: 90%;
+                padding: 12px;
+            }
+
+            .message-form {
+                flex-direction: column;
+            }
+
+            .send-btn {
+                width: 100%;
+                height: 50px;
+                border-radius: 30px;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="bot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="bot-info">
+                    <h2>AI Assistant</h2>
+                    <p>Powered by Deep Learning</p>
+                </div>
+            </div>
+            <div class="status">
+                <div class="status-dot"></div>
+                <span class="status-text">Online</span>
+            </div>
+        </div>
+
+        <!-- Chat Body -->
+        <div class="chat-body" id="chatBody">
+            <!-- Welcome message -->
+            <div class="welcome-message">
+                <h3>Hello! I'm your AI Assistant</h3>
+                <p>I can help with coding, answer questions, provide information, and more. How can I assist you today?
+                </p>
+            </div>
+
+            <!-- Initial bot message -->
+            <div class="message bot-message">
+                Hi there! I'm an AI assistant designed to help with various tasks. You can ask me about technology, get
+                coding help, request information, or just have a conversation. What would you like to know?
+                <div class="message-time">Just now</div>
+            </div>
+
+            <!-- Quick suggestions -->
+            <div class="quick-suggestions">
+                <button class="suggestion-btn" data-query="Tell me about AI">Tell me about AI</button>
+                <button class="suggestion-btn" data-query="Help me with JavaScript">Help with JavaScript</button>
+                <button class="suggestion-btn" data-query="What can you do?">What can you do?</button>
+                <button class="suggestion-btn" data-query="Tell me a joke">Tell me a joke</button>
+            </div>
+        </div>
+
+        <!-- Chat Footer -->
+        <div class="chat-footer">
+            <form class="message-form" id="messageForm">
+                <input type="text" class="message-input" id="messageInput" placeholder="Type your message here..."
+                    autocomplete="off">
+                <button type="submit" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <div class="footer-actions">
+                <button class="action-btn" id="clearChat" title="Clear chat">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <button class="action-btn" id="voiceBtn" title="Voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="action-btn" id="themeToggle" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="action-btn" id="infoBtn" title="About this bot">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const chatBody = document.getElementById('chatBody');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const clearChatBtn = document.getElementById('clearChat');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const infoBtn = document.getElementById('infoBtn');
+        const suggestionButtons = document.querySelectorAll('.suggestion-btn');
+
+        // Initialize chat history
+        let chatHistory = [
+            { sender: 'bot', message: 'Hi there! I\'m an AI assistant designed to help with various tasks. You can ask me about technology, get coding help, request information, or just have a conversation. What would you like to know?', time: 'Just now' }
+        ];
+
+        // Get current time for message timestamps
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        // Add a message to the chat
+        function addMessage(sender, message, isQuickReply = false) {
+            const time = getCurrentTime();
+
+            // Add to chat history
+            chatHistory.push({ sender, message, time });
+
+            // Create message element
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+
+            messageElement.innerHTML = `
+                ${message}
+                <div class="message-time">${time}</div>
+            `;
+
+            // Add to chat body
+            chatBody.appendChild(messageElement);
+
+            // Scroll to bottom
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Return the message element for further manipulation
+            return messageElement;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingElement = document.createElement('div');
+            typingElement.classList.add('typing-indicator');
+            typingElement.id = 'typingIndicator';
+            typingElement.innerHTML = `
+                <span></span>
+                <span></span>
+                <span></span>
+            `;
+
+            chatBody.appendChild(typingElement);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            return typingElement;
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // AI Response Logic
+        function getAIResponse(userMessage) {
+            const message = userMessage.toLowerCase().trim();
+
+            // Greetings
+            if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return `Hello! How can I assist you today?`;
+            }
+
+            // Name
+            if (message.includes('your name') || message.includes('who are you')) {
+                return `I'm an AI assistant created to help with various tasks. You can call me Nova.`;
+            }
+
+            // What can you do
+            if (message.includes('what can you do') || message.includes('capabilities')) {
+                return `I can help with a variety of tasks including:
+                • Answering questions on various topics
+                • Providing coding help and examples
+                • Explaining concepts in technology and science
+                • Generating creative content
+                • Solving problems and calculations
+                • Having general conversations`;
+            }
+
+            // AI related
+            if (message.includes('artificial intelligence') || message.includes(' ai ')) {
+                return `Artificial Intelligence (AI) refers to the simulation of human intelligence in machines. These machines are programmed to think and learn like humans. Key areas include machine learning, natural language processing, computer vision, and robotics. AI is transforming industries from healthcare to transportation.`;
+            }
+
+            // JavaScript help
+            if (message.includes('javascript') || message.includes('js')) {
+                if (message.includes('array') || message.includes('list')) {
+                    return `In JavaScript, arrays are used to store multiple values. Here's a basic example:\n\`\`\`javascript\nconst fruits = ['apple', 'banana', 'orange'];\nconsole.log(fruits[0]); // Output: apple\nfruits.push('grape'); // Adds 'grape' to the end\n\`\`\``;
+                }
+                if (message.includes('function')) {
+                    return `Functions in JavaScript are blocks of code designed to perform a particular task. Here's an example:\n\`\`\`javascript\nfunction greet(name) {\n  return 'Hello, ' + name + '!';\n}\nconsole.log(greet('Alice')); // Output: Hello, Alice!\n\`\`\``;
+                }
+                return `JavaScript is a versatile programming language used for web development. It allows you to create interactive websites. What specific aspect of JavaScript would you like to know about?`;
+            }
+
+            // Coding help
+            if (message.includes('code') || message.includes('programming') || message.includes('develop')) {
+                return `I can help with various programming languages like JavaScript, Python, HTML/CSS, Java, and more. Please specify which language or concept you need help with.`;
+            }
+
+            // Joke request
+            if (message.includes('joke') || message.includes('funny')) {
+                const jokes = [
+                    "Why do programmers prefer dark mode? Because light attracts bugs!",
+                    "Why did the developer go broke? Because he used up all his cache!",
+                    "What's a programmer's favorite hangout place? The Foo Bar!",
+                    "Why do Java developers wear glasses? Because they can't C#!",
+                    "How many programmers does it take to change a light bulb? None, that's a hardware problem!"
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+
+            // Weather
+            if (message.includes('weather')) {
+                return `I don't have real-time weather data, but I suggest checking a weather service or app for current conditions. I can however tell you that the typical weather for AI conversations is always 72°F and sunny in the cloud! ☁️`;
+            }
+
+            // Time
+            if (message.includes('time') || message.includes('date')) {
+                const now = new Date();
+                return `The current time is ${now.toLocaleTimeString()} and the date is ${now.toLocaleDateString()}.`;
+            }
+
+            // Thank you
+            if (message.includes('thank') || message.includes('thanks')) {
+                return `You're welcome! I'm glad I could help. Is there anything else you'd like to know?`;
+            }
+
+            // Goodbye
+            if (message.includes('bye') || message.includes('goodbye') || message.includes('see you')) {
+                return `Goodbye! Feel free to come back if you have more questions. Have a great day!`;
+            }
+
+            // Default responses for unknown queries
+            const defaultResponses = [
+                `That's an interesting question. I need to process that a bit more. Could you rephrase or ask something else?`,
+                `I'm still learning about that topic. Could you ask me something about technology, programming, or general knowledge?`,
+                `I understand you're asking about "${userMessage}". While I'm designed to help with various topics, I specialize in technology and programming. Could you ask me something related to those areas?`,
+                `Thanks for your question! I'm constantly being updated with new information. For now, I can tell you that "${userMessage}" is something I'm learning more about.`,
+                `I'm designed to assist with technical questions, coding problems, and general knowledge. Could you ask me something in one of those areas?`
+            ];
+
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // Process user message
+        function processUserMessage(message) {
+            // Add user message to chat
+            addMessage('user', message);
+
+            // Clear input
+            messageInput.value = '';
+
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+
+            // Simulate AI processing delay
+            setTimeout(() => {
+                hideTypingIndicator();
+
+                // Get AI response
+                const aiResponse = getAIResponse(message);
+
+                // Add bot response to chat
+                addMessage('bot', aiResponse);
+            }, 1000 + Math.random() * 1500); // Random delay between 1-2.5 seconds
+        }
+
+        // Event Listeners
+        messageForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const message = messageInput.value.trim();
+
+            if (message) {
+                processUserMessage(message);
+            }
+        });
+
+        // Quick suggestion buttons
+        suggestionButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const query = this.getAttribute('data-query');
+                processUserMessage(query);
+            });
+        });
+
+        // Clear chat button
+        clearChatBtn.addEventListener('click', function () {
+            if (confirm('Are you sure you want to clear the chat?')) {
+                // Remove all messages except the first bot message
+                const messages = chatBody.querySelectorAll('.message, .welcome-message, .quick-suggestions, .typing-indicator');
+                messages.forEach(msg => msg.remove());
+
+                // Reset chat history
+                chatHistory = [
+                    { sender: 'bot', message: 'Hi there! I\'m an AI assistant designed to help with various tasks. You can ask me about technology, get coding help, request information, or just have a conversation. What would you like to know?', time: getCurrentTime() }
+                ];
+
+                // Add welcome message back
+                const welcomeMsg = document.createElement('div');
+                welcomeMsg.classList.add('welcome-message');
+                welcomeMsg.innerHTML = `
+                    <h3>Hello! I'm your AI Assistant</h3>
+                    <p>I can help with coding, answer questions, provide information, and more. How can I assist you today?</p>
+                `;
+                chatBody.appendChild(welcomeMsg);
+
+                // Add initial bot message
+                addMessage('bot', 'Hi there! I\'m an AI assistant designed to help with various tasks. You can ask me about technology, get coding help, request information, or just have a conversation. What would you like to know?');
+
+                // Add suggestions back
+                const suggestionsDiv = document.createElement('div');
+                suggestionsDiv.classList.add('quick-suggestions');
+                suggestionsDiv.innerHTML = `
+                    <button class="suggestion-btn" data-query="Tell me about AI">Tell me about AI</button>
+                    <button class="suggestion-btn" data-query="Help me with JavaScript">Help with JavaScript</button>
+                    <button class="suggestion-btn" data-query="What can you do?">What can you do?</button>
+                    <button class="suggestion-btn" data-query="Tell me a joke">Tell me a joke</button>
+                `;
+                chatBody.appendChild(suggestionsDiv);
+
+                // Reattach event listeners to new suggestion buttons
+                document.querySelectorAll('.suggestion-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const query = this.getAttribute('data-query');
+                        processUserMessage(query);
+                    });
+                });
+            }
+        });
+
+        // Voice input button (simulated)
+        voiceBtn.addEventListener('click', function () {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                addMessage('bot', 'Sorry, speech recognition is not supported in your browser. Please type your message instead.');
+                return;
+            }
+
+            // In a real implementation, you would integrate with the Web Speech API
+            addMessage('bot', 'Voice input simulation: Please say your message after the beep. (Note: This is a simulation. In a real implementation, this would use the Web Speech API)');
+
+            // Simulate voice input with a prompt
+            setTimeout(() => {
+                const voiceMessage = prompt("Voice input simulation: What would you like to say to the AI?");
+                if (voiceMessage && voiceMessage.trim()) {
+                    processUserMessage(voiceMessage);
+                }
+            }, 1000);
+        });
+
+        // Theme toggle
+        let isDarkTheme = false;
+        themeToggle.addEventListener('click', function () {
+            isDarkTheme = !isDarkTheme;
+
+            if (isDarkTheme) {
+                document.body.style.backgroundColor = '#1f2937';
+                document.querySelector('.chat-container').style.backgroundColor = '#374151';
+                document.querySelector('.chat-body').style.backgroundColor = '#4b5563';
+                document.querySelector('.chat-body').style.color = '#f9fafb';
+                document.querySelector('.bot-message').style.backgroundColor = '#6b7280';
+                document.querySelector('.bot-message').style.color = '#f9fafb';
+                document.querySelector('.message-input').style.backgroundColor = '#4b5563';
+                document.querySelector('.message-input').style.color = '#f9fafb';
+                document.querySelector('.message-input').style.borderColor = '#6b7280';
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.style.backgroundColor = '';
+                document.querySelector('.chat-container').style.backgroundColor = '';
+                document.querySelector('.chat-body').style.backgroundColor = '';
+                document.querySelector('.chat-body').style.color = '';
+                document.querySelector('.bot-message').style.backgroundColor = '';
+                document.querySelector('.bot-message').style.color = '';
+                document.querySelector('.message-input').style.backgroundColor = '';
+                document.querySelector('.message-input').style.color = '';
+                document.querySelector('.message-input').style.borderColor = '';
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Info button
+        infoBtn.addEventListener('click', function () {
+            addMessage('bot', `This AI chatbot is a demonstration of conversational AI capabilities. It uses pattern matching and rule-based responses to simulate intelligent conversation. In a real implementation, this would connect to an AI API like OpenAI's GPT, Google's Bard, or a custom machine learning model.\n\nFeatures:\n• Natural language understanding\n• Context-aware responses\n• Coding assistance\n• Quick suggestions\n• Responsive design\n• Dark/Light theme\n\nThis is a frontend demonstration only.`);
+        });
+
+        // Allow pressing Enter to send (but Shift+Enter for new line)
+        messageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                messageForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Focus on input when page loads
+        messageInput.focus();
+
+        // Demo: Add a welcome interaction after a few seconds
+        setTimeout(() => {
+            if (chatHistory.length === 1) { // Only if user hasn't interacted yet
+                addMessage('bot', 'Feel free to ask me anything! Try clicking one of the quick suggestion buttons or type your own question.');
+            }
+        }, 3000);
+    </script>
+</body>
+
+</html>

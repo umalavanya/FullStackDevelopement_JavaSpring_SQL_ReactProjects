@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penrose Triangle - CSS Impossible Shape</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4, #a18cd1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3b1cc;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #64b5f6;
+            border: 1px solid rgba(100, 181, 246, 0.3);
+        }
+
+        /* Main Content */
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Penrose Triangle Container */
+        .triangle-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .triangle-wrapper {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            margin: 0 auto 30px;
+            perspective: 1000px;
+        }
+
+        /* Penrose Triangle */
+        .penrose-triangle {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotate-triangle 20s infinite linear;
+        }
+
+        /* Base Triangle Sides */
+        .triangle-side {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a18cd1);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            opacity: 0.9;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow:
+                inset 0 0 20px rgba(255, 255, 255, 0.2),
+                0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Individual sides with 3D positioning */
+        .side-1 {
+            transform: rotateX(60deg) rotateY(0deg) translateZ(50px);
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        }
+
+        .side-2 {
+            transform: rotateX(60deg) rotateY(120deg) translateZ(50px);
+            background: linear-gradient(45deg, #fad0c4, #a18cd1);
+        }
+
+        .side-3 {
+            transform: rotateX(60deg) rotateY(240deg) translateZ(50px);
+            background: linear-gradient(45deg, #a18cd1, #ff9a9e);
+        }
+
+        /* Impossible connection elements */
+        .impossible-connector {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            opacity: 0.7;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .connector-1 {
+            transform: rotateX(-30deg) rotateY(0deg) translateZ(-50px);
+            background: linear-gradient(45deg, rgba(255, 154, 158, 0.7), rgba(250, 208, 196, 0.7));
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .connector-2 {
+            transform: rotateX(-30deg) rotateY(120deg) translateZ(-50px);
+            background: linear-gradient(45deg, rgba(250, 208, 196, 0.7), rgba(161, 140, 209, 0.7));
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .connector-3 {
+            transform: rotateX(-30deg) rotateY(240deg) translateZ(-50px);
+            background: linear-gradient(45deg, rgba(161, 140, 209, 0.7), rgba(255, 154, 158, 0.7));
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animation for the triangle */
+        @keyframes rotate-triangle {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        /* Control Panel */
+        .control-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #64b5f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title i {
+            color: #ff9a9e;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-label span {
+            font-weight: 600;
+            color: #a3b1cc;
+        }
+
+        .control-value {
+            color: #64b5f6;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #64b5f6;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
+            transition: all 0.3s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #42a5f5;
+            transform: scale(1.2);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff9a9e, #a18cd1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 154, 158, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #a3b1cc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Explanation Section */
+        .explanation {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .explanation-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #64b5f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .explanation-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .explanation-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 4px solid #ff9a9e;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fad0c4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: #a18cd1;
+        }
+
+        .card-text {
+            color: #a3b1cc;
+            line-height: 1.6;
+        }
+
+        /* CSS Code Display */
+        .code-section {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .code-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #64b5f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            color: #d4d4d4;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid #333;
+        }
+
+        .css-selector {
+            color: #569cd6;
+        }
+
+        .css-property {
+            color: #9cdcfe;
+        }
+
+        .css-value {
+            color: #ce9178;
+        }
+
+        .css-comment {
+            color: #6a9955;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #a3b1cc;
+            font-size: 0.9rem;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .footer-links a {
+            color: #64b5f6;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ff9a9e;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .content {
+                flex-direction: column;
+            }
+
+            .triangle-wrapper {
+                width: 250px;
+                height: 250px;
+            }
+
+            .triangle-side,
+            .impossible-connector {
+                width: 170px;
+                height: 170px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .triangle-wrapper {
+                width: 200px;
+                height: 200px;
+            }
+
+            .triangle-side,
+            .impossible-connector {
+                width: 140px;
+                height: 140px;
+            }
+
+            .control-panel,
+            .explanation {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Additional visual effects */
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 154, 158, 0.1) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
+            animation: pulse-glow 4s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                opacity: 0.3;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.7;
+            }
+
+            90% {
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <h1>Penrose Triangle</h1>
+            <p class="subtitle">An impossible object rendered with pure CSS using 3D transforms and clever positioning
+                to create an optical illusion.</p>
+            <span class="tag">CSS 3D Art | Optical Illusion | Impossible Shape</span>
+        </header>
+
+        <div class="content">
+            <!-- Penrose Triangle Visualization -->
+            <div class="triangle-container">
+                <div class="triangle-wrapper">
+                    <div class="glow-effect"></div>
+                    <div class="penrose-triangle" id="penroseTriangle">
+                        <!-- Main triangle sides -->
+                        <div class="triangle-side side-1"></div>
+                        <div class="triangle-side side-2"></div>
+                        <div class="triangle-side side-3"></div>
+
+                        <!-- Impossible connectors -->
+                        <div class="impossible-connector connector-1"></div>
+                        <div class="impossible-connector connector-2"></div>
+                        <div class="impossible-connector connector-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h2 class="panel-title">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Control Panel</span>
+                </h2>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Rotation Speed</span>
+                            <span class="control-value" id="speedValue">Normal</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="speedSlider">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Perspective Depth</span>
+                            <span class="control-value" id="depthValue">1000px</span>
+                        </div>
+                        <input type="range" min="500" max="2000" value="1000" class="slider" id="depthSlider">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Opacity</span>
+                            <span class="control-value" id="opacityValue">90%</span>
+                        </div>
+                        <input type="range" min="20" max="100" value="90" class="slider" id="opacitySlider">
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="btn btn-primary" id="playPauseBtn">
+                            <i class="fas fa-pause"></i>
+                            <span>Pause</span>
+                        </button>
+                        <button class="btn btn-secondary" id="resetBtn">
+                            <i class="fas fa-redo"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Explanation Section -->
+        <div class="explanation">
+            <h2 class="explanation-title">
+                <i class="fas fa-lightbulb"></i>
+                <span>How It Works</span>
+            </h2>
+
+            <div class="explanation-content">
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-cube"></i>
+                        <span>3D Transforms</span>
+                    </h3>
+                    <p class="card-text">The Penrose Triangle is created using CSS 3D transforms. Each side is a
+                        triangular element positioned in 3D space using <code>rotateX()</code>, <code>rotateY()</code>,
+                        and <code>translateZ()</code> functions.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-eye"></i>
+                        <span>Optical Illusion</span>
+                    </h3>
+                    <p class="card-text">The "impossible" effect is achieved by positioning additional elements that
+                        create the illusion of continuous edges where none actually exist in 3D space.</p>
+                </div>
+
+                <div class="explanation-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-magic"></i>
+                        <span>CSS Clip-Path</span>
+                    </h3>
+                    <p class="card-text">Each triangular side is created using CSS <code>clip-path</code> property with
+                        a polygon shape. This allows us to create perfect triangles without using images.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS Code Display -->
+        <div class="code-section">
+            <h2 class="code-title">
+                <i class="fas fa-code"></i>
+                <span>CSS Code Implementation</span>
+            </h2>
+
+            <div class="code-block">
+                <pre><code><span class="css-selector">.penrose-triangle</span> {
+    <span class="css-property">position</span>: <span class="css-value">relative</span>;
+    <span class="css-property">width</span>: <span class="css-value">100%</span>;
+    <span class="css-property">height</span>: <span class="css-value">100%</span>;
+    <span class="css-property">transform-style</span>: <span class="css-value">preserve-3d</span>;
+    <span class="css-property">animation</span>: <span class="css-value">rotate-triangle 20s infinite linear</span>;
+}
+
+<span class="css-selector">.triangle-side</span> {
+    <span class="css-property">position</span>: <span class="css-value">absolute</span>;
+    <span class="css-property">width</span>: <span class="css-value">200px</span>;
+    <span class="css-property">height</span>: <span class="css-value">200px</span>;
+    <span class="css-property">background</span>: <span class="css-value">linear-gradient(45deg, #ff9a9e, #fad0c4, #a18cd1)</span>;
+    <span class="css-property">clip-path</span>: <span class="css-value">polygon(50% 0%, 0% 100%, 100% 100%)</span>;
+    <span class="css-property">opacity</span>: <span class="css-value">0.9</span>;
+}
+
+<span class="css-comment">/* Side 1 - positioned at 0 degrees */</span>
+<span class="css-selector">.side-1</span> {
+    <span class="css-property">transform</span>: <span class="css-value">rotateX(60deg) rotateY(0deg) translateZ(50px)</span>;
+}
+
+<span class="css-comment">/* Side 2 - positioned at 120 degrees */</span>
+<span class="css-selector">.side-2</span> {
+    <span class="css-property">transform</span>: <span class="css-value">rotateX(60deg) rotateY(120deg) translateZ(50px)</span>;
+}
+
+<span class="css-comment">/* Side 3 - positioned at 240 degrees */</span>
+<span class="css-selector">.side-3</span> {
+    <span class="css-property">transform</span>: <span class="css-value">rotateX(60deg) rotateY(240deg) translateZ(50px)</span>;
+}
+
+<span class="css-comment">/* Animation for continuous rotation */</span>
+<span class="css-selector">@keyframes rotate-triangle</span> {
+    <span class="css-selector">0%</span> {
+        <span class="css-property">transform</span>: <span class="css-value">rotateX(0deg) rotateY(0deg)</span>;
+    }
+    <span class="css-selector">100%</span> {
+        <span class="css-property">transform</span>: <span class="css-value">rotateX(360deg) rotateY(360deg)</span>;
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <footer>
+            <p>Penrose Triangle - CSS 3D Art | Created with pure HTML, CSS & JavaScript</p>
+            <div class="footer-links">
+                <a href="#">
+                    <i class="fab fa-codepen"></i>
+                    <span>CodePen</span>
+                </a>
+                <a href="#">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-heart"></i>
+                    <span>Like</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const penroseTriangle = document.getElementById('penroseTriangle');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+        const depthSlider = document.getElementById('depthSlider');
+        const depthValue = document.getElementById('depthValue');
+        const opacitySlider = document.getElementById('opacitySlider');
+        const opacityValue = document.getElementById('opacityValue');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const triangleWrapper = document.querySelector('.triangle-wrapper');
+        const particlesContainer = document.getElementById('particles');
+
+        // App State
+        let isAnimating = true;
+        let animationSpeed = 20; // seconds for full rotation
+        let originalTransform = '';
+
+        // Initialize the app
+        function initApp() {
+            // Store original animation
+            originalTransform = penroseTriangle.style.animation;
+
+            // Create background particles
+            createParticles();
+
+            // Set up event listeners
+            setupEventListeners();
+
+            // Update initial values
+            updateSpeedDisplay();
+            updateDepthDisplay();
+            updateOpacityDisplay();
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                // Random size between 1px and 5px
+                const size = Math.random() * 4 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+
+                // Random color (based on triangle colors)
+                const colors = [
+                    'rgba(255, 154, 158, 0.3)',
+                    'rgba(250, 208, 196, 0.3)',
+                    'rgba(161, 140, 209, 0.3)',
+                    'rgba(100, 181, 246, 0.3)'
+                ];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+                // Random animation duration and delay
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Speed slider
+            speedSlider.addEventListener('input', function () {
+                updateAnimationSpeed(this.value);
+                updateSpeedDisplay();
+            });
+
+            // Depth slider (perspective)
+            depthSlider.addEventListener('input', function () {
+                updatePerspectiveDepth(this.value);
+                updateDepthDisplay();
+            });
+
+            // Opacity slider
+            opacitySlider.addEventListener('input', function () {
+                updateOpacity(this.value);
+                updateOpacityDisplay();
+            });
+
+            // Play/Pause button
+            playPauseBtn.addEventListener('click', toggleAnimation);
+
+            // Reset button
+            resetBtn.addEventListener('click', resetToDefaults);
+        }
+
+        // Update animation speed
+        function updateAnimationSpeed(value) {
+            // Convert slider value (0-100) to animation duration (40s to 2s)
+            // Slower when slider is low, faster when slider is high
+            animationSpeed = 40 - (value / 100) * 38;
+
+            if (isAnimating) {
+                penroseTriangle.style.animation = `rotate-triangle ${animationSpeed}s infinite linear`;
+            }
+        }
+
+        // Update perspective depth
+        function updatePerspectiveDepth(value) {
+            triangleWrapper.style.perspective = `${value}px`;
+        }
+
+        // Update opacity of triangle sides
+        function updateOpacity(value) {
+            const opacity = value / 100;
+            const sides = document.querySelectorAll('.triangle-side, .impossible-connector');
+
+            sides.forEach(side => {
+                side.style.opacity = opacity;
+            });
+        }
+
+        // Toggle animation play/pause
+        function toggleAnimation() {
+            isAnimating = !isAnimating;
+
+            if (isAnimating) {
+                penroseTriangle.style.animation = `rotate-triangle ${animationSpeed}s infinite linear`;
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i><span>Pause</span>';
+            } else {
+                penroseTriangle.style.animation = 'none';
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i><span>Play</span>';
+            }
+        }
+
+        // Reset to default values
+        function resetToDefaults() {
+            // Reset sliders
+            speedSlider.value = 50;
+            depthSlider.value = 1000;
+            opacitySlider.value = 90;
+
+            // Reset animation
+            isAnimating = true;
+            penroseTriangle.style.animation = originalTransform;
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i><span>Pause</span>';
+
+            // Update all values
+            updateAnimationSpeed(50);
+            updatePerspectiveDepth(1000);
+            updateOpacity(90);
+
+            // Update displays
+            updateSpeedDisplay();
+            updateDepthDisplay();
+            updateOpacityDisplay();
+        }
+
+        // Update speed display
+        function updateSpeedDisplay() {
+            const value = speedSlider.value;
+            let displayText = '';
+
+            if (value < 20) {
+                displayText = 'Very Slow';
+            } else if (value < 40) {
+                displayText = 'Slow';
+            } else if (value < 60) {
+                displayText = 'Normal';
+            } else if (value < 80) {
+                displayText = 'Fast';
+            } else {
+                displayText = 'Very Fast';
+            }
+
+            speedValue.textContent = displayText;
+        }
+
+        // Update depth display
+        function updateDepthDisplay() {
+            depthValue.textContent = `${depthSlider.value}px`;
+        }
+
+        // Update opacity display
+        function updateOpacityDisplay() {
+            opacityValue.textContent = `${opacitySlider.value}%`;
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Add some interactive mouse effects
+        document.addEventListener('mousemove', function (e) {
+            // Calculate mouse position relative to triangle
+            const triangleRect = triangleWrapper.getBoundingClientRect();
+            const centerX = triangleRect.left + triangleRect.width / 2;
+            const centerY = triangleRect.top + triangleRect.height / 2;
+
+            // Calculate rotation based on mouse position
+            const rotateY = (e.clientX - centerX) / 50;
+            const rotateX = -(e.clientY - centerY) / 50;
+
+            // Apply rotation when animation is paused
+            if (!isAnimating) {
+                penroseTriangle.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            }
+        });
+
+        // Reset rotation when mouse leaves triangle area (if paused)
+        triangleWrapper.addEventListener('mouseleave', function () {
+            if (!isAnimating) {
+                penroseTriangle.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            }
+        });
+    </script>
+</body>
+
+</html>
