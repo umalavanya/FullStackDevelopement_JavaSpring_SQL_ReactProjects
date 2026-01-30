@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 60: Filterable Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            padding: 15px 35px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .gallery-item.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .item-image {
+            transform: scale(1.1);
+        }
+
+        .item-content {
+            padding: 25px;
+            color: white;
+        }
+
+        .item-category {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .item-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .item-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            opacity: 0;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .item-overlay {
+            opacity: 1;
+        }
+
+        .overlay-content {
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .overlay-content {
+            transform: translateY(0);
+        }
+
+        .view-btn {
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        /* Gallery Stats */
+        .gallery-stats {
+            text-align: center;
+            color: white;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin-top: 40px;
+        }
+
+        .stats-content {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* No Results Message */
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: white;
+            font-size: 1.5rem;
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Animation for filtering */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .filter-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+
+            .item-content {
+                padding: 20px;
+            }
+
+            .item-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gallery-container">
+        <header>
+            <h1>🎨 Filterable Gallery</h1>
+            <p class="subtitle">Filter images by category. Click on categories to see different collections.</p>
+        </header>
+
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+            <button class="filter-btn active" data-filter="all">
+                <span>🌍</span> All Items
+            </button>
+            <button class="filter-btn" data-filter="nature">
+                <span>🌿</span> Nature
+            </button>
+            <button class="filter-btn" data-filter="city">
+                <span>🏙️</span> City
+            </button>
+            <button class="filter-btn" data-filter="animals">
+                <span>🐾</span> Animals
+            </button>
+            <button class="filter-btn" data-filter="travel">
+                <span>✈️</span> Travel
+            </button>
+            <button class="filter-btn" data-filter="food">
+                <span>🍕</span> Food
+            </button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Gallery items will be inserted by JavaScript -->
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults">
+            <p>No items found for the selected filter. Try another category!</p>
+        </div>
+
+        <!-- Gallery Stats -->
+        <div class="gallery-stats">
+            <div class="stats-content">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalItems">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="visibleItems">0</div>
+                    <div class="stat-label">Currently Visible</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="activeFilter">All</div>
+                    <div class="stat-label">Active Filter</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gallery Data
+        const galleryData = [
+            {
+                id: 1,
+                title: "Mountain Sunrise",
+                category: "nature",
+                description: "Beautiful sunrise over snow-capped mountains with misty valleys below.",
+                color: "#4CAF50"
+            },
+            {
+                id: 2,
+                title: "City Skyline",
+                category: "city",
+                description: "Modern city skyline at dusk with lights beginning to twinkle.",
+                color: "#2196F3"
+            },
+            {
+                id: 3,
+                title: "Forest Path",
+                category: "nature",
+                description: "Mysterious path through a dense green forest with sunlight filtering through.",
+                color: "#4CAF50"
+            },
+            {
+                id: 4,
+                title: "Ocean Waves",
+                category: "nature",
+                description: "Powerful ocean waves crashing against rocky cliffs at sunset.",
+                color: "#4CAF50"
+            },
+            {
+                id: 5,
+                title: "Wild Tiger",
+                category: "animals",
+                description: "Majestic tiger resting in its natural habitat, showcasing beautiful stripes.",
+                color: "#FF9800"
+            },
+            {
+                id: 6,
+                title: "Italian Pizza",
+                category: "food",
+                description: "Freshly baked pizza with melted cheese and various toppings.",
+                color: "#E91E63"
+            },
+            {
+                id: 7,
+                title: "Tokyo Streets",
+                category: "travel",
+                description: "Vibrant streets of Tokyo at night with neon signs and bustling crowds.",
+                color: "#9C27B0"
+            },
+            {
+                id: 8,
+                title: "Paris Eiffel",
+                category: "travel",
+                description: "Iconic Eiffel Tower against a beautiful Parisian sunset sky.",
+                color: "#9C27B0"
+            },
+            {
+                id: 9,
+                title: "Desert Camel",
+                category: "animals",
+                description: "Camel caravan crossing the golden sand dunes of the Sahara desert.",
+                color: "#FF9800"
+            },
+            {
+                id: 10,
+                title: "New York City",
+                category: "city",
+                description: "Aerial view of Manhattan skyscrapers and Central Park.",
+                color: "#2196F3"
+            },
+            {
+                id: 11,
+                title: "Sushi Platter",
+                category: "food",
+                description: "Artistically arranged sushi platter with fresh fish and vegetables.",
+                color: "#E91E63"
+            },
+            {
+                id: 12,
+                title: "Waterfall",
+                category: "nature",
+                description: "Majestic waterfall cascading down moss-covered rocks into a clear pool.",
+                color: "#4CAF50"
+            },
+            {
+                id: 13,
+                title: "Penguin Colony",
+                category: "animals",
+                description: "Colony of penguins on icebergs in the Antarctic region.",
+                color: "#FF9800"
+            },
+            {
+                id: 14,
+                title: "Burgers",
+                category: "food",
+                description: "Juicy gourmet burgers with fresh ingredients and golden fries.",
+                color: "#E91E63"
+            },
+            {
+                id: 15,
+                title: "London Bridge",
+                category: "travel",
+                description: "Historic Tower Bridge over the River Thames in London.",
+                color: "#9C27B0"
+            },
+            {
+                id: 16,
+                title: "Urban Architecture",
+                category: "city",
+                description: "Modern architectural marvel with geometric patterns and glass facades.",
+                color: "#2196F3"
+            },
+            {
+                id: 17,
+                title: "Tropical Beach",
+                category: "nature",
+                description: "Pristine tropical beach with turquoise water and palm trees.",
+                color: "#4CAF50"
+            },
+            {
+                id: 18,
+                title: "Pasta Dish",
+                category: "food",
+                description: "Homemade pasta with rich tomato sauce and fresh basil.",
+                color: "#E91E63"
+            },
+            {
+                id: 19,
+                title: "Elephant Herd",
+                category: "animals",
+                description: "Family of elephants walking through the African savanna.",
+                color: "#FF9800"
+            },
+            {
+                id: 20,
+                title: "Dubai Skyscrapers",
+                category: "travel",
+                description: "Futuristic skyline of Dubai with the Burj Khalifa towering above.",
+                color: "#9C27B0"
+            }
+        ];
+
+        // DOM Elements
+        const galleryGrid = document.getElementById('galleryGrid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const noResults = document.getElementById('noResults');
+        const totalItemsElement = document.getElementById('totalItems');
+        const visibleItemsElement = document.getElementById('visibleItems');
+        const activeFilterElement = document.getElementById('activeFilter');
+
+        let currentFilter = 'all';
+        let visibleItems = galleryData.length;
+
+        // Initialize gallery
+        function initializeGallery() {
+            // Update total items
+            totalItemsElement.textContent = galleryData.length;
+            visibleItemsElement.textContent = galleryData.length;
+            activeFilterElement.textContent = 'All';
+
+            // Create gallery items
+            galleryData.forEach(item => {
+                createGalleryItem(item);
+            });
+        }
+
+        // Create a gallery item
+        function createGalleryItem(item) {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            galleryItem.dataset.category = item.category;
+            galleryItem.dataset.id = item.id;
+
+            // Create gradient background based on category color
+            const gradient = `linear-gradient(135deg, ${item.color}40, ${item.color}20)`;
+
+            galleryItem.innerHTML = `
+                <div class="item-image" style="background: ${gradient}; display: flex; align-items: center; justify-content: center; color: ${item.color}; font-size: 4rem;">
+                    ${getCategoryIcon(item.category)}
+                </div>
+                <div class="item-content">
+                    <div class="item-category" style="background: ${item.color}40; color: ${item.color}">
+                        ${item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+                    </div>
+                    <h3 class="item-title">${item.title}</h3>
+                    <p class="item-description">${item.description}</p>
+                </div>
+                <div class="item-overlay">
+                    <div class="overlay-content">
+                        <button class="view-btn" onclick="viewItem(${item.id})">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            galleryGrid.appendChild(galleryItem);
+        }
+
+        // Get category icon
+        function getCategoryIcon(category) {
+            const icons = {
+                nature: '🌿',
+                city: '🏙️',
+                animals: '🐾',
+                travel: '✈️',
+                food: '🍕'
+            };
+            return icons[category] || '📷';
+        }
+
+        // Filter gallery items
+        function filterGallery(filter) {
+            currentFilter = filter;
+            const items = document.querySelectorAll('.gallery-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const category = item.dataset.category;
+                const shouldShow = filter === 'all' || category === filter;
+
+                if (shouldShow) {
+                    // Show item with animation
+                    item.classList.remove('hidden');
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'scale(1)';
+                    }, 10);
+                    visibleCount++;
+                } else {
+                    // Hide item with animation
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        item.classList.add('hidden');
+                    }, 300);
+                }
+            });
+
+            // Update stats
+            visibleItems = visibleCount;
+            visibleItemsElement.textContent = visibleCount;
+            activeFilterElement.textContent = filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1);
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+                noResults.style.animation = 'fadeInUp 0.5s ease';
+            } else {
+                noResults.style.display = 'none';
+            }
+
+            // Update active filter button
+            filterBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // View item details
+        function viewItem(id) {
+            const item = galleryData.find(item => item.id === id);
+            if (item) {
+                alert(`Viewing: ${item.title}\n\nCategory: ${item.category}\nDescription: ${item.description}`);
+            }
+        }
+
+        // Event listeners for filter buttons
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                filterGallery(filter);
+            });
+        });
+
+        // Initialize
+        initializeGallery();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Sceneries Gallery | Pure CSS Landscapes & Animations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .gallery-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Scenery Selection */
+        .scenery-selection {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .selection-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #86a8e7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenery-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .scenery-btn {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .scenery-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .scenery-btn.active {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            border-color: transparent;
+            color: #333;
+        }
+
+        .scenery-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Main Scenery Display */
+        .scenery-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #feb47b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scene-description {
+            margin-bottom: 30px;
+            line-height: 1.6;
+            max-width: 800px;
+            color: #ccc;
+        }
+
+        /* Scene Container */
+        .scene-container {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            background: #000;
+        }
+
+        /* Day to Night Scene */
+        #dayNightScene {
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8E8 30%, #B0E2FF 60%, #E0F7FF 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sun {
+            position: absolute;
+            top: 80px;
+            left: 150px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at 30% 30%, #FFD700, #FF8C00);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #FFD700, 0 0 100px rgba(255, 215, 0, 0.5);
+            animation: sunMovement 20s linear infinite;
+        }
+
+        .moon {
+            position: absolute;
+            top: 80px;
+            left: 750px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #F5F5F5, #D3D3D3);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #F5F5F5, 0 0 80px rgba(245, 245, 245, 0.3);
+            opacity: 0;
+            animation: moonMovement 20s linear infinite;
+        }
+
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to bottom, #1a2980 0%, #26d0ce 100%);
+            opacity: 0;
+            animation: skyTransition 20s linear infinite;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            opacity: 0;
+            animation: starsTransition 20s linear infinite;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .star:nth-child(1) {
+            top: 15%;
+            left: 10%;
+            width: 2px;
+            height: 2px;
+        }
+
+        .star:nth-child(2) {
+            top: 25%;
+            left: 20%;
+            width: 3px;
+            height: 3px;
+        }
+
+        .star:nth-child(3) {
+            top: 10%;
+            left: 30%;
+            width: 2px;
+            height: 2px;
+        }
+
+        .star:nth-child(4) {
+            top: 20%;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+        }
+
+        .star:nth-child(5) {
+            top: 15%;
+            left: 70%;
+            width: 3px;
+            height: 3px;
+        }
+
+        .star:nth-child(6) {
+            top: 30%;
+            left: 85%;
+            width: 2px;
+            height: 2px;
+        }
+
+        .star:nth-child(7) {
+            top: 25%;
+            left: 65%;
+            width: 3px;
+            height: 3px;
+        }
+
+        .star:nth-child(8) {
+            top: 35%;
+            left: 40%;
+            width: 2px;
+            height: 2px;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, #228B22 0%, #32CD32 100%);
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 30%;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 200px solid #2F4F4F;
+        }
+
+        .mountain1 {
+            left: 50px;
+        }
+
+        .mountain2 {
+            left: 250px;
+            border-bottom-color: #36454F;
+            border-bottom-width: 180px;
+        }
+
+        .mountain3 {
+            left: 450px;
+            border-bottom-color: #708090;
+            border-bottom-width: 220px;
+        }
+
+        .tree {
+            position: absolute;
+            bottom: 30%;
+            width: 40px;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 60px solid #006400;
+        }
+
+        .tree1 {
+            left: 120px;
+            bottom: 32%;
+        }
+
+        .tree2 {
+            left: 320px;
+            bottom: 31%;
+            border-bottom-color: #228B22;
+        }
+
+        .tree3 {
+            left: 520px;
+            bottom: 33%;
+            border-bottom-color: #2E8B57;
+        }
+
+        .tree4 {
+            left: 700px;
+            bottom: 32%;
+        }
+
+        .tree-trunk {
+            position: absolute;
+            bottom: 30%;
+            width: 10px;
+            height: 30px;
+            background: #8B4513;
+        }
+
+        .trunk1 {
+            left: 135px;
+        }
+
+        .trunk2 {
+            left: 335px;
+        }
+
+        .trunk3 {
+            left: 535px;
+        }
+
+        .trunk4 {
+            left: 715px;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            animation: cloudMovement 60s linear infinite;
+        }
+
+        .cloud1 {
+            top: 120px;
+            left: -100px;
+            width: 120px;
+            height: 60px;
+            animation-delay: 0s;
+        }
+
+        .cloud2 {
+            top: 180px;
+            left: -200px;
+            width: 160px;
+            height: 70px;
+            animation-delay: 10s;
+        }
+
+        .cloud3 {
+            top: 90px;
+            left: -300px;
+            width: 100px;
+            height: 50px;
+            animation-delay: 20s;
+        }
+
+        /* Beach Scene */
+        #beachScene {
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8E8 30%, #B0E2FF 60%, #E0F7FF 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .beach-sun {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 30% 30%, #FF4500, #FF8C00);
+            border-radius: 50%;
+            box-shadow: 0 0 80px #FF4500, 0 0 120px rgba(255, 69, 0, 0.5);
+        }
+
+        .ocean {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #000080 0%, #1E90FF 50%, #87CEEB 100%);
+        }
+
+        .sand {
+            position: absolute;
+            bottom: 40%;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(to top, #DEB887 0%, #F4A460 100%);
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            height: 20px;
+            background: rgba(30, 144, 255, 0.7);
+            border-radius: 50%;
+            animation: waveMovement 3s ease-in-out infinite;
+        }
+
+        .wave1 {
+            animation-delay: 0s;
+        }
+
+        .wave2 {
+            animation-delay: 0.5s;
+            bottom: 42%;
+            opacity: 0.7;
+        }
+
+        .wave3 {
+            animation-delay: 1s;
+            bottom: 44%;
+            opacity: 0.5;
+        }
+
+        .palm-tree {
+            position: absolute;
+            bottom: 45%;
+        }
+
+        .palm-trunk {
+            width: 20px;
+            height: 150px;
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            position: relative;
+        }
+
+        .palm-leaves {
+            position: absolute;
+            top: 0;
+            left: -40px;
+            width: 100px;
+            height: 100px;
+            background: #228B22;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            transform-origin: top center;
+        }
+
+        .leaf1 {
+            transform: rotate(0deg);
+        }
+
+        .leaf2 {
+            transform: rotate(45deg);
+        }
+
+        .leaf3 {
+            transform: rotate(90deg);
+        }
+
+        .leaf4 {
+            transform: rotate(135deg);
+        }
+
+        .leaf5 {
+            transform: rotate(180deg);
+        }
+
+        .leaf6 {
+            transform: rotate(225deg);
+        }
+
+        .leaf7 {
+            transform: rotate(270deg);
+        }
+
+        .leaf8 {
+            transform: rotate(315deg);
+        }
+
+        .palm-tree1 {
+            left: 150px;
+        }
+
+        .palm-tree2 {
+            left: 350px;
+            bottom: 42%;
+        }
+
+        .palm-tree3 {
+            left: 600px;
+            bottom: 46%;
+        }
+
+        .beach-cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            animation: beachCloudMovement 40s linear infinite;
+        }
+
+        .beach-cloud1 {
+            top: 100px;
+            left: -100px;
+            width: 140px;
+            height: 70px;
+            animation-delay: 0s;
+        }
+
+        .beach-cloud2 {
+            top: 160px;
+            left: -200px;
+            width: 100px;
+            height: 50px;
+            animation-delay: 10s;
+        }
+
+        .beach-cloud3 {
+            top: 70px;
+            left: -300px;
+            width: 180px;
+            height: 80px;
+            animation-delay: 20s;
+        }
+
+        /* Mountain Lake Scene */
+        #mountainLakeScene {
+            background: linear-gradient(to bottom, #1a2980 0%, #26d0ce 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lake-sun {
+            position: absolute;
+            top: 80px;
+            left: 100px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 50px #FFD700, 0 0 80px rgba(255, 215, 0, 0.5);
+        }
+
+        .lake-mountains {
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            height: 60%;
+        }
+
+        .lake-mountain {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 300px solid #2F4F4F;
+        }
+
+        .lake-mountain1 {
+            left: -50px;
+        }
+
+        .lake-mountain2 {
+            left: 200px;
+            border-bottom-color: #36454F;
+            border-bottom-height: 250px;
+        }
+
+        .lake-mountain3 {
+            left: 500px;
+            border-bottom-color: #708090;
+        }
+
+        .lake-mountain4 {
+            left: 800px;
+            border-bottom-color: #2F4F4F;
+            border-bottom-height: 280px;
+        }
+
+        .lake {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #000080 0%, #1E90FF 100%);
+            overflow: hidden;
+        }
+
+        .lake-reflection {
+            position: absolute;
+            top: -60%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(30, 144, 255, 0.3) 100%);
+            transform: scaleY(-1);
+            opacity: 0.6;
+        }
+
+        .lake-ripple {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: ripple 3s linear infinite;
+        }
+
+        .ripple1 {
+            top: 50%;
+            left: 30%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .ripple2 {
+            top: 60%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 1s;
+        }
+
+        .ripple3 {
+            top: 40%;
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+        }
+
+        .pine-tree {
+            position: absolute;
+            bottom: 40%;
+        }
+
+        .pine-tree .trunk {
+            width: 15px;
+            height: 80px;
+            background: #8B4513;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .pine-tree .needles {
+            position: absolute;
+            bottom: 80px;
+            left: -40px;
+            width: 80px;
+            height: 80px;
+            background: #006400;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .pine-tree1 {
+            left: 300px;
+            bottom: 42%;
+        }
+
+        .pine-tree2 {
+            left: 400px;
+            bottom: 41%;
+        }
+
+        .pine-tree3 {
+            left: 650px;
+            bottom: 43%;
+        }
+
+        .pine-tree4 {
+            left: 750px;
+            bottom: 40%;
+        }
+
+        /* Autumn Forest Scene */
+        #autumnScene {
+            background: linear-gradient(to bottom, #FFEFBA 0%, #FFE4B5 30%, #FFDAB9 60%, #FFE4E1 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .autumn-sun {
+            position: absolute;
+            top: 80px;
+            right: 100px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at 30% 30%, #FF8C00, #FF4500);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #FF8C00, 0 0 100px rgba(255, 140, 0, 0.5);
+        }
+
+        .autumn-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #8B4513 0%, #D2691E 100%);
+        }
+
+        .autumn-tree {
+            position: absolute;
+            bottom: 40%;
+        }
+
+        .autumn-trunk {
+            width: 30px;
+            height: 150px;
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            position: relative;
+        }
+
+        .autumn-leaves {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #FF4500 0%, #FF8C00 30%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .falling-leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #FF4500;
+            clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
+            animation: leafFall 10s linear infinite;
+        }
+
+        .leaf1 {
+            top: -50px;
+            left: 100px;
+            animation-delay: 0s;
+        }
+
+        .leaf2 {
+            top: -30px;
+            left: 200px;
+            animation-delay: 1s;
+            background: #FF8C00;
+        }
+
+        .leaf3 {
+            top: -80px;
+            left: 300px;
+            animation-delay: 2s;
+            background: #FFD700;
+        }
+
+        .leaf4 {
+            top: -20px;
+            left: 400px;
+            animation-delay: 3s;
+            background: #FF4500;
+        }
+
+        .leaf5 {
+            top: -60px;
+            left: 500px;
+            animation-delay: 4s;
+            background: #FF8C00;
+        }
+
+        .leaf6 {
+            top: -40px;
+            left: 600px;
+            animation-delay: 5s;
+            background: #FFD700;
+        }
+
+        .leaf7 {
+            top: -70px;
+            left: 700px;
+            animation-delay: 6s;
+            background: #FF4500;
+        }
+
+        .leaf8 {
+            top: -10px;
+            left: 800px;
+            animation-delay: 7s;
+            background: #FF8C00;
+        }
+
+        .autumn-tree1 {
+            left: 200px;
+        }
+
+        .autumn-tree2 {
+            left: 400px;
+            bottom: 38%;
+        }
+
+        .autumn-tree3 {
+            left: 600px;
+        }
+
+        .autumn-tree4 {
+            left: 800px;
+            bottom: 42%;
+        }
+
+        /* Winter Snow Scene */
+        #winterScene {
+            background: linear-gradient(to bottom, #1E3C72 0%, #2A5298 30%, #4A6491 60%, #87CEEB 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .winter-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #F8F8FF 0%, #E6E6FA 100%);
+        }
+
+        .snow-hill {
+            position: absolute;
+            bottom: 40%;
+            width: 300px;
+            height: 150px;
+            background: #F8F8FF;
+            border-radius: 50%;
+        }
+
+        .hill1 {
+            left: 50px;
+        }
+
+        .hill2 {
+            left: 300px;
+            width: 250px;
+            height: 120px;
+        }
+
+        .hill3 {
+            left: 600px;
+            width: 350px;
+            height: 180px;
+        }
+
+        .snow-tree {
+            position: absolute;
+            bottom: 40%;
+        }
+
+        .snow-trunk {
+            width: 20px;
+            height: 120px;
+            background: #8B4513;
+            position: relative;
+        }
+
+        .snow-branch {
+            position: absolute;
+            background: #228B22;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .branch1 {
+            width: 100px;
+            height: 80px;
+            top: -80px;
+            left: -40px;
+        }
+
+        .branch2 {
+            width: 80px;
+            height: 60px;
+            top: -40px;
+            left: -30px;
+        }
+
+        .branch3 {
+            width: 60px;
+            height: 40px;
+            top: -10px;
+            left: -20px;
+        }
+
+        .snow-cap {
+            position: absolute;
+            background: #F8F8FF;
+            border-radius: 50%;
+        }
+
+        .snow-cap1 {
+            width: 120px;
+            height: 40px;
+            top: -90px;
+            left: -50px;
+        }
+
+        .snow-cap2 {
+            width: 100px;
+            height: 30px;
+            top: -50px;
+            left: -40px;
+        }
+
+        .snow-cap3 {
+            width: 80px;
+            height: 25px;
+            top: -20px;
+            left: -30px;
+        }
+
+        .snow-tree1 {
+            left: 150px;
+            bottom: 42%;
+        }
+
+        .snow-tree2 {
+            left: 350px;
+            bottom: 41%;
+        }
+
+        .snow-tree3 {
+            left: 550px;
+            bottom: 43%;
+        }
+
+        .snow-tree4 {
+            left: 750px;
+            bottom: 40%;
+        }
+
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: snowfall 10s linear infinite;
+        }
+
+        .snowflake:nth-child(1) {
+            top: -20px;
+            left: 10%;
+            width: 8px;
+            height: 8px;
+            animation-delay: 0s;
+        }
+
+        .snowflake:nth-child(2) {
+            top: -40px;
+            left: 20%;
+            width: 6px;
+            height: 6px;
+            animation-delay: 1s;
+        }
+
+        .snowflake:nth-child(3) {
+            top: -30px;
+            left: 30%;
+            width: 10px;
+            height: 10px;
+            animation-delay: 2s;
+        }
+
+        .snowflake:nth-child(4) {
+            top: -50px;
+            left: 40%;
+            width: 7px;
+            height: 7px;
+            animation-delay: 3s;
+        }
+
+        .snowflake:nth-child(5) {
+            top: -20px;
+            left: 50%;
+            width: 9px;
+            height: 9px;
+            animation-delay: 4s;
+        }
+
+        .snowflake:nth-child(6) {
+            top: -40px;
+            left: 60%;
+            width: 6px;
+            height: 6px;
+            animation-delay: 5s;
+        }
+
+        .snowflake:nth-child(7) {
+            top: -30px;
+            left: 70%;
+            width: 8px;
+            height: 8px;
+            animation-delay: 6s;
+        }
+
+        .snowflake:nth-child(8) {
+            top: -50px;
+            left: 80%;
+            width: 7px;
+            height: 7px;
+            animation-delay: 7s;
+        }
+
+        .snowflake:nth-child(9) {
+            top: -20px;
+            left: 90%;
+            width: 10px;
+            height: 10px;
+            animation-delay: 8s;
+        }
+
+        /* Rainy Scene */
+        #rainyScene {
+            background: linear-gradient(to bottom, #4A5568 0%, #718096 30%, #90A4AE 60%, #B0BEC5 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rainy-cloud {
+            position: absolute;
+            top: 50px;
+            background: #4A5568;
+            border-radius: 100px;
+        }
+
+        .rain-cloud1 {
+            left: 50px;
+            width: 200px;
+            height: 80px;
+        }
+
+        .rain-cloud2 {
+            left: 300px;
+            width: 180px;
+            height: 70px;
+            top: 80px;
+        }
+
+        .rain-cloud3 {
+            left: 550px;
+            width: 220px;
+            height: 90px;
+            top: 40px;
+        }
+
+        .rain-drop {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, transparent, #87CEEB);
+            animation: rainfall 1.5s linear infinite;
+        }
+
+        .rain-drop:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .rain-drop:nth-child(2) {
+            left: 15%;
+            animation-delay: 0.2s;
+        }
+
+        .rain-drop:nth-child(3) {
+            left: 20%;
+            animation-delay: 0.4s;
+        }
+
+        .rain-drop:nth-child(4) {
+            left: 25%;
+            animation-delay: 0.6s;
+        }
+
+        .rain-drop:nth-child(5) {
+            left: 30%;
+            animation-delay: 0.8s;
+        }
+
+        .rain-drop:nth-child(6) {
+            left: 35%;
+            animation-delay: 1s;
+        }
+
+        .rain-drop:nth-child(7) {
+            left: 40%;
+            animation-delay: 1.2s;
+        }
+
+        .rain-drop:nth-child(8) {
+            left: 45%;
+            animation-delay: 1.4s;
+        }
+
+        .rain-puddle {
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            height: 5px;
+            background: #1E90FF;
+            opacity: 0.7;
+            animation: puddleRipple 2s ease-in-out infinite;
+        }
+
+        .rain-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #556B2F 0%, #6B8E23 100%);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #86a8e7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .control-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn.active {
+            background: linear-gradient(90deg, #86a8e7, #91eae4);
+            color: #333;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            color: #aaa;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes sunMovement {
+
+            0%,
+            100% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+                box-shadow: 0 0 60px #FFD700, 0 0 100px rgba(255, 215, 0, 0.5);
+            }
+
+            50% {
+                transform: translateX(600px) translateY(20px);
+                opacity: 0;
+                box-shadow: 0 0 20px #FFD700, 0 0 40px rgba(255, 215, 0, 0.3);
+            }
+        }
+
+        @keyframes moonMovement {
+
+            0%,
+            100% {
+                transform: translateX(0) translateY(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translateX(-600px) translateY(20px);
+                opacity: 1;
+                box-shadow: 0 0 40px #F5F5F5, 0 0 80px rgba(245, 245, 245, 0.3);
+            }
+        }
+
+        @keyframes skyTransition {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes starsTransition {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes cloudMovement {
+            0% {
+                transform: translateX(-100px);
+            }
+
+            100% {
+                transform: translateX(1200px);
+            }
+        }
+
+        @keyframes beachCloudMovement {
+            0% {
+                transform: translateX(-100px);
+            }
+
+            100% {
+                transform: translateX(1200px);
+            }
+        }
+
+        @keyframes waveMovement {
+
+            0%,
+            100% {
+                transform: translateY(0) scaleX(1);
+            }
+
+            50% {
+                transform: translateY(-10px) scaleX(1.1);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(10);
+                opacity: 0;
+            }
+        }
+
+        @keyframes leafFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(700px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(700px) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes rainfall {
+            0% {
+                transform: translateY(-50px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(600px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes puddleRipple {
+
+            0%,
+            100% {
+                transform: scaleX(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scaleX(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .scene-container {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .scene-container {
+                height: 400px;
+            }
+
+            .scenery-buttons,
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .scenery-btn,
+            .control-btn {
+                min-width: 100%;
+            }
+
+            .mountain,
+            .lake-mountain {
+                border-left-width: 100px;
+                border-right-width: 100px;
+                border-bottom-width: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-mountain-sun"></i> CSS Sceneries Gallery</h1>
+            <p class="subtitle">Beautiful landscapes created with pure CSS. No images, no JavaScript - just CSS magic!
+            </p>
+            <div class="gallery-info">
+                <div class="info-item"><i class="fas fa-palette"></i> 100% CSS</div>
+                <div class="info-item"><i class="fas fa-play-circle"></i> All Animated</div>
+                <div class="info-item"><i class="fas fa-sun"></i> Day/Night Cycles</div>
+                <div class="info-item"><i class="fas fa-snowflake"></i> Weather Effects</div>
+                <div class="info-item"><i class="fas fa-tree"></i> Nature Scenes</div>
+            </div>
+        </header>
+
+        <div class="scenery-selection">
+            <h2 class="selection-title"><i class="fas fa-th-large"></i> Choose a Scene</h2>
+            <div class="scenery-buttons">
+                <button class="scenery-btn active" data-scene="dayNight">
+                    <i class="fas fa-sun scenery-icon"></i>
+                    Day to Night
+                </button>
+                <button class="scenery-btn" data-scene="beach">
+                    <i class="fas fa-umbrella-beach scenery-icon"></i>
+                    Tropical Beach
+                </button>
+                <button class="scenery-btn" data-scene="mountainLake">
+                    <i class="fas fa-mountain scenery-icon"></i>
+                    Mountain Lake
+                </button>
+                <button class="scenery-btn" data-scene="autumn">
+                    <i class="fas fa-leaf scenery-icon"></i>
+                    Autumn Forest
+                </button>
+                <button class="scenery-btn" data-scene="winter">
+                    <i class="fas fa-snowflake scenery-icon"></i>
+                    Winter Snow
+                </button>
+                <button class="scenery-btn" data-scene="rainy">
+                    <i class="fas fa-cloud-rain scenery-icon"></i>
+                    Rainy Day
+                </button>
+            </div>
+        </div>
+
+        <div class="scenery-display">
+            <h2 class="scene-title" id="sceneTitle"><i class="fas fa-sun"></i> Day to Night Transition</h2>
+            <p class="scene-description" id="sceneDescription">Watch as the sun sets and the moon rises in this animated
+                day-to-night transition. The sky changes from bright blue to deep indigo, stars appear, and the
+                landscape transforms with the changing light.</p>
+
+            <div class="scene-container" id="sceneContainer">
+                <!-- Day to Night Scene (default) -->
+                <div id="dayNightScene" class="scene active">
+                    <div class="sun"></div>
+                    <div class="moon"></div>
+                    <div class="sky"></div>
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="cloud cloud1"></div>
+                    <div class="cloud cloud2"></div>
+                    <div class="cloud cloud3"></div>
+                    <div class="mountain mountain1"></div>
+                    <div class="mountain mountain2"></div>
+                    <div class="mountain mountain3"></div>
+                    <div class="tree tree1"></div>
+                    <div class="tree tree2"></div>
+                    <div class="tree tree3"></div>
+                    <div class="tree tree4"></div>
+                    <div class="tree-trunk trunk1"></div>
+                    <div class="tree-trunk trunk2"></div>
+                    <div class="tree-trunk trunk3"></div>
+                    <div class="tree-trunk trunk4"></div>
+                    <div class="ground"></div>
+                </div>
+
+                <!-- Beach Scene -->
+                <div id="beachScene" class="scene">
+                    <div class="beach-sun"></div>
+                    <div class="beach-cloud beach-cloud1"></div>
+                    <div class="beach-cloud beach-cloud2"></div>
+                    <div class="beach-cloud beach-cloud3"></div>
+                    <div class="sand"></div>
+                    <div class="wave wave1"></div>
+                    <div class="wave wave2"></div>
+                    <div class="wave wave3"></div>
+                    <div class="ocean"></div>
+                    <div class="palm-tree palm-tree1">
+                        <div class="palm-trunk"></div>
+                        <div class="palm-leaves leaf1"></div>
+                        <div class="palm-leaves leaf2"></div>
+                        <div class="palm-leaves leaf3"></div>
+                        <div class="palm-leaves leaf4"></div>
+                        <div class="palm-leaves leaf5"></div>
+                        <div class="palm-leaves leaf6"></div>
+                        <div class="palm-leaves leaf7"></div>
+                        <div class="palm-leaves leaf8"></div>
+                    </div>
+                    <div class="palm-tree palm-tree2">
+                        <div class="palm-trunk"></div>
+                        <div class="palm-leaves leaf1"></div>
+                        <div class="palm-leaves leaf2"></div>
+                        <div class="palm-leaves leaf3"></div>
+                        <div class="palm-leaves leaf4"></div>
+                        <div class="palm-leaves leaf5"></div>
+                        <div class="palm-leaves leaf6"></div>
+                        <div class="palm-leaves leaf7"></div>
+                        <div class="palm-leaves leaf8"></div>
+                    </div>
+                    <div class="palm-tree palm-tree3">
+                        <div class="palm-trunk"></div>
+                        <div class="palm-leaves leaf1"></div>
+                        <div class="palm-leaves leaf2"></div>
+                        <div class="palm-leaves leaf3"></div>
+                        <div class="palm-leaves leaf4"></div>
+                        <div class="palm-leaves leaf5"></div>
+                        <div class="palm-leaves leaf6"></div>
+                        <div class="palm-leaves leaf7"></div>
+                        <div class="palm-leaves leaf8"></div>
+                    </div>
+                </div>
+
+                <!-- Mountain Lake Scene -->
+                <div id="mountainLakeScene" class="scene">
+                    <div class="lake-sun"></div>
+                    <div class="lake-mountains">
+                        <div class="lake-mountain lake-mountain1"></div>
+                        <div class="lake-mountain lake-mountain2"></div>
+                        <div class="lake-mountain lake-mountain3"></div>
+                        <div class="lake-mountain lake-mountain4"></div>
+                    </div>
+                    <div class="lake">
+                        <div class="lake-reflection"></div>
+                        <div class="lake-ripple ripple1"></div>
+                        <div class="lake-ripple ripple2"></div>
+                        <div class="lake-ripple ripple3"></div>
+                    </div>
+                    <div class="pine-tree pine-tree1">
+                        <div class="trunk"></div>
+                        <div class="needles"></div>
+                    </div>
+                    <div class="pine-tree pine-tree2">
+                        <div class="trunk"></div>
+                        <div class="needles"></div>
+                    </div>
+                    <div class="pine-tree pine-tree3">
+                        <div class="trunk"></div>
+                        <div class="needles"></div>
+                    </div>
+                    <div class="pine-tree pine-tree4">
+                        <div class="trunk"></div>
+                        <div class="needles"></div>
+                    </div>
+                </div>
+
+                <!-- Autumn Forest Scene -->
+                <div id="autumnScene" class="scene">
+                    <div class="autumn-sun"></div>
+                    <div class="autumn-ground"></div>
+                    <div class="autumn-tree autumn-tree1">
+                        <div class="autumn-trunk"></div>
+                        <div class="autumn-leaves"></div>
+                        <div class="falling-leaf leaf1"></div>
+                        <div class="falling-leaf leaf2"></div>
+                    </div>
+                    <div class="autumn-tree autumn-tree2">
+                        <div class="autumn-trunk"></div>
+                        <div class="autumn-leaves"></div>
+                        <div class="falling-leaf leaf3"></div>
+                        <div class="falling-leaf leaf4"></div>
+                    </div>
+                    <div class="autumn-tree autumn-tree3">
+                        <div class="autumn-trunk"></div>
+                        <div class="autumn-leaves"></div>
+                        <div class="falling-leaf leaf5"></div>
+                        <div class="falling-leaf leaf6"></div>
+                    </div>
+                    <div class="autumn-tree autumn-tree4">
+                        <div class="autumn-trunk"></div>
+                        <div class="autumn-leaves"></div>
+                        <div class="falling-leaf leaf7"></div>
+                        <div class="falling-leaf leaf8"></div>
+                    </div>
+                </div>
+
+                <!-- Winter Snow Scene -->
+                <div id="winterScene" class="scene">
+                    <div class="snow-hill hill1"></div>
+                    <div class="snow-hill hill2"></div>
+                    <div class="snow-hill hill3"></div>
+                    <div class="winter-ground"></div>
+                    <div class="snow-tree snow-tree1">
+                        <div class="snow-trunk"></div>
+                        <div class="snow-branch branch1"></div>
+                        <div class="snow-branch branch2"></div>
+                        <div class="snow-branch branch3"></div>
+                        <div class="snow-cap snow-cap1"></div>
+                        <div class="snow-cap snow-cap2"></div>
+                        <div class="snow-cap snow-cap3"></div>
+                    </div>
+                    <div class="snow-tree snow-tree2">
+                        <div class="snow-trunk"></div>
+                        <div class="snow-branch branch1"></div>
+                        <div class="snow-branch branch2"></div>
+                        <div class="snow-branch branch3"></div>
+                        <div class="snow-cap snow-cap1"></div>
+                        <div class="snow-cap snow-cap2"></div>
+                        <div class="snow-cap snow-cap3"></div>
+                    </div>
+                    <div class="snow-tree snow-tree3">
+                        <div class="snow-trunk"></div>
+                        <div class="snow-branch branch1"></div>
+                        <div class="snow-branch branch2"></div>
+                        <div class="snow-branch branch3"></div>
+                        <div class="snow-cap snow-cap1"></div>
+                        <div class="snow-cap snow-cap2"></div>
+                        <div class="snow-cap snow-cap3"></div>
+                    </div>
+                    <div class="snow-tree snow-tree4">
+                        <div class="snow-trunk"></div>
+                        <div class="snow-branch branch1"></div>
+                        <div class="snow-branch branch2"></div>
+                        <div class="snow-branch branch3"></div>
+                        <div class="snow-cap snow-cap1"></div>
+                        <div class="snow-cap snow-cap2"></div>
+                        <div class="snow-cap snow-cap3"></div>
+                    </div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                    <div class="snowflake"></div>
+                </div>
+
+                <!-- Rainy Scene -->
+                <div id="rainyScene" class="scene">
+                    <div class="rainy-cloud rain-cloud1"></div>
+                    <div class="rainy-cloud rain-cloud2"></div>
+                    <div class="rainy-cloud rain-cloud3"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-puddle"></div>
+                    <div class="rain-ground"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <h2 class="control-title"><i class="fas fa-sliders-h"></i> Scene Controls</h2>
+            <div class="control-buttons">
+                <button class="control-btn active" id="playAnimations">
+                    <i class="fas fa-play"></i> Play Animations
+                </button>
+                <button class="control-btn" id="pauseAnimations">
+                    <i class="fas fa-pause"></i> Pause Animations
+                </button>
+                <button class="control-btn" id="resetScene">
+                    <i class="fas fa-redo"></i> Reset Scene
+                </button>
+                <button class="control-btn" id="viewCode">
+                    <i class="fas fa-code"></i> View CSS Code
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>CSS Sceneries Gallery • All scenes created with pure CSS • No images, no JavaScript</p>
+            <p>Each scene demonstrates advanced CSS techniques including gradients, animations, transitions, and
+                pseudo-elements.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Scene management
+        document.addEventListener('DOMContentLoaded', function () {
+            const sceneButtons = document.querySelectorAll('.scenery-btn');
+            const scenes = document.querySelectorAll('.scene');
+            const sceneTitle = document.getElementById('sceneTitle');
+            const sceneDescription = document.getElementById('sceneDescription');
+
+            // Scene data
+            const sceneData = {
+                dayNight: {
+                    title: 'Day to Night Transition',
+                    description: 'Watch as the sun sets and the moon rises in this animated day-to-night transition. The sky changes from bright blue to deep indigo, stars appear, and the landscape transforms with the changing light.',
+                    icon: 'fa-sun'
+                },
+                beach: {
+                    title: 'Tropical Beach',
+                    description: 'Relax at this tropical beach with palm trees, gentle waves, and a warm sun. Watch the clouds drift by and the waves gently lap against the shore in this peaceful scene.',
+                    icon: 'fa-umbrella-beach'
+                },
+                mountainLake: {
+                    title: 'Mountain Lake',
+                    description: 'A serene mountain lake with reflections of pine trees and distant peaks. Watch the ripples spread across the water and enjoy the peaceful mountain atmosphere.',
+                    icon: 'fa-mountain'
+                },
+                autumn: {
+                    title: 'Autumn Forest',
+                    description: 'Experience the beauty of fall with colorful autumn leaves, falling foliage, and warm golden sunlight. Watch as leaves gently fall from the trees in this seasonal scene.',
+                    icon: 'fa-leaf'
+                },
+                winter: {
+                    title: 'Winter Snow',
+                    description: 'A peaceful winter landscape with snow-covered hills, pine trees, and falling snowflakes. Watch the snowfall and enjoy the serene winter atmosphere.',
+                    icon: 'fa-snowflake'
+                },
+                rainy: {
+                    title: 'Rainy Day',
+                    description: 'A rainy day scene with dark clouds, falling raindrops, and puddles forming on the ground. Watch the rainfall and enjoy the calming sound of rain (in your imagination!).',
+                    icon: 'fa-cloud-rain'
+                }
+            };
+
+            // Initialize with first scene
+            showScene('dayNight');
+
+            // Add event listeners to scene buttons
+            sceneButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Remove active class from all buttons
+                    sceneButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    // Get scene name
+                    const sceneName = this.getAttribute('data-scene');
+
+                    // Show selected scene
+                    showScene(sceneName);
+                });
+            });
+
+            // Show a scene
+            function showScene(sceneName) {
+                // Hide all scenes
+                scenes.forEach(scene => {
+                    scene.classList.remove('active');
+                    scene.style.display = 'none';
+                });
+
+                // Show selected scene
+                const selectedScene = document.getElementById(`${sceneName}Scene`);
+                if (selectedScene) {
+                    selectedScene.classList.add('active');
+                    selectedScene.style.display = 'block';
+                }
+
+                // Update scene info
+                if (sceneData[sceneName]) {
+                    sceneTitle.innerHTML = `<i class="fas ${sceneData[sceneName].icon}"></i> ${sceneData[sceneName].title}`;
+                    sceneDescription.textContent = sceneData[sceneName].description;
+                }
+
+                // Play animations
+                playAllAnimations();
+            }
+
+            // Animation controls
+            const playBtn = document.getElementById('playAnimations');
+            const pauseBtn = document.getElementById('pauseAnimations');
+            const resetBtn = document.getElementById('resetScene');
+            const viewCodeBtn = document.getElementById('viewCode');
+
+            // Play animations
+            playBtn.addEventListener('click', function () {
+                playAllAnimations();
+
+                // Update button states
+                playBtn.classList.add('active');
+                pauseBtn.classList.remove('active');
+            });
+
+            // Pause animations
+            pauseBtn.addEventListener('click', function () {
+                pauseAllAnimations();
+
+                // Update button states
+                pauseBtn.classList.add('active');
+                playBtn.classList.remove('active');
+            });
+
+            // Reset scene
+            resetBtn.addEventListener('click', function () {
+                // Get current scene
+                const activeScene = document.querySelector('.scene.active');
+                const sceneId = activeScene.id;
+
+                // Hide and show to reset animations
+                activeScene.style.display = 'none';
+                setTimeout(() => {
+                    activeScene.style.display = 'block';
+                    playAllAnimations();
+                }, 10);
+
+                // Update button states
+                playBtn.classList.add('active');
+                pauseBtn.classList.remove('active');
+            });
+
+            // View CSS code
+            viewCodeBtn.addEventListener('click', function () {
+                alert('This scene is created with pure CSS! Check the page source or inspect elements to see the CSS code that creates these animations and effects.');
+            });
+
+            // Play all animations in current scene
+            function playAllAnimations() {
+                const activeScene = document.querySelector('.scene.active');
+                if (!activeScene) return;
+
+                // Get all animated elements
+                const animatedElements = activeScene.querySelectorAll('[class*="animation"], .sun, .moon, .sky, .stars, .cloud, .wave, .lake-ripple, .falling-leaf, .snowflake, .rain-drop, .rain-puddle');
+
+                // Resume animations
+                animatedElements.forEach(element => {
+                    element.style.animationPlayState = 'running';
+                });
+            }
+
+            // Pause all animations in current scene
+            function pauseAllAnimations() {
+                const activeScene = document.querySelector('.scene.active');
+                if (!activeScene) return;
+
+                // Get all animated elements
+                const animatedElements = activeScene.querySelectorAll('[class*="animation"], .sun, .moon, .sky, .stars, .cloud, .wave, .lake-ripple, .falling-leaf, .snowflake, .rain-drop, .rain-puddle');
+
+                // Pause animations
+                animatedElements.forEach(element => {
+                    element.style.animationPlayState = 'paused';
+                });
+            }
+
+            // Initialize with animations playing
+            playAllAnimations();
+
+            // Add some interactive elements
+            const sceneContainer = document.getElementById('sceneContainer');
+
+            // Click on sun in day/night scene to toggle speed
+            document.addEventListener('click', function (e) {
+                const activeScene = document.querySelector('.scene.active');
+
+                if (activeScene.id === 'dayNightScene') {
+                    const sun = activeScene.querySelector('.sun');
+                    const moon = activeScene.querySelector('.moon');
+                    const sky = activeScene.querySelector('.sky');
+                    const stars = activeScene.querySelector('.stars');
+
+                    // Check if click is near sun
+                    const rect = sun.getBoundingClientRect();
+                    const clickX = e.clientX;
+                    const clickY = e.clientY;
+
+                    const sunCenterX = rect.left + rect.width / 2;
+                    const sunCenterY = rect.top + rect.height / 2;
+                    const distance = Math.sqrt(
+                        Math.pow(clickX - sunCenterX, 2) +
+                        Math.pow(clickY - sunCenterY, 2)
+                    );
+
+                    if (distance < 60) { // Within sun radius
+                        // Toggle animation speed
+                        const currentSpeed = parseFloat(getComputedStyle(sun).animationDuration);
+                        const newSpeed = currentSpeed === 20 ? 5 : 20;
+
+                        [sun, moon, sky, stars].forEach(el => {
+                            el.style.animationDuration = `${newSpeed}s`;
+                        });
+
+                        // Show notification
+                        showNotification(`Animation speed: ${newSpeed === 20 ? 'Normal' : 'Fast'}`);
+                    }
+                }
+
+                // Click on snowflakes in winter scene
+                if (activeScene.id === 'winterScene') {
+                    const snowflakes = activeScene.querySelectorAll('.snowflake');
+
+                    snowflakes.forEach(snowflake => {
+                        const rect = snowflake.getBoundingClientRect();
+                        const clickX = e.clientX;
+                        const clickY = e.clientY;
+
+                        const flakeCenterX = rect.left + rect.width / 2;
+                        const flakeCenterY = rect.top + rect.height / 2;
+                        const distance = Math.sqrt(
+                            Math.pow(clickX - flakeCenterX, 2) +
+                            Math.pow(clickY - flakeCenterY, 2)
+                        );
+
+                        if (distance < 20) { // Within snowflake radius
+                            // Make snowflake fall faster
+                            snowflake.style.animationDuration = '2s';
+                            setTimeout(() => {
+                                snowflake.style.animationDuration = '10s';
+                            }, 2000);
+                        }
+                    });
+                }
+
+                // Click on waves in beach scene
+                if (activeScene.id === 'beachScene') {
+                    const waves = activeScene.querySelectorAll('.wave');
+
+                    waves.forEach(wave => {
+                        const rect = wave.getBoundingClientRect();
+                        if (clickY > rect.top && clickY < rect.bottom &&
+                            clickX > rect.left && clickX < rect.right) {
+                            // Make wave bigger
+                            wave.style.transform = 'scaleX(1.3) translateY(-15px)';
+                            setTimeout(() => {
+                                wave.style.transform = '';
+                            }, 500);
+                        }
+                    });
+                }
+            });
+
+            // Show notification
+            function showNotification(message) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.bottom = '30px';
+                notification.style.right = '30px';
+                notification.style.background = 'rgba(0, 0, 0, 0.8)';
+                notification.style.color = '#86a8e7';
+                notification.style.padding = '15px 25px';
+                notification.style.borderRadius = '12px';
+                notification.style.fontWeight = '600';
+                notification.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.5)';
+                notification.style.transform = 'translateX(100px)';
+                notification.style.opacity = '0';
+                notification.style.transition = 'all 0.5s ease';
+                notification.style.zIndex = '10000';
+                notification.style.display = 'flex';
+                notification.style.alignItems = 'center';
+                notification.style.gap = '15px';
+                notification.style.borderLeft = '5px solid #86a8e7';
+                notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                    notification.style.opacity = '1';
+                }, 10);
+
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100px)';
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 500);
+                }, 3000);
+            }
+
+            // Add hover effects for scene buttons
+            sceneButtons.forEach(button => {
+                button.addEventListener('mouseenter', function () {
+                    const sceneName = this.getAttribute('data-scene');
+                    if (sceneData[sceneName]) {
+                        // Briefly show scene info on hover
+                        sceneTitle.innerHTML = `<i class="fas ${sceneData[sceneName].icon}"></i> ${sceneData[sceneName].title}`;
+                        sceneDescription.textContent = sceneData[sceneName].description;
+                    }
+                });
+
+                button.addEventListener('mouseleave', function () {
+                    // Restore current scene info
+                    const activeButton = document.querySelector('.scenery-btn.active');
+                    const activeScene = activeButton.getAttribute('data-scene');
+
+                    if (sceneData[activeScene]) {
+                        sceneTitle.innerHTML = `<i class="fas ${sceneData[activeScene].icon}"></i> ${sceneData[activeScene].title}`;
+                        sceneDescription.textContent = sceneData[activeScene].description;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

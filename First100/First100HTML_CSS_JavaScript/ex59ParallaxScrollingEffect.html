@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 59: Parallax Scrolling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        .parallax-container {
+            position: relative;
+            min-height: 200vh;
+            perspective: 1px;
+            transform-style: preserve-3d;
+        }
+
+        /* Parallax Layers */
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .layer-0 {
+            background: linear-gradient(180deg, #000428, #004e92);
+            z-index: 1;
+        }
+
+        .layer-1 {
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4');
+            transform: translateZ(-2px) scale(3);
+            z-index: 2;
+            opacity: 0.3;
+        }
+
+        .layer-2 {
+            background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
+            transform: translateZ(-1px) scale(2);
+            z-index: 3;
+            opacity: 0.4;
+        }
+
+        .layer-3 {
+            background-image: url('https://images.unsplash.com/photo-1439066615861-d1af74d74000');
+            transform: translateZ(-0.5px) scale(1.5);
+            z-index: 4;
+            opacity: 0.5;
+        }
+
+        /* Content Sections */
+        .content-section {
+            position: relative;
+            z-index: 10;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            margin-top: 100vh;
+            padding: 100px 20px;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .star {
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        .planet {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ff9a00, #ff0000);
+            box-shadow: 0 0 50px rgba(255, 100, 0, 0.5);
+            animation: float 20s infinite linear;
+        }
+
+        .cloud {
+            width: 200px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: drift 40s infinite linear;
+        }
+
+        /* Animations */
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(100px, 50px) rotate(90deg);
+            }
+
+            50% {
+                transform: translate(50px, 100px) rotate(180deg);
+            }
+
+            75% {
+                transform: translate(-50px, 50px) rotate(270deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translateX(-200px);
+            }
+
+            100% {
+                transform: translateX(calc(100vw + 200px));
+            }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .scroll-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .scroll-arrow {
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .content-card {
+                padding: 30px;
+            }
+
+            .planet {
+                width: 60px;
+                height: 60px;
+            }
+
+            .cloud {
+                width: 150px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content-section {
+                padding: 50px 15px;
+            }
+
+            .content-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parallax-container" id="parallaxContainer">
+        <!-- Parallax Background Layers -->
+        <div class="parallax-layer layer-0"></div>
+        <div class="parallax-layer layer-1"></div>
+        <div class="parallax-layer layer-2"></div>
+        <div class="parallax-layer layer-3"></div>
+
+        <!-- Floating Elements -->
+        <div id="starsContainer"></div>
+        <div id="planetsContainer"></div>
+        <div id="cloudsContainer"></div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-text">Scroll to explore the parallax effect</div>
+            <div class="scroll-arrow">👇</div>
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="content-section">
+        <div class="section-container">
+            <div class="content-card">
+                <h1>Parallax Scrolling Universe</h1>
+                <p>Experience the magic of parallax scrolling as you journey through this interactive demonstration.
+                    Each layer moves at a different speed, creating a captivating 3D effect.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>How Parallax Works</h2>
+                <p>Parallax scrolling creates an illusion of depth by moving background layers at different speeds
+                    relative to the foreground content. As you scroll, closer layers move faster while distant layers
+                    move slower, mimicking how we perceive depth in real life.</p>
+                <p>This technique uses CSS 3D transforms and JavaScript to calculate scroll positions, creating an
+                    immersive browsing experience that engages users and adds visual interest to your website.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Technical Implementation</h2>
+                <p>The parallax effect is achieved using:</p>
+                <p>• CSS transform: translateZ() to position elements in 3D space<br>
+                    • JavaScript to update positions based on scroll events<br>
+                    • requestAnimationFrame for smooth performance<br>
+                    • CSS perspective for proper 3D rendering</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Performance Optimizations</h2>
+                <p>Modern parallax implementations focus on performance:</p>
+                <p>• Using will-change CSS property for hardware acceleration<br>
+                    • Implementing debounced scroll events<br>
+                    • Optimizing image sizes and using CSS gradients where possible<br>
+                    • Minimizing DOM manipulations during scroll</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Creative Applications</h2>
+                <p>Parallax scrolling can be used for:</p>
+                <p>• Storytelling websites with narrative flow<br>
+                    • Product showcases with depth effects<br>
+                    • Portfolio sites with engaging introductions<br>
+                    • Landing pages that capture attention</p>
+            </div>
+
+            <!-- More content for scrolling -->
+            <div class="content-card">
+                <h2>Continue Scrolling</h2>
+                <p>Keep scrolling to see more of the parallax effect in action. Notice how different layers move at
+                    different speeds, creating a sense of depth and immersion.</p>
+                <p>The floating elements (stars, planets, and clouds) also move independently, adding to the 3D illusion
+                    and creating a dynamic, living environment.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Responsive Design</h2>
+                <p>This parallax implementation is fully responsive. Try resizing your browser window or viewing on
+                    different devices to see how the effect adapts to various screen sizes.</p>
+                <p>On mobile devices, the parallax intensity is adjusted to ensure smooth performance while maintaining
+                    the visual appeal.</p>
+            </div>
+
+            <div class="content-card">
+                <h2>Interactive Elements</h2>
+                <p>As you scroll, you might notice:</p>
+                <p>• Stars twinkling with random animations<br>
+                    • Planets floating in elliptical orbits<br>
+                    • Clouds drifting across the sky<br>
+                    • Smooth transitions between sections</p>
+            </div>
+
+            <!-- Final spacer -->
+            <div style="height: 100vh;"></div>
+        </div>
+    </div>
+
+    <script>
+        const parallaxContainer = document.getElementById('parallaxContainer');
+        const starsContainer = document.getElementById('starsContainer');
+        const planetsContainer = document.getElementById('planetsContainer');
+        const cloudsContainer = document.getElementById('cloudsContainer');
+
+        let scrollPosition = 0;
+        let animationId = null;
+        let stars = [];
+        let planets = [];
+        let clouds = [];
+
+        // Initialize floating elements
+        function initializeFloatingElements() {
+            // Create stars
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'floating-element star';
+
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+
+                // Random size
+                const size = Math.random() * 3 + 1;
+
+                // Random animation delay
+                const delay = Math.random() * 5;
+
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+
+                starsContainer.appendChild(star);
+                stars.push({
+                    element: star,
+                    baseLeft: left,
+                    baseTop: top,
+                    speed: Math.random() * 0.5 + 0.5
+                });
+            }
+
+            // Create planets
+            for (let i = 0; i < 8; i++) {
+                const planet = document.createElement('div');
+                planet.className = 'floating-element planet';
+
+                // Random position
+                const left = Math.random() * 80 + 10;
+                const top = Math.random() * 80 + 10;
+
+                // Random size
+                const size = Math.random() * 80 + 40;
+
+                // Random color
+                const hue = Math.random() * 360;
+                planet.style.background = `radial-gradient(circle at 30% 30%, hsl(${hue}, 100%, 70%), hsl(${(hue + 30) % 360}, 100%, 50%))`;
+
+                // Random animation
+                const duration = Math.random() * 30 + 20;
+                const delay = Math.random() * 10;
+
+                planet.style.left = `${left}%`;
+                planet.style.top = `${top}%`;
+                planet.style.width = `${size}px`;
+                planet.style.height = `${size}px`;
+                planet.style.animationDuration = `${duration}s`;
+                planet.style.animationDelay = `${delay}s`;
+
+                planetsContainer.appendChild(planet);
+                planets.push({
+                    element: planet,
+                    baseLeft: left,
+                    baseTop: top,
+                    speed: Math.random() * 0.3 + 0.2
+                });
+            }
+
+            // Create clouds
+            for (let i = 0; i = Math.random() * 20 + 10; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'floating-element cloud';
+
+                // Random position
+                const top = Math.random() * 100;
+
+                // Random size
+                const width = Math.random() * 300 + 150;
+                const height = width * 0.4;
+
+                // Random opacity
+                const opacity = Math.random() * 0.2 + 0.05;
+
+                // Random animation
+                const duration = Math.random() * 60 + 30;
+                const delay = Math.random() * 20;
+
+                cloud.style.top = `${top}%`;
+                cloud.style.width = `${width}px`;
+                cloud.style.height = `${height}px`;
+                cloud.style.opacity = opacity;
+                cloud.style.animationDuration = `${duration}s`;
+                cloud.style.animationDelay = `${delay}s`;
+
+                cloudsContainer.appendChild(cloud);
+                clouds.push({
+                    element: cloud,
+                    baseTop: top,
+                    speed: Math.random() * 0.1 + 0.05
+                });
+            }
+        }
+
+        // Update parallax effect
+        function updateParallax() {
+            const scrollY = window.scrollY;
+            const scrollSpeed = 0.5; // Adjust this value to control parallax intensity
+
+            // Update parallax layers
+            const layers = document.querySelectorAll('.parallax-layer');
+            layers.forEach((layer, index) => {
+                const speed = (index + 1) * scrollSpeed;
+                const yPos = scrollY * speed;
+                layer.style.transform = `translate3d(0, ${yPos}px, 0) scale(${1 + speed})`;
+            });
+
+            // Update floating elements
+            stars.forEach(star => {
+                const yOffset = scrollY * star.speed * 0.1;
+                star.element.style.transform = `translateY(${yOffset}px)`;
+            });
+
+            planets.forEach(planet => {
+                const yOffset = scrollY * planet.speed * 0.2;
+                const xOffset = Math.sin(scrollY * 0.001 + planet.baseLeft) * 20;
+                planet.element.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+
+            clouds.forEach(cloud => {
+                const yOffset = scrollY * cloud.speed * 0.05;
+                cloud.element.style.transform = `translateY(${yOffset}px)`;
+            });
+
+            // Continue animation
+            animationId = requestAnimationFrame(updateParallax);
+        }
+
+        // Handle scroll with debouncing
+        let scrollTimeout;
+        function handleScroll() {
+            if (scrollTimeout) {
+                cancelAnimationFrame(scrollTimeout);
+            }
+
+            scrollTimeout = requestAnimationFrame(() => {
+                scrollPosition = window.scrollY;
+            });
+        }
+
+        // Initialize everything
+        function initialize() {
+            initializeFloatingElements();
+            updateParallax();
+
+            // Add scroll event listener
+            window.addEventListener('scroll', handleScroll, { passive: true });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                // Re-initialize if needed
+            });
+        }
+
+        // Clean up on page unload
+        function cleanup() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            window.removeEventListener('scroll', handleScroll);
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initialize);
+        window.addEventListener('beforeunload', cleanup);
+    </script>
+</body>
+
+</html>

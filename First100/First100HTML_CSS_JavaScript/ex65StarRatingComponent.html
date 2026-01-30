@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 65: Star Rating Component</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .rating-system {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .rating-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        /* Rating Card */
+        .rating-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .rating-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Star Rating Component */
+        .star-rating {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stars-container {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .star {
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .star.active {
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .star.half::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #FFD700;
+        }
+
+        .rating-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .rating-text {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            min-height: 30px;
+        }
+
+        /* Interactive Rating */
+        .interactive-rating {
+            position: relative;
+        }
+
+        .rating-preview {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: #333;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .rating-preview.show {
+            opacity: 1;
+        }
+
+        /* Average Rating Display */
+        .average-rating {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .average-stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .average-star {
+            font-size: 2rem;
+            color: #FFD700;
+        }
+
+        .average-star.half::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #FFD700;
+        }
+
+        .rating-details {
+            text-align: center;
+            color: white;
+        }
+
+        .average-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #FFD700;
+            line-height: 1;
+        }
+
+        .total-ratings {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* Rating Distribution */
+        .rating-distribution {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .distribution-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .star-label {
+            color: white;
+            font-size: 1.1rem;
+            min-width: 70px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF9800, #FFD700);
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .bar-count {
+            color: white;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* Rating Controls */
+        .rating-controls {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .controls-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .control-label {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .option-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .option-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .action-btn.primary {
+            background: #4CAF50;
+        }
+
+        .action-btn.primary:hover {
+            background: #45a049;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .rating-system {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .rating-demo {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .rating-card {
+                padding: 25px;
+            }
+
+            .star {
+                font-size: 2.5rem;
+            }
+
+            .average-star {
+                font-size: 1.5rem;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .rating-system {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .stars-container {
+                gap: 5px;
+            }
+
+            .star {
+                font-size: 2rem;
+            }
+
+            .rating-value {
+                font-size: 2rem;
+            }
+
+            .average-rating {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="rating-system">
+        <header>
+            <h1>⭐ Star Rating System</h1>
+            <p class="subtitle">Interactive star ratings with half-star support, average calculations, and visual
+                feedback</p>
+        </header>
+
+        <div class="rating-demo">
+            <!-- Interactive Rating -->
+            <div class="rating-card">
+                <h2 class="card-title">
+                    <span>🎯</span> Rate This Product
+                </h2>
+                <p class="card-description">
+                    Hover over stars to preview, click to set your rating. Half-star ratings are supported.
+                </p>
+
+                <div class="star-rating interactive-rating">
+                    <div class="rating-preview" id="ratingPreview">
+                        Rate: <span id="previewValue">0</span> stars
+                    </div>
+
+                    <div class="stars-container" id="interactiveStars">
+                        <!-- Stars will be generated by JavaScript -->
+                    </div>
+
+                    <div class="rating-value" id="currentRating">0.0</div>
+                    <div class="rating-text" id="ratingText">Not rated yet</div>
+                </div>
+            </div>
+
+            <!-- Average Rating -->
+            <div class="rating-card">
+                <h2 class="card-title">
+                    <span>📊</span> Average Rating
+                </h2>
+                <p class="card-description">
+                    Overall average rating based on all user reviews with detailed distribution.
+                </p>
+
+                <div class="star-rating">
+                    <div class="average-rating">
+                        <div class="average-stars" id="averageStars">
+                            <!-- Average stars will be generated by JavaScript -->
+                        </div>
+                        <div class="rating-details">
+                            <div class="average-value" id="averageValue">0.0</div>
+                            <div class="total-ratings" id="totalRatings">0 ratings</div>
+                        </div>
+                    </div>
+
+                    <div class="rating-distribution">
+                        <!-- Distribution bars will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Controls -->
+        <div class="rating-controls">
+            <h3 class="controls-title">Rating Options</h3>
+
+            <div class="controls-grid">
+                <div class="control-group">
+                    <div class="control-label">Rating Type</div>
+                    <div class="option-buttons">
+                        <button class="option-btn active" data-type="full">
+                            Full Stars Only
+                        </button>
+                        <button class="option-btn" data-type="half">
+                            Half Stars Allowed
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Maximum Rating</div>
+                    <div class="option-buttons">
+                        <button class="option-btn" data-max="5">5 Stars</button>
+                        <button class="option-btn active" data-max="10">10 Stars</button>
+                        <button class="option-btn" data-max="20">20 Stars</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Star Size</div>
+                    <div class="option-buttons">
+                        <button class="option-btn" data-size="small">Small</button>
+                        <button class="option-btn active" data-size="medium">Medium</button>
+                        <button class="option-btn" data-size="large">Large</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" id="resetBtn">
+                    <span>🔄</span> Reset Rating
+                </button>
+                <button class="action-btn" id="submitBtn">
+                    <span>📤</span> Submit Rating
+                </button>
+                <button class="action-btn primary" id="randomBtn">
+                    <span>🎲</span> Add Random Rating
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSubmitted">0</div>
+                <div class="stat-label">Total Ratings Submitted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentUserRating">0.0</div>
+                <div class="stat-label">Your Current Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="ratingDistribution">-</div>
+                <div class="stat-label">Most Common Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="ratingDeviation">0.0</div>
+                <div class="stat-label">Rating Deviation</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Rating System
+        const ratingSystem = {
+            ratings: [],
+            currentUserRating: 0,
+            maxStars: 10,
+            allowHalfStars: false,
+            starSize: 'medium',
+
+            // Initialize with some sample ratings
+            init() {
+                // Add some initial ratings for demo
+                this.addRating(4.5);
+                this.addRating(3);
+                this.addRating(5);
+                this.addRating(2.5);
+                this.addRating(4);
+                this.addRating(3.5);
+                this.addRating(5);
+                this.addRating(1);
+                this.addRating(4);
+                this.addRating(3);
+            },
+
+            // Add a rating
+            addRating(rating) {
+                this.ratings.push(rating);
+            },
+
+            // Get average rating
+            getAverage() {
+                if (this.ratings.length === 0) return 0;
+                const sum = this.ratings.reduce((a, b) => a + b, 0);
+                return Math.round((sum / this.ratings.length) * 10) / 10;
+            },
+
+            // Get rating distribution
+            getDistribution() {
+                const distribution = {};
+                for (let i = 0; i <= this.maxStars; i += 0.5) {
+                    if (!this.allowHalfStars && i % 1 !== 0) continue;
+                    distribution[i] = 0;
+                }
+
+                this.ratings.forEach(rating => {
+                    distribution[rating] = (distribution[rating] || 0) + 1;
+                });
+
+                return distribution;
+            },
+
+            // Get most common rating
+            getMostCommon() {
+                const distribution = this.getDistribution();
+                let mostCommon = 0;
+                let maxCount = 0;
+
+                Object.entries(distribution).forEach(([rating, count]) => {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        mostCommon = parseFloat(rating);
+                    }
+                });
+
+                return mostCommon;
+            },
+
+            // Get standard deviation
+            getDeviation() {
+                if (this.ratings.length < 2) return 0;
+
+                const average = this.getAverage();
+                const squaredDiffs = this.ratings.map(rating =>
+                    Math.pow(rating - average, 2)
+                );
+                const variance = squaredDiffs.reduce((a, b) => a + b, 0) / this.ratings.length;
+
+                return Math.round(Math.sqrt(variance) * 10) / 10;
+            },
+
+            // Clear all ratings
+            clearRatings() {
+                this.ratings = [];
+                this.currentUserRating = 0;
+            }
+        };
+
+        // DOM Elements
+        const interactiveStars = document.getElementById('interactiveStars');
+        const ratingPreview = document.getElementById('ratingPreview');
+        const previewValue = document.getElementById('previewValue');
+        const currentRating = document.getElementById('currentRating');
+        const ratingText = document.getElementById('ratingText');
+        const averageStars = document.getElementById('averageStars');
+        const averageValue = document.getElementById('averageValue');
+        const totalRatings = document.getElementById('totalRatings');
+        const ratingDistribution = document.getElementById('ratingDistribution');
+        const optionButtons = document.querySelectorAll('.option-btn');
+        const resetBtn = document.getElementById('resetBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const totalSubmitted = document.getElementById('totalSubmitted');
+        const currentUserRating = document.getElementById('currentUserRating');
+        const ratingDeviation = document.getElementById('ratingDeviation');
+        const ratingDistributionElement = document.querySelector('.rating-distribution');
+
+        // Rating state
+        let hoverRating = 0;
+        let selectedRating = 0;
+        let isHovering = false;
+
+        // Initialize
+        function initialize() {
+            // Initialize rating system
+            ratingSystem.init();
+
+            // Create interactive stars
+            createInteractiveStars();
+
+            // Create average stars
+            updateAverageRating();
+
+            // Update distribution
+            updateDistribution();
+
+            // Update stats
+            updateStats();
+
+            // Add event listeners
+            addEventListeners();
+        }
+
+        // Create interactive stars
+        function createInteractiveStars() {
+            interactiveStars.innerHTML = '';
+
+            for (let i = 1; i <= ratingSystem.maxStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.dataset.value = i;
+                star.innerHTML = '★';
+
+                // Set star size
+                updateStarSize();
+
+                // Mouse events for full stars
+                star.addEventListener('mouseenter', () => handleStarHover(i));
+                star.addEventListener('mouseleave', handleStarLeave);
+                star.addEventListener('click', () => handleStarClick(i));
+
+                // Touch events for mobile
+                star.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    handleStarHover(i);
+                });
+                star.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    handleStarClick(i);
+                });
+
+                interactiveStars.appendChild(star);
+            }
+
+            // Update star display
+            updateStarDisplay();
+        }
+
+        // Handle star hover
+        function handleStarHover(value) {
+            if (!ratingSystem.allowHalfStars) {
+                hoverRating = value;
+            } else {
+                // For half stars, we need to calculate based on mouse position
+                // This will be handled by the mousemove event on container
+                hoverRating = value;
+            }
+
+            isHovering = true;
+            updateStarDisplay();
+            showRatingPreview(value);
+        }
+
+        // Handle star leave
+        function handleStarLeave() {
+            isHovering = false;
+            updateStarDisplay();
+            hideRatingPreview();
+        }
+
+        // Handle star click
+        function handleStarClick(value) {
+            selectedRating = value;
+            ratingSystem.currentUserRating = value;
+            updateStarDisplay();
+            updateCurrentRating();
+            hideRatingPreview();
+
+            // Update user rating display
+            updateStats();
+        }
+
+        // Show rating preview
+        function showRatingPreview(value) {
+            previewValue.textContent = value.toFixed(ratingSystem.allowHalfStars ? 1 : 0);
+            ratingPreview.classList.add('show');
+        }
+
+        // Hide rating preview
+        function hideRatingPreview() {
+            ratingPreview.classList.remove('show');
+        }
+
+        // Update star display
+        function updateStarDisplay() {
+            const stars = interactiveStars.querySelectorAll('.star');
+            const displayRating = isHovering ? hoverRating : selectedRating;
+
+            stars.forEach(star => {
+                const value = parseInt(star.dataset.value);
+                star.classList.remove('active', 'half');
+
+                if (ratingSystem.allowHalfStars) {
+                    if (displayRating >= value) {
+                        star.classList.add('active');
+                    } else if (displayRating >= value - 0.5) {
+                        star.classList.add('half');
+                    }
+                } else {
+                    if (displayRating >= value) {
+                        star.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // Update current rating display
+        function updateCurrentRating() {
+            currentRating.textContent = selectedRating.toFixed(ratingSystem.allowHalfStars ? 1 : 0);
+
+            // Update rating text
+            let text = 'Not rated yet';
+            if (selectedRating > 0) {
+                if (selectedRating >= 4.5) text = 'Excellent!';
+                else if (selectedRating >= 4) text = 'Very Good';
+                else if (selectedRating >= 3) text = 'Good';
+                else if (selectedRating >= 2) text = 'Fair';
+                else text = 'Poor';
+            }
+            ratingText.textContent = text;
+        }
+
+        // Update average rating
+        function updateAverageRating() {
+            const average = ratingSystem.getAverage();
+            averageValue.textContent = average.toFixed(1);
+            totalRatings.textContent = `${ratingSystem.ratings.length} ratings`;
+
+            // Create average stars
+            averageStars.innerHTML = '';
+            const fullStars = Math.floor(average);
+            const hasHalfStar = average % 1 >= 0.5;
+
+            for (let i = 1; i <= ratingSystem.maxStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'average-star';
+                star.style.position = 'relative';
+
+                if (i <= fullStars) {
+                    star.innerHTML = '★';
+                } else if (hasHalfStar && i === fullStars + 1) {
+                    star.innerHTML = '★';
+                    star.classList.add('half');
+                } else {
+                    star.innerHTML = '☆';
+                    star.style.color = 'rgba(255, 255, 255, 0.2)';
+                }
+
+                averageStars.appendChild(star);
+            }
+        }
+
+        // Update distribution
+        function updateDistribution() {
+            const distribution = ratingSystem.getDistribution();
+            ratingDistributionElement.innerHTML = '';
+
+            // Create distribution bars for each possible rating
+            Object.entries(distribution).forEach(([rating, count]) => {
+                const maxCount = Math.max(...Object.values(distribution));
+                const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
+
+                const bar = document.createElement('div');
+                bar.className = 'distribution-bar';
+
+                bar.innerHTML = `
+                    <div class="star-label">
+                        <span>${parseFloat(rating).toFixed(ratingSystem.allowHalfStars ? 1 : 0)}</span>
+                        <span>★</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="bar-count">${count}</div>
+                `;
+
+                ratingDistributionElement.appendChild(bar);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            totalSubmitted.textContent = ratingSystem.ratings.length;
+            currentUserRating.textContent = ratingSystem.currentUserRating.toFixed(1);
+
+            const mostCommon = ratingSystem.getMostCommon();
+            ratingDistribution.textContent = mostCommon > 0 ? mostCommon.toFixed(1) : '-';
+
+            const deviation = ratingSystem.getDeviation();
+            ratingDeviation.textContent = deviation.toFixed(1);
+        }
+
+        // Update star size
+        function updateStarSize() {
+            const stars = interactiveStars.querySelectorAll('.star');
+            const sizeMap = {
+                small: '2rem',
+                medium: '3.5rem',
+                large: '5rem'
+            };
+
+            stars.forEach(star => {
+                star.style.fontSize = sizeMap[ratingSystem.starSize];
+            });
+        }
+
+        // Add event listeners
+        function addEventListeners() {
+            // Option buttons
+            optionButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons in the same group
+                    const group = btn.parentElement;
+                    group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+
+                    // Handle different option types
+                    if (btn.dataset.type) {
+                        ratingSystem.allowHalfStars = btn.dataset.type === 'half';
+                        createInteractiveStars();
+                    }
+
+                    if (btn.dataset.max) {
+                        ratingSystem.maxStars = parseInt(btn.dataset.max);
+                        createInteractiveStars();
+                        updateAverageRating();
+                        updateDistribution();
+                    }
+
+                    if (btn.dataset.size) {
+                        ratingSystem.starSize = btn.dataset.size;
+                        updateStarSize();
+                    }
+                });
+            });
+
+            // Action buttons
+            resetBtn.addEventListener('click', () => {
+                selectedRating = 0;
+                ratingSystem.currentUserRating = 0;
+                updateStarDisplay();
+                updateCurrentRating();
+                updateStats();
+            });
+
+            submitBtn.addEventListener('click', () => {
+                if (selectedRating > 0) {
+                    ratingSystem.addRating(selectedRating);
+                    updateAverageRating();
+                    updateDistribution();
+                    updateStats();
+
+                    // Show success message
+                    alert(`Thank you for your ${selectedRating.toFixed(1)} star rating!`);
+                } else {
+                    alert('Please select a rating before submitting.');
+                }
+            });
+
+            randomBtn.addEventListener('click', () => {
+                let randomRating;
+                if (ratingSystem.allowHalfStars) {
+                    randomRating = Math.floor(Math.random() * ratingSystem.maxStars * 2) / 2 + 0.5;
+                } else {
+                    randomRating = Math.floor(Math.random() * ratingSystem.maxStars) + 1;
+                }
+
+                ratingSystem.addRating(randomRating);
+                updateAverageRating();
+                updateDistribution();
+                updateStats();
+
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'rating-preview show';
+                notification.textContent = `Added random rating: ${randomRating.toFixed(1)} stars`;
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.top = 'auto';
+
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            });
+
+            // Keyboard navigation
+            interactiveStars.addEventListener('keydown', (e) => {
+                const stars = interactiveStars.querySelectorAll('.star');
+                const currentIndex = Array.from(stars).findIndex(star =>
+                    star.classList.contains('active') || star.classList.contains('half')
+                );
+
+                let newIndex = currentIndex;
+
+                switch (e.key) {
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        newIndex = Math.min(currentIndex + 1, stars.length - 1);
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        newIndex = Math.max(currentIndex - 1, 0);
+                        break;
+                    case ' ':
+                    case 'Enter':
+                        e.preventDefault();
+                        if (currentIndex >= 0) {
+                            handleStarClick(currentIndex + 1);
+                        }
+                        break;
+                }
+
+                if (newIndex !== currentIndex && newIndex >= 0) {
+                    handleStarHover(newIndex + 1);
+                }
+            });
+
+            // Make stars focusable
+            const stars = interactiveStars.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                star.setAttribute('tabindex', '0');
+                star.setAttribute('role', 'button');
+                star.setAttribute('aria-label', `Rate ${index + 1} stars`);
+            });
+        }
+
+        // Initialize the system
+        initialize();
+
+        // Update current rating display initially
+        updateCurrentRating();
+    </script>
+</body>
+
+</html>

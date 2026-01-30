@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 46: Debounce Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        #results {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 200px;
+        }
+
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search-container">
+        <h2>Search Users</h2>
+        <input type="text" id="searchInput" placeholder="Type to search...">
+    </div>
+    <div id="results">
+        <div class="loading">Type to see search results...</div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const resultsDiv = document.getElementById('results');
+
+        // Mock data
+        const users = [
+            'John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Wilson',
+            'Charlie Brown', 'David Lee', 'Emma Davis', 'Frank Miller',
+            'Grace Taylor', 'Henry Moore'
+        ];
+
+        function debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        function searchUsers(query) {
+            resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
+
+            setTimeout(() => {
+                if (!query.trim()) {
+                    resultsDiv.innerHTML = '<div class="loading">Type to see search results...</div>';
+                    return;
+                }
+
+                const filteredUsers = users.filter(user =>
+                    user.toLowerCase().includes(query.toLowerCase())
+                );
+
+                if (filteredUsers.length > 0) {
+                    resultsDiv.innerHTML = filteredUsers
+                        .map(user => `<div class="result-item">${user}</div>`)
+                        .join('');
+                } else {
+                    resultsDiv.innerHTML = '<div class="loading">No users found</div>';
+                }
+            }, 300); // Simulate API delay
+        }
+
+        const debouncedSearch = debounce(searchUsers, 500);
+        searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+    </script>
+</body>
+
+</html>

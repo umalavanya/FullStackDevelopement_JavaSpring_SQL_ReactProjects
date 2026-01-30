@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 81: Pagination Component</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .controls-panel {
+            padding: 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .control-group {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .control-label {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .control-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e0e0e0;
+            border-radius: 4px;
+            outline: none;
+            margin: 20px 0;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .control-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .content-panel {
+            padding: 40px;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f0f0f0;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-id {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-field {
+            margin-bottom: 15px;
+        }
+
+        .field-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .field-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4em;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .pagination-container {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .pagination-info {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover:not(.disabled) {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn.ellipsis {
+            border: none;
+            background: transparent;
+            cursor: default;
+            font-size: 1.3em;
+        }
+
+        .page-btn.ellipsis:hover {
+            transform: none;
+        }
+
+        .nav-btn {
+            min-width: 120px;
+            padding: 15px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover:not(.disabled) {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-jump {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .jump-input {
+            width: 80px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .jump-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .jump-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .jump-btn:hover {
+            background: #5a5fcf;
+            transform: translateY(-2px);
+        }
+
+        .pagination-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            min-width: 150px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .pagination-styles {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .style-btn {
+            padding: 12px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .style-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .style-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+
+        .dark-mode .container {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .dark-mode header {
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+        }
+
+        .dark-mode .controls-panel {
+            background: #16213e;
+        }
+
+        .dark-mode .control-group {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .dark-mode .control-label {
+            color: white;
+        }
+
+        .dark-mode .control-input {
+            background: #16213e;
+            border-color: #302b63;
+            color: white;
+        }
+
+        .dark-mode .control-btn {
+            background: #16213e;
+            color: #b0b0b0;
+            border-color: #302b63;
+        }
+
+        .dark-mode .control-btn:hover {
+            color: #667eea;
+        }
+
+        .dark-mode .control-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .dark-mode .content-panel {
+            background: #1a1a2e;
+        }
+
+        .dark-mode .loading-overlay {
+            background: rgba(26, 26, 46, 0.95);
+        }
+
+        .dark-mode .data-card {
+            background: #16213e;
+            color: white;
+        }
+
+        .dark-mode .card-header {
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+        }
+
+        .dark-mode .field-label {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .field-value {
+            color: white;
+        }
+
+        .dark-mode .empty-icon {
+            color: #302b63;
+        }
+
+        .dark-mode .pagination-container {
+            background: #16213e;
+        }
+
+        .dark-mode .page-btn {
+            background: #1a1a2e;
+            color: #b0b0b0;
+            border-color: #302b63;
+        }
+
+        .dark-mode .nav-btn {
+            background: #1a1a2e;
+            color: #b0b0b0;
+            border-color: #302b63;
+        }
+
+        .dark-mode .stat-item {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .dark-mode .stat-label {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .style-btn {
+            background: #1a1a2e;
+            color: #b0b0b0;
+            border-color: #302b63;
+        }
+
+        .dark-mode .jump-input {
+            background: #16213e;
+            border-color: #302b63;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pagination-main {
+                gap: 5px;
+            }
+
+            .page-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1em;
+            }
+
+            .nav-btn {
+                min-width: 100px;
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-layer-group"></i> Pagination Component</h1>
+            <p class="subtitle">Dynamic pagination with customizable items per page, visual styles, and detailed
+                statistics</p>
+        </header>
+
+        <div class="controls-panel">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <div class="control-label">
+                        <i class="fas fa-database"></i>
+                        Total Items
+                    </div>
+                    <div class="slider-value" id="totalItemsValue">100</div>
+                    <input type="range" min="10" max="500" value="100" class="control-slider" id="totalItemsSlider">
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="setTotalItems(50)">50</button>
+                        <button class="control-btn active" onclick="setTotalItems(100)">100</button>
+                        <button class="control-btn" onclick="setTotalItems(250)">250</button>
+                        <button class="control-btn" onclick="setTotalItems(500)">500</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <i class="fas fa-list-ol"></i>
+                        Items Per Page
+                    </div>
+                    <div class="slider-value" id="perPageValue">10</div>
+                    <input type="range" min="5" max="50" value="10" class="control-slider" id="perPageSlider">
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="setPerPage(5)">5</button>
+                        <button class="control-btn active" onclick="setPerPage(10)">10</button>
+                        <button class="control-btn" onclick="setPerPage(20)">20</button>
+                        <button class="control-btn" onclick="setPerPage(30)">30</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <i class="fas fa-eye"></i>
+                        Visible Pages
+                    </div>
+                    <div class="slider-value" id="visiblePagesValue">5</div>
+                    <input type="range" min="3" max="9" value="5" step="2" class="control-slider"
+                        id="visiblePagesSlider">
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="setVisiblePages(3)">3</button>
+                        <button class="control-btn active" onclick="setVisiblePages(5)">5</button>
+                        <button class="control-btn" onclick="setVisiblePages(7)">7</button>
+                        <button class="control-btn" onclick="setVisiblePages(9)">9</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-panel">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+                <div>Loading data...</div>
+            </div>
+
+            <div class="data-grid" id="dataGrid">
+                <!-- Data cards will be populated by JavaScript -->
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <div>No data available</div>
+                <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.7;">
+                    Adjust the controls above to generate data
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination-container">
+            <div class="pagination-wrapper">
+                <div class="pagination-info">
+                    <div>
+                        Showing <span id="startItem">1</span> to <span id="endItem">10</span> of
+                        <span id="totalItemsDisplay">100</span> items
+                    </div>
+                    <div>
+                        Page <span id="currentPage">1</span> of <span id="totalPages">10</span>
+                    </div>
+                </div>
+
+                <div class="pagination-main">
+                    <button class="nav-btn" id="firstPageBtn" onclick="goToFirstPage()">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </button>
+                    <button class="nav-btn" id="prevPageBtn" onclick="goToPrevPage()">
+                        <i class="fas fa-angle-left"></i> Previous
+                    </button>
+
+                    <div id="pageNumbers">
+                        <!-- Page numbers will be populated by JavaScript -->
+                    </div>
+
+                    <button class="nav-btn" id="nextPageBtn" onclick="goToNextPage()">
+                        Next <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="nav-btn" id="lastPageBtn" onclick="goToLastPage()">
+                        Last <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+
+                <div class="pagination-info">
+                    <div class="page-jump">
+                        <span>Go to page:</span>
+                        <input type="number" class="jump-input" id="jumpInput" min="1" value="1">
+                        <button class="jump-btn" onclick="jumpToPage()">Go</button>
+                    </div>
+                </div>
+
+                <div class="pagination-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statTotalPages">10</div>
+                        <div class="stat-label">Total Pages</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statCurrentPage">1</div>
+                        <div class="stat-label">Current Page</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statItemsPerPage">10</div>
+                        <div class="stat-label">Items Per Page</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statRemaining">90</div>
+                        <div class="stat-label">Remaining Items</div>
+                    </div>
+                </div>
+
+                <div class="pagination-styles">
+                    <button class="style-btn active" onclick="setPaginationStyle('default')">
+                        <i class="fas fa-border-all"></i> Default
+                    </button>
+                    <button class="style-btn" onclick="setPaginationStyle('minimal')">
+                        <i class="fas fa-minus"></i> Minimal
+                    </button>
+                    <button class="style-btn" onclick="setPaginationStyle('compact')">
+                        <i class="fas fa-compress"></i> Compact
+                    </button>
+                    <button class="style-btn" onclick="setPaginationStyle('rounded')">
+                        <i class="fas fa-circle"></i> Rounded
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pagination state
+        let totalItems = 100;
+        let itemsPerPage = 10;
+        let currentPage = 1;
+        let visiblePages = 5;
+        let paginationStyle = 'default';
+
+        // Sample data generator
+        let allItems = [];
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const dataGrid = document.getElementById('dataGrid');
+        const emptyState = document.getElementById('emptyState');
+        const totalItemsSlider = document.getElementById('totalItemsSlider');
+        const perPageSlider = document.getElementById('perPageSlider');
+        const visiblePagesSlider = document.getElementById('visiblePagesSlider');
+        const totalItemsValue = document.getElementById('totalItemsValue');
+        const perPageValue = document.getElementById('perPageValue');
+        const visiblePagesValue = document.getElementById('visiblePagesValue');
+        const startItem = document.getElementById('startItem');
+        const endItem = document.getElementById('endItem');
+        const totalItemsDisplay = document.getElementById('totalItemsDisplay');
+        const currentPageElement = document.getElementById('currentPage');
+        const totalPages = document.getElementById('totalPages');
+        const pageNumbers = document.getElementById('pageNumbers');
+        const firstPageBtn = document.getElementById('firstPageBtn');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const lastPageBtn = document.getElementById('lastPageBtn');
+        const jumpInput = document.getElementById('jumpInput');
+        const statTotalPages = document.getElementById('statTotalPages');
+        const statCurrentPage = document.getElementById('statCurrentPage');
+        const statItemsPerPage = document.getElementById('statItemsPerPage');
+        const statRemaining = document.getElementById('statRemaining');
+
+        // Initialize
+        function init() {
+            // Initialize sliders
+            totalItemsSlider.value = totalItems;
+            perPageSlider.value = itemsPerPage;
+            visiblePagesSlider.value = visiblePages;
+
+            // Generate initial data
+            generateData();
+
+            // Add event listeners
+            totalItemsSlider.addEventListener('input', updateTotalItems);
+            perPageSlider.addEventListener('input', updatePerPage);
+            visiblePagesSlider.addEventListener('input', updateVisiblePages);
+
+            // Initialize pagination
+            updatePagination();
+        }
+
+        // Generate sample data
+        function generateData() {
+            allItems = [];
+
+            const categories = ['Technology', 'Business', 'Health', 'Education', 'Entertainment', 'Sports', 'Science', 'Travel'];
+            const statuses = ['Active', 'Pending', 'Completed', 'Cancelled', 'Archived'];
+            const priorities = ['Low', 'Medium', 'High', 'Critical'];
+
+            for (let i = 1; i <= totalItems; i++) {
+                const category = categories[Math.floor(Math.random() * categories.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const priority = priorities[Math.floor(Math.random() * priorities.length)];
+                const progress = Math.floor(Math.random() * 100);
+                const date = new Date();
+                date.setDate(date.getDate() - Math.floor(Math.random() * 365));
+
+                allItems.push({
+                    id: i,
+                    title: `Item #${i}: ${category} Task`,
+                    description: `This is a sample ${category.toLowerCase()} item with ${status.toLowerCase()} status.`,
+                    category: category,
+                    status: status,
+                    priority: priority,
+                    progress: progress,
+                    date: date.toLocaleDateString(),
+                    value: `$${(Math.random() * 10000).toFixed(2)}`
+                });
+            }
+
+            // Simulate loading
+            showLoading();
+            setTimeout(() => {
+                renderCurrentPage();
+                hideLoading();
+            }, 300);
+        }
+
+        // Show loading state
+        function showLoading() {
+            loadingOverlay.classList.add('active');
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+
+        // Update total items
+        function updateTotalItems() {
+            totalItems = parseInt(totalItemsSlider.value);
+            totalItemsValue.textContent = totalItems;
+
+            // Update active button
+            updateActiveButton('totalItems', totalItems);
+
+            generateData();
+            updatePagination();
+        }
+
+        // Set total items from button
+        function setTotalItems(value) {
+            totalItems = value;
+            totalItemsSlider.value = value;
+            totalItemsValue.textContent = value;
+
+            updateActiveButton('totalItems', value);
+            generateData();
+            updatePagination();
+        }
+
+        // Update items per page
+        function updatePerPage() {
+            itemsPerPage = parseInt(perPageSlider.value);
+            perPageValue.textContent = itemsPerPage;
+
+            // Update active button
+            updateActiveButton('perPage', itemsPerPage);
+
+            // Reset to first page when changing items per page
+            currentPage = 1;
+            updatePagination();
+            renderCurrentPage();
+        }
+
+        // Set items per page from button
+        function setPerPage(value) {
+            itemsPerPage = value;
+            perPageSlider.value = value;
+            perPageValue.textContent = value;
+
+            currentPage = 1;
+            updateActiveButton('perPage', value);
+            updatePagination();
+            renderCurrentPage();
+        }
+
+        // Update visible pages
+        function updateVisiblePages() {
+            visiblePages = parseInt(visiblePagesSlider.value);
+            visiblePagesValue.textContent = visiblePages;
+
+            // Update active button
+            updateActiveButton('visiblePages', visiblePages);
+
+            updatePagination();
+        }
+
+        // Set visible pages from button
+        function setVisiblePages(value) {
+            visiblePages = value;
+            visiblePagesSlider.value = value;
+            visiblePagesValue.textContent = value;
+
+            updateActiveButton('visiblePages', value);
+            updatePagination();
+        }
+
+        // Update active button state
+        function updateActiveButton(type, value) {
+            // Remove active class from all buttons in the group
+            const eventBtn = event.target;
+            const parent = eventBtn.parentElement;
+            parent.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            eventBtn.classList.add('active');
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const totalPagesCount = Math.ceil(totalItems / itemsPerPage);
+
+            // Update info display
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalItems);
+
+            startItem.textContent = start;
+            endItem.textContent = end;
+            totalItemsDisplay.textContent = totalItems;
+            currentPageElement.textContent = currentPage;
+            totalPages.textContent = totalPagesCount;
+
+            // Update jump input
+            jumpInput.value = currentPage;
+            jumpInput.max = totalPagesCount;
+
+            // Update stats
+            statTotalPages.textContent = totalPagesCount;
+            statCurrentPage.textContent = currentPage;
+            statItemsPerPage.textContent = itemsPerPage;
+            statRemaining.textContent = totalItems - end;
+
+            // Update navigation buttons
+            firstPageBtn.disabled = currentPage === 1;
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPagesCount;
+            lastPageBtn.disabled = currentPage === totalPagesCount;
+
+            firstPageBtn.classList.toggle('disabled', currentPage === 1);
+            prevPageBtn.classList.toggle('disabled', currentPage === 1);
+            nextPageBtn.classList.toggle('disabled', currentPage === totalPagesCount);
+            lastPageBtn.classList.toggle('disabled', currentPage === totalPagesCount);
+
+            // Generate page numbers
+            generatePageNumbers(totalPagesCount);
+
+            // Apply style
+            applyPaginationStyle();
+        }
+
+        // Generate page numbers with ellipsis
+        function generatePageNumbers(totalPagesCount) {
+            pageNumbers.innerHTML = '';
+
+            // Calculate range
+            let startPage, endPage;
+
+            if (totalPagesCount <= visiblePages) {
+                // Show all pages
+                startPage = 1;
+                endPage = totalPagesCount;
+            } else {
+                // Calculate start and end pages
+                const halfVisible = Math.floor(visiblePages / 2);
+
+                if (currentPage <= halfVisible + 1) {
+                    startPage = 1;
+                    endPage = visiblePages;
+                } else if (currentPage >= totalPagesCount - halfVisible) {
+                    startPage = totalPagesCount - visiblePages + 1;
+                    endPage = totalPagesCount;
+                } else {
+                    startPage = currentPage - halfVisible;
+                    endPage = currentPage + halfVisible;
+                }
+            }
+
+            // Add first page and ellipsis if needed
+            if (startPage > 1) {
+                addPageButton(1);
+                if (startPage > 2) {
+                    addEllipsis();
+                }
+            }
+
+            // Add page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                addPageButton(i);
+            }
+
+            // Add last page and ellipsis if needed
+            if (endPage < totalPagesCount) {
+                if (endPage < totalPagesCount - 1) {
+                    addEllipsis();
+                }
+                addPageButton(totalPagesCount);
+            }
+        }
+
+        // Add page button
+        function addPageButton(pageNumber) {
+            const button = document.createElement('button');
+            button.className = 'page-btn';
+            button.textContent = pageNumber;
+
+            if (pageNumber === currentPage) {
+                button.classList.add('active');
+            }
+
+            button.onclick = () => goToPage(pageNumber);
+            pageNumbers.appendChild(button);
+        }
+
+        // Add ellipsis
+        function addEllipsis() {
+            const ellipsis = document.createElement('button');
+            ellipsis.className = 'page-btn ellipsis';
+            ellipsis.textContent = '...';
+            ellipsis.disabled = true;
+            pageNumbers.appendChild(ellipsis);
+        }
+
+        // Go to specific page
+        function goToPage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > Math.ceil(totalItems / itemsPerPage)) {
+                return;
+            }
+
+            currentPage = pageNumber;
+            updatePagination();
+            renderCurrentPage();
+
+            // Animate page transition
+            animatePageTransition();
+        }
+
+        // Go to first page
+        function goToFirstPage() {
+            goToPage(1);
+        }
+
+        // Go to previous page
+        function goToPrevPage() {
+            goToPage(currentPage - 1);
+        }
+
+        // Go to next page
+        function goToNextPage() {
+            goToPage(currentPage + 1);
+        }
+
+        // Go to last page
+        function goToLastPage() {
+            goToPage(Math.ceil(totalItems / itemsPerPage));
+        }
+
+        // Jump to page from input
+        function jumpToPage() {
+            const page = parseInt(jumpInput.value);
+            if (page >= 1 && page <= Math.ceil(totalItems / itemsPerPage)) {
+                goToPage(page);
+            }
+        }
+
+        // Render current page data
+        function renderCurrentPage() {
+            if (allItems.length === 0) {
+                dataGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            dataGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+            const pageItems = allItems.slice(startIndex, endIndex);
+
+            dataGrid.innerHTML = '';
+
+            pageItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-id">#${item.id}</div>
+                        <div class="card-title">${item.title}</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-field">
+                            <div class="field-label">Description</div>
+                            <div class="field-value">${item.description}</div>
+                        </div>
+                        <div class="card-field">
+                            <div class="field-label">Category</div>
+                            <div class="field-value">${item.category}</div>
+                        </div>
+                        <div class="card-field">
+                            <div class="field-label">Status</div>
+                            <div class="field-value">
+                                <span style="color: ${getStatusColor(item.status)}">${item.status}</span>
+                            </div>
+                        </div>
+                        <div class="card-field">
+                            <div class="field-label">Priority</div>
+                            <div class="field-value">
+                                <span style="color: ${getPriorityColor(item.priority)}">${item.priority}</span>
+                            </div>
+                        </div>
+                        <div class="card-field">
+                            <div class="field-label">Progress</div>
+                            <div class="field-value">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="flex: 1; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
+                                        <div style="width: ${item.progress}%; height: 100%; background: ${getProgressColor(item.progress)};"></div>
+                                    </div>
+                                    <span>${item.progress}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-field">
+                            <div class="field-label">Date Created</div>
+                            <div class="field-value">${item.date}</div>
+                        </div>
+                        <div class="card-field">
+                            <div class="field-label">Value</div>
+                            <div class="field-value">${item.value}</div>
+                        </div>
+                    </div>
+                `;
+                dataGrid.appendChild(card);
+            });
+        }
+
+        // Get status color
+        function getStatusColor(status) {
+            switch (status) {
+                case 'Active': return '#4CAF50';
+                case 'Pending': return '#FF9800';
+                case 'Completed': return '#2196F3';
+                case 'Cancelled': return '#f44336';
+                case 'Archived': return '#9E9E9E';
+                default: return '#666';
+            }
+        }
+
+        // Get priority color
+        function getPriorityColor(priority) {
+            switch (priority) {
+                case 'Low': return '#4CAF50';
+                case 'Medium': return '#FF9800';
+                case 'High': return '#f44336';
+                case 'Critical': return '#9C27B0';
+                default: return '#666';
+            }
+        }
+
+        // Get progress color
+        function getProgressColor(progress) {
+            if (progress < 30) return '#f44336';
+            if (progress < 70) return '#FF9800';
+            return '#4CAF50';
+        }
+
+        // Set pagination style
+        function setPaginationStyle(style) {
+            paginationStyle = style;
+
+            // Update active style button
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            applyPaginationStyle();
+        }
+
+        // Apply pagination style
+        function applyPaginationStyle() {
+            // Remove all style classes
+            pageNumbers.querySelectorAll('.page-btn').forEach(btn => {
+                btn.classList.remove('minimal', 'compact', 'rounded');
+            });
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('minimal', 'compact', 'rounded');
+            });
+
+            // Apply new style
+            if (paginationStyle === 'minimal') {
+                pageNumbers.querySelectorAll('.page-btn').forEach(btn => {
+                    if (!btn.classList.contains('ellipsis')) {
+                        btn.classList.add('minimal');
+                        btn.style.border = 'none';
+                        btn.style.background = 'transparent';
+                        btn.style.width = 'auto';
+                        btn.style.height = 'auto';
+                        btn.style.padding = '10px';
+                    }
+                });
+
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.add('minimal');
+                    btn.style.border = 'none';
+                    btn.style.background = 'transparent';
+                });
+            }
+            else if (paginationStyle === 'compact') {
+                pageNumbers.querySelectorAll('.page-btn').forEach(btn => {
+                    if (!btn.classList.contains('ellipsis')) {
+                        btn.classList.add('compact');
+                        btn.style.width = '40px';
+                        btn.style.height = '40px';
+                        btn.style.fontSize = '0.9em';
+                    }
+                });
+
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.add('compact');
+                    btn.style.padding = '10px 15px';
+                    btn.style.fontSize = '0.9em';
+                });
+            }
+            else if (paginationStyle === 'rounded') {
+                pageNumbers.querySelectorAll('.page-btn').forEach(btn => {
+                    if (!btn.classList.contains('ellipsis')) {
+                        btn.classList.add('rounded');
+                        btn.style.borderRadius = '50%';
+                    }
+                });
+
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.add('rounded');
+                    btn.style.borderRadius = '25px';
+                });
+            }
+        }
+
+        // Animate page transition
+        function animatePageTransition() {
+            dataGrid.style.opacity = '0.5';
+            dataGrid.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                dataGrid.style.transition = 'all 0.3s ease';
+                dataGrid.style.opacity = '1';
+                dataGrid.style.transform = 'translateY(0)';
+            }, 50);
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltip Component</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .demo-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tooltip-trigger {
+            display: inline-block;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .tooltip-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tooltip Base Styles */
+        .tooltip {
+            position: absolute;
+            padding: 10px 16px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            pointer-events: none;
+            max-width: 250px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Tooltip Arrow */
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        /* Tooltip Positions */
+        .tooltip-top {
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
+        }
+
+        .tooltip-top::before {
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0 8px;
+            border-color: #2c3e50 transparent transparent transparent;
+        }
+
+        .tooltip-bottom {
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 10px;
+        }
+
+        .tooltip-bottom::before {
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 8px 8px 8px;
+            border-color: transparent transparent #2c3e50 transparent;
+        }
+
+        .tooltip-left {
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-right: 10px;
+        }
+
+        .tooltip-left::before {
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 8px 0 8px 8px;
+            border-color: transparent transparent transparent #2c3e50;
+        }
+
+        .tooltip-right {
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 10px;
+        }
+
+        .tooltip-right::before {
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 8px 8px 8px 0;
+            border-color: transparent #2c3e50 transparent transparent;
+        }
+
+        /* Special Tooltip Variations */
+        .tooltip-success {
+            background: #2ecc71;
+        }
+
+        .tooltip-success::before {
+            border-top-color: #2ecc71;
+        }
+
+        .tooltip-warning {
+            background: #f39c12;
+        }
+
+        .tooltip-warning::before {
+            border-top-color: #f39c12;
+        }
+
+        .tooltip-danger {
+            background: #e74c3c;
+        }
+
+        .tooltip-danger::before {
+            border-top-color: #e74c3c;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .code-example {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+
+        .example-item {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tooltip Component</h1>
+        <p class="subtitle">Hover over the buttons to see different tooltip positions and styles</p>
+
+        <div class="demo-grid">
+            <div class="demo-card">
+                <h3 style="margin-bottom: 20px;">Top Tooltips</h3>
+                <div class="example-item">
+                    <button class="tooltip-trigger" data-tooltip="This is a top tooltip with useful information"
+                        data-position="top">
+                        Top Tooltip
+                    </button>
+                </div>
+                <div class="example-item">
+                    <button class="tooltip-trigger" data-tooltip="Success! Everything went well." data-position="top"
+                        data-style="success">
+                        Success Tooltip
+                    </button>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <h3 style="margin-bottom: 20px;">Bottom Tooltips</h3>
+                <div class="example-item">
+                    <button class="tooltip-trigger" data-tooltip="This tooltip appears at the bottom of the element"
+                        data-position="bottom">
+                        Bottom Tooltip
+                    </button>
+                </div>
+                <div class="example-item">
+                    <button class="tooltip-trigger" data-tooltip="Warning! This action cannot be undone."
+                        data-position="bottom" data-style="warning">
+                        Warning Tooltip
+                    </button>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <h3 style="margin-bottom: 20px;">Side Tooltips</h3>
+                <div class="example-item">
+                    <button class="tooltip-trigger" data-tooltip="Left positioned tooltip with additional details"
+                        data-position="left">
+                        Left Tooltip
+                    </button>
+                </div>
+                <div class="example-item">
+                    <button class="tooltip-trigger" data-tooltip="Error: Something went wrong. Please try again."
+                        data-position="right" data-style="danger">
+                        Right Tooltip
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>How to Use:</h3>
+            <p>Tooltips appear on hover and are positioned relative to their trigger element. They include arrow
+                pointers and support multiple styles.</p>
+
+            <div class="code-example">
+                &lt;button class="tooltip-trigger"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;data-tooltip="Your message here"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;data-position="top|bottom|left|right"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;data-style="success|warning|danger"&gt;<br>
+                &nbsp;&nbsp;Hover me<br>
+                &lt;/button&gt;
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Tooltip {
+            constructor() {
+                this.tooltip = null;
+                this.init();
+            }
+
+            init() {
+                this.createTooltipElement();
+                this.addEventListeners();
+            }
+
+            createTooltipElement() {
+                this.tooltip = document.createElement('div');
+                this.tooltip.className = 'tooltip';
+                document.body.appendChild(this.tooltip);
+            }
+
+            addEventListeners() {
+                document.addEventListener('mouseover', (e) => {
+                    const trigger = e.target.closest('.tooltip-trigger');
+                    if (trigger) {
+                        this.showTooltip(trigger, e);
+                    }
+                });
+
+                document.addEventListener('mouseout', (e) => {
+                    const trigger = e.target.closest('.tooltip-trigger');
+                    if (trigger) {
+                        this.hideTooltip();
+                    }
+                });
+            }
+
+            showTooltip(trigger, event) {
+                const text = trigger.getAttribute('data-tooltip');
+                const position = trigger.getAttribute('data-position') || 'top';
+                const style = trigger.getAttribute('data-style');
+
+                this.tooltip.textContent = text;
+                this.tooltip.className = `tooltip tooltip-${position}`;
+
+                if (style) {
+                    this.tooltip.classList.add(`tooltip-${style}`);
+                }
+
+                const triggerRect = trigger.getBoundingClientRect();
+                const tooltipRect = this.tooltip.getBoundingClientRect();
+
+                let top, left;
+
+                switch (position) {
+                    case 'top':
+                        top = triggerRect.top - tooltipRect.height - 10;
+                        left = triggerRect.left + (triggerRect.width - tooltipRect.width) / 2;
+                        break;
+                    case 'bottom':
+                        top = triggerRect.bottom + 10;
+                        left = triggerRect.left + (triggerRect.width - tooltipRect.width) / 2;
+                        break;
+                    case 'left':
+                        top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2;
+                        left = triggerRect.left - tooltipRect.width - 10;
+                        break;
+                    case 'right':
+                        top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2;
+                        left = triggerRect.right + 10;
+                        break;
+                }
+
+                // Adjust for window boundaries
+                left = Math.max(10, Math.min(left, window.innerWidth - tooltipRect.width - 10));
+                top = Math.max(10, Math.min(top, window.innerHeight - tooltipRect.height - 10));
+
+                this.tooltip.style.left = `${left + window.scrollX}px`;
+                this.tooltip.style.top = `${top + window.scrollY}px`;
+                this.tooltip.classList.add('show');
+            }
+
+            hideTooltip() {
+                this.tooltip.classList.remove('show');
+            }
+        }
+
+        // Initialize tooltip system
+        new Tooltip();
+    </script>
+</body>
+
+</html>

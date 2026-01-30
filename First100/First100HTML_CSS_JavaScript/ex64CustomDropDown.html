@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 64: Custom Dropdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .dropdown-system {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 1024px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dropdown Demo Area */
+        .dropdown-demo {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .demo-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Custom Dropdown Styles */
+        .dropdown-wrapper {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-trigger:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .dropdown-trigger:focus {
+            outline: none;
+            border-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+
+        .dropdown-trigger.open {
+            border-radius: 15px 15px 0 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .trigger-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-trigger.open .trigger-icon {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0 0 15px 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .dropdown-menu.open {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-box {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .dropdown-items {
+            padding: 10px 0;
+        }
+
+        .dropdown-item {
+            padding: 18px 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            padding-left: 30px;
+        }
+
+        .dropdown-item.selected {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .dropdown-item.highlighted {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .item-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .item-text {
+            flex: 1;
+        }
+
+        .item-check {
+            color: #4CAF50;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .dropdown-item.selected .item-check {
+            opacity: 1;
+        }
+
+        .no-results {
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Selected Value Display */
+        .selected-display {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .selected-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .selected-value {
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Dropdown Options Panel */
+        .options-panel {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .options-group {
+            margin-bottom: 35px;
+        }
+
+        .options-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-control {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Dropdown Types */
+        .dropdown-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .type-btn {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .type-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .type-btn.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: white;
+        }
+
+        .type-icon {
+            font-size: 2rem;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dropdown-system {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .dropdown-demo,
+            .options-panel {
+                padding: 25px;
+            }
+
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .dropdown-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dropdown-system {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .dropdown-types {
+                grid-template-columns: 1fr;
+            }
+
+            .option-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dropdown-system">
+        <header>
+            <h1>🔽 Custom Dropdown</h1>
+            <p class="subtitle">Enhanced dropdown with search, keyboard navigation, and customizable options</p>
+        </header>
+
+        <div class="demo-container">
+            <!-- Dropdown Demo -->
+            <div class="dropdown-demo">
+                <h2 class="demo-title">
+                    <span>🎯</span> Interactive Dropdown
+                </h2>
+                <p class="demo-description">
+                    Try the custom dropdown below. You can search, use keyboard navigation, and select options with a
+                    better interface than native select elements.
+                </p>
+
+                <!-- Country Dropdown -->
+                <div class="dropdown-wrapper">
+                    <button class="dropdown-trigger" id="dropdownTrigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span id="selectedText">Select a country...</span>
+                        <span class="trigger-icon">▼</span>
+                    </button>
+
+                    <div class="dropdown-menu" id="dropdownMenu" role="listbox" aria-labelledby="dropdownTrigger">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="searchInput" placeholder="Search countries..."
+                                autocomplete="off">
+                        </div>
+                        <div class="dropdown-items" id="dropdownItems">
+                            <!-- Items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected Value Display -->
+                <div class="selected-display">
+                    <div class="selected-label">Currently Selected:</div>
+                    <div class="selected-value" id="selectedValue">
+                        <span id="selectedIcon">🌍</span>
+                        <span id="selectedCountry">No country selected</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options Panel -->
+            <div class="options-panel">
+                <h2 class="demo-title">
+                    <span>⚙️</span> Dropdown Options
+                </h2>
+
+                <div class="options-group">
+                    <h3 class="options-title">Dropdown Type</h3>
+                    <div class="dropdown-types">
+                        <button class="type-btn active" data-type="countries">
+                            <span class="type-icon">🌍</span>
+                            Countries
+                        </button>
+                        <button class="type-btn" data-type="languages">
+                            <span class="type-icon">🗣️</span>
+                            Languages
+                        </button>
+                        <button class="type-btn" data-type="currencies">
+                            <span class="type-icon">💰</span>
+                            Currencies
+                        </button>
+                        <button class="type-btn" data-type="timezones">
+                            <span class="type-icon">⏰</span>
+                            Timezones
+                        </button>
+                    </div>
+                </div>
+
+                <div class="options-group">
+                    <h3 class="options-title">Features</h3>
+                    <div class="option-control">
+                        <div class="option-row">
+                            <div class="option-label">Search Enabled</div>
+                            <label class="switch">
+                                <input type="checkbox" id="searchToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="option-row">
+                            <div class="option-label">Show Icons</div>
+                            <label class="switch">
+                                <input type="checkbox" id="iconsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="option-row">
+                            <div class="option-label">Auto-close on Select</div>
+                            <label class="switch">
+                                <input type="checkbox" id="autocloseToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="options-group">
+                    <h3 class="options-title">Appearance</h3>
+                    <div class="option-control">
+                        <div class="option-row">
+                            <div class="option-label">Animation Speed</div>
+                            <input type="range" id="animationSlider" min="0" max="300" value="150">
+                        </div>
+                        <div class="option-row">
+                            <div class="option-label">Max Height</div>
+                            <input type="range" id="heightSlider" min="200" max="500" value="400">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value" id="totalItems">0</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="filteredItems">0</div>
+                <div class="stat-label">Filtered Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="selectedIndex">-</div>
+                <div class="stat-label">Selected Index</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dropdown Data
+        const dropdownData = {
+            countries: [
+                { value: 'us', label: 'United States', icon: '🇺🇸', description: 'North America' },
+                { value: 'gb', label: 'United Kingdom', icon: '🇬🇧', description: 'Europe' },
+                { value: 'ca', label: 'Canada', icon: '🇨🇦', description: 'North America' },
+                { value: 'au', label: 'Australia', icon: '🇦🇺', description: 'Oceania' },
+                { value: 'de', label: 'Germany', icon: '🇩🇪', description: 'Europe' },
+                { value: 'fr', label: 'France', icon: '🇫🇷', description: 'Europe' },
+                { value: 'jp', label: 'Japan', icon: '🇯🇵', description: 'Asia' },
+                { value: 'cn', label: 'China', icon: '🇨🇳', description: 'Asia' },
+                { value: 'in', label: 'India', icon: '🇮🇳', description: 'Asia' },
+                { value: 'br', label: 'Brazil', icon: '🇧🇷', description: 'South America' },
+                { value: 'mx', label: 'Mexico', icon: '🇲🇽', description: 'North America' },
+                { value: 'es', label: 'Spain', icon: '🇪🇸', description: 'Europe' },
+                { value: 'it', label: 'Italy', icon: '🇮🇹', description: 'Europe' },
+                { value: 'ru', label: 'Russia', icon: '🇷🇺', description: 'Europe/Asia' },
+                { value: 'kr', label: 'South Korea', icon: '🇰🇷', description: 'Asia' },
+                { value: 'sg', label: 'Singapore', icon: '🇸🇬', description: 'Asia' },
+                { value: 'nl', label: 'Netherlands', icon: '🇳🇱', description: 'Europe' },
+                { value: 'se', label: 'Sweden', icon: '🇸🇪', description: 'Europe' },
+                { value: 'no', label: 'Norway', icon: '🇳🇴', description: 'Europe' },
+                { value: 'ch', label: 'Switzerland', icon: '🇨🇭', description: 'Europe' }
+            ],
+            languages: [
+                { value: 'en', label: 'English', icon: '🇬🇧', description: 'Global' },
+                { value: 'es', label: 'Spanish', icon: '🇪🇸', description: 'Hispanic' },
+                { value: 'fr', label: 'French', icon: '🇫🇷', description: 'Romance' },
+                { value: 'de', label: 'German', icon: '🇩🇪', description: 'Germanic' },
+                { value: 'zh', label: 'Chinese', icon: '🇨🇳', description: 'Sinitic' },
+                { value: 'ja', label: 'Japanese', icon: '🇯🇵', description: 'Japonic' },
+                { value: 'ko', label: 'Korean', icon: '🇰🇷', description: 'Koreanic' },
+                { value: 'ru', label: 'Russian', icon: '🇷🇺', description: 'Slavic' },
+                { value: 'ar', label: 'Arabic', icon: '🇸🇦', description: 'Semitic' },
+                { value: 'hi', label: 'Hindi', icon: '🇮🇳', description: 'Indo-Aryan' }
+            ],
+            currencies: [
+                { value: 'usd', label: 'US Dollar', icon: '💵', description: 'USD - United States' },
+                { value: 'eur', label: 'Euro', icon: '💶', description: 'EUR - European Union' },
+                { value: 'gbp', label: 'British Pound', icon: '💷', description: 'GBP - United Kingdom' },
+                { value: 'jpy', label: 'Japanese Yen', icon: '💴', description: 'JPY - Japan' },
+                { value: 'cny', label: 'Chinese Yuan', icon: '💰', description: 'CNY - China' },
+                { value: 'cad', label: 'Canadian Dollar', icon: '🇨🇦', description: 'CAD - Canada' },
+                { value: 'aud', label: 'Australian Dollar', icon: '🇦🇺', description: 'AUD - Australia' },
+                { value: 'chf', label: 'Swiss Franc', icon: '🇨🇭', description: 'CHF - Switzerland' },
+                { value: 'inr', label: 'Indian Rupee', icon: '🇮🇳', description: 'INR - India' },
+                { value: 'brl', label: 'Brazilian Real', icon: '🇧🇷', description: 'BRL - Brazil' }
+            ],
+            timezones: [
+                { value: 'utc', label: 'UTC', icon: '🌐', description: 'Coordinated Universal Time' },
+                { value: 'est', label: 'EST', icon: '🇺🇸', description: 'Eastern Time (US & Canada)' },
+                { value: 'cst', label: 'CST', icon: '🇺🇸', description: 'Central Time (US & Canada)' },
+                { value: 'pst', label: 'PST', icon: '🇺🇸', description: 'Pacific Time (US & Canada)' },
+                { value: 'gmt', label: 'GMT', icon: '🇬🇧', description: 'Greenwich Mean Time' },
+                { value: 'cet', label: 'CET', icon: '🇪🇺', description: 'Central European Time' },
+                { value: 'ist', label: 'IST', icon: '🇮🇳', description: 'Indian Standard Time' },
+                { value: 'jst', label: 'JST', icon: '🇯🇵', description: 'Japan Standard Time' },
+                { value: 'aest', label: 'AEST', icon: '🇦🇺', description: 'Australian Eastern Time' },
+                { value: 'brt', label: 'BRT', icon: '🇧🇷', description: 'Brasília Time' }
+            ]
+        };
+
+        // DOM Elements
+        const dropdownTrigger = document.getElementById('dropdownTrigger');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const searchInput = document.getElementById('searchInput');
+        const dropdownItems = document.getElementById('dropdownItems');
+        const selectedText = document.getElementById('selectedText');
+        const selectedIcon = document.getElementById('selectedIcon');
+        const selectedCountry = document.getElementById('selectedCountry');
+        const selectedValue = document.getElementById('selectedValue');
+        const typeButtons = document.querySelectorAll('.type-btn');
+        const searchToggle = document.getElementById('searchToggle');
+        const iconsToggle = document.getElementById('iconsToggle');
+        const autocloseToggle = document.getElementById('autocloseToggle');
+        const animationSlider = document.getElementById('animationSlider');
+        const heightSlider = document.getElementById('heightSlider');
+        const totalItems = document.getElementById('totalItems');
+        const filteredItems = document.getElementById('filteredItems');
+        const selectedIndex = document.getElementById('selectedIndex');
+
+        // Dropdown State
+        let currentType = 'countries';
+        let currentData = dropdownData.countries;
+        let selectedItem = null;
+        let isOpen = false;
+        let filteredData = [];
+        let highlightedIndex = -1;
+        let searchEnabled = true;
+        let showIcons = true;
+        let autoClose = true;
+        let animationSpeed = 150;
+        let maxHeight = 400;
+
+        // Initialize
+        function initialize() {
+            // Load initial data
+            filteredData = [...currentData];
+            renderItems();
+            updateStats();
+
+            // Set initial selected item
+            selectedItem = currentData[0];
+            updateSelectedDisplay();
+
+            // Add event listeners
+            dropdownTrigger.addEventListener('click', toggleDropdown);
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('keydown', handleKeyboardNavigation);
+
+            // Type buttons
+            typeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    typeButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    changeDataType(btn.dataset.type);
+                });
+            });
+
+            // Option toggles
+            searchToggle.addEventListener('change', (e) => {
+                searchEnabled = e.target.checked;
+                searchInput.style.display = searchEnabled ? 'block' : 'none';
+            });
+
+            iconsToggle.addEventListener('change', (e) => {
+                showIcons = e.target.checked;
+                renderItems();
+            });
+
+            autocloseToggle.addEventListener('change', (e) => {
+                autoClose = e.target.checked;
+            });
+
+            animationSlider.addEventListener('input', (e) => {
+                animationSpeed = parseInt(e.target.value);
+                dropdownMenu.style.transitionDuration = `${animationSpeed}ms`;
+            });
+
+            heightSlider.addEventListener('input', (e) => {
+                maxHeight = parseInt(e.target.value);
+                if (isOpen) {
+                    dropdownMenu.style.maxHeight = `${maxHeight}px`;
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            // Keyboard navigation for dropdown trigger
+            dropdownTrigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleDropdown();
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    openDropdown();
+                    highlightItem(0);
+                }
+            });
+        }
+
+        // Toggle dropdown
+        function toggleDropdown() {
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        }
+
+        // Open dropdown
+        function openDropdown() {
+            if (isOpen) return;
+
+            isOpen = true;
+            dropdownTrigger.classList.add('open');
+            dropdownTrigger.setAttribute('aria-expanded', 'true');
+            dropdownMenu.classList.add('open');
+            dropdownMenu.style.maxHeight = `${maxHeight}px`;
+
+            // Focus search input if enabled
+            if (searchEnabled) {
+                searchInput.focus();
+            } else {
+                // Focus first item
+                setTimeout(() => {
+                    const firstItem = dropdownItems.querySelector('.dropdown-item');
+                    if (firstItem) {
+                        firstItem.focus();
+                    }
+                }, animationSpeed);
+            }
+
+            // Reset highlighted index
+            highlightedIndex = -1;
+        }
+
+        // Close dropdown
+        function closeDropdown() {
+            if (!isOpen) return;
+
+            isOpen = false;
+            dropdownTrigger.classList.remove('open');
+            dropdownTrigger.setAttribute('aria-expanded', 'false');
+            dropdownMenu.classList.remove('open');
+            dropdownMenu.style.maxHeight = '0';
+
+            // Clear search
+            searchInput.value = '';
+            handleSearch();
+
+            // Return focus to trigger
+            dropdownTrigger.focus();
+        }
+
+        // Change data type
+        function changeDataType(type) {
+            currentType = type;
+            currentData = dropdownData[type];
+            filteredData = [...currentData];
+
+            // Reset selection
+            selectedItem = currentData[0];
+
+            // Update UI
+            renderItems();
+            updateSelectedDisplay();
+            updateStats();
+
+            // Update placeholder text
+            const placeholders = {
+                countries: 'Select a country...',
+                languages: 'Select a language...',
+                currencies: 'Select a currency...',
+                timezones: 'Select a timezone...'
+            };
+
+            if (!selectedItem) {
+                selectedText.textContent = placeholders[type];
+            }
+        }
+
+        // Handle search
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            if (searchTerm === '') {
+                filteredData = [...currentData];
+            } else {
+                filteredData = currentData.filter(item =>
+                    item.label.toLowerCase().includes(searchTerm) ||
+                    item.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Reset highlighted index
+            highlightedIndex = -1;
+
+            // Render filtered items
+            renderItems();
+            updateStats();
+        }
+
+        // Handle keyboard navigation
+        function handleKeyboardNavigation(e) {
+            if (!isOpen) return;
+
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    highlightNext();
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    highlightPrevious();
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (highlightedIndex >= 0) {
+                        selectItem(filteredData[highlightedIndex]);
+                    }
+                    break;
+                case 'Escape':
+                    e.preventDefault();
+                    closeDropdown();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    highlightItem(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    highlightItem(filteredData.length - 1);
+                    break;
+            }
+        }
+
+        // Highlight next item
+        function highlightNext() {
+            if (filteredData.length === 0) return;
+
+            const nextIndex = (highlightedIndex + 1) % filteredData.length;
+            highlightItem(nextIndex);
+        }
+
+        // Highlight previous item
+        function highlightPrevious() {
+            if (filteredData.length === 0) return;
+
+            const prevIndex = highlightedIndex <= 0 ? filteredData.length - 1 : highlightedIndex - 1;
+            highlightItem(prevIndex);
+        }
+
+        // Highlight specific item
+        function highlightItem(index) {
+            if (index < 0 || index >= filteredData.length) return;
+
+            // Remove highlight from previous item
+            const prevItem = dropdownItems.querySelector('.dropdown-item.highlighted');
+            if (prevItem) {
+                prevItem.classList.remove('highlighted');
+            }
+
+            // Highlight new item
+            highlightedIndex = index;
+            const items = dropdownItems.querySelectorAll('.dropdown-item');
+            if (items[index]) {
+                items[index].classList.add('highlighted');
+                items[index].scrollIntoView({ block: 'nearest' });
+            }
+
+            // Update selected index display
+            selectedIndex.textContent = highlightedIndex + 1;
+        }
+
+        // Select item
+        function selectItem(item) {
+            selectedItem = item;
+            updateSelectedDisplay();
+
+            if (autoClose) {
+                closeDropdown();
+            }
+
+            // Update highlighted index
+            const index = filteredData.findIndex(i => i.value === item.value);
+            if (index >= 0) {
+                highlightedIndex = index;
+                selectedIndex.textContent = highlightedIndex + 1;
+            }
+
+            // Re-render items to show selection
+            renderItems();
+        }
+
+        // Render items
+        function renderItems() {
+            dropdownItems.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                dropdownItems.innerHTML = '<div class="no-results">No items found. Try a different search.</div>';
+                return;
+            }
+
+            filteredData.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'dropdown-item';
+                itemElement.role = 'option';
+                itemElement.tabIndex = -1;
+                itemElement.setAttribute('aria-selected', selectedItem?.value === item.value);
+
+                if (selectedItem?.value === item.value) {
+                    itemElement.classList.add('selected');
+                }
+
+                if (index === highlightedIndex) {
+                    itemElement.classList.add('highlighted');
+                }
+
+                itemElement.innerHTML = `
+                    ${showIcons ? `<span class="item-icon">${item.icon}</span>` : ''}
+                    <span class="item-text">
+                        <strong>${item.label}</strong>
+                        <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 2px;">${item.description}</div>
+                    </span>
+                    ${selectedItem?.value === item.value ? '<span class="item-check">✓</span>' : ''}
+                `;
+
+                itemElement.addEventListener('click', () => selectItem(item));
+                itemElement.addEventListener('mouseenter', () => highlightItem(index));
+
+                dropdownItems.appendChild(itemElement);
+            });
+        }
+
+        // Update selected display
+        function updateSelectedDisplay() {
+            if (selectedItem) {
+                selectedText.textContent = selectedItem.label;
+                selectedIcon.textContent = selectedItem.icon;
+                selectedCountry.textContent = selectedItem.label;
+                selectedValue.title = selectedItem.description;
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            totalItems.textContent = currentData.length;
+            filteredItems.textContent = filteredData.length;
+        }
+
+        // Initialize the system
+        initialize();
+
+        // Add some demo interactions
+        setTimeout(() => {
+            selectItem(currentData[3]); // Select Australia by default
+        }, 1000);
+    </script>
+</body>
+
+</html>

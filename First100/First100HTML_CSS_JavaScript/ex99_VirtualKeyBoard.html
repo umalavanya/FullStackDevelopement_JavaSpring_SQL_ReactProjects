@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Keyboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #95a5a6;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Input Area */
+        .input-area {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .input-header h2 {
+            color: #3498db;
+        }
+
+        .input-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            font-size: 18px;
+            font-family: inherit;
+            resize: vertical;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        /* Keyboard Container */
+        .keyboard-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Keyboard Header */
+        .keyboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .keyboard-header h2 {
+            color: #3498db;
+        }
+
+        .keyboard-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .keyboard-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-label input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #3498db;
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Keyboard Layout */
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            user-select: none;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 18px 10px;
+            min-width: 60px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .key:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .key:active,
+        .key.active {
+            background: rgba(52, 152, 219, 0.5);
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .key.main-key {
+            background: rgba(255, 255, 255, 0.15);
+            font-weight: 600;
+        }
+
+        .key.special {
+            background: rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+
+        .key.special:hover {
+            background: rgba(52, 152, 219, 0.4);
+        }
+
+        .key.space {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .key.backspace,
+        .key.enter,
+        .key.tab,
+        .key.caps {
+            background: rgba(155, 89, 182, 0.3);
+            color: #9b59b6;
+        }
+
+        .key.backspace:hover,
+        .key.enter:hover,
+        .key.tab:hover,
+        .key.caps:hover {
+            background: rgba(155, 89, 182, 0.4);
+        }
+
+        .key.shift {
+            background: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        .key.shift:hover {
+            background: rgba(46, 204, 113, 0.4);
+        }
+
+        .key.ctrl,
+        .key.alt,
+        .key.meta {
+            background: rgba(241, 196, 15, 0.3);
+            color: #f1c40f;
+        }
+
+        .key.ctrl:hover,
+        .key.alt:hover,
+        .key.meta:hover {
+            background: rgba(241, 196, 15, 0.4);
+        }
+
+        /* Key Labels */
+        .key-main-label {
+            font-size: 16px;
+        }
+
+        .key-sub-label {
+            font-size: 10px;
+            color: #95a5a6;
+            margin-top: 4px;
+        }
+
+        /* Shift State Indicator */
+        .shift-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(46, 204, 113, 0.2);
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #2ecc71;
+            justify-content: center;
+        }
+
+        .shift-indicator.active {
+            background: rgba(46, 204, 113, 0.4);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+        }
+
+        /* Keyboard Modes */
+        .keyboard-modes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: #3498db;
+            border-color: #2980b9;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Special Characters Panel */
+        .special-chars-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            display: none;
+        }
+
+        .special-chars-panel.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .special-chars-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .special-chars-header h3 {
+            color: #9b59b6;
+        }
+
+        .special-chars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+        }
+
+        .char-key {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .char-key:hover {
+            background: rgba(155, 89, 182, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Preview */
+        .key-preview {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: scale(0);
+            transition: transform 0.2s ease;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .key-preview.show {
+            transform: scale(1);
+        }
+
+        /* Instructions */
+        .instructions {
+            text-align: center;
+            color: #95a5a6;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .keyboard-row {
+                gap: 5px;
+            }
+
+            .key {
+                padding: 12px 5px;
+                min-width: 40px;
+                font-size: 14px;
+            }
+
+            .key.space {
+                min-width: 200px;
+            }
+
+            .key-main-label {
+                font-size: 14px;
+            }
+
+            .key-sub-label {
+                font-size: 8px;
+            }
+
+            .keyboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .keyboard-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .input-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .input-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .key {
+                padding: 10px 3px;
+                min-width: 30px;
+                font-size: 12px;
+            }
+
+            .key.space {
+                min-width: 150px;
+            }
+
+            .special-chars-grid {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            }
+
+            .char-key {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Virtual Keyboard</h1>
+            <p class="subtitle">On-screen keyboard with special characters and input into text field</p>
+        </header>
+
+        <div class="input-area">
+            <div class="input-header">
+                <h2>Text Input</h2>
+                <div class="input-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="charCount">0</span>
+                        <span>Characters</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="wordCount">0</span>
+                        <span>Words</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="lineCount">1</span>
+                        <span>Lines</span>
+                    </div>
+                </div>
+            </div>
+
+            <textarea id="textInput"
+                placeholder="Start typing here... Use the virtual keyboard or your physical keyboard."></textarea>
+
+            <div class="input-actions">
+                <button class="action-btn primary" onclick="copyText()">
+                    📋 Copy Text
+                </button>
+                <button class="action-btn" onclick="clearText()">
+                    🗑️ Clear Text
+                </button>
+                <button class="action-btn" onclick="speakText()" id="speakBtn">
+                    🔊 Speak Text
+                </button>
+                <button class="action-btn danger" onclick="saveText()">
+                    💾 Save Text
+                </button>
+            </div>
+        </div>
+
+        <div class="keyboard-container">
+            <div class="keyboard-header">
+                <h2>Virtual Keyboard</h2>
+                <div class="keyboard-controls">
+                    <div class="keyboard-toggle">
+                        <span>Show Keyboard</span>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="keyboardToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <button class="action-btn" onclick="toggleSpecialChars()">
+                        #$% Special Characters
+                    </button>
+                </div>
+            </div>
+
+            <div class="keyboard" id="keyboard">
+                <!-- Keyboard rows will be populated by JavaScript -->
+            </div>
+
+            <div class="shift-indicator" id="shiftIndicator">
+                <span>⇧</span>
+                <span>Shift is OFF</span>
+            </div>
+
+            <div class="keyboard-modes">
+                <button class="mode-btn active" data-mode="normal">Normal</button>
+                <button class="mode-btn" data-mode="numeric">Numeric</button>
+                <button class="mode-btn" data-mode="symbols">Symbols</button>
+                <button class="mode-btn" data-mode="emoji">Emoji</button>
+            </div>
+
+            <div class="special-chars-panel" id="specialCharsPanel">
+                <div class="special-chars-header">
+                    <h3>Special Characters</h3>
+                    <button class="action-btn" onclick="toggleSpecialChars()">
+                        Close
+                    </button>
+                </div>
+                <div class="special-chars-grid" id="specialCharsGrid">
+                    <!-- Special characters will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="key-preview" id="keyPreview"></div>
+
+        <div class="instructions">
+            Click keys to type • Use Shift for uppercase • Toggle keyboard visibility • Try different modes
+        </div>
+    </div>
+
+    <script>
+        class VirtualKeyboard {
+            constructor() {
+                this.textInput = document.getElementById('textInput');
+                this.keyboard = document.getElementById('keyboard');
+                this.shiftIndicator = document.getElementById('shiftIndicator');
+                this.keyPreview = document.getElementById('keyPreview');
+                this.specialCharsPanel = document.getElementById('specialCharsPanel');
+                this.specialCharsGrid = document.getElementById('specialCharsGrid');
+
+                // Keyboard state
+                this.isShiftActive = false;
+                this.isCapsLock = false;
+                this.currentMode = 'normal';
+                this.isKeyboardVisible = true;
+
+                // Keyboard layouts
+                this.layouts = {
+                    normal: [
+                        [
+                            { main: '`', shift: '~' }, { main: '1', shift: '!' }, { main: '2', shift: '@' },
+                            { main: '3', shift: '#' }, { main: '4', shift: '$' }, { main: '5', shift: '%' },
+                            { main: '6', shift: '^' }, { main: '7', shift: '&' }, { main: '8', shift: '*' },
+                            { main: '9', shift: '(' }, { main: '0', shift: ')' }, { main: '-', shift: '_' },
+                            { main: '=', shift: '+' }, { main: 'Backspace', class: 'backspace', width: 2 }
+                        ],
+                        [
+                            { main: 'Tab', class: 'tab', width: 1.5 }, { main: 'q' }, { main: 'w' },
+                            { main: 'e' }, { main: 'r' }, { main: 't' }, { main: 'y' }, { main: 'u' },
+                            { main: 'i' }, { main: 'o' }, { main: 'p' }, { main: '[', shift: '{' },
+                            { main: ']', shift: '}' }, { main: '\\', shift: '|' }, { main: 'Del', class: 'special', width: 1.5 }
+                        ],
+                        [
+                            { main: 'Caps', class: 'caps', width: 1.8 }, { main: 'a' }, { main: 's' },
+                            { main: 'd' }, { main: 'f' }, { main: 'g' }, { main: 'h' }, { main: 'j' },
+                            { main: 'k' }, { main: 'l' }, { main: ';', shift: ':' }, { main: "'", shift: '"' },
+                            { main: 'Enter', class: 'enter', width: 2.2 }
+                        ],
+                        [
+                            { main: 'Shift', class: 'shift', width: 2.5 }, { main: 'z' }, { main: 'x' },
+                            { main: 'c' }, { main: 'v' }, { main: 'b' }, { main: 'n' }, { main: 'm' },
+                            { main: ',', shift: '<' }, { main: '.', shift: '>' }, { main: '/', shift: '?' },
+                            { main: 'Shift', class: 'shift', width: 2.5 }
+                        ],
+                        [
+                            { main: 'Ctrl', class: 'ctrl' }, { main: 'Alt', class: 'alt' },
+                            { main: 'Meta', class: 'meta' }, { main: 'Space', class: 'space' },
+                            { main: 'Alt', class: 'alt' }, { main: 'Ctrl', class: 'ctrl' },
+                            { main: '←' }, { main: '↓' }, { main: '↑' }, { main: '→' }
+                        ]
+                    ],
+                    numeric: [
+                        [
+                            { main: '7' }, { main: '8' }, { main: '9' }, { main: '+' }, { main: 'Backspace', class: 'backspace', width: 2 }
+                        ],
+                        [
+                            { main: '4' }, { main: '5' }, { main: '6' }, { main: '-' }, { main: 'Clear', class: 'special', width: 2 }
+                        ],
+                        [
+                            { main: '1' }, { main: '2' }, { main: '3' }, { main: '*', shift: '×' }, { main: 'Enter', class: 'enter', width: 2 }
+                        ],
+                        [
+                            { main: '0', width: 2 }, { main: '.', shift: ',' }, { main: '/', shift: '÷' },
+                            { main: '=', shift: '≠' }, { main: '(', shift: '[' }, { main: ')', shift: ']' }
+                        ]
+                    ],
+                    symbols: [
+                        [
+                            { main: '~' }, { main: '!' }, { main: '@' }, { main: '#' }, { main: '$' },
+                            { main: '%' }, { main: '^' }, { main: '&' }, { main: '*' }, { main: '(' },
+                            { main: ')' }, { main: '_' }, { main: '+' }, { main: 'Backspace', class: 'backspace', width: 2 }
+                        ],
+                        [
+                            { main: '`' }, { main: '|' }, { main: '\\' }, { main: '{' }, { main: '}' },
+                            { main: '[' }, { main: ']' }, { main: ':' }, { main: ';' }, { main: '"' },
+                            { main: "'" }, { main: '<' }, { main: '>' }, { main: '?' }, { main: '/', shift: '÷' }
+                        ],
+                        [
+                            { main: '±' }, { main: '≈' }, { main: '≠' }, { main: '≤' }, { main: '≥' },
+                            { main: '÷' }, { main: '×' }, { main: '√' }, { main: '∞' }, { main: 'π' },
+                            { main: '•' }, { main: '◦' }, { main: '→' }, { main: '←' }, { main: '↔' }
+                        ]
+                    ]
+                };
+
+                // Special characters
+                this.specialCharacters = [
+                    '©', '®', '™', '€', '$', '£', '¥', '¢', '§', '¶',
+                    '†', '‡', '•', '‣', '◦', '✓', '✔', '✕', '✖', '✗',
+                    '★', '☆', '♡', '♥', '♤', '♢', '♧', '♠', '♣', '♦',
+                    '♩', '♪', '♫', '♬', '♭', '♮', '♯', '⚑', '⚐', '☀',
+                    '☁', '☂', '☃', '☄', '☎', '☏', '☐', '☑', '☒', '☘',
+                    '☝', '☠', '☢', '☣', '☤', '☥', '☦', '☧', '☨', '☩',
+                    '☪', '☫', '☬', '☭', '☮', '☯', '☸', '☹', '☺', '☻',
+                    '☼', '☽', '☾', '☿', '♀', '♂', '♃', '♄', '♅', '♆',
+                    '♇', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐',
+                    '♑', '♒', '♓', '♔', '♕', '♖', '♗', '♘', '♙', '♚'
+                ];
+
+                // Emojis
+                this.emojis = [
+                    '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+                    '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+                    '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+                    '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+                    '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+                    '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+                    '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+                    '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+                    '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
+                    '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾'
+                ];
+
+                this.init();
+            }
+
+            init() {
+                this.renderKeyboard();
+                this.renderSpecialChars();
+                this.setupEventListeners();
+                this.updateStats();
+
+                // Focus text input
+                this.textInput.focus();
+            }
+
+            renderKeyboard() {
+                this.keyboard.innerHTML = '';
+                const layout = this.layouts[this.currentMode] || this.layouts.normal;
+
+                layout.forEach(rowConfig => {
+                    const row = document.createElement('div');
+                    row.className = 'keyboard-row';
+
+                    rowConfig.forEach(keyConfig => {
+                        const key = this.createKeyElement(keyConfig);
+                        row.appendChild(key);
+                    });
+
+                    this.keyboard.appendChild(row);
+                });
+            }
+
+            createKeyElement(config) {
+                const key = document.createElement('div');
+                const width = config.width || 1;
+
+                key.className = 'key';
+                if (config.class) key.classList.add(config.class);
+                if (config.main.length > 1) key.classList.add('special');
+                if (config.main === ' ') key.classList.add('space');
+
+                key.style.flex = width;
+                key.dataset.main = config.main;
+                key.dataset.shift = config.shift || '';
+
+                // Set key content
+                const mainLabel = document.createElement('div');
+                mainLabel.className = 'key-main-label';
+
+                let displayText = config.main;
+                if (config.main.length === 1) {
+                    displayText = this.isShiftActive ? (config.shift || config.main.toUpperCase()) : config.main;
+                    if (this.isCapsLock && /[a-z]/.test(config.main)) {
+                        displayText = config.main.toUpperCase();
+                    }
+                }
+
+                mainLabel.textContent = displayText;
+                key.appendChild(mainLabel);
+
+                // Add sub label for shift characters
+                if (config.shift && config.main.length === 1) {
+                    const subLabel = document.createElement('div');
+                    subLabel.className = 'key-sub-label';
+                    subLabel.textContent = config.shift;
+                    key.appendChild(subLabel);
+                }
+
+                // Add event listeners
+                key.addEventListener('mousedown', () => this.handleKeyPress(key, config));
+                key.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.handleKeyPress(key, config);
+                });
+
+                key.addEventListener('mouseenter', () => {
+                    this.showKeyPreview(key, config);
+                });
+
+                key.addEventListener('mouseleave', () => {
+                    this.hideKeyPreview();
+                });
+
+                return key;
+            }
+
+            renderSpecialChars() {
+                this.specialCharsGrid.innerHTML = '';
+
+                const characters = this.currentMode === 'emoji' ? this.emojis : this.specialCharacters;
+
+                characters.forEach(char => {
+                    const charKey = document.createElement('div');
+                    charKey.className = 'char-key';
+                    charKey.textContent = char;
+
+                    charKey.addEventListener('click', () => {
+                        this.insertText(char);
+                        this.showKeyPreview(charKey, { main: char });
+                        setTimeout(() => this.hideKeyPreview(), 300);
+                    });
+
+                    this.specialCharsGrid.appendChild(charKey);
+                });
+            }
+
+            handleKeyPress(keyElement, config) {
+                keyElement.classList.add('active');
+
+                // Show key preview
+                this.showKeyPreview(keyElement, config);
+
+                // Handle key based on its function
+                switch (config.main) {
+                    case 'Backspace':
+                        this.handleBackspace();
+                        break;
+                    case 'Enter':
+                        this.insertText('\n');
+                        break;
+                    case 'Tab':
+                        this.insertText('\t');
+                        break;
+                    case 'Space':
+                        this.insertText(' ');
+                        break;
+                    case 'Shift':
+                        this.toggleShift();
+                        break;
+                    case 'Caps':
+                        this.toggleCapsLock();
+                        break;
+                    case 'Clear':
+                        this.clearText();
+                        break;
+                    case 'Del':
+                        this.handleDelete();
+                        break;
+                    case '←':
+                        this.moveCursor(-1);
+                        break;
+                    case '→':
+                        this.moveCursor(1);
+                        break;
+                    case '↑':
+                        this.moveCursorVertical(-1);
+                        break;
+                    case '↓':
+                        this.moveCursorVertical(1);
+                        break;
+                    default:
+                        let text = config.main;
+                        if (config.main.length === 1) {
+                            text = this.isShiftActive ? (config.shift || config.main.toUpperCase()) : config.main;
+                            if (this.isCapsLock && /[a-z]/.test(config.main)) {
+                                text = config.main.toUpperCase();
+                            }
+                        }
+                        this.insertText(text);
+
+                        // Turn off shift after typing a letter
+                        if (this.isShiftActive && /[a-zA-Z]/.test(text)) {
+                            this.toggleShift();
+                        }
+                        break;
+                }
+
+                // Remove active class after animation
+                setTimeout(() => {
+                    keyElement.classList.remove('active');
+                    this.hideKeyPreview();
+                }, 150);
+
+                // Update stats
+                this.updateStats();
+            }
+
+            insertText(text) {
+                const input = this.textInput;
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+
+                // Insert text at cursor position
+                input.value = input.value.substring(0, start) + text + input.value.substring(end);
+
+                // Move cursor to after inserted text
+                input.selectionStart = input.selectionEnd = start + text.length;
+
+                // Focus input
+                input.focus();
+
+                // Trigger input event for stats update
+                input.dispatchEvent(new Event('input'));
+            }
+
+            handleBackspace() {
+                const input = this.textInput;
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+
+                if (start === end && start > 0) {
+                    // Delete character before cursor
+                    input.value = input.value.substring(0, start - 1) + input.value.substring(end);
+                    input.selectionStart = input.selectionEnd = start - 1;
+                } else if (start !== end) {
+                    // Delete selected text
+                    input.value = input.value.substring(0, start) + input.value.substring(end);
+                    input.selectionStart = input.selectionEnd = start;
+                }
+
+                input.focus();
+                input.dispatchEvent(new Event('input'));
+            }
+
+            handleDelete() {
+                const input = this.textInput;
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+
+                if (start === end && start < input.value.length) {
+                    // Delete character after cursor
+                    input.value = input.value.substring(0, start) + input.value.substring(start + 1);
+                    input.selectionStart = input.selectionEnd = start;
+                } else if (start !== end) {
+                    // Delete selected text
+                    input.value = input.value.substring(0, start) + input.value.substring(end);
+                    input.selectionStart = input.selectionEnd = start;
+                }
+
+                input.focus();
+                input.dispatchEvent(new Event('input'));
+            }
+
+            moveCursor(direction) {
+                const input = this.textInput;
+                const newPos = input.selectionStart + direction;
+
+                if (newPos >= 0 && newPos <= input.value.length) {
+                    input.selectionStart = input.selectionEnd = newPos;
+                    input.focus();
+                }
+            }
+
+            moveCursorVertical(direction) {
+                const input = this.textInput;
+                const text = input.value;
+                const cursorPos = input.selectionStart;
+
+                // Find current line
+                const lines = text.substring(0, cursorPos).split('\n');
+                const currentLine = lines.length - 1;
+                const posInLine = lines[lines.length - 1].length;
+
+                // Get all lines
+                const allLines = text.split('\n');
+
+                // Calculate target line
+                const targetLine = currentLine + direction;
+
+                if (targetLine >= 0 && targetLine < allLines.length) {
+                    // Calculate new position
+                    const targetPosInLine = Math.min(posInLine, allLines[targetLine].length);
+
+                    // Count characters before target line
+                    let newPos = 0;
+                    for (let i = 0; i < targetLine; i++) {
+                        newPos += allLines[i].length + 1; // +1 for newline
+                    }
+                    newPos += targetPosInLine;
+
+                    input.selectionStart = input.selectionEnd = newPos;
+                    input.focus();
+                }
+            }
+
+            toggleShift() {
+                this.isShiftActive = !this.isShiftActive;
+                this.updateShiftIndicator();
+                this.renderKeyboard();
+            }
+
+            toggleCapsLock() {
+                this.isCapsLock = !this.isCapsLock;
+                this.renderKeyboard();
+
+                // Update shift indicator to show caps lock
+                this.updateShiftIndicator();
+            }
+
+            updateShiftIndicator() {
+                if (this.isCapsLock) {
+                    this.shiftIndicator.classList.add('active');
+                    this.shiftIndicator.innerHTML = '<span>⇪</span><span>Caps Lock is ON</span>';
+                } else if (this.isShiftActive) {
+                    this.shiftIndicator.classList.add('active');
+                    this.shiftIndicator.innerHTML = '<span>⇧</span><span>Shift is ON</span>';
+                } else {
+                    this.shiftIndicator.classList.remove('active');
+                    this.shiftIndicator.innerHTML = '<span>⇧</span><span>Shift is OFF</span>';
+                }
+            }
+
+            showKeyPreview(keyElement, config) {
+                let previewText = config.main;
+
+                if (config.main.length === 1) {
+                    previewText = this.isShiftActive ? (config.shift || config.main.toUpperCase()) : config.main;
+                    if (this.isCapsLock && /[a-z]/.test(config.main)) {
+                        previewText = config.main.toUpperCase();
+                    }
+                }
+
+                this.keyPreview.textContent = previewText;
+                this.keyPreview.classList.add('show');
+
+                // Position near the key
+                const rect = keyElement.getBoundingClientRect();
+                this.keyPreview.style.left = `${rect.left + rect.width / 2 - 30}px`;
+                this.keyPreview.style.bottom = `${window.innerHeight - rect.top + 10}px`;
+            }
+
+            hideKeyPreview() {
+                this.keyPreview.classList.remove('show');
+            }
+
+            setMode(mode) {
+                this.currentMode = mode;
+
+                // Update mode buttons
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.mode === mode) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                // Render appropriate keyboard
+                if (mode === 'emoji') {
+                    this.specialCharsPanel.classList.add('show');
+                    this.renderSpecialChars();
+                } else {
+                    this.specialCharsPanel.classList.remove('show');
+                    this.renderKeyboard();
+                }
+
+                // Update shift indicator visibility
+                if (mode === 'normal') {
+                    this.shiftIndicator.style.display = 'flex';
+                } else {
+                    this.shiftIndicator.style.display = 'none';
+                }
+            }
+
+            toggleSpecialChars() {
+                if (this.currentMode === 'emoji') {
+                    this.setMode('normal');
+                } else {
+                    this.setMode('emoji');
+                }
+            }
+
+            toggleKeyboard() {
+                this.isKeyboardVisible = !this.isKeyboardVisible;
+                const keyboardContainer = document.querySelector('.keyboard-container');
+
+                if (this.isKeyboardVisible) {
+                    keyboardContainer.style.display = 'block';
+                } else {
+                    keyboardContainer.style.display = 'none';
+                }
+            }
+
+            updateStats() {
+                const text = this.textInput.value;
+
+                // Character count
+                document.getElementById('charCount').textContent = text.length;
+
+                // Word count (simplified)
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+                document.getElementById('wordCount').textContent = words.length;
+
+                // Line count
+                const lines = text.split('\n').length;
+                document.getElementById('lineCount').textContent = lines;
+            }
+
+            setupEventListeners() {
+                // Text input events
+                this.textInput.addEventListener('input', () => {
+                    this.updateStats();
+                });
+
+                this.textInput.addEventListener('keydown', (e) => {
+                    // Sync shift state with physical keyboard
+                    if (e.key === 'Shift') {
+                        this.isShiftActive = true;
+                        this.updateShiftIndicator();
+                        this.renderKeyboard();
+                    }
+
+                    if (e.key === 'CapsLock') {
+                        this.isCapsLock = !this.isCapsLock;
+                        this.updateShiftIndicator();
+                        this.renderKeyboard();
+                    }
+                });
+
+                this.textInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Shift') {
+                        this.isShiftActive = false;
+                        this.updateShiftIndicator();
+                        this.renderKeyboard();
+                    }
+                });
+
+                // Keyboard toggle
+                document.getElementById('keyboardToggle').addEventListener('change', (e) => {
+                    this.toggleKeyboard();
+                });
+
+                // Mode buttons
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const mode = e.target.dataset.mode;
+                        this.setMode(mode);
+                    });
+                });
+
+                // Physical keyboard support
+                document.addEventListener('keydown', (e) => {
+                    if (e.target !== this.textInput) {
+                        // Prevent default only for specific keys
+                        if ([' ', 'Enter', 'Tab'].includes(e.key)) {
+                            e.preventDefault();
+                        }
+
+                        // Handle key press
+                        const keyConfig = this.findKeyConfig(e.key);
+                        if (keyConfig) {
+                            this.handleKeyPress({}, keyConfig);
+                        }
+                    }
+                });
+            }
+
+            findKeyConfig(key) {
+                // Search for key in current layout
+                const layout = this.layouts[this.currentMode] || this.layouts.normal;
+
+                for (const row of layout) {
+                    for (const config of row) {
+                        if (config.main === key || config.shift === key) {
+                            return config;
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            // Utility functions
+            copyText() {
+                this.textInput.select();
+                document.execCommand('copy');
+
+                // Show feedback
+                const originalText = this.keyPreview.textContent;
+                this.keyPreview.textContent = 'Copied!';
+                this.keyPreview.classList.add('show');
+
+                setTimeout(() => {
+                    this.keyPreview.textContent = originalText;
+                    this.keyPreview.classList.remove('show');
+                }, 1000);
+            }
+
+            clearText() {
+                if (confirm('Clear all text?')) {
+                    this.textInput.value = '';
+                    this.updateStats();
+                    this.textInput.focus();
+                }
+            }
+
+            async speakText() {
+                const text = this.textInput.value;
+                if (!text.trim()) return;
+
+                const speakBtn = document.getElementById('speakBtn');
+                const originalText = speakBtn.innerHTML;
+
+                if ('speechSynthesis' in window) {
+                    speakBtn.innerHTML = '🔊 Speaking...';
+                    speakBtn.disabled = true;
+
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 1;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+
+                    utterance.onend = () => {
+                        speakBtn.innerHTML = originalText;
+                        speakBtn.disabled = false;
+                    };
+
+                    speechSynthesis.speak(utterance);
+                } else {
+                    alert('Text-to-speech is not supported in your browser.');
+                }
+            }
+
+            saveText() {
+                const text = this.textInput.value;
+                if (!text.trim()) {
+                    alert('No text to save.');
+                    return;
+                }
+
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+
+                a.href = url;
+                a.download = `keyboard-text-${new Date().toISOString().slice(0, 10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Show feedback
+                this.keyPreview.textContent = 'Saved!';
+                this.keyPreview.classList.add('show');
+
+                setTimeout(() => {
+                    this.keyPreview.classList.remove('show');
+                }, 1000);
+            }
+        }
+
+        // Initialize virtual keyboard
+        const virtualKeyboard = new VirtualKeyboard();
+
+        // Global functions
+        function toggleSpecialChars() {
+            virtualKeyboard.toggleSpecialChars();
+        }
+
+        function copyText() {
+            virtualKeyboard.copyText();
+        }
+
+        function clearText() {
+            virtualKeyboard.clearText();
+        }
+
+        function speakText() {
+            virtualKeyboard.speakText();
+        }
+
+        function saveText() {
+            virtualKeyboard.saveText();
+        }
+    </script>
+</body>
+
+</html>

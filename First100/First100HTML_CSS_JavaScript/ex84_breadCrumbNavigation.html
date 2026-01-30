@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 84: Breadcrumb Navigation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .demo-area {
+            padding: 40px;
+            background: #f8f9fa;
+            min-height: 400px;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+        }
+
+        @media (max-width: 992px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .breadcrumbs-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .demo-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Base Breadcrumb Styles */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breadcrumb-link {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .breadcrumb-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .breadcrumb-link.active {
+            color: #667eea;
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .breadcrumb-separator {
+            color: #ccc;
+            margin: 0 10px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+        }
+
+        .breadcrumb-icon {
+            font-size: 1.1em;
+        }
+
+        /* Style Variations */
+        .breadcrumb.standard {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+        }
+
+        .breadcrumb.minimal {
+            background: transparent;
+            padding: 10px 0;
+        }
+
+        .breadcrumb.minimal .breadcrumb-separator {
+            color: #999;
+        }
+
+        .breadcrumb.compact {
+            padding: 15px;
+            font-size: 0.9em;
+        }
+
+        .breadcrumb.compact .breadcrumb-link {
+            padding: 5px 10px;
+        }
+
+        .breadcrumb.rounded {
+            border-radius: 50px;
+            padding: 15px 25px;
+        }
+
+        .breadcrumb.rounded .breadcrumb-link {
+            border-radius: 20px;
+        }
+
+        .breadcrumb.with-background {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .breadcrumb.with-background .breadcrumb-link {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .breadcrumb.with-background .breadcrumb-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .breadcrumb.with-background .breadcrumb-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .breadcrumb.with-background .breadcrumb-separator {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .breadcrumb.with-arrows .breadcrumb-separator {
+            color: #667eea;
+            transform: rotate(-90deg);
+        }
+
+        .breadcrumb.with-arrows .breadcrumb-separator i {
+            font-size: 0.8em;
+        }
+
+        .breadcrumb.with-circles .breadcrumb-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        .breadcrumb.with-circles .breadcrumb-link:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .breadcrumb.with-circles .breadcrumb-link.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .breadcrumb.with-circles .breadcrumb-separator {
+            margin: 0 5px;
+        }
+
+        /* Demo Content */
+        .demo-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            min-height: 400px;
+        }
+
+        .page-title {
+            font-size: 2em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .page-content {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .content-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .controls-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .control-label {
+            display: block;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .add-breadcrumb {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .add-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .add-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-btn:hover {
+            background: #5a5fcf;
+            transform: translateY(-2px);
+        }
+
+        .breadcrumb-stats {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .responsive-demo {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .responsive-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .device-btn {
+            padding: 12px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .device-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .device-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .responsive-preview {
+            width: 100%;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 2px dashed #e0e0e0;
+        }
+
+        .responsive-preview.desktop {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .responsive-preview.tablet {
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .responsive-preview.mobile {
+            max-width: 375px;
+            margin: 0 auto;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+
+        .dark-mode .container {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .dark-mode header {
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+        }
+
+        .dark-mode .demo-area {
+            background: #16213e;
+        }
+
+        .dark-mode .breadcrumbs-container,
+        .dark-mode .demo-content,
+        .dark-mode .controls-panel,
+        .dark-mode .responsive-demo {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .dark-mode .demo-title,
+        .dark-mode .controls-title,
+        .dark-mode .page-title,
+        .dark-mode .section-title,
+        .dark-mode .control-label {
+            color: white;
+        }
+
+        .dark-mode .breadcrumb {
+            background: #16213e;
+        }
+
+        .dark-mode .breadcrumb.standard {
+            background: #0f0c29;
+            border-color: #302b63;
+        }
+
+        .dark-mode .breadcrumb-link {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .breadcrumb-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .dark-mode .breadcrumb-separator {
+            color: #666;
+        }
+
+        .dark-mode .breadcrumb.with-background {
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+        }
+
+        .dark-mode .page-content,
+        .dark-mode .section-content {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .content-section {
+            background: #16213e;
+        }
+
+        .dark-mode .control-btn {
+            background: #16213e;
+            color: #b0b0b0;
+            border-color: #302b63;
+        }
+
+        .dark-mode .add-input {
+            background: #16213e;
+            border-color: #302b63;
+            color: white;
+        }
+
+        .dark-mode .breadcrumb-stats {
+            background: #16213e;
+        }
+
+        .dark-mode .stat-item {
+            background: #0f0c29;
+        }
+
+        .dark-mode .stat-label {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .responsive-preview {
+            background: #16213e;
+            border-color: #302b63;
+        }
+
+        @media (max-width: 768px) {
+            .control-options {
+                flex-direction: column;
+            }
+
+            .control-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .responsive-controls {
+                flex-direction: column;
+            }
+
+            .device-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-road"></i> Breadcrumb Navigation</h1>
+            <p class="subtitle">Hierarchical navigation with responsive design, multiple styles, and interactive
+                controls</p>
+        </header>
+
+        <div class="demo-area">
+            <div class="content-wrapper">
+                <div>
+                    <div class="breadcrumbs-container">
+                        <div class="demo-title">
+                            <i class="fas fa-sliders-h"></i> Breadcrumb Styles
+                        </div>
+
+                        <!-- Standard Breadcrumb -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-bread-slice"></i> Standard Style
+                        </div>
+                        <nav class="breadcrumb standard" id="standardBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+
+                        <!-- Minimal Style -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-minimize"></i> Minimal Style
+                        </div>
+                        <nav class="breadcrumb minimal" id="minimalBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+
+                        <!-- Compact Style -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-compress"></i> Compact Style
+                        </div>
+                        <nav class="breadcrumb compact" id="compactBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+
+                        <!-- Rounded Style -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-circle"></i> Rounded Style
+                        </div>
+                        <nav class="breadcrumb rounded" id="roundedBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+
+                        <!-- With Background -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-fill-drip"></i> With Background
+                        </div>
+                        <nav class="breadcrumb with-background" id="backgroundBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+
+                        <!-- With Arrows -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-arrow-right"></i> With Arrows
+                        </div>
+                        <nav class="breadcrumb with-arrows" id="arrowsBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+
+                        <!-- With Circles -->
+                        <div class="demo-title" style="font-size: 1.2em; margin-top: 30px;">
+                            <i class="fas fa-circle"></i> With Circles
+                        </div>
+                        <nav class="breadcrumb with-circles" id="circlesBreadcrumb" aria-label="Breadcrumb">
+                            <!-- Breadcrumb items will be populated by JavaScript -->
+                        </nav>
+                    </div>
+
+                    <div class="demo-content">
+                        <div class="page-title" id="pageTitle">
+                            <!-- Page title will be populated by JavaScript -->
+                        </div>
+                        <div class="page-content">
+                            <p>This is a demonstration of breadcrumb navigation functionality. Breadcrumbs help users
+                                understand their current location within a website's hierarchy and provide quick
+                                navigation to parent sections.</p>
+
+                            <div class="content-section">
+                                <div class="section-title">
+                                    <i class="fas fa-info-circle"></i> About This Page
+                                </div>
+                                <div class="section-content">
+                                    The current page is: <strong id="currentPageName">Current Page</strong><br>
+                                    Breadcrumb path: <span id="breadcrumbPath">Home / Category / Subcategory / Current
+                                        Page</span><br>
+                                    Total breadcrumb levels: <span id="breadcrumbLevels">4</span>
+                                </div>
+                            </div>
+
+                            <div class="content-section">
+                                <div class="section-title">
+                                    <i class="fas fa-code"></i> How It Works
+                                </div>
+                                <div class="section-content">
+                                    Breadcrumbs display the hierarchical relationship between the current page and its
+                                    parent pages. Each breadcrumb item is clickable (except the current page) and
+                                    represents a navigation level in the site structure.
+                                </div>
+                            </div>
+
+                            <div class="content-section">
+                                <div class="section-title">
+                                    <i class="fas fa-mobile-alt"></i> Responsive Behavior
+                                </div>
+                                <div class="section-content">
+                                    Breadcrumbs automatically adjust based on screen size. On smaller screens, they may
+                                    collapse, show fewer items, or change their appearance to remain usable while saving
+                                    space.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls-panel">
+                    <div class="controls-title">
+                        <i class="fas fa-cogs"></i> Controls
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <i class="fas fa-paint-brush"></i> Style
+                        </div>
+                        <div class="control-options">
+                            <button class="control-btn active" onclick="setBreadcrumbStyle('standard')">
+                                <i class="fas fa-bread-slice"></i> Standard
+                            </button>
+                            <button class="control-btn" onclick="setBreadcrumbStyle('minimal')">
+                                <i class="fas fa-minimize"></i> Minimal
+                            </button>
+                            <button class="control-btn" onclick="setBreadcrumbStyle('compact')">
+                                <i class="fas fa-compress"></i> Compact
+                            </button>
+                            <button class="control-btn" onclick="setBreadcrumbStyle('rounded')">
+                                <i class="fas fa-circle"></i> Rounded
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <i class="fas fa-palette"></i> Appearance
+                        </div>
+                        <div class="control-options">
+                            <button class="control-btn" onclick="setBreadcrumbAppearance('default')">
+                                <i class="fas fa-sun"></i> Default
+                            </button>
+                            <button class="control-btn" onclick="setBreadcrumbAppearance('background')">
+                                <i class="fas fa-fill-drip"></i> With Background
+                            </button>
+                            <button class="control-btn" onclick="setBreadcrumbAppearance('arrows')">
+                                <i class="fas fa-arrow-right"></i> With Arrows
+                            </button>
+                            <button class="control-btn" onclick="setBreadcrumbAppearance('circles')">
+                                <i class="fas fa-circle"></i> With Circles
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <i class="fas fa-sliders-h"></i> Separator
+                        </div>
+                        <div class="control-options">
+                            <button class="control-btn active" onclick="setSeparator('slash')">
+                                <i class="fas fa-slash"></i> /
+                            </button>
+                            <button class="control-btn" onclick="setSeparator('chevron')">
+                                <i class="fas fa-chevron-right"></i> ›
+                            </button>
+                            <button class="control-btn" onclick="setSeparator('arrow')">
+                                <i class="fas fa-arrow-right"></i> →
+                            </button>
+                            <button class="control-btn" onclick="setSeparator('pipe')">
+                                <i class="fas fa-grip-lines-vertical"></i> |
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="add-breadcrumb">
+                        <input type="text" class="add-input" id="newBreadcrumb"
+                            placeholder="Add new breadcrumb item...">
+                        <button class="add-btn" onclick="addBreadcrumb()">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <i class="fas fa-undo"></i> Actions
+                        </div>
+                        <div class="control-options">
+                            <button class="control-btn" onclick="removeLastBreadcrumb()">
+                                <i class="fas fa-minus"></i> Remove Last
+                            </button>
+                            <button class="control-btn" onclick="resetBreadcrumbs()">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                            <button class="control-btn" onclick="randomBreadcrumbs()">
+                                <i class="fas fa-random"></i> Random
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="breadcrumb-stats">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="levelsCount">4</div>
+                                <div class="stat-label">Levels</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="itemsCount">4</div>
+                                <div class="stat-label">Items</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="maxDepth">8</div>
+                                <div class="stat-label">Max Depth</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="activeItem">4</div>
+                                <div class="stat-label">Active Item</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="responsive-demo">
+                <div class="demo-title">
+                    <i class="fas fa-mobile-alt"></i> Responsive Preview
+                </div>
+
+                <div class="responsive-controls">
+                    <button class="device-btn active" onclick="setDevicePreview('desktop')">
+                        <i class="fas fa-desktop"></i> Desktop
+                    </button>
+                    <button class="device-btn" onclick="setDevicePreview('tablet')">
+                        <i class="fas fa-tablet-alt"></i> Tablet
+                    </button>
+                    <button class="device-btn" onclick="setDevicePreview('mobile')">
+                        <i class="fas fa-mobile-alt"></i> Mobile
+                    </button>
+                </div>
+
+                <div class="responsive-preview desktop" id="responsivePreview">
+                    <!-- Responsive preview will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Breadcrumb data
+        let breadcrumbItems = [
+            { name: "Home", icon: "fas fa-home", active: false },
+            { name: "Electronics", icon: "fas fa-laptop", active: false },
+            { name: "Computers", icon: "fas fa-desktop", active: false },
+            { name: "Laptops", icon: "fas fa-laptop-code", active: true }
+        ];
+
+        // Default settings
+        let currentStyle = 'standard';
+        let currentAppearance = 'default';
+        let currentSeparator = 'slash';
+        let currentDevice = 'desktop';
+        let maxBreadcrumbs = 8;
+
+        // Sample breadcrumb names for random generation
+        const sampleBreadcrumbs = [
+            { name: "Home", icon: "fas fa-home" },
+            { name: "Shop", icon: "fas fa-shopping-cart" },
+            { name: "Products", icon: "fas fa-box" },
+            { name: "Categories", icon: "fas fa-folder" },
+            { name: "Brands", icon: "fas fa-tag" },
+            { name: "Sale", icon: "fas fa-fire" },
+            { name: "New Arrivals", icon: "fas fa-star" },
+            { name: "Featured", icon: "fas fa-gem" },
+            { name: "Trending", icon: "fas fa-chart-line" },
+            { name: "Collections", icon: "fas fa-layer-group" },
+            { name: "Support", icon: "fas fa-headset" },
+            { name: "About", icon: "fas fa-info-circle" },
+            { name: "Contact", icon: "fas fa-envelope" },
+            { name: "Blog", icon: "fas fa-blog" },
+            { name: "Account", icon: "fas fa-user" }
+        ];
+
+        // DOM Elements
+        const standardBreadcrumb = document.getElementById('standardBreadcrumb');
+        const minimalBreadcrumb = document.getElementById('minimalBreadcrumb');
+        const compactBreadcrumb = document.getElementById('compactBreadcrumb');
+        const roundedBreadcrumb = document.getElementById('roundedBreadcrumb');
+        const backgroundBreadcrumb = document.getElementById('backgroundBreadcrumb');
+        const arrowsBreadcrumb = document.getElementById('arrowsBreadcrumb');
+        const circlesBreadcrumb = document.getElementById('circlesBreadcrumb');
+        const pageTitle = document.getElementById('pageTitle');
+        const currentPageName = document.getElementById('currentPageName');
+        const breadcrumbPath = document.getElementById('breadcrumbPath');
+        const breadcrumbLevels = document.getElementById('breadcrumbLevels');
+        const levelsCount = document.getElementById('levelsCount');
+        const itemsCount = document.getElementById('itemsCount');
+        const maxDepth = document.getElementById('maxDepth');
+        const activeItem = document.getElementById('activeItem');
+        const responsivePreview = document.getElementById('responsivePreview');
+        const newBreadcrumb = document.getElementById('newBreadcrumb');
+
+        // Initialize
+        function init() {
+            renderAllBreadcrumbs();
+            updatePageInfo();
+            updateStats();
+            renderResponsivePreview();
+
+            // Set initial active controls
+            setActiveControl('style', 'standard');
+            setActiveControl('appearance', 'default');
+            setActiveControl('separator', 'slash');
+            setActiveControl('device', 'desktop');
+        }
+
+        // Render all breadcrumb variations
+        function renderAllBreadcrumbs() {
+            renderBreadcrumb(standardBreadcrumb, 'standard');
+            renderBreadcrumb(minimalBreadcrumb, 'minimal');
+            renderBreadcrumb(compactBreadcrumb, 'compact');
+            renderBreadcrumb(roundedBreadcrumb, 'rounded');
+            renderBreadcrumb(backgroundBreadcrumb, 'with-background');
+            renderBreadcrumb(arrowsBreadcrumb, 'with-arrows');
+            renderBreadcrumb(circlesBreadcrumb, 'with-circles');
+        }
+
+        // Render individual breadcrumb
+        function renderBreadcrumb(container, style) {
+            container.innerHTML = '';
+
+            breadcrumbItems.forEach((item, index) => {
+                // Create breadcrumb item
+                const itemElement = document.createElement('div');
+                itemElement.className = 'breadcrumb-item';
+
+                // Create link
+                const link = document.createElement('a');
+                link.className = 'breadcrumb-link';
+                if (item.active) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+
+                // Add icon if available
+                if (item.icon) {
+                    const icon = document.createElement('i');
+                    icon.className = `breadcrumb-icon ${item.icon}`;
+                    link.appendChild(icon);
+                }
+
+                // Add text
+                const text = document.createTextNode(item.name);
+                link.appendChild(text);
+
+                // Add click handler
+                if (!item.active) {
+                    link.href = '#';
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        navigateToBreadcrumb(index);
+                    };
+                }
+
+                itemElement.appendChild(link);
+                container.appendChild(itemElement);
+
+                // Add separator if not the last item
+                if (index < breadcrumbItems.length - 1) {
+                    const separator = document.createElement('div');
+                    separator.className = 'breadcrumb-separator';
+
+                    switch (currentSeparator) {
+                        case 'slash':
+                            separator.innerHTML = '<i class="fas fa-slash"></i>';
+                            break;
+                        case 'chevron':
+                            separator.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                            break;
+                        case 'arrow':
+                            separator.innerHTML = '<i class="fas fa-arrow-right"></i>';
+                            break;
+                        case 'pipe':
+                            separator.innerHTML = '<i class="fas fa-grip-lines-vertical"></i>';
+                            break;
+                    }
+
+                    container.appendChild(separator);
+                }
+            });
+
+            // Apply style-specific classes
+            container.className = `breadcrumb ${style}`;
+            if (style === 'with-background' || style === 'with-arrows' || style === 'with-circles') {
+                container.classList.add(style);
+            }
+        }
+
+        // Navigate to breadcrumb
+        function navigateToBreadcrumb(index) {
+            // Remove items after the clicked item
+            breadcrumbItems = breadcrumbItems.slice(0, index + 1);
+
+            // Set the last item as active
+            breadcrumbItems.forEach((item, i) => {
+                item.active = (i === breadcrumbItems.length - 1);
+            });
+
+            // Update UI
+            renderAllBreadcrumbs();
+            updatePageInfo();
+            updateStats();
+            renderResponsivePreview();
+
+            // Show notification
+            showNotification(`Navigated to: ${breadcrumbItems[index].name}`);
+        }
+
+        // Update page information
+        function updatePageInfo() {
+            const activeItem = breadcrumbItems.find(item => item.active);
+            if (activeItem) {
+                pageTitle.textContent = activeItem.name;
+                currentPageName.textContent = activeItem.name;
+            }
+
+            // Update breadcrumb path
+            const path = breadcrumbItems.map(item => item.name).join(' / ');
+            breadcrumbPath.textContent = path;
+            breadcrumbLevels.textContent = breadcrumbItems.length;
+        }
+
+        // Update statistics
+        function updateStats() {
+            levelsCount.textContent = breadcrumbItems.length;
+            itemsCount.textContent = breadcrumbItems.length;
+            maxDepth.textContent = maxBreadcrumbs;
+
+            const activeIndex = breadcrumbItems.findIndex(item => item.active);
+            activeItem.textContent = activeIndex + 1;
+        }
+
+        // Set breadcrumb style
+        function setBreadcrumbStyle(style) {
+            currentStyle = style;
+            setActiveControl('style', style);
+
+            // Update the main breadcrumb container
+            const mainContainer = document.getElementById(`${style}Breadcrumb`);
+            if (mainContainer) {
+                mainContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            renderResponsivePreview();
+        }
+
+        // Set breadcrumb appearance
+        function setBreadcrumbAppearance(appearance) {
+            currentAppearance = appearance;
+            setActiveControl('appearance', appearance);
+            renderResponsivePreview();
+        }
+
+        // Set separator
+        function setSeparator(separator) {
+            currentSeparator = separator;
+            setActiveControl('separator', separator);
+            renderAllBreadcrumbs();
+            renderResponsivePreview();
+        }
+
+        // Set active control
+        function setActiveControl(type, value) {
+            // Remove active class from all buttons in the group
+            const eventBtn = event.target;
+            const parent = eventBtn.closest('.control-group');
+            if (parent) {
+                parent.querySelectorAll('.control-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Add active class to clicked button
+                eventBtn.classList.add('active');
+            }
+        }
+
+        // Add new breadcrumb
+        function addBreadcrumb() {
+            const name = newBreadcrumb.value.trim();
+            if (!name) {
+                alert('Please enter a breadcrumb name');
+                return;
+            }
+
+            if (breadcrumbItems.length >= maxBreadcrumbs) {
+                alert(`Maximum ${maxBreadcrumbs} breadcrumbs allowed`);
+                return;
+            }
+
+            // Deactivate current active item
+            breadcrumbItems.forEach(item => {
+                item.active = false;
+            });
+
+            // Add new item
+            const randomIcon = sampleBreadcrumbs[Math.floor(Math.random() * sampleBreadcrumbs.length)].icon;
+            breadcrumbItems.push({
+                name: name,
+                icon: randomIcon,
+                active: true
+            });
+
+            // Clear input
+            newBreadcrumb.value = '';
+
+            // Update UI
+            renderAllBreadcrumbs();
+            updatePageInfo();
+            updateStats();
+            renderResponsivePreview();
+
+            // Show notification
+            showNotification(`Added breadcrumb: ${name}`);
+        }
+
+        // Remove last breadcrumb
+        function removeLastBreadcrumb() {
+            if (breadcrumbItems.length <= 1) {
+                alert('Cannot remove the last breadcrumb');
+                return;
+            }
+
+            breadcrumbItems.pop();
+
+            // Set the last item as active
+            breadcrumbItems[breadcrumbItems.length - 1].active = true;
+
+            // Update UI
+            renderAllBreadcrumbs();
+            updatePageInfo();
+            updateStats();
+            renderResponsivePreview();
+
+            // Show notification
+            showNotification('Removed last breadcrumb');
+        }
+
+        // Reset breadcrumbs
+        function resetBreadcrumbs() {
+            breadcrumbItems = [
+                { name: "Home", icon: "fas fa-home", active: false },
+                { name: "Electronics", icon: "fas fa-laptop", active: false },
+                { name: "Computers", icon: "fas fa-desktop", active: false },
+                { name: "Laptops", icon: "fas fa-laptop-code", active: true }
+            ];
+
+            // Reset settings
+            currentStyle = 'standard';
+            currentAppearance = 'default';
+            currentSeparator = 'slash';
+
+            // Update UI
+            renderAllBreadcrumbs();
+            updatePageInfo();
+            updateStats();
+            renderResponsivePreview();
+
+            // Reset controls
+            setActiveControl('style', 'standard');
+            setActiveControl('appearance', 'default');
+            setActiveControl('separator', 'slash');
+
+            // Show notification
+            showNotification('Breadcrumbs reset to default');
+        }
+
+        // Generate random breadcrumbs
+        function randomBreadcrumbs() {
+            const count = Math.floor(Math.random() * 5) + 3; // 3-7 breadcrumbs
+            breadcrumbItems = [];
+
+            // Shuffle sample breadcrumbs
+            const shuffled = [...sampleBreadcrumbs].sort(() => Math.random() - 0.5);
+
+            for (let i = 0; i < count; i++) {
+                breadcrumbItems.push({
+                    name: shuffled[i].name,
+                    icon: shuffled[i].icon,
+                    active: (i === count - 1)
+                });
+            }
+
+            // Update UI
+            renderAllBreadcrumbs();
+            updatePageInfo();
+            updateStats();
+            renderResponsivePreview();
+
+            // Show notification
+            showNotification(`Generated ${count} random breadcrumbs`);
+        }
+
+        // Set device preview
+        function setDevicePreview(device) {
+            currentDevice = device;
+            setActiveControl('device', device);
+            renderResponsivePreview();
+        }
+
+        // Render responsive preview
+        function renderResponsivePreview() {
+            // Clear preview
+            responsivePreview.innerHTML = '';
+
+            // Set device class
+            responsivePreview.className = `responsive-preview ${currentDevice}`;
+
+            // Create preview breadcrumb
+            const previewBreadcrumb = document.createElement('nav');
+            previewBreadcrumb.className = `breadcrumb ${currentStyle} ${currentAppearance}`;
+            previewBreadcrumb.setAttribute('aria-label', 'Breadcrumb');
+
+            // Calculate how many breadcrumbs to show based on device
+            let itemsToShow = breadcrumbItems;
+
+            if (currentDevice === 'mobile' && breadcrumbItems.length > 3) {
+                // On mobile, show first, ellipsis, last 2 items
+                itemsToShow = [
+                    breadcrumbItems[0],
+                    { name: '...', icon: 'fas fa-ellipsis-h', active: false, ellipsis: true },
+                    ...breadcrumbItems.slice(-2)
+                ];
+            } else if (currentDevice === 'tablet' && breadcrumbItems.length > 5) {
+                // On tablet, show first 2, ellipsis, last 2 items
+                itemsToShow = [
+                    ...breadcrumbItems.slice(0, 2),
+                    { name: '...', icon: 'fas fa-ellipsis-h', active: false, ellipsis: true },
+                    ...breadcrumbItems.slice(-2)
+                ];
+            }
+
+            // Render breadcrumb items
+            itemsToShow.forEach((item, index) => {
+                // Create breadcrumb item
+                const itemElement = document.createElement('div');
+                itemElement.className = 'breadcrumb-item';
+
+                if (item.ellipsis) {
+                    // Ellipsis item
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'breadcrumb-link';
+                    ellipsis.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
+                    itemElement.appendChild(ellipsis);
+                } else {
+                    // Regular item
+                    const link = document.createElement('a');
+                    link.className = 'breadcrumb-link';
+                    if (item.active) {
+                        link.classList.add('active');
+                        link.setAttribute('aria-current', 'page');
+                    }
+
+                    // Add icon if available
+                    if (item.icon) {
+                        const icon = document.createElement('i');
+                        icon.className = `breadcrumb-icon ${item.icon}`;
+                        link.appendChild(icon);
+                    }
+
+                    // Add text (truncate on small screens)
+                    let displayName = item.name;
+                    if (currentDevice === 'mobile' && item.name.length > 10) {
+                        displayName = item.name.substring(0, 8) + '...';
+                    }
+
+                    const text = document.createTextNode(displayName);
+                    link.appendChild(text);
+
+                    // Add click handler
+                    if (!item.active) {
+                        link.href = '#';
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            const originalIndex = breadcrumbItems.findIndex(b => b.name === item.name);
+                            if (originalIndex !== -1) {
+                                navigateToBreadcrumb(originalIndex);
+                            }
+                        };
+                    }
+
+                    itemElement.appendChild(link);
+                }
+
+                previewBreadcrumb.appendChild(itemElement);
+
+                // Add separator if not the last item
+                if (index < itemsToShow.length - 1) {
+                    const separator = document.createElement('div');
+                    separator.className = 'breadcrumb-separator';
+
+                    switch (currentSeparator) {
+                        case 'slash':
+                            separator.innerHTML = '<i class="fas fa-slash"></i>';
+                            break;
+                        case 'chevron':
+                            separator.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                            break;
+                        case 'arrow':
+                            separator.innerHTML = '<i class="fas fa-arrow-right"></i>';
+                            break;
+                        case 'pipe':
+                            separator.innerHTML = '<i class="fas fa-grip-lines-vertical"></i>';
+                            break;
+                    }
+
+                    previewBreadcrumb.appendChild(separator);
+                }
+            });
+
+            responsivePreview.appendChild(previewBreadcrumb);
+
+            // Add device info
+            const deviceInfo = document.createElement('div');
+            deviceInfo.style.cssText = `
+                margin-top: 20px;
+                text-align: center;
+                color: #666;
+                font-size: 0.9em;
+            `;
+
+            let deviceName = 'Desktop';
+            let screenWidth = '1200px';
+
+            switch (currentDevice) {
+                case 'tablet':
+                    deviceName = 'Tablet';
+                    screenWidth = '768px';
+                    break;
+                case 'mobile':
+                    deviceName = 'Mobile';
+                    screenWidth = '375px';
+                    break;
+            }
+
+            deviceInfo.textContent = `${deviceName} View (${screenWidth}) - ${itemsToShow.length} of ${breadcrumbItems.length} items shown`;
+            responsivePreview.appendChild(deviceInfo);
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%) translateY(100px);
+                background: rgba(255, 255, 255, 0.95);
+                color: #333;
+                padding: 15px 25px;
+                border-radius: 25px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                font-weight: 500;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.transform = 'translateX(-50%) translateY(100px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+
+        // Handle Enter key in input
+        newBreadcrumb.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addBreadcrumb();
+            }
+        });
+    </script>
+</body>
+
+</html>

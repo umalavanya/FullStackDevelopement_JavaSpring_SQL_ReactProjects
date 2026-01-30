@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 62: Custom Range Slider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slider-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .slider-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .slider-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .slider-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .slider-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Custom Slider Styles */
+        .slider-wrapper {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .slider-track {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .slider-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.1s ease;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        .slider-handle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .slider-handle:active {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .tick {
+            position: relative;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .tick::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Slider Value Display */
+        .slider-value {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .value-display {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            min-width: 120px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .value-unit {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-left: 5px;
+        }
+
+        /* Different Slider Themes */
+        #volumeSlider .slider-fill {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        }
+
+        #volumeSlider .slider-handle {
+            background: #4CAF50;
+            border: 3px solid white;
+        }
+
+        #brightnessSlider .slider-fill {
+            background: linear-gradient(90deg, #FF9800, #FFC107);
+        }
+
+        #brightnessSlider .slider-handle {
+            background: #FF9800;
+            border: 3px solid white;
+        }
+
+        #temperatureSlider .slider-fill {
+            background: linear-gradient(90deg, #2196F3, #03A9F4);
+        }
+
+        #temperatureSlider .slider-handle {
+            background: #2196F3;
+            border: 3px solid white;
+        }
+
+        /* Slider Presets */
+        .slider-presets {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Live Preview */
+        .preview-area {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .preview-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .preview-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .audio-visualizer {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visualizer-bars {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            height: 120px;
+        }
+
+        .visualizer-bar {
+            width: 12px;
+            background: #4CAF50;
+            border-radius: 6px;
+            transition: height 0.2s ease;
+        }
+
+        .temperature-indicator {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#2196F3 0%, #4CAF50 50%, #FF9800 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .temperature-center {
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .brightness-display {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #FFC107, #FF9800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow:
+                0 0 60px rgba(255, 193, 7, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .brightness-level {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slider-container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .slider-demo {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .slider-card {
+                padding: 30px;
+            }
+
+            .preview-content {
+                gap: 30px;
+            }
+
+            .audio-visualizer,
+            .temperature-indicator,
+            .brightness-display {
+                width: 150px;
+                height: 150px;
+            }
+
+            .temperature-center {
+                width: 100px;
+                height: 100px;
+                font-size: 2rem;
+            }
+
+            .brightness-level {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .slider-card {
+                padding: 20px;
+            }
+
+            .value-display {
+                font-size: 2rem;
+                padding: 10px 20px;
+            }
+
+            .preview-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slider-container">
+        <header>
+            <h1>🎚️ Custom Range Sliders</h1>
+            <p class="subtitle">Interactive custom sliders with live preview and different themes</p>
+        </header>
+
+        <div class="slider-demo">
+            <!-- Volume Slider -->
+            <div class="slider-card">
+                <h2 class="slider-title">
+                    <span>🔊</span> Volume Control
+                </h2>
+                <p class="slider-description">
+                    Adjust the volume level with smooth transitions. The audio visualizer responds in real-time.
+                </p>
+
+                <div class="slider-wrapper">
+                    <div class="slider-track" id="volumeTrack">
+                        <div class="slider-fill" id="volumeFill"></div>
+                        <div class="slider-handle" id="volumeHandle"></div>
+                    </div>
+
+                    <div class="slider-ticks">
+                        <div class="tick">0%</div>
+                        <div class="tick">25%</div>
+                        <div class="tick">50%</div>
+                        <div class="tick">75%</div>
+                        <div class="tick">100%</div>
+                    </div>
+                </div>
+
+                <div class="slider-value">
+                    <div class="value-display" id="volumeValue">
+                        <span id="volumeNumber">50</span><span class="value-unit">%</span>
+                    </div>
+                </div>
+
+                <div class="slider-presets">
+                    <button class="preset-btn" data-slider="volume" data-value="0">Mute</button>
+                    <button class="preset-btn" data-slider="volume" data-value="25">Low</button>
+                    <button class="preset-btn" data-slider="volume" data-value="50">Medium</button>
+                    <button class="preset-btn" data-slider="volume" data-value="75">High</button>
+                    <button class="preset-btn" data-slider="volume" data-value="100">Max</button>
+                </div>
+            </div>
+
+            <!-- Brightness Slider -->
+            <div class="slider-card">
+                <h2 class="slider-title">
+                    <span>☀️</span> Brightness Control
+                </h2>
+                <p class="slider-description">
+                    Control the brightness level. The sun icon changes intensity based on the value.
+                </p>
+
+                <div class="slider-wrapper">
+                    <div class="slider-track" id="brightnessTrack">
+                        <div class="slider-fill" id="brightnessFill"></div>
+                        <div class="slider-handle" id="brightnessHandle"></div>
+                    </div>
+
+                    <div class="slider-ticks">
+                        <div class="tick">0%</div>
+                        <div class="tick">25%</div>
+                        <div class="tick">50%</div>
+                        <div class="tick">75%</div>
+                        <div class="tick">100%</div>
+                    </div>
+                </div>
+
+                <div class="slider-value">
+                    <div class="value-display" id="brightnessValue">
+                        <span id="brightnessNumber">50</span><span class="value-unit">%</span>
+                    </div>
+                </div>
+
+                <div class="slider-presets">
+                    <button class="preset-btn" data-slider="brightness" data-value="0">Dark</button>
+                    <button class="preset-btn" data-slider="brightness" data-value="25">Dim</button>
+                    <button class="preset-btn" data-slider="brightness" data-value="50">Normal</button>
+                    <button class="preset-btn" data-slider="brightness" data-value="75">Bright</button>
+                    <button class="preset-btn" data-slider="brightness" data-value="100">Max</button>
+                </div>
+            </div>
+
+            <!-- Temperature Slider -->
+            <div class="slider-card">
+                <h2 class="slider-title">
+                    <span>🌡️</span> Temperature Control
+                </h2>
+                <p class="slider-description">
+                    Adjust the temperature from cool to warm. The color changes from blue to orange.
+                </p>
+
+                <div class="slider-wrapper">
+                    <div class="slider-track" id="temperatureTrack">
+                        <div class="slider-fill" id="temperatureFill"></div>
+                        <div class="slider-handle" id="temperatureHandle"></div>
+                    </div>
+
+                    <div class="slider-ticks">
+                        <div class="tick">10°C</div>
+                        <div class="tick">15°C</div>
+                        <div class="tick">20°C</div>
+                        <div class="tick">25°C</div>
+                        <div class="tick">30°C</div>
+                    </div>
+                </div>
+
+                <div class="slider-value">
+                    <div class="value-display" id="temperatureValue">
+                        <span id="temperatureNumber">20</span><span class="value-unit">°C</span>
+                    </div>
+                </div>
+
+                <div class="slider-presets">
+                    <button class="preset-btn" data-slider="temperature" data-value="10">Cool</button>
+                    <button class="preset-btn" data-slider="temperature" data-value="15">Chilly</button>
+                    <button class="preset-btn" data-slider="temperature" data-value="20">Comfort</button>
+                    <button class="preset-btn" data-slider="temperature" data-value="25">Warm</button>
+                    <button class="preset-btn" data-slider="temperature" data-value="30">Hot</button>
+                </div>
+            </div>
+
+            <!-- Live Preview Area -->
+            <div class="preview-area">
+                <h2 class="preview-title">Live Preview</h2>
+                <div class="preview-content">
+                    <div class="audio-visualizer" id="audioVisualizer">
+                        <div class="visualizer-bars" id="visualizerBars">
+                            <!-- Bars will be generated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="temperature-indicator" id="temperatureIndicator">
+                        <div class="temperature-center">
+                            <span id="temperaturePreview">20°C</span>
+                        </div>
+                    </div>
+
+                    <div class="brightness-display" id="brightnessDisplay">
+                        <div class="brightness-level" id="brightnessPreview">50%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Slider data
+        const sliders = {
+            volume: {
+                min: 0,
+                max: 100,
+                value: 50,
+                step: 1,
+                element: {
+                    track: document.getElementById('volumeTrack'),
+                    fill: document.getElementById('volumeFill'),
+                    handle: document.getElementById('volumeHandle'),
+                    value: document.getElementById('volumeValue'),
+                    number: document.getElementById('volumeNumber')
+                }
+            },
+            brightness: {
+                min: 0,
+                max: 100,
+                value: 50,
+                step: 1,
+                element: {
+                    track: document.getElementById('brightnessTrack'),
+                    fill: document.getElementById('brightnessFill'),
+                    handle: document.getElementById('brightnessHandle'),
+                    value: document.getElementById('brightnessValue'),
+                    number: document.getElementById('brightnessNumber')
+                }
+            },
+            temperature: {
+                min: 10,
+                max: 30,
+                value: 20,
+                step: 0.5,
+                element: {
+                    track: document.getElementById('temperatureTrack'),
+                    fill: document.getElementById('temperatureFill'),
+                    handle: document.getElementById('temperatureHandle'),
+                    value: document.getElementById('temperatureValue'),
+                    number: document.getElementById('temperatureNumber')
+                }
+            }
+        };
+
+        // Visualizer bars
+        const visualizerBars = document.getElementById('visualizerBars');
+
+        // Initialize sliders
+        function initializeSliders() {
+            // Create visualizer bars
+            for (let i = 0; i < 12; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'visualizer-bar';
+                visualizerBars.appendChild(bar);
+            }
+
+            // Initialize each slider
+            Object.keys(sliders).forEach(sliderId => {
+                const slider = sliders[sliderId];
+                updateSlider(sliderId, slider.value);
+                setupSliderEvents(sliderId);
+            });
+
+            // Setup preset buttons
+            setupPresetButtons();
+
+            // Update preview
+            updatePreview();
+        }
+
+        // Calculate percentage value
+        function calculatePercentage(sliderId, value) {
+            const slider = sliders[sliderId];
+            return ((value - slider.min) / (slider.max - slider.min)) * 100;
+        }
+
+        // Update slider display
+        function updateSlider(sliderId, value) {
+            const slider = sliders[sliderId];
+            const percentage = calculatePercentage(sliderId, value);
+
+            // Update fill width
+            slider.element.fill.style.width = `${percentage}%`;
+
+            // Update handle position
+            slider.element.handle.style.left = `${percentage}%`;
+
+            // Update value display
+            let displayValue;
+            if (sliderId === 'temperature') {
+                displayValue = value.toFixed(1);
+                slider.element.number.textContent = displayValue;
+            } else {
+                displayValue = Math.round(value);
+                slider.element.number.textContent = displayValue;
+            }
+
+            // Update value in slider object
+            slider.value = value;
+
+            // Update preview
+            updatePreview();
+        }
+
+        // Get value from position
+        function getValueFromPosition(sliderId, positionX) {
+            const slider = sliders[sliderId];
+            const track = slider.element.track;
+            const rect = track.getBoundingClientRect();
+
+            // Calculate position as percentage
+            let percentage = ((positionX - rect.left) / rect.width) * 100;
+            percentage = Math.max(0, Math.min(100, percentage));
+
+            // Convert percentage to value
+            const value = slider.min + (percentage / 100) * (slider.max - slider.min);
+
+            // Apply step
+            const steppedValue = Math.round(value / slider.step) * slider.step;
+
+            return Math.max(slider.min, Math.min(slider.max, steppedValue));
+        }
+
+        // Setup slider events
+        function setupSliderEvents(sliderId) {
+            const slider = sliders[sliderId];
+            const track = slider.element.track;
+            const handle = slider.element.handle;
+
+            let isDragging = false;
+
+            // Handle drag start
+            const startDrag = (e) => {
+                isDragging = true;
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', drag, { passive: false });
+                document.addEventListener('touchend', stopDrag);
+
+                // Prevent default for touch events
+                if (e.type === 'touchstart') {
+                    e.preventDefault();
+                }
+
+                // Update immediately on click
+                const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                const value = getValueFromPosition(sliderId, clientX);
+                updateSlider(sliderId, value);
+            };
+
+            // Handle drag movement
+            const drag = (e) => {
+                if (!isDragging) return;
+
+                e.preventDefault();
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const value = getValueFromPosition(sliderId, clientX);
+                updateSlider(sliderId, value);
+            };
+
+            // Handle drag end
+            const stopDrag = () => {
+                isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', drag);
+                document.removeEventListener('touchend', stopDrag);
+            };
+
+            // Add event listeners
+            handle.addEventListener('mousedown', startDrag);
+            handle.addEventListener('touchstart', startDrag, { passive: false });
+
+            // Also allow clicking on track
+            track.addEventListener('click', (e) => {
+                const value = getValueFromPosition(sliderId, e.clientX);
+                updateSlider(sliderId, value);
+            });
+
+            // Keyboard controls
+            handle.addEventListener('keydown', (e) => {
+                let newValue = slider.value;
+
+                switch (e.key) {
+                    case 'ArrowLeft':
+                    case 'ArrowDown':
+                        newValue -= slider.step;
+                        e.preventDefault();
+                        break;
+                    case 'ArrowRight':
+                    case 'ArrowUp':
+                        newValue += slider.step;
+                        e.preventDefault();
+                        break;
+                    case 'Home':
+                        newValue = slider.min;
+                        e.preventDefault();
+                        break;
+                    case 'End':
+                        newValue = slider.max;
+                        e.preventDefault();
+                        break;
+                }
+
+                if (newValue !== slider.value) {
+                    newValue = Math.max(slider.min, Math.min(slider.max, newValue));
+                    updateSlider(sliderId, newValue);
+                }
+            });
+
+            // Make handle focusable
+            handle.setAttribute('tabindex', '0');
+        }
+
+        // Setup preset buttons
+        function setupPresetButtons() {
+            const presetButtons = document.querySelectorAll('.preset-btn');
+
+            presetButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const sliderId = button.dataset.slider;
+                    const value = parseFloat(button.dataset.value);
+                    updateSlider(sliderId, value);
+                });
+            });
+        }
+
+        // Update preview elements
+        function updatePreview() {
+            // Update audio visualizer
+            const volume = sliders.volume.value;
+            const bars = document.querySelectorAll('.visualizer-bar');
+            bars.forEach((bar, index) => {
+                const height = 20 + (volume / 100) * 80 + Math.sin(index * 0.5) * 10;
+                bar.style.height = `${height}px`;
+                bar.style.opacity = 0.3 + (volume / 100) * 0.7;
+            });
+
+            // Update temperature indicator
+            const temperature = sliders.temperature.value;
+            const temperaturePreview = document.getElementById('temperaturePreview');
+            temperaturePreview.textContent = `${temperature.toFixed(1)}°C`;
+
+            // Update temperature indicator rotation
+            const tempPercentage = calculatePercentage('temperature', temperature);
+            const temperatureIndicator = document.getElementById('temperatureIndicator');
+            temperatureIndicator.style.background = `conic-gradient(
+                #2196F3 0%, 
+                #4CAF50 ${tempPercentage * 0.5}%, 
+                #FF9800 ${tempPercentage}%
+            )`;
+
+            // Update brightness display
+            const brightness = sliders.brightness.value;
+            const brightnessPreview = document.getElementById('brightnessPreview');
+            brightnessPreview.textContent = `${Math.round(brightness)}%`;
+
+            const brightnessDisplay = document.getElementById('brightnessDisplay');
+            const intensity = brightness / 100;
+            brightnessDisplay.style.boxShadow = `
+                0 0 ${60 * intensity}px rgba(255, 193, 7, ${0.3 + intensity * 0.2}),
+                inset 0 0 ${30 * intensity}px rgba(255, 255, 255, 0.3)
+            `;
+            brightnessDisplay.style.opacity = 0.5 + intensity * 0.5;
+        }
+
+        // Initialize
+        initializeSliders();
+
+        // Add animation to visualizer
+        function animateVisualizer() {
+            const volume = sliders.volume.value;
+            if (volume > 0) {
+                const bars = document.querySelectorAll('.visualizer-bar');
+                bars.forEach((bar, index) => {
+                    const wave = Math.sin(Date.now() * 0.005 + index * 0.5) * 10;
+                    const currentHeight = parseFloat(bar.style.height || '50');
+                    const targetHeight = 20 + (volume / 100) * 80 + wave;
+                    const newHeight = currentHeight + (targetHeight - currentHeight) * 0.1;
+                    bar.style.height = `${newHeight}px`;
+                });
+            }
+            requestAnimationFrame(animateVisualizer);
+        }
+
+        animateVisualizer();
+    </script>
+</body>
+
+</html>

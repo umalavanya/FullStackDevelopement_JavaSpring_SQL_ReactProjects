@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 48: Sortable List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .sortable-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .sortable-item {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: move;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sortable-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .sortable-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+            background-color: #cce5ff;
+            border-color: #b8daff;
+        }
+
+        .sortable-item.drag-over {
+            border-top: 3px solid #007bff;
+            margin-top: 20px;
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: #6c757d;
+            font-size: 20px;
+            user-select: none;
+        }
+
+        .item-content {
+            flex-grow: 1;
+        }
+
+        .status {
+            padding: 10px;
+            background-color: #d4edda;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Drag and Drop Sortable List</h2>
+    <p>Drag items to reorder them</p>
+
+    <ul class="sortable-list" id="sortableList">
+        <li class="sortable-item" data-id="1">
+            <span class="drag-handle">☰</span>
+            <span class="item-content">Task 1: Complete project proposal</span>
+        </li>
+        <li class="sortable-item" data-id="2">
+            <span class="drag-handle">☰</span>
+            <span class="item-content">Task 2: Team meeting at 2 PM</span>
+        </li>
+        <li class="sortable-item" data-id="3">
+            <span class="drag-handle">☰</span>
+            <span class="item-content">Task 3: Review design mockups</span>
+        </li>
+        <li class="sortable-item" data-id="4">
+            <span class="drag-handle">☰</span>
+            <span class="item-content">Task 4: Update documentation</span>
+        </li>
+        <li class="sortable-item" data-id="5">
+            <span class="drag-handle">☰</span>
+            <span class="item-content">Task 5: Prepare presentation</span>
+        </li>
+    </ul>
+
+    <div class="status" id="status"></div>
+
+    <script>
+        const sortableList = document.getElementById('sortableList');
+        const statusDiv = document.getElementById('status');
+        let draggedItem = null;
+
+        // Add drag and drop event listeners to all items
+        document.querySelectorAll('.sortable-item').forEach(item => {
+            item.setAttribute('draggable', 'true');
+
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = item;
+                setTimeout(() => {
+                    item.classList.add('dragging');
+                }, 0);
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            item.addEventListener('dragend', () => {
+                document.querySelectorAll('.sortable-item').forEach(item => {
+                    item.classList.remove('dragging', 'drag-over');
+                });
+                draggedItem = null;
+                updateStatus('Items reordered successfully!');
+            });
+
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+
+            item.addEventListener('dragenter', (e) => {
+                if (item !== draggedItem) {
+                    item.classList.add('drag-over');
+                }
+            });
+
+            item.addEventListener('dragleave', () => {
+                item.classList.remove('drag-over');
+            });
+
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (item !== draggedItem) {
+                    const allItems = Array.from(sortableList.children);
+                    const draggedIndex = allItems.indexOf(draggedItem);
+                    const targetIndex = allItems.indexOf(item);
+
+                    if (draggedIndex < targetIndex) {
+                        sortableList.insertBefore(draggedItem, item.nextSibling);
+                    } else {
+                        sortableList.insertBefore(draggedItem, item);
+                    }
+
+                    updateOrderNumbers();
+                }
+                item.classList.remove('drag-over');
+            });
+        });
+
+        function updateOrderNumbers() {
+            const items = sortableList.querySelectorAll('.sortable-item');
+            items.forEach((item, index) => {
+                const content = item.querySelector('.item-content');
+                const text = content.textContent.replace(/Task \d+:/, `Task ${index + 1}:`);
+                content.textContent = text;
+            });
+        }
+
+        function updateStatus(message) {
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            statusDiv.style.backgroundColor = '#d4edda';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 2000);
+        }
+
+        // Initialize
+        updateOrderNumbers();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Background</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f23;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Canvas Container */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Content Overlay */
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-top: 40px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ff9d, #00b8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8a8aff;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #00ff9d;
+        }
+
+        .control-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #8a8aff;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Control Groups */
+        .control-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .control-group {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group h3 {
+            color: #00b8ff;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-item {
+            margin-bottom: 15px;
+        }
+
+        .control-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #8a8aff;
+            font-size: 0.9rem;
+        }
+
+        /* Slider Styles */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00ff9d;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: white;
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-label input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #00ff9d;
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 14px 28px;
+            background: linear-gradient(45deg, #00b8ff, #0088cc);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 184, 255, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 184, 255, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(45deg, #ff00aa, #cc0088);
+        }
+
+        .action-btn.secondary:hover {
+            box-shadow: 0 8px 25px rgba(255, 0, 170, 0.4);
+        }
+
+        .action-btn.reset {
+            background: linear-gradient(45deg, #ff9900, #cc7700);
+        }
+
+        .action-btn.reset:hover {
+            box-shadow: 0 8px 25px rgba(255, 153, 0, 0.4);
+        }
+
+        /* Information Panel */
+        .info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .info-card {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-card h3 {
+            color: #00ff9d;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-card p {
+            color: #8a8aff;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Mouse Position Indicator */
+        .mouse-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #00ff9d;
+            z-index: 3;
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            display: none;
+        }
+
+        .mouse-indicator.show {
+            display: block;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            color: #8a8aff;
+            font-size: 0.9rem;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .controls-panel,
+            .info-panel {
+                padding: 20px;
+            }
+
+            .control-groups {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .instructions {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="mouse-indicator" id="mouseIndicator">
+        X: <span id="mouseX">0</span>, Y: <span id="mouseY">0</span>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>Particle Background</h1>
+            <p class="subtitle">Interactive particle system with mouse interaction and customizable parameters</p>
+        </header>
+
+        <div class="controls-panel">
+            <div class="controls-header">
+                <h2>Particle Controls</h2>
+                <div class="control-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="particleCount">0</span>
+                        <span>Particles</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="fpsCounter">60</span>
+                        <span>FPS</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="connectionCount">0</span>
+                        <span>Connections</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-groups">
+                <div class="control-group">
+                    <h3>⚙️ Particle Settings</h3>
+                    <div class="control-item">
+                        <label class="control-label">Particle Count</label>
+                        <div class="slider-container">
+                            <input type="range" id="particleSlider" min="10" max="500" value="150" step="10">
+                            <span class="slider-value" id="particleValue">150</span>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Particle Size</label>
+                        <div class="slider-container">
+                            <input type="range" id="sizeSlider" min="1" max="10" value="3" step="0.5">
+                            <span class="slider-value" id="sizeValue">3</span>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Particle Speed</label>
+                        <div class="slider-container">
+                            <input type="range" id="speedSlider" min="0.1" max="2" value="0.5" step="0.1">
+                            <span class="slider-value" id="speedValue">0.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎨 Color Settings</h3>
+                    <div class="control-item">
+                        <label class="control-label">Color Theme</label>
+                        <div class="color-picker">
+                            <div class="color-option active"
+                                style="background: linear-gradient(45deg, #00ff9d, #00b8ff);" data-color="neon"></div>
+                            <div class="color-option" style="background: linear-gradient(45deg, #ff00aa, #ff9900);"
+                                data-color="fire"></div>
+                            <div class="color-option" style="background: linear-gradient(45deg, #9d00ff, #00b8ff);"
+                                data-color="purple"></div>
+                            <div class="color-option" style="background: linear-gradient(45deg, #00ff9d, #ffffff);"
+                                data-color="mono"></div>
+                            <div class="color-option" style="background: linear-gradient(45deg, #ff0000, #ffff00);"
+                                data-color="rainbow"></div>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Connection Color</label>
+                        <div class="slider-container">
+                            <input type="range" id="opacitySlider" min="0" max="1" value="0.3" step="0.05">
+                            <span class="slider-value" id="opacityValue">0.3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>🔗 Connection Settings</h3>
+                    <div class="control-item">
+                        <div class="toggle-switch">
+                            <span class="control-label">Enable Connections</span>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="connectionsToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">Connection Distance</label>
+                        <div class="slider-container">
+                            <input type="range" id="distanceSlider" min="50" max="300" value="150" step="10">
+                            <span class="slider-value" id="distanceValue">150</span>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <div class="toggle-switch">
+                            <span class="control-label">Mouse Interaction</span>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="interactionToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="particleSystem.explode()">
+                    💥 Explode Particles
+                </button>
+                <button class="action-btn secondary" onclick="particleSystem.attract()">
+                    ⬇️ Attract to Center
+                </button>
+                <button class="action-btn reset" onclick="particleSystem.reset()">
+                    🔄 Reset Particles
+                </button>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-content">
+                <div class="info-card">
+                    <h3>Mouse Interaction</h3>
+                    <p>Move your mouse to interact with particles. They will be attracted to or repelled from your
+                        cursor based on settings.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Particle Physics</h3>
+                    <p>Each particle has velocity and follows basic physics principles. They bounce off edges and
+                        interact with each other.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Real-time Controls</h3>
+                    <p>All parameters update in real-time. Adjust sliders to see immediate changes in the particle
+                        system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        Move your mouse to interact with particles | Press Space for explosion | Adjust controls for different effects
+    </div>
+
+    <script>
+        class ParticleSystem {
+            constructor() {
+                this.canvas = document.getElementById('particleCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.mouse = { x: 0, y: 0, radius: 100 };
+                this.isMouseInCanvas = false;
+
+                // Settings
+                this.settings = {
+                    particleCount: 150,
+                    particleSize: 3,
+                    particleSpeed: 0.5,
+                    connectionDistance: 150,
+                    connectionOpacity: 0.3,
+                    colorTheme: 'neon',
+                    enableConnections: true,
+                    enableInteraction: true
+                };
+
+                // Color themes
+                this.colorThemes = {
+                    neon: {
+                        particle: ['#00ff9d', '#00b8ff', '#ff00aa'],
+                        connection: '#00ff9d'
+                    },
+                    fire: {
+                        particle: ['#ff0000', '#ff9900', '#ffff00'],
+                        connection: '#ff9900'
+                    },
+                    purple: {
+                        particle: ['#9d00ff', '#00b8ff', '#ff00ff'],
+                        connection: '#9d00ff'
+                    },
+                    mono: {
+                        particle: ['#ffffff', '#cccccc', '#999999'],
+                        connection: '#ffffff'
+                    },
+                    rainbow: {
+                        particle: ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff'],
+                        connection: '#ffffff'
+                    }
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.resizeCanvas();
+                this.createParticles();
+                this.setupEventListeners();
+                this.setupControls();
+                this.animate();
+                this.updateStats();
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createParticles() {
+                this.particles = [];
+
+                for (let i = 0; i < this.settings.particleCount; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * this.settings.particleSpeed * 2,
+                        vy: (Math.random() - 0.5) * this.settings.particleSpeed * 2,
+                        size: this.settings.particleSize * (0.5 + Math.random() * 0.5),
+                        color: this.getRandomParticleColor(),
+                        originalSize: this.settings.particleSize * (0.5 + Math.random() * 0.5)
+                    });
+                }
+            }
+
+            getRandomParticleColor() {
+                const colors = this.colorThemes[this.settings.colorTheme].particle;
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            setupEventListeners() {
+                // Window resize
+                window.addEventListener('resize', () => {
+                    this.resizeCanvas();
+                    this.createParticles();
+                });
+
+                // Mouse move
+                window.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                    this.isMouseInCanvas = true;
+
+                    // Update mouse indicator
+                    document.getElementById('mouseX').textContent = e.clientX;
+                    document.getElementById('mouseY').textContent = e.clientY;
+                    document.getElementById('mouseIndicator').classList.add('show');
+                });
+
+                // Mouse leave
+                window.addEventListener('mouseout', () => {
+                    this.isMouseInCanvas = false;
+                    document.getElementById('mouseIndicator').classList.remove('show');
+                });
+
+                // Keyboard shortcuts
+                window.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space') {
+                        e.preventDefault();
+                        this.explode();
+                    }
+                });
+            }
+
+            setupControls() {
+                // Particle count
+                const particleSlider = document.getElementById('particleSlider');
+                const particleValue = document.getElementById('particleValue');
+
+                particleSlider.addEventListener('input', (e) => {
+                    this.settings.particleCount = parseInt(e.target.value);
+                    particleValue.textContent = this.settings.particleCount;
+                    this.createParticles();
+                });
+
+                // Particle size
+                const sizeSlider = document.getElementById('sizeSlider');
+                const sizeValue = document.getElementById('sizeValue');
+
+                sizeSlider.addEventListener('input', (e) => {
+                    this.settings.particleSize = parseFloat(e.target.value);
+                    sizeValue.textContent = this.settings.particleSize;
+                    this.particles.forEach(p => {
+                        p.originalSize = this.settings.particleSize * (0.5 + Math.random() * 0.5);
+                    });
+                });
+
+                // Particle speed
+                const speedSlider = document.getElementById('speedSlider');
+                const speedValue = document.getElementById('speedValue');
+
+                speedSlider.addEventListener('input', (e) => {
+                    this.settings.particleSpeed = parseFloat(e.target.value);
+                    speedValue.textContent = this.settings.particleSpeed;
+                });
+
+                // Connection distance
+                const distanceSlider = document.getElementById('distanceSlider');
+                const distanceValue = document.getElementById('distanceValue');
+
+                distanceSlider.addEventListener('input', (e) => {
+                    this.settings.connectionDistance = parseInt(e.target.value);
+                    distanceValue.textContent = this.settings.connectionDistance;
+                });
+
+                // Connection opacity
+                const opacitySlider = document.getElementById('opacitySlider');
+                const opacityValue = document.getElementById('opacityValue');
+
+                opacitySlider.addEventListener('input', (e) => {
+                    this.settings.connectionOpacity = parseFloat(e.target.value);
+                    opacityValue.textContent = this.settings.connectionOpacity;
+                });
+
+                // Color themes
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        document.querySelectorAll('.color-option').forEach(o => {
+                            o.classList.remove('active');
+                        });
+                        e.target.classList.add('active');
+                        this.settings.colorTheme = e.target.dataset.color;
+                        this.particles.forEach(p => {
+                            p.color = this.getRandomParticleColor();
+                        });
+                    });
+                });
+
+                // Toggles
+                document.getElementById('connectionsToggle').addEventListener('change', (e) => {
+                    this.settings.enableConnections = e.target.checked;
+                });
+
+                document.getElementById('interactionToggle').addEventListener('change', (e) => {
+                    this.settings.enableInteraction = e.target.checked;
+                });
+            }
+
+            animate() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(15, 15, 35, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Update and draw particles
+                this.updateParticles();
+                this.drawParticles();
+
+                // Draw connections
+                if (this.settings.enableConnections) {
+                    this.drawConnections();
+                }
+
+                // Request next frame
+                requestAnimationFrame(() => this.animate());
+
+                // Update FPS counter
+                this.updateFPSCounter();
+            }
+
+            updateParticles() {
+                this.particles.forEach(particle => {
+                    // Apply mouse interaction
+                    if (this.settings.enableInteraction && this.isMouseInCanvas) {
+                        const dx = this.mouse.x - particle.x;
+                        const dy = this.mouse.y - particle.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < this.mouse.radius) {
+                            // Repel particles from mouse
+                            const angle = Math.atan2(dy, dx);
+                            const force = (this.mouse.radius - distance) / this.mouse.radius;
+
+                            particle.vx -= Math.cos(angle) * force * 0.5;
+                            particle.vy -= Math.sin(angle) * force * 0.5;
+
+                            // Increase size when near mouse
+                            particle.size = particle.originalSize * (1 + force * 2);
+                        } else {
+                            particle.size = particle.originalSize;
+                        }
+                    }
+
+                    // Update position
+                    particle.x += particle.vx * this.settings.particleSpeed;
+                    particle.y += particle.vy * this.settings.particleSpeed;
+
+                    // Bounce off walls
+                    if (particle.x < 0 || particle.x > this.canvas.width) {
+                        particle.vx *= -0.9;
+                        particle.x = particle.x < 0 ? 0 : this.canvas.width;
+                    }
+
+                    if (particle.y < 0 || particle.y > this.canvas.height) {
+                        particle.vy *= -0.9;
+                        particle.y = particle.y < 0 ? 0 : this.canvas.height;
+                    }
+
+                    // Apply friction
+                    particle.vx *= 0.99;
+                    particle.vy *= 0.99;
+
+                    // Add random movement
+                    particle.vx += (Math.random() - 0.5) * 0.01;
+                    particle.vy += (Math.random() - 0.5) * 0.01;
+
+                    // Limit maximum speed
+                    const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+                    const maxSpeed = 2 * this.settings.particleSpeed;
+                    if (speed > maxSpeed) {
+                        particle.vx = (particle.vx / speed) * maxSpeed;
+                        particle.vy = (particle.vy / speed) * maxSpeed;
+                    }
+                });
+            }
+
+            drawParticles() {
+                this.particles.forEach(particle => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.fill();
+
+                    // Add glow effect
+                    this.ctx.shadowColor = particle.color;
+                    this.ctx.shadowBlur = 15;
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
+                });
+            }
+
+            drawConnections() {
+                let connectionCount = 0;
+
+                for (let i = 0; i < this.particles.length; i++) {
+                    for (let j = i + 1; j < this.particles.length; j++) {
+                        const p1 = this.particles[i];
+                        const p2 = this.particles[j];
+
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < this.settings.connectionDistance) {
+                            connectionCount++;
+
+                            // Calculate opacity based on distance
+                            const opacity = this.settings.connectionOpacity * (1 - distance / this.settings.connectionDistance);
+
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(p1.x, p1.y);
+                            this.ctx.lineTo(p2.x, p2.y);
+                            this.ctx.strokeStyle = this.colorThemes[this.settings.colorTheme].connection.replace(')', `, ${opacity})`).replace('rgb', 'rgba');
+                            this.ctx.lineWidth = 1;
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+
+                // Update connection count
+                document.getElementById('connectionCount').textContent = connectionCount;
+            }
+
+            explode() {
+                this.particles.forEach(particle => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const force = 5 + Math.random() * 10;
+
+                    particle.vx = Math.cos(angle) * force;
+                    particle.vy = Math.sin(angle) * force;
+                });
+            }
+
+            attract() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                this.particles.forEach(particle => {
+                    const dx = centerX - particle.x;
+                    const dy = centerY - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance > 0) {
+                        const force = 0.01;
+                        particle.vx += (dx / distance) * force;
+                        particle.vy += (dy / distance) * force;
+                    }
+                });
+            }
+
+            reset() {
+                this.createParticles();
+            }
+
+            updateStats() {
+                document.getElementById('particleCount').textContent = this.particles.length;
+
+                // Update stats periodically
+                setInterval(() => {
+                    this.updateStats();
+                }, 1000);
+            }
+
+            updateFPSCounter() {
+                if (!this.lastTime) {
+                    this.lastTime = performance.now();
+                    this.frameCount = 0;
+                    return;
+                }
+
+                this.frameCount++;
+                const currentTime = performance.now();
+
+                if (currentTime - this.lastTime >= 1000) {
+                    const fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
+                    document.getElementById('fpsCounter').textContent = fps;
+
+                    this.frameCount = 0;
+                    this.lastTime = currentTime;
+                }
+            }
+        }
+
+        // Initialize particle system
+        const particleSystem = new ParticleSystem();
+
+        // Make functions available globally
+        window.particleSystem = particleSystem;
+    </script>
+</body>
+
+</html>

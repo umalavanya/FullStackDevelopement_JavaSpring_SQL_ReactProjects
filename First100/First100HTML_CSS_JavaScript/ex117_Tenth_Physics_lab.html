@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10th Grade Physics Virtual Lab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .lab-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Experiments Panel */
+        .experiments-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+
+        .panel-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #1e3c72;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .experiments-list {
+            list-style: none;
+        }
+
+        .experiment-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .experiment-item:hover {
+            background: #e8f5e9;
+            transform: translateX(5px);
+        }
+
+        .experiment-item.active {
+            background: #e3f2fd;
+            border-left-color: #2196F3;
+        }
+
+        .experiment-icon {
+            font-size: 1.2rem;
+            color: #2a5298;
+            margin-bottom: 8px;
+        }
+
+        .experiment-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1e3c72;
+        }
+
+        .experiment-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Experiment Area */
+        .experiment-area {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            min-height: 650px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .experiment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .experiment-name {
+            font-size: 1.8rem;
+            color: #1e3c72;
+        }
+
+        .experiment-category {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .experiment-content {
+            display: none;
+            height: 500px;
+        }
+
+        .experiment-content.active {
+            display: block;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .control-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #1e3c72;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2196F3;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+            min-width: 140px;
+        }
+
+        .btn:hover {
+            background: #388E3C;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #2196F3;
+        }
+
+        .btn-primary:hover {
+            background: #1976D2;
+        }
+
+        .btn-reset {
+            background: #f44336;
+        }
+
+        .btn-reset:hover {
+            background: #d32f2f;
+        }
+
+        /* Data Display */
+        .data-display {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .data-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-label {
+            color: #555;
+        }
+
+        .data-value {
+            color: #2196F3;
+            font-weight: 500;
+        }
+
+        /* Experiment Specific Styling */
+
+        /* Ohm's Law Experiment */
+        .circuit-container {
+            width: 100%;
+            height: 400px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .battery {
+            position: absolute;
+            width: 60px;
+            height: 100px;
+            left: 100px;
+            top: 150px;
+            background: linear-gradient(to right, #FFC107, #FF9800);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .resistor {
+            position: absolute;
+            width: 100px;
+            height: 40px;
+            left: 300px;
+            top: 170px;
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .wire {
+            position: absolute;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .ammeter {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            left: 200px;
+            top: 80px;
+            background: #2196F3;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .voltmeter {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            left: 450px;
+            top: 80px;
+            background: #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Reflection of Light Experiment */
+        .light-experiment {
+            width: 100%;
+            height: 400px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .mirror {
+            position: absolute;
+            width: 200px;
+            height: 10px;
+            left: 300px;
+            top: 200px;
+            background: linear-gradient(45deg, #b0bec5 0%, #eceff1 50%, #b0bec5 100%);
+            transform: rotate(45deg);
+            transform-origin: left center;
+        }
+
+        .light-ray {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(255, 255, 0, 1) 0%, rgba(255, 255, 0, 0.8) 50%, rgba(255, 255, 0, 0) 100%);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.7);
+            border-radius: 2px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .incident-ray {
+            top: 250px;
+            left: 100px;
+            width: 200px;
+            transform: rotate(30deg);
+            transform-origin: left center;
+        }
+
+        .reflected-ray {
+            top: 250px;
+            left: 300px;
+            width: 200px;
+            transform: rotate(-30deg);
+            transform-origin: left center;
+        }
+
+        .normal-line {
+            position: absolute;
+            height: 150px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            left: 300px;
+            top: 125px;
+        }
+
+        .angle-label {
+            position: absolute;
+            color: white;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+
+        /* Simple Pendulum Experiment */
+        .pendulum-container {
+            width: 100%;
+            height: 400px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .pendulum-stand {
+            position: absolute;
+            width: 10px;
+            height: 150px;
+            background: #795548;
+            left: 50%;
+            top: 50px;
+            transform: translateX(-50%);
+        }
+
+        .pendulum-stand-top {
+            position: absolute;
+            width: 100px;
+            height: 10px;
+            background: #795548;
+            left: 50%;
+            top: 50px;
+            transform: translateX(-50%);
+        }
+
+        .pendulum-string {
+            position: absolute;
+            width: 2px;
+            background: #333;
+            left: 50%;
+            top: 60px;
+            transform-origin: top center;
+            transform: translateX(-50%);
+        }
+
+        .pendulum-bob {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f44336, #c62828);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translate(-50%, -50%);
+        }
+
+        /* Notes Section */
+        .notes-section {
+            background: #FFFDE7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 5px solid #FFC107;
+        }
+
+        .notes-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #FF9800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notes-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .notes-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .notes-content li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            color: #666;
+            border-top: 3px solid #4CAF50;
+        }
+
+        .footer-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .experiment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .btn {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="grade-badge">Grade 10 Physics</div>
+            <h1><i class="fas fa-flask"></i> Virtual Physics Lab</h1>
+            <p class="subtitle">Interactive Experiments for 10th Grade Physics Curriculum</p>
+            <div class="lab-info">
+                <div class="info-item"><i class="fas fa-lightbulb"></i> Light & Reflection</div>
+                <div class="info-item"><i class="fas fa-bolt"></i> Electricity</div>
+                <div class="info-item"><i class="fas fa-weight-hanging"></i> Motion & Forces</div>
+                <div class="info-item"><i class="fas fa-wave-square"></i> Sound & Waves</div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Experiments Panel -->
+            <div class="experiments-panel">
+                <h2 class="panel-title"><i class="fas fa-vial"></i> Experiments</h2>
+                <ul class="experiments-list">
+                    <li class="experiment-item active" data-experiment="ohms-law">
+                        <div class="experiment-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="experiment-title">Ohm's Law</div>
+                        <div class="experiment-desc">Verify relationship between V, I and R</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="reflection-light">
+                        <div class="experiment-icon"><i class="fas fa-lightbulb"></i></div>
+                        <div class="experiment-title">Reflection of Light</div>
+                        <div class="experiment-desc">Laws of reflection & mirror angles</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="simple-pendulum">
+                        <div class="experiment-icon"><i class="fas fa-weight-hanging"></i></div>
+                        <div class="experiment-title">Simple Pendulum</div>
+                        <div class="experiment-desc">Time period & length relationship</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="series-circuit">
+                        <div class="experiment-icon"><i class="fas fa-project-diagram"></i></div>
+                        <div class="experiment-title">Series Circuit</div>
+                        <div class="experiment-desc">Current & resistance in series</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="parallel-circuit">
+                        <div class="experiment-icon"><i class="fas fa-sitemap"></i></div>
+                        <div class="experiment-title">Parallel Circuit</div>
+                        <div class="experiment-desc">Current & resistance in parallel</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="lens-experiment">
+                        <div class="experiment-icon"><i class="fas fa-circle-notch"></i></div>
+                        <div class="experiment-title">Convex Lens</div>
+                        <div class="experiment-desc">Image formation by convex lens</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="sound-waves">
+                        <div class="experiment-icon"><i class="fas fa-wave-square"></i></div>
+                        <div class="experiment-title">Sound Waves</div>
+                        <div class="experiment-desc">Frequency, wavelength & speed</div>
+                    </li>
+                    <li class="experiment-item" data-experiment="archimedes">
+                        <div class="experiment-icon"><i class="fas fa-water"></i></div>
+                        <div class="experiment-title">Archimedes' Principle</div>
+                        <div class="experiment-desc">Buoyancy & displaced water</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Experiment Area -->
+            <div class="experiment-area">
+                <div class="experiment-header">
+                    <div>
+                        <h2 class="experiment-name">Ohm's Law Verification</h2>
+                        <span class="experiment-category">Electricity</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9rem;">
+                        <i class="fas fa-clock"></i> Estimated time: 15-20 minutes
+                    </div>
+                </div>
+
+                <!-- Ohm's Law Experiment -->
+                <div class="experiment-content active" id="ohms-law-content">
+                    <div class="circuit-container" id="circuitContainer">
+                        <div class="battery" id="battery">
+                            <div>Battery</div>
+                            <div id="voltageValue">6 V</div>
+                        </div>
+                        <div class="wire" id="wire1" style="width: 100px; height: 2px; top: 200px; left: 160px;"></div>
+                        <div class="ammeter" id="ammeter">
+                            <div>Ammeter</div>
+                            <div id="currentValue">0.5 A</div>
+                        </div>
+                        <div class="wire" id="wire2"
+                            style="width: 140px; height: 2px; top: 210px; left: 280px; transform: rotate(90deg);"></div>
+                        <div class="wire" id="wire3" style="width: 100px; height: 2px; top: 210px; left: 280px;"></div>
+                        <div class="resistor" id="resistor">
+                            <div>Resistor</div>
+                            <div id="resistanceValue">12 Ω</div>
+                        </div>
+                        <div class="wire" id="wire4" style="width: 200px; height: 2px; top: 210px; left: 400px;"></div>
+                        <div class="wire" id="wire5"
+                            style="width: 140px; height: 2px; top: 110px; left: 400px; transform: rotate(90deg);"></div>
+                        <div class="voltmeter" id="voltmeter">
+                            <div>Voltmeter</div>
+                            <div id="voltageDisplay">6.0 V</div>
+                        </div>
+                        <div class="wire" id="wire6" style="width: 100px; height: 2px; top: 110px; left: 300px;"></div>
+                        <div class="wire" id="wire7"
+                            style="width: 140px; height: 2px; top: 110px; left: 160px; transform: rotate(90deg);"></div>
+                    </div>
+
+                    <div class="controls-panel">
+                        <h3 class="control-title"><i class="fas fa-sliders-h"></i> Experiment Controls</h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Voltage (V): </span>
+                                <span id="voltageSliderValue">6 V</span>
+                            </div>
+                            <input type="range" min="1" max="12" value="6" class="slider" id="voltageSlider">
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Resistance (Ω): </span>
+                                <span id="resistanceSliderValue">12 Ω</span>
+                            </div>
+                            <input type="range" min="1" max="24" value="12" class="slider" id="resistanceSlider">
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="calculateCurrent">
+                                <i class="fas fa-calculator"></i> Calculate Current
+                            </button>
+                            <button class="btn" id="showFormula">
+                                <i class="fas fa-square-root-alt"></i> Show Formula
+                            </button>
+                            <button class="btn btn-reset" id="resetOhms">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+
+                        <div class="data-display">
+                            <div class="data-title">Ohm's Law Results</div>
+                            <div class="data-row">
+                                <span class="data-label">Voltage (V):</span>
+                                <span class="data-value" id="resultVoltage">6.0 V</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Resistance (R):</span>
+                                <span class="data-value" id="resultResistance">12.0 Ω</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Current (I):</span>
+                                <span class="data-value" id="resultCurrent">0.5 A</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Formula Verified:</span>
+                                <span class="data-value" id="formulaVerified">V = I × R ✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reflection of Light Experiment -->
+                <div class="experiment-content" id="reflection-light-content">
+                    <div class="light-experiment">
+                        <div class="normal-line"></div>
+                        <div class="mirror" id="mirror"></div>
+                        <div class="light-ray incident-ray" id="incidentRay"></div>
+                        <div class="light-ray reflected-ray" id="reflectedRay"></div>
+                        <div class="angle-label" style="left: 250px; top: 200px;" id="angleILabel">∠i = 30°</div>
+                        <div class="angle-label" style="left: 350px; top: 200px;" id="angleRLabel">∠r = 30°</div>
+                    </div>
+
+                    <div class="controls-panel">
+                        <h3 class="control-title"><i class="fas fa-sliders-h"></i> Experiment Controls</h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Angle of Incidence: </span>
+                                <span id="incidenceAngleValue">30°</span>
+                            </div>
+                            <input type="range" min="10" max="80" value="30" class="slider" id="incidenceAngleSlider">
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Mirror Tilt: </span>
+                                <span id="mirrorTiltValue">45°</span>
+                            </div>
+                            <input type="range" min="10" max="80" value="45" class="slider" id="mirrorTiltSlider">
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="traceRay">
+                                <i class="fas fa-project-diagram"></i> Trace Light Ray
+                            </button>
+                            <button class="btn" id="showLaws">
+                                <i class="fas fa-gavel"></i> Show Laws of Reflection
+                            </button>
+                            <button class="btn btn-reset" id="resetLight">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+
+                        <div class="data-display">
+                            <div class="data-title">Reflection Results</div>
+                            <div class="data-row">
+                                <span class="data-label">Angle of Incidence (∠i):</span>
+                                <span class="data-value" id="incidenceAngleResult">30°</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Angle of Reflection (∠r):</span>
+                                <span class="data-value" id="reflectionAngleResult">30°</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Law Verification:</span>
+                                <span class="data-value" id="lawVerified">∠i = ∠r ✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simple Pendulum Experiment -->
+                <div class="experiment-content" id="simple-pendulum-content">
+                    <div class="pendulum-container">
+                        <div class="pendulum-stand"></div>
+                        <div class="pendulum-stand-top"></div>
+                        <div class="pendulum-string" id="pendulumString" style="height: 200px;"></div>
+                        <div class="pendulum-bob" id="pendulumBob" style="left: 50%; top: 260px;"></div>
+                        <div
+                            style="position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); color: #666; font-size: 0.9rem;">
+                            <i class="fas fa-ruler"></i> Length: <span id="pendulumLengthValue">200 cm</span>
+                        </div>
+                    </div>
+
+                    <div class="controls-panel">
+                        <h3 class="control-title"><i class="fas fa-sliders-h"></i> Experiment Controls</h3>
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Pendulum Length: </span>
+                                <span id="lengthSliderValue">200 cm</span>
+                            </div>
+                            <input type="range" min="50" max="300" value="200" class="slider" id="lengthSlider">
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Release Angle: </span>
+                                <span id="angleSliderValue">30°</span>
+                            </div>
+                            <input type="range" min="10" max="60" value="30" class="slider" id="angleSlider">
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="startPendulum">
+                                <i class="fas fa-play-circle"></i> Start Oscillation
+                            </button>
+                            <button class="btn" id="stopPendulum">
+                                <i class="fas fa-stop-circle"></i> Stop
+                            </button>
+                            <button class="btn" id="calculatePeriod">
+                                <i class="fas fa-calculator"></i> Calculate Time Period
+                            </button>
+                            <button class="btn btn-reset" id="resetPendulum">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+
+                        <div class="data-display">
+                            <div class="data-title">Pendulum Results</div>
+                            <div class="data-row">
+                                <span class="data-label">Length (L):</span>
+                                <span class="data-value" id="resultLength">200 cm</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Time Period (T):</span>
+                                <span class="data-value" id="resultPeriod">2.84 s</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Formula:</span>
+                                <span class="data-value">T = 2π√(L/g)</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Oscillations Count:</span>
+                                <span class="data-value" id="oscillationCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="notes-section" id="experimentNotes">
+            <h3 class="notes-title"><i class="fas fa-clipboard-list"></i> Experiment Notes: Ohm's Law</h3>
+            <div class="notes-content">
+                <p><strong>Objective:</strong> To verify Ohm's Law which states that the current through a conductor
+                    between two points is directly proportional to the voltage across the two points, and inversely
+                    proportional to the resistance between them.</p>
+
+                <p><strong>Formula:</strong> V = I × R</p>
+
+                <ul>
+                    <li><strong>V</strong> = Voltage (in Volts)</li>
+                    <li><strong>I</strong> = Current (in Amperes)</li>
+                    <li><strong>R</strong> = Resistance (in Ohms)</li>
+                </ul>
+
+                <p><strong>Procedure:</strong></p>
+                <ol>
+                    <li>Adjust the voltage using the voltage slider</li>
+                    <li>Adjust the resistance using the resistance slider</li>
+                    <li>Click "Calculate Current" to apply Ohm's Law</li>
+                    <li>Observe how current changes with voltage and resistance</li>
+                </ol>
+
+                <p><strong>Observation:</strong> When resistance is constant, current increases with voltage. When
+                    voltage is constant, current decreases with resistance.</p>
+            </div>
+        </div>
+
+        <footer>
+            <p><i class="fas fa-graduation-cap"></i> <strong>10th Grade Physics Virtual Lab</strong></p>
+            <p>Interactive simulations for CBSE/ICSE/State Board Physics Curriculum</p>
+            <div class="footer-info">
+                <div><i class="fas fa-book"></i> Covers 8+ essential experiments</div>
+                <div><i class="fas fa-mouse-pointer"></i> Fully interactive simulations</div>
+                <div><i class="fas fa-chart-line"></i> Real-time data & calculations</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Current active experiment
+        let activeExperiment = 'ohms-law';
+        let pendulumAnimation = null;
+        let oscillationCount = 0;
+        let pendulumAngle = 30;
+        let pendulumLength = 200;
+
+        // Initialize the lab
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set up experiment selection
+            setupExperimentSelection();
+
+            // Initialize Ohm's Law experiment
+            setupOhmsLaw();
+
+            // Initialize Reflection of Light experiment
+            setupReflection();
+
+            // Initialize Simple Pendulum experiment
+            setupPendulum();
+        });
+
+        // Set up experiment selection
+        function setupExperimentSelection() {
+            const experimentItems = document.querySelectorAll('.experiment-item');
+
+            experimentItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    // Remove active class from all items
+                    experimentItems.forEach(i => i.classList.remove('active'));
+
+                    // Add active class to clicked item
+                    this.classList.add('active');
+
+                    // Get experiment ID
+                    const experimentId = this.getAttribute('data-experiment');
+
+                    // Switch experiment content
+                    switchExperiment(experimentId);
+                });
+            });
+        }
+
+        // Switch between experiments
+        function switchExperiment(experimentId) {
+            // Hide all experiment contents
+            const experimentContents = document.querySelectorAll('.experiment-content');
+            experimentContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show selected experiment content
+            const selectedContent = document.getElementById(experimentId + '-content');
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+
+                // Update experiment name and category
+                updateExperimentHeader(experimentId);
+
+                // Update notes section
+                updateExperimentNotes(experimentId);
+
+                // Set as active experiment
+                activeExperiment = experimentId;
+            }
+        }
+
+        // Update experiment header
+        function updateExperimentHeader(experimentId) {
+            const experimentNames = {
+                'ohms-law': 'Ohm\'s Law Verification',
+                'reflection-light': 'Reflection of Light',
+                'simple-pendulum': 'Simple Pendulum',
+                'series-circuit': 'Series Circuit Analysis',
+                'parallel-circuit': 'Parallel Circuit Analysis',
+                'lens-experiment': 'Convex Lens Image Formation',
+                'sound-waves': 'Sound Waves Properties',
+                'archimedes': 'Archimedes\' Principle'
+            };
+
+            const experimentCategories = {
+                'ohms-law': 'Electricity',
+                'reflection-light': 'Light',
+                'simple-pendulum': 'Motion',
+                'series-circuit': 'Electricity',
+                'parallel-circuit': 'Electricity',
+                'lens-experiment': 'Light',
+                'sound-waves': 'Waves',
+                'archimedes': 'Forces'
+            };
+
+            const header = document.querySelector('.experiment-name');
+            const category = document.querySelector('.experiment-category');
+
+            if (header) header.textContent = experimentNames[experimentId] || 'Physics Experiment';
+            if (category) category.textContent = experimentCategories[experimentId] || 'Physics';
+        }
+
+        // Update experiment notes
+        function updateExperimentNotes(experimentId) {
+            const notesSection = document.getElementById('experimentNotes');
+            const notesTitle = notesSection.querySelector('.notes-title');
+            const notesContent = notesSection.querySelector('.notes-content');
+
+            const notesData = {
+                'ohms-law': {
+                    title: 'Experiment Notes: Ohm\'s Law',
+                    content: `
+                        <p><strong>Objective:</strong> To verify Ohm's Law which states that the current through a conductor between two points is directly proportional to the voltage across the two points, and inversely proportional to the resistance between them.</p>
+                        
+                        <p><strong>Formula:</strong> V = I × R</p>
+                        
+                        <ul>
+                            <li><strong>V</strong> = Voltage (in Volts)</li>
+                            <li><strong>I</strong> = Current (in Amperes)</li>
+                            <li><strong>R</strong> = Resistance (in Ohms)</li>
+                        </ul>
+                        
+                        <p><strong>Procedure:</strong></p>
+                        <ol>
+                            <li>Adjust the voltage using the voltage slider</li>
+                            <li>Adjust the resistance using the resistance slider</li>
+                            <li>Click "Calculate Current" to apply Ohm's Law</li>
+                            <li>Observe how current changes with voltage and resistance</li>
+                        </ol>
+                        
+                        <p><strong>Observation:</strong> When resistance is constant, current increases with voltage. When voltage is constant, current decreases with resistance.</p>
+                    `
+                },
+                'reflection-light': {
+                    title: 'Experiment Notes: Reflection of Light',
+                    content: `
+                        <p><strong>Objective:</strong> To verify the laws of reflection of light using a plane mirror.</p>
+                        
+                        <p><strong>Laws of Reflection:</strong></p>
+                        <ol>
+                            <li>The incident ray, the reflected ray and the normal to the reflecting surface at the point of incidence all lie in the same plane.</li>
+                            <li>The angle of incidence (∠i) is always equal to the angle of reflection (∠r).</li>
+                        </ol>
+                        
+                        <p><strong>Key Terms:</strong></p>
+                        <ul>
+                            <li><strong>Incident Ray:</strong> The ray of light that strikes the mirror</li>
+                            <li><strong>Reflected Ray:</strong> The ray of light that bounces off the mirror</li>
+                            <li><strong>Normal:</strong> An imaginary line perpendicular to the mirror at the point of incidence</li>
+                            <li><strong>Angle of Incidence (∠i):</strong> The angle between the incident ray and the normal</li>
+                            <li><strong>Angle of Reflection (∠r):</strong> The angle between the reflected ray and the normal</li>
+                        </ul>
+                        
+                        <p><strong>Procedure:</strong></p>
+                        <ol>
+                            <li>Adjust the angle of incidence using the slider</li>
+                            <li>Observe how the angle of reflection changes</li>
+                            <li>Verify that ∠i = ∠r</li>
+                            <li>Try different mirror tilt angles</li>
+                        </ol>
+                    `
+                },
+                'simple-pendulum': {
+                    title: 'Experiment Notes: Simple Pendulum',
+                    content: `
+                        <p><strong>Objective:</strong> To study the relationship between the length of a simple pendulum and its time period of oscillation.</p>
+                        
+                        <p><strong>Formula:</strong> T = 2π√(L/g)</p>
+                        
+                        <ul>
+                            <li><strong>T</strong> = Time period of oscillation (in seconds)</li>
+                            <li><strong>L</strong> = Length of pendulum (in meters)</li>
+                            <li><strong>g</strong> = Acceleration due to gravity (9.8 m/s²)</li>
+                            <li><strong>π</strong> = 3.1416 (constant)</li>
+                        </ul>
+                        
+                        <p><strong>Key Points:</strong></p>
+                        <ul>
+                            <li>The time period of a simple pendulum depends only on its length and acceleration due to gravity</li>
+                            <li>It does not depend on the mass of the bob or the amplitude of oscillation (for small angles)</li>
+                            <li>Longer pendulums have longer time periods</li>
+                            <li>Shorter pendulums swing faster (shorter time periods)</li>
+                        </ul>
+                        
+                        <p><strong>Procedure:</strong></p>
+                        <ol>
+                            <li>Adjust the length of the pendulum using the slider</li>
+                            <li>Set the release angle (should be less than 15° for accurate results)</li>
+                            <li>Click "Start Oscillation" to see the pendulum swing</li>
+                            <li>Click "Calculate Time Period" to compute T using the formula</li>
+                        </ol>
+                    `
+                }
+            };
+
+            if (notesData[experimentId]) {
+                notesTitle.innerHTML = `<i class="fas fa-clipboard-list"></i> ${notesData[experimentId].title}`;
+                notesContent.innerHTML = notesData[experimentId].content;
+            } else {
+                notesTitle.innerHTML = `<i class="fas fa-clipboard-list"></i> Experiment Notes`;
+                notesContent.innerHTML = `<p>Select an experiment to view detailed notes and procedures.</p>`;
+            }
+        }
+
+        // Setup Ohm's Law experiment
+        function setupOhmsLaw() {
+            const voltageSlider = document.getElementById('voltageSlider');
+            const resistanceSlider = document.getElementById('resistanceSlider');
+            const voltageValue = document.getElementById('voltageValue');
+            const resistanceValue = document.getElementById('resistanceValue');
+            const currentValue = document.getElementById('currentValue');
+            const voltageDisplay = document.getElementById('voltageDisplay');
+
+            // Update slider values
+            voltageSlider.addEventListener('input', function () {
+                const voltage = parseInt(this.value);
+                document.getElementById('voltageSliderValue').textContent = voltage + ' V';
+                voltageValue.textContent = voltage + ' V';
+                voltageDisplay.textContent = voltage.toFixed(1) + ' V';
+
+                // Update results display
+                document.getElementById('resultVoltage').textContent = voltage.toFixed(1) + ' V';
+            });
+
+            resistanceSlider.addEventListener('input', function () {
+                const resistance = parseInt(this.value);
+                document.getElementById('resistanceSliderValue').textContent = resistance + ' Ω';
+                resistanceValue.textContent = resistance + ' Ω';
+
+                // Update results display
+                document.getElementById('resultResistance').textContent = resistance.toFixed(1) + ' Ω';
+            });
+
+            // Calculate current button
+            document.getElementById('calculateCurrent').addEventListener('click', function () {
+                const voltage = parseInt(voltageSlider.value);
+                const resistance = parseInt(resistanceSlider.value);
+                const current = voltage / resistance;
+
+                currentValue.textContent = current.toFixed(2) + ' A';
+                document.getElementById('resultCurrent').textContent = current.toFixed(2) + ' A';
+                document.getElementById('formulaVerified').textContent = `V = I × R (${voltage} = ${current.toFixed(2)} × ${resistance}) ✓`;
+
+                // Show notification
+                showNotification(`Calculated current: ${current.toFixed(2)} A using Ohm's Law`);
+            });
+
+            // Show formula button
+            document.getElementById('showFormula').addEventListener('click', function () {
+                alert("Ohm's Law Formula:\n\nV = I × R\n\nWhere:\nV = Voltage (Volts)\nI = Current (Amperes)\nR = Resistance (Ohms)");
+            });
+
+            // Reset button
+            document.getElementById('resetOhms').addEventListener('click', function () {
+                voltageSlider.value = 6;
+                resistanceSlider.value = 12;
+
+                document.getElementById('voltageSliderValue').textContent = '6 V';
+                document.getElementById('resistanceSliderValue').textContent = '12 Ω';
+                voltageValue.textContent = '6 V';
+                resistanceValue.textContent = '12 Ω';
+                currentValue.textContent = '0.5 A';
+                voltageDisplay.textContent = '6.0 V';
+
+                // Update results display
+                document.getElementById('resultVoltage').textContent = '6.0 V';
+                document.getElementById('resultResistance').textContent = '12.0 Ω';
+                document.getElementById('resultCurrent').textContent = '0.5 A';
+                document.getElementById('formulaVerified').textContent = 'V = I × R ✓';
+
+                showNotification('Ohm\'s Law experiment reset to default values');
+            });
+        }
+
+        // Setup Reflection of Light experiment
+        function setupReflection() {
+            const incidenceSlider = document.getElementById('incidenceAngleSlider');
+            const mirrorTiltSlider = document.getElementById('mirrorTiltSlider');
+            const incidentRay = document.getElementById('incidentRay');
+            const reflectedRay = document.getElementById('reflectedRay');
+            const mirror = document.getElementById('mirror');
+
+            // Update incidence angle
+            incidenceSlider.addEventListener('input', function () {
+                const angle = parseInt(this.value);
+                document.getElementById('incidenceAngleValue').textContent = angle + '°';
+                document.getElementById('angleILabel').textContent = `∠i = ${angle}°`;
+
+                // Update rays based on mirror tilt
+                updateReflectionRays();
+            });
+
+            // Update mirror tilt
+            mirrorTiltSlider.addEventListener('input', function () {
+                const angle = parseInt(this.value);
+                document.getElementById('mirrorTiltValue').textContent = angle + '°';
+
+                // Rotate mirror
+                mirror.style.transform = `rotate(${angle}deg)`;
+
+                // Update rays
+                updateReflectionRays();
+            });
+
+            // Update reflection rays
+            function updateReflectionRays() {
+                const incidenceAngle = parseInt(incidenceSlider.value);
+                const mirrorAngle = parseInt(mirrorTiltSlider.value);
+
+                // Calculate reflection angle (should equal incidence angle)
+                const reflectionAngle = incidenceAngle;
+
+                // Update ray angles
+                incidentRay.style.transform = `rotate(${incidenceAngle}deg)`;
+                reflectedRay.style.transform = `rotate(${180 - reflectionAngle}deg)`;
+
+                // Update angle labels
+                document.getElementById('angleRLabel').textContent = `∠r = ${reflectionAngle}°`;
+
+                // Update results display
+                document.getElementById('incidenceAngleResult').textContent = incidenceAngle + '°';
+                document.getElementById('reflectionAngleResult').textContent = reflectionAngle + '°';
+                document.getElementById('lawVerified').textContent = incidenceAngle === reflectionAngle ? '∠i = ∠r ✓' : '∠i ≠ ∠r ✗';
+            }
+
+            // Trace ray button
+            document.getElementById('traceRay').addEventListener('click', function () {
+                // Animate the rays
+                incidentRay.style.animation = 'pulse 1s';
+                reflectedRay.style.animation = 'pulse 1s 0.5s';
+
+                // Remove animation after completion
+                setTimeout(() => {
+                    incidentRay.style.animation = '';
+                    reflectedRay.style.animation = '';
+                }, 1500);
+
+                showNotification('Tracing light path: Incident ray → Mirror → Reflected ray');
+            });
+
+            // Show laws button
+            document.getElementById('showLaws').addEventListener('click', function () {
+                alert("Laws of Reflection:\n\n1. The incident ray, the reflected ray and the normal at the point of incidence all lie in the same plane.\n\n2. The angle of incidence (∠i) is always equal to the angle of reflection (∠r).");
+            });
+
+            // Reset button
+            document.getElementById('resetLight').addEventListener('click', function () {
+                incidenceSlider.value = 30;
+                mirrorTiltSlider.value = 45;
+
+                document.getElementById('incidenceAngleValue').textContent = '30°';
+                document.getElementById('mirrorTiltValue').textContent = '45°';
+                document.getElementById('angleILabel').textContent = '∠i = 30°';
+
+                mirror.style.transform = 'rotate(45deg)';
+                updateReflectionRays();
+
+                showNotification('Reflection experiment reset to default angles');
+            });
+
+            // Initialize rays
+            updateReflectionRays();
+        }
+
+        // Setup Simple Pendulum experiment
+        function setupPendulum() {
+            const lengthSlider = document.getElementById('lengthSlider');
+            const angleSlider = document.getElementById('angleSlider');
+            const pendulumString = document.getElementById('pendulumString');
+            const pendulumBob = document.getElementById('pendulumBob');
+
+            // Update length
+            lengthSlider.addEventListener('input', function () {
+                const length = parseInt(this.value);
+                pendulumLength = length;
+
+                document.getElementById('lengthSliderValue').textContent = length + ' cm';
+                document.getElementById('pendulumLengthValue').textContent = length + ' cm';
+
+                // Update pendulum string length
+                pendulumString.style.height = length + 'px';
+
+                // Update bob position
+                const bobTop = 60 + length;
+                pendulumBob.style.top = bobTop + 'px';
+
+                // Update results display
+                document.getElementById('resultLength').textContent = length + ' cm';
+
+                // Recalculate period if needed
+                if (!pendulumAnimation) {
+                    calculatePendulumPeriod();
+                }
+            });
+
+            // Update angle
+            angleSlider.addEventListener('input', function () {
+                const angle = parseInt(this.value);
+                pendulumAngle = angle;
+
+                document.getElementById('angleSliderValue').textContent = angle + '°';
+
+                // Update pendulum position if not animating
+                if (!pendulumAnimation) {
+                    updatePendulumPosition(angle);
+                }
+            });
+
+            // Update pendulum position
+            function updatePendulumPosition(angle) {
+                const rad = angle * Math.PI / 180;
+                const stringLength = parseInt(lengthSlider.value);
+                const swingDistance = Math.sin(rad) * stringLength;
+
+                pendulumString.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+                pendulumBob.style.left = `calc(50% + ${swingDistance}px)`;
+            }
+
+            // Start pendulum
+            document.getElementById('startPendulum').addEventListener('click', function () {
+                if (pendulumAnimation) {
+                    clearInterval(pendulumAnimation);
+                }
+
+                const length = parseInt(lengthSlider.value);
+                const angle = parseInt(angleSlider.value);
+                let currentAngle = angle;
+                let direction = 1;
+                let speedFactor = 300 / Math.sqrt(length); // Longer pendulum swings slower
+
+                oscillationCount = 0;
+                document.getElementById('oscillationCount').textContent = oscillationCount;
+
+                pendulumAnimation = setInterval(() => {
+                    // Update angle based on simple harmonic motion
+                    const maxAngle = angle;
+                    const time = Date.now() / 1000;
+                    currentAngle = maxAngle * Math.cos(time * Math.sqrt(9.8 / (length / 100)) * speedFactor / 50);
+
+                    // Update pendulum position
+                    updatePendulumPosition(currentAngle);
+
+                    // Count oscillations (when passing through center moving left to right)
+                    if (direction > 0 && currentAngle <= 0) {
+                        oscillationCount++;
+                        document.getElementById('oscillationCount').textContent = oscillationCount;
+                        direction = -1;
+                    } else if (direction < 0 && currentAngle >= 0) {
+                        direction = 1;
+                    }
+                }, 20);
+
+                showNotification('Pendulum oscillation started. Count the number of oscillations.');
+            });
+
+            // Stop pendulum
+            document.getElementById('stopPendulum').addEventListener('click', function () {
+                if (pendulumAnimation) {
+                    clearInterval(pendulumAnimation);
+                    pendulumAnimation = null;
+                    showNotification('Pendulum oscillation stopped.');
+                }
+            });
+
+            // Calculate period
+            document.getElementById('calculatePeriod').addEventListener('click', function () {
+                calculatePendulumPeriod();
+                showNotification(`Time period calculated: ${document.getElementById('resultPeriod').textContent}`);
+            });
+
+            // Calculate pendulum period
+            function calculatePendulumPeriod() {
+                const length = parseInt(lengthSlider.value) / 100; // Convert cm to meters
+                const g = 9.8; // Acceleration due to gravity
+                const period = 2 * Math.PI * Math.sqrt(length / g);
+
+                document.getElementById('resultPeriod').textContent = period.toFixed(2) + ' s';
+            }
+
+            // Reset pendulum
+            document.getElementById('resetPendulum').addEventListener('click', function () {
+                if (pendulumAnimation) {
+                    clearInterval(pendulumAnimation);
+                    pendulumAnimation = null;
+                }
+
+                lengthSlider.value = 200;
+                angleSlider.value = 30;
+
+                document.getElementById('lengthSliderValue').textContent = '200 cm';
+                document.getElementById('angleSliderValue').textContent = '30°';
+                document.getElementById('pendulumLengthValue').textContent = '200 cm';
+                document.getElementById('oscillationCount').textContent = '0';
+
+                pendulumString.style.height = '200px';
+                pendulumBob.style.top = '260px';
+
+                updatePendulumPosition(30);
+                calculatePendulumPeriod();
+
+                oscillationCount = 0;
+
+                showNotification('Pendulum experiment reset');
+            });
+
+            // Initialize pendulum
+            updatePendulumPosition(30);
+            calculatePendulumPeriod();
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.background = '#4CAF50';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 20px';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+            notification.style.zIndex = '1000';
+            notification.style.maxWidth = '300px';
+            notification.style.fontSize = '0.9rem';
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { opacity: 0.3; }
+                50% { opacity: 1; }
+                100% { opacity: 0.3; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

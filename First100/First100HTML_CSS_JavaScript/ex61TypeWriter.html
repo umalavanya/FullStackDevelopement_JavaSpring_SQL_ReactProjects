@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 61: Typewriter Effect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #00ff00;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow:
+                0 0 30px rgba(0, 255, 0, 0.3),
+                inset 0 0 30px rgba(0, 255, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+        }
+
+        header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .typewriter-container {
+            background: rgba(0, 20, 0, 0.3);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 30px;
+            margin-bottom: 40px;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .typewriter-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(0, 255, 0, 0.05) 50%,
+                    transparent 100%);
+            pointer-events: none;
+        }
+
+        .typewriter-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            min-height: 200px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.3rem;
+            background-color: #00ff00;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .controls-panel {
+            background: rgba(0, 20, 0, 0.3);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #003300;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00ff00;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .speed-value {
+            min-width: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ff00;
+        }
+
+        .sentence-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .sentence-btn {
+            padding: 12px 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sentence-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .sentence-btn.active {
+            background: rgba(0, 255, 0, 0.3);
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .action-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        #playBtn {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+        }
+
+        #clearBtn {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        #clearBtn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .stats-panel {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: rgba(0, 20, 0, 0.3);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff00;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ascii-art {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.5;
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .typewriter-container {
+                padding: 20px;
+                min-height: 250px;
+            }
+
+            .typewriter-text {
+                font-size: 1.1rem;
+            }
+
+            .controls-panel {
+                padding: 20px;
+            }
+
+            .sentence-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .action-controls {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .typewriter-text {
+                font-size: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>⌨️ T Y P E W R I T E R &nbsp; E F F E C T</h1>
+            <div class="subtitle">Simulating vintage typewriter with blinking cursor and adjustable speed</div>
+        </header>
+
+        <div class="typewriter-container">
+            <div class="typewriter-text" id="typewriterText"></div>
+        </div>
+
+        <div class="controls-panel">
+            <div class="control-group">
+                <div class="control-label">Typing Speed</div>
+                <div class="speed-control">
+                    <input type="range" id="speedSlider" min="10" max="200" value="50">
+                    <div class="speed-value" id="speedValue">50ms</div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label">Select Text to Type</div>
+                <div class="sentence-selector" id="sentenceSelector">
+                    <!-- Sentences will be added by JavaScript -->
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="action-controls">
+                    <button class="action-btn" id="playBtn">
+                        <span>▶️</span> Start Typing
+                    </button>
+                    <button class="action-btn" id="pauseBtn">
+                        <span>⏸️</span> Pause
+                    </button>
+                    <button class="action-btn" id="clearBtn">
+                        <span>🗑️</span> Clear Text
+                    </button>
+                    <button class="action-btn" id="randomBtn">
+                        <span>🎲</span> Random Text
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-value" id="charCount">0</div>
+                <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="wordCount">0</div>
+                <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="timeElapsed">0s</div>
+                <div class="stat-label">Time Elapsed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="currentSpeed">0</div>
+                <div class="stat-label">Chars/Second</div>
+            </div>
+        </div>
+
+        <div class="ascii-art">
+            <pre>
+  _______          __       __           
+ /_  __(_)____ _  / /______/ /_   ____ _
+  / / / / ___/  / / / ___/ __ \ / __ `/
+ / / / / /__/ / /_/ (__  ) / / // /_/ / 
+/_/ /_/\___/\____/____/_/ /_(_)__,_/  
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        // Typewriter sentences
+        const sentences = [
+            "Hello, world! Welcome to the typewriter effect demonstration.",
+            "This is a simulation of an old mechanical typewriter with a blinking cursor.",
+            "You can adjust the typing speed and select different texts to type out.",
+            "The typewriter was invented in the 19th century and revolutionized written communication.",
+            "In the digital age, we still appreciate the nostalgic charm of typewriter aesthetics.",
+            "This effect is created using JavaScript to simulate character-by-character typing.",
+            "Each character appears with a slight delay, creating the illusion of manual typing.",
+            "You can pause, resume, or clear the text at any time during the typing process.",
+            "The blinking cursor adds to the authenticity of the typewriter experience.",
+            "Thank you for experiencing this digital homage to vintage typing technology."
+        ];
+
+        // DOM Elements
+        const typewriterText = document.getElementById('typewriterText');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+        const sentenceSelector = document.getElementById('sentenceSelector');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const randomBtn = document.getElementById('randomBtn');
+        const charCount = document.getElementById('charCount');
+        const wordCount = document.getElementById('wordCount');
+        const timeElapsed = document.getElementById('timeElapsed');
+        const currentSpeed = document.getElementById('currentSpeed');
+
+        // Typewriter state
+        let currentSentence = sentences[0];
+        let currentIndex = 0;
+        let isTyping = false;
+        let isPaused = false;
+        let typingInterval;
+        let startTime = 0;
+        let typingSpeed = 50; // ms per character
+
+        // Initialize sentence selector
+        function initializeSentenceSelector() {
+            sentences.forEach((sentence, index) => {
+                const button = document.createElement('button');
+                button.className = 'sentence-btn';
+                if (index === 0) button.classList.add('active');
+                button.textContent = sentence.length > 40 ? sentence.substring(0, 40) + '...' : sentence;
+                button.title = sentence;
+                button.dataset.index = index;
+
+                button.addEventListener('click', () => {
+                    // Update active button
+                    document.querySelectorAll('.sentence-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Set new sentence
+                    currentSentence = sentence;
+                    resetTypewriter();
+                });
+
+                sentenceSelector.appendChild(button);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            const text = typewriterText.textContent;
+            const chars = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+
+            charCount.textContent = chars;
+            wordCount.textContent = words;
+
+            if (startTime && isTyping) {
+                const elapsed = (Date.now() - startTime) / 1000;
+                timeElapsed.textContent = elapsed.toFixed(1) + 's';
+
+                if (elapsed > 0) {
+                    const speed = Math.round(chars / elapsed);
+                    currentSpeed.textContent = speed;
+                }
+            }
+        }
+
+        // Type next character
+        function typeNextCharacter() {
+            if (currentIndex < currentSentence.length) {
+                // Add next character
+                typewriterText.textContent += currentSentence[currentIndex];
+                currentIndex++;
+
+                // Update cursor position
+                updateCursor();
+
+                // Update stats
+                updateStats();
+            } else {
+                // Typing complete
+                stopTyping();
+                playBtn.innerHTML = '<span>🔄</span> Restart';
+            }
+        }
+
+        // Update cursor
+        function updateCursor() {
+            // Remove existing cursor
+            const existingCursor = document.querySelector('.cursor');
+            if (existingCursor) {
+                existingCursor.remove();
+            }
+
+            // Add new cursor
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            typewriterText.appendChild(cursor);
+        }
+
+        // Start typing
+        function startTyping() {
+            if (isTyping) {
+                // If already typing, restart
+                resetTypewriter();
+            }
+
+            isTyping = true;
+            isPaused = false;
+            startTime = Date.now();
+
+            playBtn.innerHTML = '<span>⏸️</span> Pause';
+
+            // Start typing interval
+            typingInterval = setInterval(typeNextCharacter, typingSpeed);
+        }
+
+        // Pause typing
+        function pauseTyping() {
+            if (!isTyping) return;
+
+            if (isPaused) {
+                // Resume typing
+                isPaused = false;
+                pauseBtn.innerHTML = '<span>⏸️</span> Pause';
+                typingInterval = setInterval(typeNextCharacter, typingSpeed);
+            } else {
+                // Pause typing
+                isPaused = true;
+                clearInterval(typingInterval);
+                pauseBtn.innerHTML = '<span>▶️</span> Resume';
+            }
+        }
+
+        // Stop typing
+        function stopTyping() {
+            isTyping = false;
+            isPaused = false;
+            clearInterval(typingInterval);
+            playBtn.innerHTML = '<span>▶️</span> Start Typing';
+            pauseBtn.innerHTML = '<span>⏸️</span> Pause';
+        }
+
+        // Reset typewriter
+        function resetTypewriter() {
+            stopTyping();
+            currentIndex = 0;
+            typewriterText.textContent = '';
+            updateCursor();
+            updateStats();
+        }
+
+        // Clear text
+        function clearText() {
+            resetTypewriter();
+            timeElapsed.textContent = '0s';
+            currentSpeed.textContent = '0';
+        }
+
+        // Select random sentence
+        function selectRandomSentence() {
+            const randomIndex = Math.floor(Math.random() * sentences.length);
+            currentSentence = sentences[randomIndex];
+
+            // Update active button
+            document.querySelectorAll('.sentence-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === randomIndex);
+            });
+
+            resetTypewriter();
+        }
+
+        // Update speed
+        function updateSpeed() {
+            typingSpeed = 210 - speedSlider.value; // Invert so higher value = faster
+            speedValue.textContent = speedSlider.value + 'ms';
+
+            // Update interval if typing is in progress
+            if (isTyping && !isPaused) {
+                clearInterval(typingInterval);
+                typingInterval = setInterval(typeNextCharacter, typingSpeed);
+            }
+        }
+
+        // Event listeners
+        speedSlider.addEventListener('input', updateSpeed);
+
+        playBtn.addEventListener('click', () => {
+            if (isTyping && !isPaused) {
+                pauseTyping();
+            } else {
+                startTyping();
+            }
+        });
+
+        pauseBtn.addEventListener('click', pauseTyping);
+
+        clearBtn.addEventListener('click', clearText);
+
+        randomBtn.addEventListener('click', selectRandomSentence);
+
+        // Initialize
+        initializeSentenceSelector();
+        updateCursor();
+        updateSpeed();
+        updateStats();
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ') {
+                e.preventDefault();
+                if (isTyping && !isPaused) {
+                    pauseTyping();
+                } else {
+                    startTyping();
+                }
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                selectRandomSentence();
+            }
+            if (e.key === 'c' || e.key === 'C') {
+                clearText();
+            }
+            if (e.key === 'Escape') {
+                resetTypewriter();
+            }
+        });
+
+        // Auto-start after a delay
+        setTimeout(() => {
+            if (!isTyping) {
+                startTyping();
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

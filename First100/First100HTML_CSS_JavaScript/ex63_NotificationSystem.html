@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 63: Notification System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .notification-system {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Notification Controls */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-group {
+            margin-bottom: 35px;
+        }
+
+        .control-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-type-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .type-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .type-btn:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .type-btn.success {
+            border-left: 5px solid #4CAF50;
+        }
+
+        .type-btn.error {
+            border-left: 5px solid #f44336;
+        }
+
+        .type-btn.warning {
+            border-left: 5px solid #FF9800;
+        }
+
+        .type-btn.info {
+            border-left: 5px solid #2196F3;
+        }
+
+        .type-btn.active {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .type-icon {
+            font-size: 2rem;
+        }
+
+        .notification-options {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .option-label {
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .option-value {
+            color: white;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 10px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+            margin: 10px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn.primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Notifications Container */
+        .notifications-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 500px;
+        }
+
+        .notifications-header {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .notifications-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .notifications-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .notifications-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .notifications-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Notification Item */
+        .notification-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            animation: slideIn 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .notification-item.success {
+            border-left-color: #4CAF50;
+        }
+
+        .notification-item.error {
+            border-left-color: #f44336;
+        }
+
+        .notification-item.warning {
+            border-left-color: #FF9800;
+        }
+
+        .notification-item.info {
+            border-left-color: #2196F3;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .notification-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .notification-icon {
+            font-size: 1.8rem;
+        }
+
+        .notification-time {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .notification-message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .notification-btn {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .notification-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 0 10px;
+            transition: width 0.1s linear;
+        }
+
+        .notification-item.success .notification-progress {
+            background: #4CAF50;
+        }
+
+        .notification-item.error .notification-progress {
+            background: #f44336;
+        }
+
+        .notification-item.warning .notification-progress {
+            background: #FF9800;
+        }
+
+        .notification-item.info .notification-progress {
+            background: #2196F3;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.3s ease;
+            transform-origin: top right;
+            backdrop-filter: blur(10px);
+            border-left: 5px solid;
+            max-width: 400px;
+        }
+
+        .toast.success {
+            border-left-color: #4CAF50;
+        }
+
+        .toast.error {
+            border-left-color: #f44336;
+        }
+
+        .toast.warning {
+            border-left-color: #FF9800;
+        }
+
+        .toast.info {
+            border-left-color: #2196F3;
+        }
+
+        .toast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .toast-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toast-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .toast-message {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stat-card.success .stat-value {
+            color: #4CAF50;
+        }
+
+        .stat-card.error .stat-value {
+            color: #f44336;
+        }
+
+        .stat-card.warning .stat-value {
+            color: #FF9800;
+        }
+
+        .stat-card.info .stat-value {
+            color: #2196F3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .notification-system {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .controls-panel,
+            .notifications-container {
+                padding: 25px;
+            }
+
+            .notification-type-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .toast-container {
+                max-width: calc(100% - 40px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notification-system {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .notification-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Main Notification System -->
+    <div class="notification-system">
+        <header>
+            <h1>🔔 Notification System</h1>
+            <p class="subtitle">Create, manage, and display notifications with different types and auto-dismiss features
+            </p>
+        </header>
+
+        <div class="main-content">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <span>🎯</span> Notification Type
+                    </h2>
+                    <div class="notification-type-buttons">
+                        <button class="type-btn success active" data-type="success">
+                            <span class="type-icon">✅</span>
+                            Success
+                        </button>
+                        <button class="type-btn error" data-type="error">
+                            <span class="type-icon">❌</span>
+                            Error
+                        </button>
+                        <button class="type-btn warning" data-type="warning">
+                            <span class="type-icon">⚠️</span>
+                            Warning
+                        </button>
+                        <button class="type-btn info" data-type="info">
+                            <span class="type-icon">ℹ️</span>
+                            Info
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <span>⚙️</span> Notification Options
+                    </h2>
+                    <div class="notification-options">
+                        <div class="option-row">
+                            <div class="option-label">Auto-dismiss Timeout</div>
+                            <div class="option-value" id="timeoutValue">5s</div>
+                        </div>
+                        <input type="range" id="timeoutSlider" min="1" max="30" value="5">
+
+                        <div class="option-row">
+                            <div class="option-label">Show as Toast</div>
+                            <label class="switch">
+                                <input type="checkbox" id="toastToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="option-row">
+                            <div class="option-label">Include Actions</div>
+                            <label class="switch">
+                                <input type="checkbox" id="actionsToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <span>🚀</span> Actions
+                    </h2>
+                    <div class="action-buttons">
+                        <button class="action-btn primary" id="createBtn">
+                            <span>➕</span> Create Notification
+                        </button>
+                        <button class="action-btn secondary" id="clearAllBtn">
+                            <span>🗑️</span> Clear All
+                        </button>
+                        <button class="action-btn secondary" id="testErrorBtn">
+                            <span>🔄</span> Test Error
+                        </button>
+                        <button class="action-btn secondary" id="testSuccessBtn">
+                            <span>✨</span> Test Success
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Container -->
+            <div class="notifications-container">
+                <div class="notifications-header">
+                    <h2>Notifications History</h2>
+                    <div class="notification-count">
+                        <span id="notificationCount">0</span> notifications
+                    </div>
+                </div>
+
+                <div class="notifications-list" id="notificationsList">
+                    <!-- Notifications will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-card success">
+                <div class="stat-value" id="successCount">0</div>
+                <div class="stat-label">Success Notifications</div>
+            </div>
+            <div class="stat-card error">
+                <div class="stat-value" id="errorCount">0</div>
+                <div class="stat-label">Error Notifications</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value" id="warningCount">0</div>
+                <div class="stat-label">Warning Notifications</div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-value" id="infoCount">0</div>
+                <div class="stat-label">Info Notifications</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Notification System
+        const notificationSystem = {
+            notifications: [],
+            nextId: 1,
+            stats: {
+                success: 0,
+                error: 0,
+                warning: 0,
+                info: 0
+            }
+        };
+
+        // DOM Elements
+        const typeButtons = document.querySelectorAll('.type-btn');
+        const timeoutSlider = document.getElementById('timeoutSlider');
+        const timeoutValue = document.getElementById('timeoutValue');
+        const toastToggle = document.getElementById('toastToggle');
+        const actionsToggle = document.getElementById('actionsToggle');
+        const createBtn = document.getElementById('createBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const testErrorBtn = document.getElementById('testErrorBtn');
+        const testSuccessBtn = document.getElementById('testSuccessBtn');
+        const notificationsList = document.getElementById('notificationsList');
+        const notificationCount = document.getElementById('notificationCount');
+        const toastContainer = document.getElementById('toastContainer');
+        const successCount = document.getElementById('successCount');
+        const errorCount = document.getElementById('errorCount');
+        const warningCount = document.getElementById('warningCount');
+        const infoCount = document.getElementById('infoCount');
+
+        // Notification templates
+        const notificationTemplates = {
+            success: {
+                title: "Success!",
+                icon: "✅",
+                message: "Operation completed successfully. Everything is working as expected.",
+                defaultTimeout: 5000
+            },
+            error: {
+                title: "Error!",
+                icon: "❌",
+                message: "Something went wrong. Please check your input and try again.",
+                defaultTimeout: 8000
+            },
+            warning: {
+                title: "Warning!",
+                icon: "⚠️",
+                message: "This action may have unintended consequences. Please proceed with caution.",
+                defaultTimeout: 7000
+            },
+            info: {
+                title: "Information",
+                icon: "ℹ️",
+                message: "Here's some important information you should know about this feature.",
+                defaultTimeout: 6000
+            }
+        };
+
+        // Current settings
+        let currentType = 'success';
+        let currentTimeout = 5000;
+        let showAsToast = true;
+        let includeActions = true;
+
+        // Initialize
+        function initialize() {
+            updateTimeoutDisplay();
+            updateStatsDisplay();
+
+            // Add event listeners
+            typeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    typeButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentType = btn.dataset.type;
+                });
+            });
+
+            timeoutSlider.addEventListener('input', updateTimeoutDisplay);
+
+            toastToggle.addEventListener('change', (e) => {
+                showAsToast = e.target.checked;
+            });
+
+            actionsToggle.addEventListener('change', (e) => {
+                includeActions = e.target.checked;
+            });
+
+            createBtn.addEventListener('click', createNotification);
+            clearAllBtn.addEventListener('click', clearAllNotifications);
+            testErrorBtn.addEventListener('click', () => testNotification('error'));
+            testSuccessBtn.addEventListener('click', () => testNotification('success'));
+
+            // Create initial notifications
+            createTestNotifications();
+        }
+
+        // Update timeout display
+        function updateTimeoutDisplay() {
+            currentTimeout = timeoutSlider.value * 1000;
+            timeoutValue.textContent = `${timeoutSlider.value}s`;
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            successCount.textContent = notificationSystem.stats.success;
+            errorCount.textContent = notificationSystem.stats.error;
+            warningCount.textContent = notificationSystem.stats.warning;
+            infoCount.textContent = notificationSystem.stats.info;
+            notificationCount.textContent = notificationSystem.notifications.length;
+        }
+
+        // Create notification
+        function createNotification(customData = null) {
+            const id = notificationSystem.nextId++;
+            const template = customData || notificationTemplates[currentType];
+            const timeout = customData?.defaultTimeout || currentTimeout;
+
+            const notification = {
+                id,
+                type: currentType,
+                title: template.title,
+                icon: template.icon,
+                message: template.message,
+                timestamp: new Date(),
+                timeout,
+                dismissed: false
+            };
+
+            // Add to system
+            notificationSystem.notifications.unshift(notification);
+            notificationSystem.stats[currentType]++;
+
+            // Update UI
+            updateStatsDisplay();
+            renderNotification(notification);
+
+            if (showAsToast) {
+                showToast(notification);
+            }
+
+            return notification;
+        }
+
+        // Render notification in list
+        function renderNotification(notification) {
+            const notificationItem = document.createElement('div');
+            notificationItem.className = `notification-item ${notification.type}`;
+            notificationItem.dataset.id = notification.id;
+
+            const timeString = notification.timestamp.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            notificationItem.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-title">
+                        <span class="notification-icon">${notification.icon}</span>
+                        ${notification.title}
+                    </div>
+                    <div class="notification-time">${timeString}</div>
+                </div>
+                <div class="notification-message">${notification.message}</div>
+                ${includeActions ? `
+                    <div class="notification-actions">
+                        <button class="notification-btn" onclick="dismissNotification(${notification.id})">
+                            Dismiss
+                        </button>
+                        <button class="notification-btn" onclick="viewNotification(${notification.id})">
+                            View
+                        </button>
+                    </div>
+                ` : ''}
+                <div class="notification-progress" id="progress-${notification.id}"></div>
+            `;
+
+            notificationsList.insertBefore(notificationItem, notificationsList.firstChild);
+
+            // Start auto-dismiss timer
+            if (notification.timeout > 0) {
+                startAutoDismiss(notification);
+            }
+
+            return notificationItem;
+        }
+
+        // Show toast notification
+        function showToast(notification) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${notification.type}`;
+            toast.dataset.id = notification.id;
+
+            const timeString = notification.timestamp.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <div class="toast-title">
+                        <span>${notification.icon}</span>
+                        ${notification.title}
+                    </div>
+                    <button class="toast-close" onclick="dismissToast(${notification.id})">×</button>
+                </div>
+                <div class="toast-message">${notification.message}</div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto-remove toast after timeout
+            if (notification.timeout > 0) {
+                setTimeout(() => {
+                    dismissToast(notification.id);
+                }, notification.timeout);
+            }
+
+            return toast;
+        }
+
+        // Start auto-dismiss timer
+        function startAutoDismiss(notification) {
+            const progressBar = document.getElementById(`progress-${notification.id}`);
+            if (!progressBar) return;
+
+            const startTime = Date.now();
+            const duration = notification.timeout;
+
+            function updateProgress() {
+                if (notification.dismissed) return;
+
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min((elapsed / duration) * 100, 100);
+
+                progressBar.style.width = `${100 - progress}%`;
+
+                if (progress >= 100) {
+                    dismissNotification(notification.id);
+                } else {
+                    requestAnimationFrame(updateProgress);
+                }
+            }
+
+            updateProgress();
+        }
+
+        // Dismiss notification
+        function dismissNotification(id) {
+            const notification = notificationSystem.notifications.find(n => n.id === id);
+            if (!notification || notification.dismissed) return;
+
+            notification.dismissed = true;
+
+            // Remove from list
+            const notificationItem = document.querySelector(`.notification-item[data-id="${id}"]`);
+            if (notificationItem) {
+                notificationItem.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    notificationItem.remove();
+                }, 300);
+            }
+
+            // Remove from array
+            notificationSystem.notifications = notificationSystem.notifications.filter(n => n.id !== id);
+            updateStatsDisplay();
+        }
+
+        // Dismiss toast
+        function dismissToast(id) {
+            const toast = document.querySelector(`.toast[data-id="${id}"]`);
+            if (toast) {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+
+            // Also dismiss the main notification
+            dismissNotification(id);
+        }
+
+        // View notification details
+        function viewNotification(id) {
+            const notification = notificationSystem.notifications.find(n => n.id === id);
+            if (notification) {
+                alert(`Notification Details:\n\nType: ${notification.type}\nTitle: ${notification.title}\nMessage: ${notification.message}\nTime: ${notification.timestamp.toLocaleString()}`);
+            }
+        }
+
+        // Clear all notifications
+        function clearAllNotifications() {
+            if (notificationSystem.notifications.length === 0) return;
+
+            if (confirm(`Clear all ${notificationSystem.notifications.length} notifications?`)) {
+                // Dismiss all notifications
+                notificationSystem.notifications.forEach(notification => {
+                    notification.dismissed = true;
+                });
+
+                // Clear arrays
+                notificationSystem.notifications = [];
+
+                // Reset stats
+                notificationSystem.stats = {
+                    success: 0,
+                    error: 0,
+                    warning: 0,
+                    info: 0
+                };
+
+                // Clear UI
+                notificationsList.innerHTML = '';
+                toastContainer.innerHTML = '';
+                updateStatsDisplay();
+            }
+        }
+
+        // Test notification
+        function testNotification(type) {
+            const testMessages = {
+                success: {
+                    title: "Test Success",
+                    icon: "✅",
+                    message: "This is a test success notification. Everything is working perfectly!",
+                    defaultTimeout: 4000
+                },
+                error: {
+                    title: "Test Error",
+                    icon: "❌",
+                    message: "This is a test error notification. Something went wrong in the test.",
+                    defaultTimeout: 6000
+                },
+                warning: {
+                    title: "Test Warning",
+                    icon: "⚠️",
+                    message: "This is a test warning notification. Be cautious during testing.",
+                    defaultTimeout: 5000
+                },
+                info: {
+                    title: "Test Info",
+                    icon: "ℹ️",
+                    message: "This is a test information notification. Testing the notification system.",
+                    defaultTimeout: 4500
+                }
+            };
+
+            const oldType = currentType;
+            currentType = type;
+            createNotification(testMessages[type]);
+            currentType = oldType;
+        }
+
+        // Create test notifications
+        function createTestNotifications() {
+            // Create one of each type
+            Object.keys(notificationTemplates).forEach(type => {
+                const oldType = currentType;
+                currentType = type;
+                createNotification();
+                currentType = oldType;
+            });
+        }
+
+        // Initialize the system
+        initialize();
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'n':
+                        e.preventDefault();
+                        createNotification();
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        clearAllNotifications();
+                        break;
+                    case '1':
+                        e.preventDefault();
+                        testNotification('success');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        testNotification('error');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

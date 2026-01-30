@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 58: Sticky Header</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 200vh;
+            /* Make page scrollable */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        header.sticky {
+            padding: 15px 0;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        header.compact {
+            padding: 10px 0;
+            background: rgba(102, 126, 234, 0.98);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.4s ease;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            transition: all 0.4s ease;
+        }
+
+        .logo-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            transition: all 0.4s ease;
+        }
+
+        header.compact .logo-icon {
+            font-size: 2rem;
+        }
+
+        header.compact .logo-text {
+            font-size: 1.8rem;
+        }
+
+        /* Navigation */
+        .nav-main {
+            display: flex;
+            gap: 40px;
+            transition: all 0.4s ease;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 10px 0;
+            position: relative;
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: white;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        header.compact .nav-link {
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Content Sections */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 60px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #1e293b;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .content-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Demo Controls */
+        .demo-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+
+        .demo-controls h3 {
+            margin-bottom: 15px;
+            color: #334155;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: #4c51bf;
+        }
+
+        .header-info {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 1000;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .nav-main {
+                gap: 25px;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-main {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                flex-direction: column;
+                padding: 30px;
+                gap: 25px;
+                transition: transform 0.4s ease;
+                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-main.active {
+                transform: translateY(-100%);
+            }
+
+            header.compact .nav-main {
+                padding: 20px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 50px 0;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .content-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Header Info Display -->
+    <div class="header-info" id="headerInfo">
+        Header State: <span id="headerState">Normal</span> • Scroll Position: <span id="scrollPosition">0px</span>
+    </div>
+
+    <!-- Header -->
+    <header id="mainHeader">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <div class="logo-text">StickyNav</div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    ☰
+                </button>
+
+                <nav class="nav-main" id="mainNav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#portfolio" class="nav-link">Portfolio</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="container">
+                <h1>Sticky Header Demo</h1>
+                <p>Scroll down to see the sticky header in action. The header will shrink and change style as you scroll
+                    past certain points.</p>
+                <div style="font-size: 5rem;">👇</div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <div class="container">
+                <h2>About This Demo</h2>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h3>Sticky Behavior</h3>
+                        <p>The header becomes fixed when scrolling past the hero section. It sticks to the top of the
+                            viewport and shrinks for a more compact appearance.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Smooth Transitions</h3>
+                        <p>All size and style changes use CSS transitions for smooth, polished animations that enhance
+                            the user experience.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Responsive Design</h3>
+                        <p>The header adapts to different screen sizes, with a mobile-friendly menu that toggles on
+                            smaller devices.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Sections -->
+        <section id="services">
+            <div class="container">
+                <h2>Features</h2>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h3>Scroll Progress</h3>
+                        <p>Track your scroll progress with the animated progress bar at the very top of the page.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Active Navigation</h3>
+                        <p>Navigation links highlight as you scroll through different sections of the page.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Blur Effect</h3>
+                        <p>The sticky header features a backdrop blur effect for modern, glass-like appearance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Content -->
+        <section id="portfolio">
+            <div class="container">
+                <h2>More Content</h2>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h3>Section 1</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Section 2</h3>
+                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                            commodo consequat.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Section 3</h3>
+                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                            pariatur.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Section 4</h3>
+                        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+                            anim id est laborum.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact">
+            <div class="container">
+                <h2>Final Section</h2>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h3>Keep Scrolling</h3>
+                        <p>Continue scrolling to see the header behavior at different scroll positions. Try using the
+                            demo controls to test different modes.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Responsive Test</h3>
+                        <p>Try resizing your browser window to see how the header adapts to different screen sizes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spacer for scrolling -->
+        <div style="height: 1000px;"></div>
+    </main>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+        <h3>Demo Controls</h3>
+        <div class="control-group">
+            <button class="control-btn active" data-mode="sticky">Sticky Mode</button>
+            <button class="control-btn" data-mode="static">Static Mode</button>
+            <button class="control-btn" data-mode="compact">Compact Mode</button>
+        </div>
+    </div>
+
+    <script>
+        const header = document.getElementById('mainHeader');
+        const scrollProgress = document.getElementById('scrollProgress');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const headerInfo = document.getElementById('headerInfo');
+        const headerState = document.getElementById('headerState');
+        const scrollPosition = document.getElementById('scrollPosition');
+        const controlBtns = document.querySelectorAll('.control-btn');
+
+        let scrollTimeout;
+        let isStickyMode = true;
+        let lastScrollY = window.scrollY;
+        let isMobileMenuOpen = false;
+
+        // Update scroll progress
+        function updateScrollProgress() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            scrollProgress.style.width = scrolled + '%';
+        }
+
+        // Update header based on scroll position
+        function updateHeader() {
+            const scrollY = window.scrollY;
+            const heroHeight = document.querySelector('.hero').offsetHeight;
+
+            // Show/hide header info
+            if (scrollY > 100) {
+                headerInfo.style.display = 'block';
+            } else {
+                headerInfo.style.display = 'none';
+            }
+
+            // Update scroll position display
+            scrollPosition.textContent = `${scrollY}px`;
+
+            // Don't update header if not in sticky mode
+            if (!isStickyMode) return;
+
+            // Check if we've scrolled past hero section
+            if (scrollY > heroHeight * 0.3) {
+                header.classList.add('sticky');
+                headerState.textContent = 'Sticky';
+
+                // Add compact class when scrolled further
+                if (scrollY > heroHeight * 0.7) {
+                    header.classList.add('compact');
+                    headerState.textContent = 'Compact';
+                } else {
+                    header.classList.remove('compact');
+                }
+            } else {
+                header.classList.remove('sticky', 'compact');
+                headerState.textContent = 'Normal';
+            }
+
+            // Update active nav link based on scroll position
+            updateActiveNavLink(scrollY);
+
+            // Check scroll direction for mobile menu
+            if (window.innerWidth <= 768) {
+                if (scrollY > lastScrollY && scrollY > 100) {
+                    // Scrolling down
+                    header.style.transform = 'translateY(-100%)';
+                } else {
+                    // Scrolling up
+                    header.style.transform = 'translateY(0)';
+                }
+            }
+
+            lastScrollY = scrollY;
+        }
+
+        // Update active navigation link
+        function updateActiveNavLink(scrollY) {
+            const sections = document.querySelectorAll('section');
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    currentSection = sectionId;
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            mainNav.classList.toggle('active');
+            mobileMenuBtn.textContent = isMobileMenuOpen ? '✕' : '☰';
+        }
+
+        // Set header mode
+        function setHeaderMode(mode) {
+            // Update control buttons
+            controlBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.mode === mode) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Reset header classes
+            header.classList.remove('sticky', 'compact');
+
+            // Apply mode
+            switch (mode) {
+                case 'sticky':
+                    isStickyMode = true;
+                    header.style.position = 'sticky';
+                    updateHeader(); // Apply current scroll state
+                    break;
+                case 'static':
+                    isStickyMode = false;
+                    header.style.position = 'static';
+                    headerState.textContent = 'Static';
+                    break;
+                case 'compact':
+                    isStickyMode = true;
+                    header.classList.add('sticky', 'compact');
+                    headerState.textContent = 'Compact';
+                    break;
+            }
+        }
+
+        // Smooth scroll to section
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+
+                if (targetSection) {
+                    // Close mobile menu if open
+                    if (isMobileMenuOpen) {
+                        toggleMobileMenu();
+                    }
+
+                    // Scroll to section
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Event Listeners
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateHeader();
+
+            // Clear timeout if exists
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+            }
+
+            // Set timeout to hide header info after scrolling stops
+            scrollTimeout = setTimeout(() => {
+                headerInfo.style.display = 'none';
+            }, 2000);
+        });
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+        controlBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setHeaderMode(btn.dataset.mode);
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (isMobileMenuOpen &&
+                !mainNav.contains(e.target) &&
+                !mobileMenuBtn.contains(e.target)) {
+                toggleMobileMenu();
+            }
+        });
+
+        // Initialize
+        updateScrollProgress();
+        updateHeader();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && isMobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        });
+    </script>
+</body>
+
+</html>

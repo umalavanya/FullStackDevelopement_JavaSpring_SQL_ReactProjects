@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 55: Drawing Board</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 25px 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a5b4fc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 700px;
+        }
+
+        .tools-panel {
+            flex: 0 0 280px;
+            background: #f8fafc;
+            padding: 30px;
+            border-right: 2px solid #e2e8f0;
+        }
+
+        .drawing-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            background: #f1f5f9;
+        }
+
+        .tool-group {
+            margin-bottom: 35px;
+        }
+
+        .tool-title {
+            font-size: 1.1rem;
+            color: #334155;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-title::before {
+            content: '⚙️';
+            font-size: 1.2rem;
+        }
+
+        .colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .color {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 3px solid transparent;
+        }
+
+        .color:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .color.selected {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+        }
+
+        .brush-sizes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brush-size {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #cbd5e1;
+            transition: all 0.2s ease;
+        }
+
+        .brush-size:hover {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+        }
+
+        .brush-size.selected {
+            border-color: #4f46e5;
+            background: #4f46e5;
+            color: white;
+        }
+
+        .brush-preview {
+            background: currentColor;
+            border-radius: 50%;
+        }
+
+        .custom-color {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #colorPicker {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+            background: white;
+            cursor: crosshair;
+        }
+
+        .canvas-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #94a3b8;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            color: #64748b;
+            font-size: 0.9rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .tools-panel {
+                flex: none;
+                border-right: none;
+                border-bottom: 2px solid #e2e8f0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .tools-panel,
+            .drawing-area {
+                padding: 20px;
+            }
+
+            .colors,
+            .brush-sizes {
+                justify-content: center;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Digital Drawing Board</h1>
+            <p class="subtitle">Draw freely with different colors and brush sizes. Save your masterpiece!</p>
+        </header>
+
+        <div class="main-content">
+            <div class="tools-panel">
+                <div class="tool-group">
+                    <div class="tool-title">Colors</div>
+                    <div class="colors" id="colorPalette">
+                        <!-- Colors will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="tool-group">
+                    <div class="tool-title">Custom Color</div>
+                    <div class="custom-color">
+                        <input type="color" id="colorPicker" value="#4f46e5">
+                        <span id="selectedColor">#4f46e5</span>
+                    </div>
+                </div>
+
+                <div class="tool-group">
+                    <div class="tool-title">Brush Size</div>
+                    <div class="brush-sizes" id="brushSizes">
+                        <!-- Brush sizes will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="tool-group">
+                    <div class="tool-title">Current Settings</div>
+                    <div class="status">
+                        <div>Color: <span id="currentColor">#4f46e5</span></div>
+                        <div>Brush Size: <span id="currentBrushSize">5px</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drawing-area">
+                <div class="canvas-container">
+                    <canvas id="drawingCanvas" width="800" height="500"></canvas>
+                    <div class="canvas-placeholder">Start drawing here...</div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn-primary" id="clearBtn">
+                        🧹 Clear Canvas
+                    </button>
+                    <button class="btn-secondary" id="undoBtn">
+                        ↩️ Undo
+                    </button>
+                    <button class="btn-secondary" id="redoBtn">
+                        ↪️ Redo
+                    </button>
+                    <button class="btn-primary" id="saveBtn">
+                        💾 Save Drawing
+                    </button>
+                    <button class="btn-danger" id="eraserBtn">
+                        🗑️ Eraser
+                    </button>
+                </div>
+
+                <div class="status">
+                    <div>Click and drag to draw. Press 'E' for eraser, 'C' to clear.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorPalette = document.getElementById('colorPalette');
+        const colorPicker = document.getElementById('colorPicker');
+        const selectedColorSpan = document.getElementById('selectedColor');
+        const brushSizesContainer = document.getElementById('brushSizes');
+        const currentColorSpan = document.getElementById('currentColor');
+        const currentBrushSizeSpan = document.getElementById('currentBrushSize');
+        const clearBtn = document.getElementById('clearBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const redoBtn = document.getElementById('redoBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const eraserBtn = document.getElementById('eraserBtn');
+
+        // Drawing state
+        let drawing = false;
+        let currentColor = '#4f46e5';
+        let currentBrushSize = 5;
+        let isErasing = false;
+        let history = [];
+        let historyIndex = -1;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Initialize canvas
+        function initializeCanvas() {
+            // Set canvas size to match container
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            // Set white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Save initial state
+            saveState();
+
+            // Set default drawing styles
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        // Color palette
+        const colors = [
+            '#4f46e5', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
+            '#000000', '#ffffff', '#64748b', '#dc2626', '#059669',
+            '#d97706', '#7c3aed', '#f87171', '#34d399', '#fbbf24'
+        ];
+
+        // Brush sizes
+        const brushSizes = [2, 5, 10, 15, 20, 30];
+
+        // Create color palette
+        function createColorPalette() {
+            colors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'color';
+                colorDiv.style.backgroundColor = color;
+                colorDiv.dataset.color = color;
+
+                if (color === currentColor) {
+                    colorDiv.classList.add('selected');
+                }
+
+                colorDiv.addEventListener('click', () => {
+                    setColor(color);
+                    document.querySelectorAll('.color').forEach(c => c.classList.remove('selected'));
+                    colorDiv.classList.add('selected');
+                });
+
+                colorPalette.appendChild(colorDiv);
+            });
+        }
+
+        // Create brush size options
+        function createBrushSizes() {
+            brushSizes.forEach(size => {
+                const sizeDiv = document.createElement('div');
+                sizeDiv.className = 'brush-size';
+                if (size === currentBrushSize) {
+                    sizeDiv.classList.add('selected');
+                }
+
+                const preview = document.createElement('div');
+                preview.className = 'brush-preview';
+                preview.style.width = `${size}px`;
+                preview.style.height = `${size}px`;
+
+                sizeDiv.appendChild(preview);
+                sizeDiv.dataset.size = size;
+
+                sizeDiv.addEventListener('click', () => {
+                    setBrushSize(size);
+                    document.querySelectorAll('.brush-size').forEach(b => b.classList.remove('selected'));
+                    sizeDiv.classList.add('selected');
+                });
+
+                brushSizesContainer.appendChild(sizeDiv);
+            });
+        }
+
+        // Set color
+        function setColor(color) {
+            currentColor = color;
+            isErasing = false;
+            eraserBtn.textContent = '🗑️ Eraser';
+            updateCurrentSettings();
+        }
+
+        // Set brush size
+        function setBrushSize(size) {
+            currentBrushSize = size;
+            updateCurrentSettings();
+        }
+
+        // Update current settings display
+        function updateCurrentSettings() {
+            currentColorSpan.textContent = currentColor;
+            currentBrushSizeSpan.textContent = `${currentBrushSize}px`;
+            selectedColorSpan.textContent = currentColor;
+        }
+
+        // Save canvas state
+        function saveState() {
+            // Save only the last 20 states
+            if (historyIndex < history.length - 1) {
+                history = history.slice(0, historyIndex + 1);
+            }
+
+            history.push(canvas.toDataURL());
+            historyIndex++;
+
+            // Enable/disable undo/redo buttons
+            undoBtn.disabled = historyIndex <= 0;
+            redoBtn.disabled = historyIndex >= history.length - 1;
+        }
+
+        // Undo
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                restoreState();
+            }
+        }
+
+        // Redo
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                restoreState();
+            }
+        }
+
+        // Restore canvas state
+        function restoreState() {
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = history[historyIndex];
+
+            // Enable/disable buttons
+            undoBtn.disabled = historyIndex <= 0;
+            redoBtn.disabled = historyIndex >= history.length - 1;
+        }
+
+        // Start drawing
+        function startDrawing(e) {
+            drawing = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+
+            // Start a new path
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+        }
+
+        // Draw
+        function draw(e) {
+            if (!drawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Set drawing style
+            if (isErasing) {
+                ctx.strokeStyle = 'white';
+            } else {
+                ctx.strokeStyle = currentColor;
+            }
+            ctx.lineWidth = currentBrushSize;
+
+            // Draw line
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            // Update last position
+            lastX = x;
+            lastY = y;
+        }
+
+        // Stop drawing
+        function stopDrawing() {
+            if (drawing) {
+                drawing = false;
+                ctx.closePath();
+                saveState();
+            }
+        }
+
+        // Clear canvas
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear the canvas?')) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                saveState();
+            }
+        }
+
+        // Toggle eraser
+        function toggleEraser() {
+            isErasing = !isErasing;
+            if (isErasing) {
+                eraserBtn.textContent = '🎨 Brush';
+            } else {
+                eraserBtn.textContent = '🗑️ Eraser';
+            }
+        }
+
+        // Save drawing
+        function saveDrawing() {
+            const link = document.createElement('a');
+            link.download = `drawing-${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        colorPicker.addEventListener('input', (e) => {
+            setColor(e.target.value);
+            document.querySelectorAll('.color').forEach(c => c.classList.remove('selected'));
+        });
+
+        clearBtn.addEventListener('click', clearCanvas);
+        undoBtn.addEventListener('click', undo);
+        redoBtn.addEventListener('click', redo);
+        saveBtn.addEventListener('click', saveDrawing);
+        eraserBtn.addEventListener('click', toggleEraser);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'e' || e.key === 'E') {
+                toggleEraser();
+                e.preventDefault();
+            }
+            if (e.key === 'c' || e.key === 'C') {
+                clearCanvas();
+                e.preventDefault();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                if (e.shiftKey) {
+                    redo();
+                } else {
+                    undo();
+                }
+                e.preventDefault();
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initializeCanvas();
+            createColorPalette();
+            createBrushSizes();
+            updateCurrentSettings();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Save current drawing
+            const currentImage = canvas.toDataURL();
+
+            // Resize canvas
+            initializeCanvas();
+
+            // Restore drawing
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = currentImage;
+        });
+    </script>
+</body>
+
+</html>

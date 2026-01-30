@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Recorder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #95a5a6;
+            font-size: 1.1rem;
+        }
+
+        /* Main Recorder */
+        .recorder-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        /* Recording Status */
+        .recording-status {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 50px;
+            margin-bottom: 20px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: #3498db;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .recording .status-dot {
+            background: #e74c3c;
+            animation: pulseRecording 0.8s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseRecording {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .time-display {
+            font-size: 3.5rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        /* Waveform Visualization */
+        .waveform-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #waveformCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .waveform-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        .waveform-placeholder.hidden {
+            display: none;
+        }
+
+        /* Main Controls */
+        .main-controls {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .record-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .record-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.4);
+        }
+
+        .record-btn.recording {
+            animation: recordingGlow 1.5s infinite;
+        }
+
+        @keyframes recordingGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(231, 76, 60, 0.8);
+            }
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(46, 204, 113, 0.4);
+        }
+
+        .play-btn.playing {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+        }
+
+        .save-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+        }
+
+        .save-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.4);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Secondary Controls */
+        .secondary-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .secondary-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Audio Visualization */
+        .visualization-controls {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .visualization-controls h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .viz-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .viz-option {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .viz-option:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .viz-option.active {
+            background: #3498db;
+            border-color: #2980b9;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Recordings List */
+        .recordings-list {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recordings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .recordings-header h2 {
+            color: #3498db;
+        }
+
+        .recordings-count {
+            background: rgba(52, 152, 219, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .recordings-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .recording-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .recording-item:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .recording-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recording-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #3498db;
+            word-break: break-word;
+        }
+
+        .recording-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #95a5a6;
+        }
+
+        .recording-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .recording-action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .recording-action-btn:hover {
+            background: rgba(52, 152, 219, 0.5);
+            transform: scale(1.1);
+        }
+
+        .recording-action-btn.delete:hover {
+            background: rgba(231, 76, 60, 0.5);
+        }
+
+        /* No Recordings Message */
+        .no-recordings {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+        }
+
+        /* Microphone Permission */
+        .permission-prompt {
+            text-align: center;
+            padding: 30px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .permission-prompt.hidden {
+            display: none;
+        }
+
+        /* Recording Animation */
+        @keyframes recordingPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .recording-animation {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .recording-animation.show {
+            display: flex;
+        }
+
+        .recording-bar {
+            width: 4px;
+            height: 20px;
+            background: #e74c3c;
+            border-radius: 2px;
+            animation: barPulse 1s infinite;
+        }
+
+        .recording-bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .recording-bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .recording-bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .recording-bar:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes barPulse {
+
+            0%,
+            100% {
+                height: 10px;
+            }
+
+            50% {
+                height: 30px;
+            }
+        }
+
+        /* Volume Meter */
+        .volume-meter {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .volume-meter.show {
+            display: block;
+        }
+
+        .volume-level {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #f39c12, #e74c3c);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .recorder-container {
+                padding: 25px;
+            }
+
+            .main-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-btn {
+                width: 70px;
+                height: 70px;
+            }
+
+            .time-display {
+                font-size: 2.5rem;
+            }
+
+            .recordings-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .recording-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .recording-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Voice Recorder</h1>
+            <p class="subtitle">Record audio from microphone with visual waveform and playback</p>
+        </header>
+
+        <div class="permission-prompt" id="permissionPrompt">
+            <h3>🎤 Microphone Access Required</h3>
+            <p>Please allow microphone access to use the voice recorder.</p>
+            <button class="secondary-btn" onclick="requestMicrophonePermission()">
+                Grant Permission
+            </button>
+        </div>
+
+        <div class="recorder-container">
+            <div class="recording-status" id="recordingStatus">
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text" id="statusText">Ready to record</span>
+                </div>
+                <div class="time-display" id="timeDisplay">00:00</div>
+                <div class="recording-animation" id="recordingAnimation">
+                    <div class="recording-bar"></div>
+                    <div class="recording-bar"></div>
+                    <div class="recording-bar"></div>
+                    <div class="recording-bar"></div>
+                    <div class="recording-bar"></div>
+                </div>
+            </div>
+
+            <div class="waveform-container">
+                <canvas id="waveformCanvas"></canvas>
+                <div class="waveform-placeholder" id="waveformPlaceholder">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">🎤</div>
+                    <p>Start recording to see the waveform</p>
+                </div>
+            </div>
+
+            <div class="volume-meter" id="volumeMeter">
+                <div class="volume-level" id="volumeLevel"></div>
+            </div>
+
+            <div class="main-controls">
+                <button class="control-btn record-btn" id="recordBtn" onclick="toggleRecording()">
+                    ●
+                </button>
+                <button class="control-btn play-btn" id="playBtn" onclick="togglePlayback()" disabled>
+                    ▶
+                </button>
+                <button class="control-btn save-btn" id="saveBtn" onclick="saveRecording()" disabled>
+                    💾
+                </button>
+            </div>
+
+            <div class="secondary-controls">
+                <button class="secondary-btn" id="pauseBtn" onclick="togglePause()" disabled>
+                    ⏸️ Pause
+                </button>
+                <button class="secondary-btn" id="stopBtn" onclick="stopRecording()" disabled>
+                    ⏹️ Stop
+                </button>
+                <button class="secondary-btn" onclick="clearRecording()" disabled>
+                    🗑️ Clear
+                </button>
+                <button class="secondary-btn" onclick="downloadRecording()" disabled>
+                    ⬇️ Download
+                </button>
+            </div>
+
+            <div class="visualization-controls">
+                <h3>Visualization Style</h3>
+                <div class="viz-options">
+                    <div class="viz-option active" data-viz="bars">Bars</div>
+                    <div class="viz-option" data-viz="wave">Waveform</div>
+                    <div class="viz-option" data-viz="circle">Circular</div>
+                    <div class="viz-option" data-viz="particles">Particles</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recordings-list">
+            <div class="recordings-header">
+                <h2>Saved Recordings</h2>
+                <div class="recordings-count">
+                    <span id="recordingsCount">0</span> recordings
+                </div>
+            </div>
+            <div class="recordings-container" id="recordingsContainer">
+                <div class="no-recordings" id="noRecordings">
+                    <p>No recordings yet. Record something to get started!</p>
+                </div>
+                <!-- Recordings will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class VoiceRecorder {
+            constructor() {
+                // Audio context and nodes
+                this.audioContext = null;
+                this.analyser = null;
+                this.microphone = null;
+                this.recorder = null;
+
+                // Recording state
+                this.isRecording = false;
+                this.isPaused = false;
+                this.isPlaying = false;
+                this.recordedChunks = [];
+                this.recordingStartTime = 0;
+                this.elapsedTime = 0;
+                this.timerInterval = null;
+
+                // Playback state
+                this.audioElement = new Audio();
+                this.currentRecording = null;
+
+                // Saved recordings
+                this.savedRecordings = JSON.parse(localStorage.getItem('voiceRecordings')) || [];
+                this.recordingId = 1;
+
+                // Visualization
+                this.canvas = document.getElementById('waveformCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.visualizationType = 'bars';
+                this.animationFrame = null;
+
+                this.init();
+            }
+
+            async init() {
+                this.setupCanvas();
+                this.setupEventListeners();
+                this.setupVisualizationControls();
+                this.renderRecordings();
+                this.updateRecordingsCount();
+
+                // Check microphone permission
+                await this.checkPermission();
+            }
+
+            setupCanvas() {
+                this.canvas.width = this.canvas.parentElement.clientWidth;
+                this.canvas.height = this.canvas.parentElement.clientHeight;
+            }
+
+            setupEventListeners() {
+                // Window resize
+                window.addEventListener('resize', () => {
+                    this.setupCanvas();
+                    if (this.isRecording || this.isPlaying) {
+                        this.visualize();
+                    }
+                });
+
+                // Audio element events
+                this.audioElement.addEventListener('ended', () => {
+                    this.stopPlayback();
+                });
+
+                this.audioElement.addEventListener('timeupdate', () => {
+                    this.updatePlaybackTime();
+                });
+            }
+
+            setupVisualizationControls() {
+                document.querySelectorAll('.viz-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        document.querySelectorAll('.viz-option').forEach(o => {
+                            o.classList.remove('active');
+                        });
+                        e.target.classList.add('active');
+                        this.visualizationType = e.target.dataset.viz;
+
+                        if (this.isRecording || this.isPlaying) {
+                            this.visualize();
+                        }
+                    });
+                });
+            }
+
+            async checkPermission() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop());
+
+                    // Permission granted
+                    document.getElementById('permissionPrompt').classList.add('hidden');
+                    return true;
+                } catch (err) {
+                    // Permission denied
+                    console.log('Microphone permission denied:', err);
+                    return false;
+                }
+            }
+
+            async requestPermission() {
+                try {
+                    await this.checkPermission();
+                    document.getElementById('permissionPrompt').classList.add('hidden');
+                    return true;
+                } catch (err) {
+                    alert('Microphone access is required to use the recorder.');
+                    return false;
+                }
+            }
+
+            async startRecording() {
+                try {
+                    // Request microphone access
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        }
+                    });
+
+                    // Setup audio context
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioContext.createAnalyser();
+                    this.microphone = this.audioContext.createMediaStreamSource(stream);
+
+                    // Connect microphone to analyser
+                    this.microphone.connect(this.analyser);
+                    this.analyser.fftSize = 2048;
+
+                    // Setup MediaRecorder
+                    this.recorder = new MediaRecorder(stream);
+                    this.recordedChunks = [];
+
+                    this.recorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            this.recordedChunks.push(event.data);
+                        }
+                    };
+
+                    this.recorder.onstop = () => {
+                        this.onRecordingComplete();
+                    };
+
+                    // Start recording
+                    this.recorder.start(100); // Collect data every 100ms
+                    this.isRecording = true;
+                    this.recordingStartTime = Date.now() - this.elapsedTime;
+
+                    // Update UI
+                    this.updateRecordingUI();
+                    this.startTimer();
+
+                    // Start visualization
+                    this.visualize();
+
+                    // Show volume meter
+                    document.getElementById('volumeMeter').classList.add('show');
+
+                } catch (err) {
+                    console.error('Error starting recording:', err);
+                    alert('Failed to start recording. Please check microphone permissions.');
+                    this.stopRecording();
+                }
+            }
+
+            stopRecording() {
+                if (this.recorder && this.isRecording) {
+                    this.recorder.stop();
+
+                    // Stop microphone tracks
+                    if (this.microphone) {
+                        this.microphone.disconnect();
+                        this.microphone.mediaStream.getTracks().forEach(track => track.stop());
+                    }
+
+                    // Clean up audio context
+                    if (this.audioContext) {
+                        this.audioContext.close();
+                        this.audioContext = null;
+                    }
+
+                    this.isRecording = false;
+                    this.stopTimer();
+
+                    // Stop visualization
+                    if (this.animationFrame) {
+                        cancelAnimationFrame(this.animationFrame);
+                        this.animationFrame = null;
+                    }
+
+                    // Update UI
+                    this.updateRecordingUI();
+
+                    // Hide volume meter
+                    document.getElementById('volumeMeter').classList.remove('show');
+
+                    // Clear canvas
+                    this.clearCanvas();
+
+                    // Hide waveform placeholder
+                    document.getElementById('waveformPlaceholder').classList.remove('hidden');
+                }
+            }
+
+            pauseRecording() {
+                if (this.recorder && this.isRecording && !this.isPaused) {
+                    this.recorder.pause();
+                    this.isPaused = true;
+                    this.stopTimer();
+                    document.getElementById('pauseBtn').innerHTML = '▶️ Resume';
+                }
+            }
+
+            resumeRecording() {
+                if (this.recorder && this.isRecording && this.isPaused) {
+                    this.recorder.resume();
+                    this.isPaused = false;
+                    this.startTimer();
+                    document.getElementById('pauseBtn').innerHTML = '⏸️ Pause';
+                }
+            }
+
+            onRecordingComplete() {
+                // Create blob from recorded chunks
+                const blob = new Blob(this.recordedChunks, { type: 'audio/webm' });
+                this.currentRecording = blob;
+
+                // Create URL for playback
+                const url = URL.createObjectURL(blob);
+                this.audioElement.src = url;
+
+                // Enable playback button
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('saveBtn').disabled = false;
+
+                // Update status
+                document.getElementById('statusText').textContent = 'Recording complete';
+                document.getElementById('statusIndicator').classList.remove('recording');
+            }
+
+            async togglePlayback() {
+                if (!this.isPlaying && this.currentRecording) {
+                    this.startPlayback();
+                } else {
+                    this.pausePlayback();
+                }
+            }
+
+            startPlayback() {
+                if (this.currentRecording) {
+                    this.audioElement.play();
+                    this.isPlaying = true;
+                    document.getElementById('playBtn').classList.add('playing');
+                    document.getElementById('playBtn').innerHTML = '⏸';
+
+                    // Start visualization during playback
+                    this.setupPlaybackVisualization();
+                }
+            }
+
+            pausePlayback() {
+                this.audioElement.pause();
+                this.isPlaying = false;
+                document.getElementById('playBtn').classList.remove('playing');
+                document.getElementById('playBtn').innerHTML = '▶';
+
+                // Stop visualization
+                if (this.animationFrame) {
+                    cancelAnimationFrame(this.animationFrame);
+                    this.animationFrame = null;
+                }
+            }
+
+            stopPlayback() {
+                this.audioElement.pause();
+                this.audioElement.currentTime = 0;
+                this.isPlaying = false;
+                document.getElementById('playBtn').classList.remove('playing');
+                document.getElementById('playBtn').innerHTML = '▶';
+
+                // Stop visualization
+                if (this.animationFrame) {
+                    cancelAnimationFrame(this.animationFrame);
+                    this.animationFrame = null;
+                }
+
+                // Clear canvas
+                this.clearCanvas();
+            }
+
+            setupPlaybackVisualization() {
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioContext.createAnalyser();
+
+                    const source = this.audioContext.createMediaElementSource(this.audioElement);
+                    source.connect(this.analyser);
+                    this.analyser.connect(this.audioContext.destination);
+                    this.analyser.fftSize = 2048;
+                }
+
+                this.visualize();
+            }
+
+            updatePlaybackTime() {
+                // Update playback progress if needed
+                const currentTime = this.audioElement.currentTime;
+                const duration = this.audioElement.duration;
+
+                if (duration > 0) {
+                    const progress = (currentTime / duration) * 100;
+                    // Could update a progress bar here
+                }
+            }
+
+            saveRecording() {
+                if (!this.currentRecording) return;
+
+                // Create recording object
+                const recording = {
+                    id: Date.now(),
+                    title: `Recording ${this.recordingId++}`,
+                    date: new Date().toLocaleString(),
+                    duration: this.formatTime(this.elapsedTime / 1000),
+                    size: this.formatFileSize(this.currentRecording.size),
+                    blob: this.currentRecording,
+                    url: URL.createObjectURL(this.currentRecording)
+                };
+
+                // Add to saved recordings
+                this.savedRecordings.unshift(recording);
+
+                // Save to localStorage
+                this.saveToLocalStorage();
+
+                // Update UI
+                this.renderRecordings();
+                this.updateRecordingsCount();
+
+                // Show confirmation
+                alert(`Recording saved as "${recording.title}"`);
+            }
+
+            deleteRecording(id) {
+                if (confirm('Are you sure you want to delete this recording?')) {
+                    // Find and remove recording
+                    const index = this.savedRecordings.findIndex(r => r.id === id);
+                    if (index !== -1) {
+                        // Revoke URL to free memory
+                        URL.revokeObjectURL(this.savedRecordings[index].url);
+
+                        // Remove from array
+                        this.savedRecordings.splice(index, 1);
+
+                        // Save to localStorage
+                        this.saveToLocalStorage();
+
+                        // Update UI
+                        this.renderRecordings();
+                        this.updateRecordingsCount();
+                    }
+                }
+            }
+
+            playRecording(url, title) {
+                // Stop any current playback
+                this.stopPlayback();
+
+                // Set up and play the recording
+                this.audioElement.src = url;
+                this.currentRecording = url;
+
+                this.startPlayback();
+
+                // Update status
+                document.getElementById('statusText').textContent = `Playing: ${title}`;
+            }
+
+            downloadRecording() {
+                if (this.currentRecording) {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(this.currentRecording);
+                    a.download = `recording-${new Date().toISOString().slice(0, 10)}.webm`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            }
+
+            clearRecording() {
+                if (confirm('Are you sure you want to clear the current recording?')) {
+                    this.currentRecording = null;
+                    this.recordedChunks = [];
+                    this.elapsedTime = 0;
+
+                    // Update UI
+                    document.getElementById('timeDisplay').textContent = '00:00';
+                    document.getElementById('playBtn').disabled = true;
+                    document.getElementById('saveBtn').disabled = true;
+                    document.getElementById('statusText').textContent = 'Ready to record';
+
+                    // Clear canvas
+                    this.clearCanvas();
+                    document.getElementById('waveformPlaceholder').classList.remove('hidden');
+                }
+            }
+
+            startTimer() {
+                this.stopTimer(); // Clear any existing timer
+
+                this.timerInterval = setInterval(() => {
+                    this.elapsedTime = Date.now() - this.recordingStartTime;
+                    document.getElementById('timeDisplay').textContent = this.formatTime(this.elapsedTime / 1000);
+                }, 100);
+            }
+
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+
+            updateRecordingUI() {
+                const recordBtn = document.getElementById('recordBtn');
+                const statusIndicator = document.getElementById('statusIndicator');
+                const statusText = document.getElementById('statusText');
+                const pauseBtn = document.getElementById('pauseBtn');
+                const stopBtn = document.getElementById('stopBtn');
+                const recordingAnimation = document.getElementById('recordingAnimation');
+
+                if (this.isRecording) {
+                    // Recording state
+                    recordBtn.classList.add('recording');
+                    recordBtn.innerHTML = '⏹';
+                    statusIndicator.classList.add('recording');
+                    statusText.textContent = this.isPaused ? 'Recording paused' : 'Recording...';
+                    pauseBtn.disabled = false;
+                    stopBtn.disabled = false;
+                    recordingAnimation.classList.add('show');
+
+                    // Hide waveform placeholder
+                    document.getElementById('waveformPlaceholder').classList.add('hidden');
+                } else {
+                    // Not recording state
+                    recordBtn.classList.remove('recording');
+                    recordBtn.innerHTML = '●';
+                    statusIndicator.classList.remove('recording');
+                    pauseBtn.disabled = true;
+                    stopBtn.disabled = true;
+                    recordingAnimation.classList.remove('show');
+                    document.getElementById('pauseBtn').innerHTML = '⏸️ Pause';
+                }
+            }
+
+            visualize() {
+                if (!this.analyser) return;
+
+                const bufferLength = this.analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+
+                const draw = () => {
+                    this.animationFrame = requestAnimationFrame(draw);
+
+                    if (this.isRecording || this.isPlaying) {
+                        this.analyser.getByteFrequencyData(dataArray);
+                        this.clearCanvas();
+
+                        switch (this.visualizationType) {
+                            case 'bars':
+                                this.drawBars(dataArray, bufferLength);
+                                break;
+                            case 'wave':
+                                this.drawWave(dataArray, bufferLength);
+                                break;
+                            case 'circle':
+                                this.drawCircle(dataArray, bufferLength);
+                                break;
+                            case 'particles':
+                                this.drawParticles(dataArray, bufferLength);
+                                break;
+                        }
+
+                        // Update volume meter
+                        this.updateVolumeMeter(dataArray);
+                    }
+                };
+
+                draw();
+            }
+
+            drawBars(dataArray, bufferLength) {
+                const barWidth = (this.canvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] / 2;
+
+                    // Create gradient
+                    const gradient = this.ctx.createLinearGradient(0, this.canvas.height, 0, this.canvas.height - barHeight);
+                    gradient.addColorStop(0, '#3498db');
+                    gradient.addColorStop(0.5, '#9b59b6');
+                    gradient.addColorStop(1, '#e74c3c');
+
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fillRect(x, this.canvas.height - barHeight, barWidth, barHeight);
+
+                    x += barWidth + 1;
+                }
+            }
+
+            drawWave(dataArray, bufferLength) {
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeStyle = '#3498db';
+                this.ctx.beginPath();
+
+                const sliceWidth = this.canvas.width * 1.0 / bufferLength;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = v * this.canvas.height / 2;
+
+                    if (i === 0) {
+                        this.ctx.moveTo(x, y);
+                    } else {
+                        this.ctx.lineTo(x, y);
+                    }
+
+                    x += sliceWidth;
+                }
+
+                this.ctx.lineTo(this.canvas.width, this.canvas.height / 2);
+                this.ctx.stroke();
+            }
+
+            drawCircle(dataArray, bufferLength) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.8;
+
+                this.ctx.lineWidth = 2;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    const amplitude = dataArray[i] / 4;
+                    const angle = (i * 2 * Math.PI) / bufferLength;
+
+                    const x1 = centerX + Math.cos(angle) * radius;
+                    const y1 = centerY + Math.sin(angle) * radius;
+                    const x2 = centerX + Math.cos(angle) * (radius + amplitude);
+                    const y2 = centerY + Math.sin(angle) * (radius + amplitude);
+
+                    // Create gradient for each line
+                    const gradient = this.ctx.createLinearGradient(x1, y1, x2, y2);
+                    gradient.addColorStop(0, '#3498db');
+                    gradient.addColorStop(1, '#e74c3c');
+
+                    this.ctx.strokeStyle = gradient;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x1, y1);
+                    this.ctx.lineTo(x2, y2);
+                    this.ctx.stroke();
+                }
+            }
+
+            drawParticles(dataArray, bufferLength) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                for (let i = 0; i < bufferLength; i += 4) {
+                    const amplitude = dataArray[i] / 4;
+                    const angle = (i * 2 * Math.PI) / bufferLength;
+                    const distance = 50 + amplitude;
+
+                    const x = centerX + Math.cos(angle) * distance;
+                    const y = centerY + Math.sin(angle) * distance;
+                    const size = 2 + amplitude / 20;
+
+                    // Create gradient fill
+                    const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, size);
+                    gradient.addColorStop(0, '#3498db');
+                    gradient.addColorStop(1, 'rgba(52, 152, 219, 0)');
+
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+
+            updateVolumeMeter(dataArray) {
+                // Calculate average volume
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    sum += dataArray[i];
+                }
+                const average = sum / dataArray.length;
+
+                // Convert to percentage (0-100)
+                const volume = Math.min(100, (average / 128) * 100);
+
+                // Update volume meter
+                document.getElementById('volumeLevel').style.width = `${volume}%`;
+            }
+
+            clearCanvas() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+
+            renderRecordings() {
+                const container = document.getElementById('recordingsContainer');
+                const noRecordings = document.getElementById('noRecordings');
+
+                if (this.savedRecordings.length === 0) {
+                    noRecordings.style.display = 'block';
+                    return;
+                }
+
+                noRecordings.style.display = 'none';
+                container.innerHTML = '';
+
+                this.savedRecordings.forEach(recording => {
+                    const item = document.createElement('div');
+                    item.className = 'recording-item';
+                    item.innerHTML = `
+                        <div class="recording-info">
+                            <div class="recording-title">${recording.title}</div>
+                            <div class="recording-meta">
+                                <span>${recording.date}</span>
+                                <span>${recording.duration}</span>
+                                <span>${recording.size}</span>
+                            </div>
+                        </div>
+                        <div class="recording-actions">
+                            <button class="recording-action-btn" onclick="voiceRecorder.playRecording('${recording.url}', '${recording.title}')" title="Play">
+                                ▶
+                            </button>
+                            <a class="recording-action-btn" href="${recording.url}" download="${recording.title}.webm" title="Download">
+                                ⬇
+                            </a>
+                            <button class="recording-action-btn delete" onclick="voiceRecorder.deleteRecording(${recording.id})" title="Delete">
+                                🗑
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            updateRecordingsCount() {
+                document.getElementById('recordingsCount').textContent = this.savedRecordings.length;
+            }
+
+            saveToLocalStorage() {
+                // Convert recordings to a storable format
+                const recordingsToSave = this.savedRecordings.map(recording => ({
+                    id: recording.id,
+                    title: recording.title,
+                    date: recording.date,
+                    duration: recording.duration,
+                    size: recording.size
+                    // Note: Blobs cannot be stored in localStorage
+                }));
+
+                localStorage.setItem('voiceRecordings', JSON.stringify(recordingsToSave));
+            }
+
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+        }
+
+        // Initialize voice recorder
+        const voiceRecorder = new VoiceRecorder();
+
+        // Global control functions
+        async function toggleRecording() {
+            if (!voiceRecorder.isRecording) {
+                // Start recording
+                const hasPermission = await voiceRecorder.requestPermission();
+                if (hasPermission) {
+                    voiceRecorder.startRecording();
+                }
+            } else {
+                // Stop recording
+                voiceRecorder.stopRecording();
+            }
+        }
+
+        function togglePause() {
+            if (voiceRecorder.isRecording) {
+                if (voiceRecorder.isPaused) {
+                    voiceRecorder.resumeRecording();
+                } else {
+                    voiceRecorder.pauseRecording();
+                }
+            }
+        }
+
+        function stopRecording() {
+            voiceRecorder.stopRecording();
+        }
+
+        function togglePlayback() {
+            voiceRecorder.togglePlayback();
+        }
+
+        function saveRecording() {
+            voiceRecorder.saveRecording();
+        }
+
+        function clearRecording() {
+            voiceRecorder.clearRecording();
+        }
+
+        function downloadRecording() {
+            voiceRecorder.downloadRecording();
+        }
+
+        function requestMicrophonePermission() {
+            voiceRecorder.requestPermission();
+        }
+    </script>
+</body>
+
+</html>

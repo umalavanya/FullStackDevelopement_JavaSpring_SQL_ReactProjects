@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stick Man Dance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        header {
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dance-area {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .stage {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stage::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-stop {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+        }
+
+        .slider-container {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #ffcc00;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .dance-styles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .dance-style {
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dance-style:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .dance-style.active {
+            background: rgba(255, 204, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.2);
+        }
+
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 1000px;
+            text-align: left;
+        }
+
+        .instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .instructions i {
+            color: #ffcc00;
+            margin-right: 8px;
+        }
+
+        footer {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* Stick man styling */
+        .stick-man {
+            position: relative;
+            transform-origin: center bottom;
+        }
+
+        .head {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+            top: -50px;
+            left: -20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        .body {
+            width: 6px;
+            height: 80px;
+            background: white;
+            position: absolute;
+            top: -10px;
+            left: -3px;
+        }
+
+        .arm {
+            width: 6px;
+            height: 50px;
+            background: white;
+            position: absolute;
+            top: -5px;
+            transform-origin: top center;
+        }
+
+        .left-arm {
+            left: -25px;
+        }
+
+        .right-arm {
+            left: 25px;
+        }
+
+        .leg {
+            width: 6px;
+            height: 60px;
+            background: white;
+            position: absolute;
+            top: 70px;
+            transform-origin: top center;
+        }
+
+        .left-leg {
+            left: -10px;
+        }
+
+        .right-leg {
+            left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .dance-area,
+            .controls {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-music"></i> Stick Man Dance</h1>
+            <p class="subtitle">Watch the stick man dance to different styles. Customize the speed and control the
+                moves!</p>
+        </header>
+
+        <div class="main-content">
+            <div class="dance-area">
+                <h2>Dance Stage</h2>
+                <div class="stage">
+                    <div class="stick-man" id="stickMan">
+                        <div class="head"></div>
+                        <div class="body"></div>
+                        <div class="arm left-arm"></div>
+                        <div class="arm right-arm"></div>
+                        <div class="leg left-leg"></div>
+                        <div class="leg right-leg"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h2>Dance Controls</h2>
+
+                <div class="control-group">
+                    <h3>Animation Controls</h3>
+                    <div class="button-group">
+                        <button class="btn" id="startBtn"><i class="fas fa-play"></i> Start Dance</button>
+                        <button class="btn btn-stop" id="stopBtn"><i class="fas fa-stop"></i> Stop Dance</button>
+                        <button class="btn" id="resetBtn"><i class="fas fa-redo"></i> Reset Position</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Dance Speed</h3>
+                    <div class="slider-container">
+                        <label for="speedSlider">Adjust Dance Speed: <span id="speedValue">Medium</span></label>
+                        <input type="range" min="50" max="300" value="150" class="slider" id="speedSlider">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Dance Styles</h3>
+                    <div class="dance-styles">
+                        <div class="dance-style active" data-style="disco">
+                            <i class="fas fa-disco-ball"></i> Disco
+                        </div>
+                        <div class="dance-style" data-style="robot">
+                            <i class="fas fa-robot"></i> Robot
+                        </div>
+                        <div class="dance-style" data-style="salsa">
+                            <i class="fas fa-fire"></i> Salsa
+                        </div>
+                        <div class="dance-style" data-style="breakdance">
+                            <i class="fas fa-sync-alt"></i> Breakdance
+                        </div>
+                        <div class="dance-style" data-style="chicken">
+                            <i class="fas fa-drumstick-bite"></i> Chicken
+                        </div>
+                        <div class="dance-style" data-style="floss">
+                            <i class="fas fa-people-arrows"></i> Floss
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How to Use</h3>
+            <ul>
+                <li><i class="fas fa-play-circle"></i> Click <strong>Start Dance</strong> to begin the animation</li>
+                <li><i class="fas fa-tachometer-alt"></i> Use the slider to adjust the dance speed</li>
+                <li><i class="fas fa-star"></i> Select different dance styles to see various moves</li>
+                <li><i class="fas fa-stop-circle"></i> Click <strong>Stop Dance</strong> to pause the animation</li>
+                <li><i class="fas fa-redo"></i> Click <strong>Reset Position</strong> to return the stick man to the
+                    original position</li>
+            </ul>
+            <p><i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Combine different dance styles with speed
+                adjustments for unique performances!</p>
+        </div>
+
+        <footer>
+            <p>Stick Man Dance Animation | Created with HTML, CSS & JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const stickMan = document.getElementById('stickMan');
+        const head = document.querySelector('.head');
+        const body = document.querySelector('.body');
+        const leftArm = document.querySelector('.left-arm');
+        const rightArm = document.querySelector('.right-arm');
+        const leftLeg = document.querySelector('.left-leg');
+        const rightLeg = document.querySelector('.right-leg');
+
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+        const danceStyles = document.querySelectorAll('.dance-style');
+
+        // Animation variables
+        let animationId = null;
+        let speed = 150; // Default speed (medium)
+        let currentDanceStyle = 'disco';
+        let isAnimating = false;
+        let animationTime = 0;
+
+        // Set initial positions
+        function resetPosition() {
+            // Reset all transformations
+            stickMan.style.transform = 'translate(0, 0) rotate(0deg)';
+            head.style.transform = 'rotate(0deg)';
+            body.style.transform = 'rotate(0deg)';
+            leftArm.style.transform = 'rotate(0deg)';
+            rightArm.style.transform = 'rotate(0deg)';
+            leftLeg.style.transform = 'rotate(0deg)';
+            rightLeg.style.transform = 'rotate(0deg)';
+
+            // Stop any ongoing animation
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+
+            isAnimating = false;
+        }
+
+        // Update speed display
+        function updateSpeedDisplay() {
+            if (speed < 100) {
+                speedValue.textContent = 'Slow';
+            } else if (speed < 200) {
+                speedValue.textContent = 'Medium';
+            } else {
+                speedValue.textContent = 'Fast';
+            }
+        }
+
+        // Dance animation functions for different styles
+        function discoDance(time) {
+            // Head bobbing
+            head.style.transform = `translateY(${Math.sin(time * 0.01) * 5}px)`;
+
+            // Body sway
+            body.style.transform = `rotate(${Math.sin(time * 0.008) * 5}deg)`;
+
+            // Arms movement
+            leftArm.style.transform = `rotate(${Math.sin(time * 0.01) * 60}deg)`;
+            rightArm.style.transform = `rotate(${Math.sin(time * 0.01 + Math.PI) * 60}deg)`;
+
+            // Legs movement
+            leftLeg.style.transform = `rotate(${Math.sin(time * 0.01) * 30}deg)`;
+            rightLeg.style.transform = `rotate(${Math.sin(time * 0.01 + Math.PI) * 30}deg)`;
+
+            // Overall movement
+            stickMan.style.transform = `translateY(${Math.sin(time * 0.005) * 10}px) rotate(${Math.sin(time * 0.003) * 5}deg)`;
+        }
+
+        function robotDance(time) {
+            // Robotic, jerky movements
+            const robotTime = Math.floor(time / 100) * 100; // Creates jerky movement
+
+            // Head moves in steps
+            head.style.transform = `rotate(${Math.sin(robotTime * 0.005) * 10}deg)`;
+
+            // Arms move in opposite directions with pauses
+            leftArm.style.transform = `rotate(${Math.sin(robotTime * 0.003) * 40}deg)`;
+            rightArm.style.transform = `rotate(${Math.sin(robotTime * 0.003 + Math.PI) * 40}deg)`;
+
+            // Legs move with delay
+            leftLeg.style.transform = `rotate(${Math.sin(robotTime * 0.003 - 0.5) * 20}deg)`;
+            rightLeg.style.transform = `rotate(${Math.sin(robotTime * 0.003 + Math.PI - 0.5) * 20}deg)`;
+
+            // Body tilts
+            body.style.transform = `rotate(${Math.sin(robotTime * 0.002) * 5}deg)`;
+
+            // Overall movement
+            stickMan.style.transform = `translateX(${Math.sin(robotTime * 0.001) * 20}px)`;
+        }
+
+        function salsaDance(time) {
+            // Salsa dance with hip movements
+            const salsaTime = time * 0.01;
+
+            // Head slight movement
+            head.style.transform = `rotate(${Math.sin(salsaTime) * 5}deg)`;
+
+            // Body hip movement
+            body.style.transform = `rotate(${Math.sin(salsaTime * 2) * 10}deg)`;
+
+            // Arms flowing movement
+            leftArm.style.transform = `rotate(${Math.sin(salsaTime * 1.5) * 70}deg)`;
+            rightArm.style.transform = `rotate(${Math.sin(salsaTime * 1.5 + Math.PI / 2) * 70}deg)`;
+
+            // Legs with crossing steps
+            leftLeg.style.transform = `rotate(${Math.sin(salsaTime * 2) * 40}deg)`;
+            rightLeg.style.transform = `rotate(${Math.sin(salsaTime * 2 + Math.PI) * 40}deg)`;
+
+            // Overall movement
+            stickMan.style.transform = `translateX(${Math.sin(salsaTime) * 30}px) translateY(${Math.sin(salsaTime * 2) * 10}px)`;
+        }
+
+        function breakdanceDance(time) {
+            // Breakdance with floor movements
+            const breakTime = time * 0.01;
+
+            // Head spin effect
+            head.style.transform = `rotate(${breakTime * 10}deg)`;
+
+            // Body closer to ground with spinning
+            body.style.transform = `rotate(${Math.sin(breakTime) * 15}deg)`;
+
+            // Arms wide and dynamic
+            leftArm.style.transform = `rotate(${Math.sin(breakTime * 1.2) * 80}deg)`;
+            rightArm.style.transform = `rotate(${Math.sin(breakTime * 1.2 + 1) * 80}deg)`;
+
+            // Legs dynamic movements
+            leftLeg.style.transform = `rotate(${Math.sin(breakTime * 1.5) * 60}deg)`;
+            rightLeg.style.transform = `rotate(${Math.sin(breakTime * 1.5 + 2) * 60}deg)`;
+
+            // Overall spin and lower position
+            stickMan.style.transform = `translateY(30px) rotate(${breakTime * 3}deg)`;
+        }
+
+        function chickenDance(time) {
+            // Chicken dance with wing-like arm movements
+            const chickenTime = time * 0.01;
+
+            // Head pecking motion
+            head.style.transform = `translateY(${Math.sin(chickenTime * 3) * 10}px)`;
+
+            // Body slight bounce
+            body.style.transform = `translateY(${Math.sin(chickenTime * 2) * 5}px)`;
+
+            // Arms like chicken wings
+            leftArm.style.transform = `rotate(${90 + Math.sin(chickenTime * 4) * 30}deg)`;
+            rightArm.style.transform = `rotate(${90 + Math.sin(chickenTime * 4) * 30}deg)`;
+
+            // Legs stepping
+            leftLeg.style.transform = `rotate(${Math.sin(chickenTime * 2) * 20}deg)`;
+            rightLeg.style.transform = `rotate(${Math.sin(chickenTime * 2 + Math.PI) * 20}deg)`;
+
+            // Overall bounce
+            stickMan.style.transform = `translateY(${Math.sin(chickenTime * 2) * 5}px)`;
+        }
+
+        function flossDance(time) {
+            // Floss dance with swinging arms
+            const flossTime = time * 0.01;
+
+            // Head slight nod
+            head.style.transform = `rotate(${Math.sin(flossTime * 2) * 5}deg)`;
+
+            // Body hip movement
+            body.style.transform = `translateX(${Math.sin(flossTime * 4) * 15}px)`;
+
+            // Arms swinging back and forth
+            leftArm.style.transform = `rotate(${Math.sin(flossTime * 4) * 80}deg)`;
+            rightArm.style.transform = `rotate(${Math.sin(flossTime * 4 + Math.PI) * 80}deg)`;
+
+            // Legs stepping
+            leftLeg.style.transform = `rotate(${Math.sin(flossTime * 2) * 10}deg)`;
+            rightLeg.style.transform = `rotate(${Math.sin(flossTime * 2 + Math.PI) * 10}deg)`;
+
+            // Overall movement
+            stickMan.style.transform = `translateY(${Math.sin(flossTime) * 5}px)`;
+        }
+
+        // Main animation loop
+        function animate(time) {
+            if (!isAnimating) return;
+
+            // Adjust time based on speed
+            const adjustedTime = time * (speed / 150);
+
+            // Call the appropriate dance function based on current style
+            switch (currentDanceStyle) {
+                case 'disco':
+                    discoDance(adjustedTime);
+                    break;
+                case 'robot':
+                    robotDance(adjustedTime);
+                    break;
+                case 'salsa':
+                    salsaDance(adjustedTime);
+                    break;
+                case 'breakdance':
+                    breakdanceDance(adjustedTime);
+                    break;
+                case 'chicken':
+                    chickenDance(adjustedTime);
+                    break;
+                case 'floss':
+                    flossDance(adjustedTime);
+                    break;
+                default:
+                    discoDance(adjustedTime);
+            }
+
+            // Continue the animation
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Start animation
+        function startAnimation() {
+            if (isAnimating) return;
+
+            isAnimating = true;
+            animationTime = 0;
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Stop animation
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startAnimation);
+
+        stopBtn.addEventListener('click', stopAnimation);
+
+        resetBtn.addEventListener('click', resetPosition);
+
+        speedSlider.addEventListener('input', function () {
+            speed = parseInt(this.value);
+            updateSpeedDisplay();
+        });
+
+        // Dance style selection
+        danceStyles.forEach(style => {
+            style.addEventListener('click', function () {
+                // Remove active class from all styles
+                danceStyles.forEach(s => s.classList.remove('active'));
+
+                // Add active class to clicked style
+                this.classList.add('active');
+
+                // Update current dance style
+                currentDanceStyle = this.getAttribute('data-style');
+
+                // If animation is running, restart with new style
+                if (isAnimating) {
+                    stopAnimation();
+                    startAnimation();
+                }
+            });
+        });
+
+        // Initialize speed display
+        updateSpeedDisplay();
+
+        // Add a little initial movement to show it's interactive
+        setTimeout(() => {
+            leftArm.style.transform = 'rotate(30deg)';
+            rightArm.style.transform = 'rotate(-30deg)';
+            leftLeg.style.transform = 'rotate(10deg)';
+            rightLeg.style.transform = 'rotate(-10deg)';
+
+            setTimeout(resetPosition, 800);
+        }, 500);
+    </script>
+</body>
+
+</html>

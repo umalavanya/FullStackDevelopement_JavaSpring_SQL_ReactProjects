@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 51: Accordion FAQ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .faq-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion {
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .accordion-header:hover {
+            background-color: #f8f9fa;
+        }
+
+        .accordion-header.active {
+            background-color: #f1f3ff;
+        }
+
+        .accordion-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-right: 20px;
+        }
+
+        .accordion-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            transition: transform 0.3s ease;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(45deg);
+            color: #764ba2;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+        }
+
+        .accordion-answer {
+            padding: 0 30px 30px;
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        .accordion-answer p {
+            margin-bottom: 15px;
+        }
+
+        .accordion-answer ul,
+        .accordion-answer ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .accordion-answer li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .faq-title {
+                font-size: 2rem;
+            }
+
+            .accordion-header {
+                padding: 20px;
+            }
+
+            .accordion-question {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .accordion-header {
+                padding: 15px;
+            }
+
+            .accordion-question {
+                font-size: 1rem;
+            }
+
+            .accordion-answer {
+                padding: 0 15px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="faq-title">Frequently Asked Questions</h1>
+        <div class="accordion" id="accordion">
+            <!-- FAQ items will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const faqData = [
+            {
+                question: "What is JavaScript and what is it used for?",
+                answer: "<p>JavaScript is a versatile programming language primarily used for creating interactive effects within web browsers. It enables dynamic content updates, interactive maps, animated graphics, form validation, and much more.</p><p>Key uses include:</p><ul><li>Web development (frontend and backend with Node.js)</li><li>Mobile app development</li><li>Game development</li><li>Building web servers</li><li>Creating desktop applications</li></ul>"
+            },
+            {
+                question: "What is the difference between let, const, and var?",
+                answer: "<p>These are different ways to declare variables in JavaScript:</p><ol><li><strong>var:</strong> Function-scoped, can be redeclared and updated, hoisted to top of function</li><li><strong>let:</strong> Block-scoped, can be updated but not redeclared in same scope</li><li><strong>const:</strong> Block-scoped, cannot be updated or redeclared, must be initialized during declaration</li></ol><p>Modern JavaScript typically uses const by default and let when reassignment is needed.</p>"
+            },
+            {
+                question: "What are JavaScript promises and how do they work?",
+                answer: "<p>Promises are objects that represent the eventual completion (or failure) of an asynchronous operation and its resulting value. They have three states:</p><ul><li><strong>Pending:</strong> Initial state, neither fulfilled nor rejected</li><li><strong>Fulfilled:</strong> Operation completed successfully</li><li><strong>Rejected:</strong> Operation failed</li></ul><p>Promises help avoid callback hell and make asynchronous code more readable using .then(), .catch(), and .finally() methods.</p>"
+            },
+            {
+                question: "What is the DOM and how does JavaScript interact with it?",
+                answer: "<p>The DOM (Document Object Model) is a programming interface for web documents. It represents the page so that programs can change the document structure, style, and content.</p><p>JavaScript interacts with the DOM through:</p><ul><li>Selecting elements (getElementById, querySelector)</li><li>Modifying content (innerHTML, textContent)</li><li>Changing styles (style property, classList)</li><li>Adding/removing elements (appendChild, removeChild)</li><li>Event handling (addEventListener)</li></ul>"
+            },
+            {
+                question: "What are arrow functions and when should they be used?",
+                answer: "<p>Arrow functions are a concise syntax for writing function expressions in ES6. They have several differences from regular functions:</p><ul><li>Shorter syntax</li><li>No binding of 'this' (inherits from parent scope)</li><li>Can't be used as constructors</li><li>No arguments object</li></ul><p>Use arrow functions for:</p><ul><li>Short callback functions</li><li>Methods where lexical 'this' is desired</li><li>Functions that don't need their own 'this' context</li></ul>"
+            },
+            {
+                question: "What is event bubbling and event capturing?",
+                answer: "<p>These are two ways events propagate through the DOM:</p><ul><li><strong>Event Bubbling:</strong> Event starts at target element and bubbles up to root</li><li><strong>Event Capturing:</strong> Event starts at root and goes down to target</li></ul><p>JavaScript uses bubbling by default. You can use event.stopPropagation() to stop the event from propagating further.</p>"
+            },
+            {
+                question: "What are JavaScript modules and how are they used?",
+                answer: "<p>JavaScript modules allow you to break up your code into separate files. Key features include:</p><ul><li>export keyword to expose functions, objects, or primitives</li><li>import keyword to bring in functionality from other modules</li><li>Each module has its own scope</li><li>Supports both named and default exports</li></ul><p>Modules help organize code, avoid naming conflicts, and make code more maintainable.</p>"
+            }
+        ];
+
+        const accordion = document.getElementById('accordion');
+        let activeItem = null;
+
+        function createFAQItems() {
+            faqData.forEach((item, index) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'accordion-item';
+
+                const accordionHeader = document.createElement('div');
+                accordionHeader.className = 'accordion-header';
+                accordionHeader.innerHTML = `
+                    <div class="accordion-question">${item.question}</div>
+                    <div class="accordion-icon">+</div>
+                `;
+
+                const accordionContent = document.createElement('div');
+                accordionContent.className = 'accordion-content';
+                accordionContent.innerHTML = `<div class="accordion-answer">${item.answer}</div>`;
+
+                // Make first item active by default
+                if (index === 0) {
+                    accordionHeader.classList.add('active');
+                    accordionContent.classList.add('active');
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                    activeItem = accordionContent;
+                }
+
+                accordionHeader.addEventListener('click', () => {
+                    // Close current active item if different from clicked
+                    if (activeItem && activeItem !== accordionContent) {
+                        activeItem.classList.remove('active');
+                        activeItem.previousElementSibling.classList.remove('active');
+                        activeItem.style.maxHeight = null;
+                    }
+
+                    // Toggle clicked item
+                    accordionHeader.classList.toggle('active');
+                    accordionContent.classList.toggle('active');
+
+                    if (accordionContent.classList.contains('active')) {
+                        accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                        activeItem = accordionContent;
+                    } else {
+                        accordionContent.style.maxHeight = null;
+                        activeItem = null;
+                    }
+                });
+
+                accordionItem.appendChild(accordionHeader);
+                accordionItem.appendChild(accordionContent);
+                accordion.appendChild(accordionItem);
+            });
+        }
+
+        // Initialize FAQ
+        createFAQItems();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 53: Infinite Scroll</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .posts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .post-content {
+            padding: 25px;
+        }
+
+        .post-id {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .post-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        .post-body {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e7ff;
+            border-top: 5px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .loading-text {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .end-message {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .stats {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats span {
+            display: inline-block;
+            margin: 0 15px;
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .posts-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .post-image {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 30px 20px;
+            }
+
+            .posts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Infinite Scroll Demo</h1>
+            <p class="subtitle">Scroll down to load more content automatically. Each batch loads 10 posts.</p>
+        </header>
+
+        <div class="stats">
+            <div>Total Posts Loaded: <span id="postCount">0</span></div>
+            <div>Current Batch: <span id="batchCount">0</span></div>
+        </div>
+
+        <div class="posts-container" id="postsContainer">
+            <!-- Posts will be inserted here -->
+        </div>
+
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading more posts...</p>
+        </div>
+
+        <div class="end-message" id="endMessage">
+            <p>You've reached the end! No more posts to load.</p>
+        </div>
+    </div>
+
+    <script>
+        const postsContainer = document.getElementById('postsContainer');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const endMessage = document.getElementById('endMessage');
+        const postCountElement = document.getElementById('postCount');
+        const batchCountElement = document.getElementById('batchCount');
+
+        let posts = [];
+        let currentPage = 1;
+        const postsPerPage = 10;
+        const totalPosts = 100; // Simulating 100 total posts available
+        let isLoading = false;
+
+        // Mock API function to simulate fetching posts
+        async function fetchPosts(page) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const start = (page - 1) * postsPerPage;
+            const end = start + postsPerPage;
+            const newPosts = [];
+
+            // Generate mock posts
+            for (let i = start; i < end && i < totalPosts; i++) {
+                const postId = i + 1;
+                newPosts.push({
+                    id: postId,
+                    title: `Blog Post ${postId}: The Future of Web Development`,
+                    body: `This is the content of post ${postId}. Web development continues to evolve with new frameworks, tools, and best practices. In this post, we explore the latest trends and technologies shaping the future of web development.`,
+                    userId: Math.floor(Math.random() * 10) + 1,
+                    color: getRandomColor()
+                });
+            }
+
+            return newPosts;
+        }
+
+        function getRandomColor() {
+            const colors = [
+                'linear-gradient(45deg, #667eea, #764ba2)',
+                'linear-gradient(45deg, #f093fb, #f5576c)',
+                'linear-gradient(45deg, #4facfe, #00f2fe)',
+                'linear-gradient(45deg, #43e97b, #38f9d7)',
+                'linear-gradient(45deg, #fa709a, #fee140)',
+                'linear-gradient(45deg, #a8edea, #fed6e3)',
+                'linear-gradient(45deg, #d299c2, #fef9d7)'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function createPostElement(post) {
+            const firstLetter = String.fromCharCode(64 + post.userId);
+
+            return `
+                <div class="post-card">
+                    <div class="post-image" style="background: ${post.color}">
+                        Post ${post.id}
+                    </div>
+                    <div class="post-content">
+                        <div class="post-id">Post #${post.id}</div>
+                        <h3 class="post-title">${post.title}</h3>
+                        <p class="post-body">${post.body}</p>
+                        <div class="post-meta">
+                            <div class="user-avatar">${firstLetter}</div>
+                            <div>User ${post.userId} • ${getRandomDate()}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getRandomDate() {
+            const days = Math.floor(Math.random() * 30) + 1;
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[Math.floor(Math.random() * 12)]} ${days}`;
+        }
+
+        async function loadMorePosts() {
+            if (isLoading) return;
+
+            isLoading = true;
+            loadingContainer.style.display = 'block';
+
+            try {
+                const newPosts = await fetchPosts(currentPage);
+
+                if (newPosts.length > 0) {
+                    // Add slight delay for better UX
+                    await new Promise(resolve => setTimeout(resolve, 300));
+
+                    newPosts.forEach(post => {
+                        const postElement = createPostElement(post);
+                        postsContainer.insertAdjacentHTML('beforeend', postElement);
+                        posts.push(post);
+                    });
+
+                    currentPage++;
+
+                    // Update counters
+                    postCountElement.textContent = posts.length;
+                    batchCountElement.textContent = currentPage - 1;
+
+                    // Check if we've loaded all posts
+                    if (posts.length >= totalPosts) {
+                        loadingContainer.style.display = 'none';
+                        endMessage.style.display = 'block';
+                        window.removeEventListener('scroll', handleScroll);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                loadingContainer.innerHTML = '<p>Error loading posts. Please try again.</p>';
+            } finally {
+                isLoading = false;
+                loadingContainer.style.display = 'none';
+            }
+        }
+
+        function handleScroll() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+
+            // Load more posts when user is 200px from bottom
+            if (scrollHeight - scrollTop - clientHeight < 200) {
+                if (!isLoading && posts.length < totalPosts) {
+                    loadMorePosts();
+                }
+            }
+        }
+
+        // Add scroll event listener
+        window.addEventListener('scroll', handleScroll);
+
+        // Initial load
+        loadMorePosts();
+    </script>
+</body>
+
+</html>

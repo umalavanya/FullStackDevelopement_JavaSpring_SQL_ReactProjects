@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 77: Tip Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+        }
+
+        .calculator-panel {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            animation: slideInLeft 0.6s ease;
+        }
+
+        .results-panel {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.6s ease;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 span {
+            color: #36D1DC;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .input-label span {
+            color: #333;
+            font-size: 1.2em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 20px 20px 20px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #36D1DC;
+            box-shadow: 0 0 0 3px rgba(54, 209, 220, 0.1);
+        }
+
+        .tip-percentage {
+            margin: 30px 0;
+        }
+
+        .percentage-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .percentage-btn {
+            padding: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .percentage-btn:hover {
+            border-color: #36D1DC;
+            color: #36D1DC;
+            transform: translateY(-2px);
+        }
+
+        .percentage-btn.active {
+            background: #36D1DC;
+            color: white;
+            border-color: #36D1DC;
+        }
+
+        .custom-percentage {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .custom-percentage input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .custom-percentage span {
+            color: #666;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .people-section {
+            margin: 30px 0;
+        }
+
+        .people-control {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .people-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            background: white;
+            color: #666;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .people-btn:hover {
+            border-color: #36D1DC;
+            color: #36D1DC;
+            transform: scale(1.1);
+        }
+
+        .people-count {
+            flex: 1;
+            text-align: center;
+            font-size: 2em;
+            font-weight: 700;
+            color: #333;
+            min-width: 60px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #36D1DC, #5B86E5);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(54, 209, 220, 0.4);
+        }
+
+        /* Results Panel Styles */
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #f0f0f0;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: #36D1DC;
+            background: white;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #36D1DC, #5B86E5);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .result-card.highlight .result-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .result-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .result-card.highlight .result-value {
+            color: white;
+        }
+
+        .result-unit {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .per-person {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .per-person i {
+            color: #36D1DC;
+        }
+
+        .split-details {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .split-title {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .split-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .split-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.3s ease;
+        }
+
+        .split-item:hover {
+            background: white;
+            border-radius: 10px;
+        }
+
+        .split-item:last-child {
+            border-bottom: none;
+        }
+
+        .person-number {
+            width: 35px;
+            height: 35px;
+            background: #36D1DC;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .person-amount {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .person-tip {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .reset-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .reset-btn:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .share-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .share-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .save-btn {
+            background: #5B86E5;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #4a6fc4;
+            transform: translateY(-2px);
+        }
+
+        .currency-selector {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .currency-selector select {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .currency-selector select:focus {
+            outline: none;
+            border-color: #36D1DC;
+        }
+
+        .history-panel {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+            grid-column: 1 / -1;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .history-title {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .history-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+            border-left: 4px solid #36D1DC;
+        }
+
+        .history-card:hover {
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-amounts {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .history-item {
+            text-align: center;
+        }
+
+        .history-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .history-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .history-percentage {
+            color: #36D1DC;
+            font-weight: 600;
+            background: rgba(54, 209, 220, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .clear-history {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            padding: 10px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-history:hover {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 5px solid #4CAF50;
+        }
+
+        .notification.info {
+            border-left: 5px solid #2196F3;
+        }
+
+        .tip-presets {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .preset-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .preset-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .preset-value {
+            font-weight: 600;
+            color: #36D1DC;
+        }
+
+        .rounding-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .rounding-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .rounding-btn.active {
+            background: #36D1DC;
+            color: white;
+            border-color: #36D1DC;
+        }
+
+        .rounding-btn:hover {
+            border-color: #36D1DC;
+            color: #36D1DC;
+        }
+
+        .service-quality {
+            margin: 20px 0;
+        }
+
+        .service-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .service-btn {
+            padding: 15px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .service-btn.active {
+            background: #36D1DC;
+            color: white;
+            border-color: #36D1DC;
+        }
+
+        .service-btn:hover {
+            border-color: #36D1DC;
+            color: #36D1DC;
+        }
+
+        .service-rating {
+            font-size: 0.8em;
+            margin-top: 5px;
+            color: #FFD700;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .percentage-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+        <span id="notificationText">Calculation saved!</span>
+    </div>
+
+    <div class="container">
+        <div class="calculator-panel">
+            <header>
+                <h1><i class="fas fa-money-bill-wave"></i> <span>Tip Calculator</span></h1>
+                <p class="subtitle">Calculate tips, split bills, and share expenses with friends</p>
+            </header>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <div class="input-label">
+                        <span><i class="fas fa-receipt"></i> Bill Amount</span>
+                    </div>
+                    <div class="currency-input">
+                        <span class="currency-symbol" id="currencySymbol">$</span>
+                        <input type="number" id="billAmount" min="0" step="0.01" value="100.00" placeholder="0.00">
+                        <div class="currency-selector">
+                            <select id="currencySelect" onchange="changeCurrency()">
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="JPY">JPY (¥)</option>
+                                <option value="CAD">CAD (C$)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-percentage">
+                    <div class="input-label">
+                        <span><i class="fas fa-percentage"></i> Tip Percentage</span>
+                    </div>
+
+                    <div class="percentage-buttons">
+                        <button class="percentage-btn" onclick="setTipPercentage(10)">10%</button>
+                        <button class="percentage-btn" onclick="setTipPercentage(15)">15%</button>
+                        <button class="percentage-btn active" onclick="setTipPercentage(18)">18%</button>
+                        <button class="percentage-btn" onclick="setTipPercentage(20)">20%</button>
+                        <button class="percentage-btn" onclick="setTipPercentage(22)">22%</button>
+                        <button class="percentage-btn" onclick="setTipPercentage(25)">25%</button>
+                    </div>
+
+                    <div class="custom-percentage">
+                        <input type="number" id="customTip" min="0" max="100" step="0.1" value="18"
+                            placeholder="Custom">
+                        <span>%</span>
+                    </div>
+                </div>
+
+                <div class="service-quality">
+                    <div class="input-label">
+                        <span><i class="fas fa-star"></i> Service Quality</span>
+                    </div>
+                    <div class="service-buttons">
+                        <button class="service-btn" onclick="setServiceQuality('poor')">
+                            Poor<br>
+                            <span class="service-rating">★☆☆☆☆</span>
+                        </button>
+                        <button class="service-btn" onclick="setServiceQuality('fair')">
+                            Fair<br>
+                            <span class="service-rating">★★☆☆☆</span>
+                        </button>
+                        <button class="service-btn active" onclick="setServiceQuality('good')">
+                            Good<br>
+                            <span class="service-rating">★★★☆☆</span>
+                        </button>
+                        <button class="service-btn" onclick="setServiceQuality('great')">
+                            Great<br>
+                            <span class="service-rating">★★★★☆</span>
+                        </button>
+                        <button class="service-btn" onclick="setServiceQuality('excellent')">
+                            Excellent<br>
+                            <span class="service-rating">★★★★★</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="people-section">
+                    <div class="input-label">
+                        <span><i class="fas fa-users"></i> Split Between</span>
+                        <span class="people-count" id="peopleCountDisplay">4</span>
+                    </div>
+
+                    <div class="people-control">
+                        <button class="people-btn" onclick="adjustPeople(-1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="people-count" id="peopleCount">4</div>
+                        <button class="people-btn" onclick="adjustPeople(1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="rounding-options">
+                    <button class="rounding-btn active" onclick="setRounding('none')">
+                        No Rounding
+                    </button>
+                    <button class="rounding-btn" onclick="setRounding('up')">
+                        Round Up
+                    </button>
+                    <button class="rounding-btn" onclick="setRounding('nearest')">
+                        Nearest Dollar
+                    </button>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateTip()">
+                <i class="fas fa-calculator"></i> Calculate Tip & Total
+            </button>
+
+            <div class="tip-presets">
+                <div class="preset-item">
+                    <div class="preset-label">Restaurant</div>
+                    <div class="preset-value">15-20%</div>
+                </div>
+                <div class="preset-item">
+                    <div class="preset-label">Food Delivery</div>
+                    <div class="preset-value">10-15%</div>
+                </div>
+                <div class="preset-item">
+                    <div class="preset-label">Taxi</div>
+                    <div class="preset-value">10-15%</div>
+                </div>
+                <div class="preset-item">
+                    <div class="preset-label">Hair Salon</div>
+                    <div class="preset-value">15-20%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-panel">
+            <div class="results-header">
+                <h2>💰 Bill Summary</h2>
+                <p>Here's the breakdown of your bill</p>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-label">Bill Amount</div>
+                    <div class="result-value" id="resultBill">$100.00</div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-label">Tip Amount</div>
+                    <div class="result-value" id="resultTip">$18.00</div>
+                    <div class="result-unit" id="tipPercentage">(18%)</div>
+                </div>
+
+                <div class="result-card highlight">
+                    <div class="result-label">Total Amount</div>
+                    <div class="result-value" id="resultTotal">$118.00</div>
+                    <div class="per-person">
+                        <i class="fas fa-user"></i>
+                        <span id="perPersonTotal">$29.50 each</span>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-label">Per Person</div>
+                    <div class="result-value" id="resultPerPerson">$29.50</div>
+                    <div class="per-person">
+                        <i class="fas fa-receipt"></i>
+                        <span id="perPersonBreakdown">$25.00 + $4.50 tip</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="split-details">
+                <div class="split-title">
+                    <i class="fas fa-user-friends"></i> Split Details
+                </div>
+                <div class="split-list" id="splitList">
+                    <!-- Split details will be dynamically added here -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn reset-btn" onclick="resetCalculator()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+                <button class="action-btn save-btn" onclick="saveCalculation()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="action-btn share-btn" onclick="shareCalculation()">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+            </div>
+        </div>
+
+        <div class="history-panel" id="historyPanel">
+            <div class="history-title">
+                <span><i class="fas fa-history"></i> Calculation History</span>
+                <button class="clear-history" onclick="clearHistory()">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+            </div>
+            <div class="history-list" id="historyList">
+                <!-- History items will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let billAmount = 100.00;
+        let tipPercentage = 18;
+        let peopleCount = 4;
+        let currency = 'USD';
+        let currencySymbol = '$';
+        let serviceQuality = 'good';
+        let roundingMethod = 'none';
+        let calculationHistory = JSON.parse(localStorage.getItem('tipHistory')) || [];
+
+        // DOM Elements
+        const billAmountInput = document.getElementById('billAmount');
+        const customTipInput = document.getElementById('customTip');
+        const peopleCountDisplay = document.getElementById('peopleCountDisplay');
+        const peopleCountElement = document.getElementById('peopleCount');
+        const currencySymbolElement = document.getElementById('currencySymbol');
+        const currencySelect = document.getElementById('currencySelect');
+
+        // Results elements
+        const resultBill = document.getElementById('resultBill');
+        const resultTip = document.getElementById('resultTip');
+        const resultTotal = document.getElementById('resultTotal');
+        const resultPerPerson = document.getElementById('resultPerPerson');
+        const perPersonTotal = document.getElementById('perPersonTotal');
+        const perPersonBreakdown = document.getElementById('perPersonBreakdown');
+        const tipPercentageElement = document.getElementById('tipPercentage');
+        const splitList = document.getElementById('splitList');
+
+        // Notification
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+
+        // Initialize
+        function init() {
+            // Set initial values
+            billAmountInput.value = billAmount.toFixed(2);
+            customTipInput.value = tipPercentage;
+
+            // Add event listeners
+            billAmountInput.addEventListener('input', updateBillAmount);
+            customTipInput.addEventListener('input', updateCustomTip);
+
+            // Calculate initial values
+            calculateTip();
+            loadHistory();
+        }
+
+        // Update bill amount
+        function updateBillAmount() {
+            billAmount = parseFloat(billAmountInput.value) || 0;
+            calculateTip();
+        }
+
+        // Set tip percentage
+        function setTipPercentage(percentage) {
+            tipPercentage = percentage;
+            customTipInput.value = percentage;
+
+            // Update active button
+            document.querySelectorAll('.percentage-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            calculateTip();
+        }
+
+        // Update custom tip
+        function updateCustomTip() {
+            tipPercentage = parseFloat(customTipInput.value) || 0;
+
+            // Update active button
+            let presetFound = false;
+            document.querySelectorAll('.percentage-btn').forEach(btn => {
+                const btnPercentage = parseInt(btn.textContent);
+                if (Math.abs(tipPercentage - btnPercentage) < 0.5) {
+                    btn.classList.add('active');
+                    presetFound = true;
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (!presetFound) {
+                document.querySelectorAll('.percentage-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+
+            calculateTip();
+        }
+
+        // Set service quality
+        function setServiceQuality(quality) {
+            serviceQuality = quality;
+
+            // Update active button
+            document.querySelectorAll('.service-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Set suggested tip based on service quality
+            let suggestedTip;
+            switch (quality) {
+                case 'poor': suggestedTip = 10; break;
+                case 'fair': suggestedTip = 15; break;
+                case 'good': suggestedTip = 18; break;
+                case 'great': suggestedTip = 20; break;
+                case 'excellent': suggestedTip = 25; break;
+                default: suggestedTip = 18;
+            }
+
+            setTipPercentage(suggestedTip);
+        }
+
+        // Adjust people count
+        function adjustPeople(change) {
+            peopleCount += change;
+            if (peopleCount < 1) peopleCount = 1;
+            if (peopleCount > 20) peopleCount = 20;
+
+            peopleCountDisplay.textContent = peopleCount;
+            peopleCountElement.textContent = peopleCount;
+
+            calculateTip();
+        }
+
+        // Set rounding method
+        function setRounding(method) {
+            roundingMethod = method;
+
+            // Update active button
+            document.querySelectorAll('.rounding-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            calculateTip();
+        }
+
+        // Change currency
+        function changeCurrency() {
+            currency = currencySelect.value;
+
+            // Update currency symbol
+            switch (currency) {
+                case 'USD': currencySymbol = '$'; break;
+                case 'EUR': currencySymbol = '€'; break;
+                case 'GBP': currencySymbol = '£'; break;
+                case 'JPY': currencySymbol = '¥'; break;
+                case 'CAD': currencySymbol = 'C$'; break;
+                default: currencySymbol = '$';
+            }
+
+            currencySymbolElement.textContent = currencySymbol;
+            calculateTip();
+        }
+
+        // Calculate tip
+        function calculateTip() {
+            // Calculate tip amount
+            const tipAmount = (billAmount * tipPercentage) / 100;
+            let totalAmount = billAmount + tipAmount;
+
+            // Apply rounding if needed
+            totalAmount = applyRounding(totalAmount);
+
+            // Calculate per person amounts
+            const perPersonBill = billAmount / peopleCount;
+            const perPersonTip = tipAmount / peopleCount;
+            const perPersonTotalAmount = totalAmount / peopleCount;
+
+            // Update display
+            updateDisplay(billAmount, tipAmount, totalAmount, perPersonTotalAmount, perPersonBill, perPersonTip);
+
+            // Update split list
+            updateSplitList(perPersonTotalAmount, perPersonBill, perPersonTip);
+
+            // Animate results
+            animateResults();
+        }
+
+        // Apply rounding
+        function applyRounding(amount) {
+            switch (roundingMethod) {
+                case 'up':
+                    return Math.ceil(amount);
+                case 'nearest':
+                    return Math.round(amount);
+                default:
+                    return amount;
+            }
+        }
+
+        // Update display
+        function updateDisplay(bill, tip, total, perPerson, perPersonBill, perPersonTip) {
+            resultBill.textContent = `${currencySymbol}${bill.toFixed(2)}`;
+            resultTip.textContent = `${currencySymbol}${tip.toFixed(2)}`;
+            resultTotal.textContent = `${currencySymbol}${total.toFixed(2)}`;
+            resultPerPerson.textContent = `${currencySymbol}${perPerson.toFixed(2)}`;
+
+            tipPercentageElement.textContent = `(${tipPercentage.toFixed(1)}%)`;
+            perPersonTotal.textContent = `${currencySymbol}${perPerson.toFixed(2)} each`;
+            perPersonBreakdown.textContent = `${currencySymbol}${perPersonBill.toFixed(2)} + ${currencySymbol}${perPersonTip.toFixed(2)} tip`;
+        }
+
+        // Update split list
+        function updateSplitList(perPersonTotal, perPersonBill, perPersonTip) {
+            splitList.innerHTML = '';
+
+            for (let i = 1; i <= peopleCount; i++) {
+                const splitItem = document.createElement('div');
+                splitItem.className = 'split-item';
+                splitItem.innerHTML = `
+                    <div class="person-number">${i}</div>
+                    <div>
+                        <div class="person-amount">${currencySymbol}${perPersonTotal.toFixed(2)}</div>
+                        <div class="person-tip">${currencySymbol}${perPersonBill.toFixed(2)} + ${currencySymbol}${perPersonTip.toFixed(2)} tip</div>
+                    </div>
+                `;
+                splitList.appendChild(splitItem);
+            }
+        }
+
+        // Animate results
+        function animateResults() {
+            const cards = document.querySelectorAll('.result-card');
+            cards.forEach((card, index) => {
+                card.style.transform = 'scale(0.95)';
+                card.style.opacity = '0.8';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.transform = 'scale(1)';
+                    card.style.opacity = '1';
+                }, index * 100);
+            });
+        }
+
+        // Reset calculator
+        function resetCalculator() {
+            billAmount = 100.00;
+            tipPercentage = 18;
+            peopleCount = 4;
+            serviceQuality = 'good';
+
+            billAmountInput.value = billAmount.toFixed(2);
+            customTipInput.value = tipPercentage;
+            peopleCountDisplay.textContent = peopleCount;
+            peopleCountElement.textContent = peopleCount;
+
+            // Reset buttons
+            document.querySelectorAll('.percentage-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.percentage-btn')[2].classList.add('active');
+
+            document.querySelectorAll('.service-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.service-btn')[2].classList.add('active');
+
+            calculateTip();
+            showNotification('Calculator reset to defaults', 'info');
+        }
+
+        // Save calculation
+        function saveCalculation() {
+            const calculation = {
+                id: Date.now(),
+                date: new Date().toLocaleString(),
+                billAmount: billAmount,
+                tipPercentage: tipPercentage,
+                tipAmount: (billAmount * tipPercentage) / 100,
+                totalAmount: billAmount + (billAmount * tipPercentage) / 100,
+                peopleCount: peopleCount,
+                currency: currency,
+                serviceQuality: serviceQuality,
+                roundingMethod: roundingMethod
+            };
+
+            calculationHistory.unshift(calculation);
+            if (calculationHistory.length > 10) {
+                calculationHistory.pop();
+            }
+
+            localStorage.setItem('tipHistory', JSON.stringify(calculationHistory));
+            updateHistoryDisplay();
+            showNotification('Calculation saved to history!', 'success');
+        }
+
+        // Share calculation
+        function shareCalculation() {
+            const tipAmount = (billAmount * tipPercentage) / 100;
+            const totalAmount = billAmount + tipAmount;
+            const perPerson = totalAmount / peopleCount;
+
+            const shareText = `💰 Tip Calculation:\nBill: ${currencySymbol}${billAmount.toFixed(2)}\nTip: ${currencySymbol}${tipAmount.toFixed(2)} (${tipPercentage}%)\nTotal: ${currencySymbol}${totalAmount.toFixed(2)}\nPer person (${peopleCount} people): ${currencySymbol}${perPerson.toFixed(2)}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Tip Calculation',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showNotification('Calculation copied to clipboard!', 'success');
+                }).catch(() => {
+                    // Fallback
+                    const textArea = document.createElement('textarea');
+                    textArea.value = shareText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showNotification('Calculation copied to clipboard!', 'success');
+                });
+            }
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+
+            if (calculationHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-history" style="font-size: 3em; color: #f0f0f0; margin-bottom: 15px;"></i>
+                        <p>No calculation history yet. Save your calculations to see them here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            calculationHistory.forEach(item => {
+                let currencySymbol;
+                switch (item.currency) {
+                    case 'USD': currencySymbol = '$'; break;
+                    case 'EUR': currencySymbol = '€'; break;
+                    case 'GBP': currencySymbol = '£'; break;
+                    case 'JPY': currencySymbol = '¥'; break;
+                    case 'CAD': currencySymbol = 'C$'; break;
+                    default: currencySymbol = '$';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'history-card';
+                card.innerHTML = `
+                    <div class="history-date">
+                        <span>${item.date}</span>
+                        <span style="color: #36D1DC; font-weight: 500;">${item.serviceQuality}</span>
+                    </div>
+                    <div class="history-amounts">
+                        <div class="history-item">
+                            <div class="history-label">Bill</div>
+                            <div class="history-value">${currencySymbol}${item.billAmount.toFixed(2)}</div>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-label">Tip</div>
+                            <div class="history-value">${currencySymbol}${item.tipAmount.toFixed(2)}</div>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-label">Total</div>
+                            <div class="history-value">${currencySymbol}${item.totalAmount.toFixed(2)}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="history-percentage">${item.tipPercentage}% tip</span>
+                        <span style="color: #666; margin-left: 10px;">${item.peopleCount} people</span>
+                    </div>
+                `;
+                historyList.appendChild(card);
+            });
+        }
+
+        // Load history
+        function loadHistory() {
+            updateHistoryDisplay();
+        }
+
+        // Clear history
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all calculation history?')) {
+                calculationHistory = [];
+                localStorage.removeItem('tipHistory');
+                updateHistoryDisplay();
+                showNotification('History cleared', 'info');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            notificationText.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

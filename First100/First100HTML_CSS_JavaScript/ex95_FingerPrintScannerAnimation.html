@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprint Scanner Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        header {
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #95a5a6;
+            font-size: 1.1rem;
+        }
+
+        /* Scanner Container */
+        .scanner-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 0 auto 40px;
+            perspective: 1000px;
+        }
+
+        .scanner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        /* Fingerprint SVG */
+        .fingerprint-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .fingerprint-path {
+            fill: none;
+            stroke: #3498db;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.5));
+        }
+
+        .fingerprint-path.animate {
+            animation: drawFingerprint 2s ease-in-out forwards;
+        }
+
+        @keyframes drawFingerprint {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Scanner Light */
+        .scanner-light {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(52, 152, 219, 0.1) 10%,
+                    rgba(52, 152, 219, 0.3) 50%,
+                    rgba(52, 152, 219, 0.1) 90%,
+                    transparent 100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scanner-light.active {
+            animation: scanLight 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scanLight {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+        }
+
+        /* Status Display */
+        .status-display {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-loading {
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+
+        .status-loading .status-dot {
+            background: #f39c12;
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .status-success .status-dot {
+            background: #2ecc71;
+            animation: none;
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .status-error .status-dot {
+            background: #e74c3c;
+            animation: pulseError 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes pulseError {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .control-btn.danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .control-btn.success {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+
+        /* Scanner Glow Effect */
+        .scanner-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 350px;
+            border-radius: 20px;
+            background: radial-gradient(circle at center,
+                    rgba(52, 152, 219, 0.3) 0%,
+                    rgba(52, 152, 219, 0.1) 40%,
+                    transparent 70%);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .scanner-container.active .scanner-glow {
+            opacity: 1;
+        }
+
+        /* Information Panel */
+        .info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .info-panel h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .info-panel p {
+            color: #95a5a6;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .scanner-container {
+                width: 250px;
+                height: 350px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Fingerprint Scanner</h1>
+            <p class="subtitle">SVG animation with loading, success, and failure states</p>
+        </header>
+
+        <div class="scanner-container" id="scannerContainer">
+            <div class="scanner-glow"></div>
+            <div class="scanner">
+                <svg class="fingerprint-svg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Fingerprint Pattern -->
+                    <path class="fingerprint-path" id="fingerprintPath" d="
+                        M50,50 C50,30 70,20 90,30 C110,40 120,60 110,80 C100,100 80,110 60,100 C40,90 30,70 40,50
+                        M40,50 C30,70 20,90 30,110 C40,130 60,140 80,130 C100,120 110,100 100,80 C90,60 70,50 50,50
+                        M50,150 C50,130 70,120 90,130 C110,140 120,160 110,180 C100,200 80,210 60,200 C40,190 30,170 40,150
+                        M40,150 C30,170 20,190 30,210 C40,230 60,240 80,230 C100,220 110,200 100,180 C90,160 70,150 50,150
+                        M50,250 C50,230 70,220 90,230 C110,240 120,260 110,280 C100,300 80,310 60,300 C40,290 30,270 40,250
+                        M120,50 C120,30 140,20 160,30 C180,40 190,60 180,80 C170,100 150,110 130,100 C110,90 100,70 110,50
+                        M110,50 C100,70 90,90 100,110 C110,130 130,140 150,130 C170,120 180,100 170,80 C160,60 140,50 120,50
+                        M120,150 C120,130 140,120 160,130 C180,140 190,160 180,180 C170,200 150,210 130,200 C110,190 100,170 110,150
+                        M110,150 C100,170 90,190 100,210 C110,230 130,240 150,230 C170,220 180,200 170,180 C160,160 140,150 120,150
+                        " />
+                </svg>
+                <div class="scanner-light" id="scannerLight"></div>
+            </div>
+        </div>
+
+        <div class="status-display">
+            <div class="status-text" id="statusText">Ready to scan</div>
+            <div class="status-indicator status-loading" id="statusIndicator" style="display: none;">
+                <div class="status-dot"></div>
+                <span>Scanning...</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" id="startBtn" onclick="startScan()">
+                🔍 Start Scan
+            </button>
+            <button class="control-btn success" id="successBtn" onclick="simulateSuccess()">
+                ✓ Simulate Success
+            </button>
+            <button class="control-btn danger" id="errorBtn" onclick="simulateError()">
+                ✗ Simulate Error
+            </button>
+            <button class="control-btn" id="resetBtn" onclick="resetScanner()" style="display: none;">
+                ↻ Reset Scanner
+            </button>
+        </div>
+
+        <div class="info-panel">
+            <h3>How It Works</h3>
+            <p>This fingerprint scanner simulation demonstrates different states:</p>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="scanCount">0</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="successCount">0</div>
+                    <div class="stat-label">Successful</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="errorCount">0</div>
+                    <div class="stat-label">Errors</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FingerprintScanner {
+            constructor() {
+                this.scanCount = parseInt(localStorage.getItem('scanCount')) || 0;
+                this.successCount = parseInt(localStorage.getItem('successCount')) || 0;
+                this.errorCount = parseInt(localStorage.getItem('errorCount')) || 0;
+
+                this.isScanning = false;
+                this.currentStatus = 'ready'; // ready, scanning, success, error
+
+                this.init();
+            }
+
+            init() {
+                this.updateStats();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // Prevent multiple clicks during scan
+                document.getElementById('startBtn').addEventListener('click', () => {
+                    if (!this.isScanning) this.startScan();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === ' ' && !this.isScanning) {
+                        e.preventDefault();
+                        this.startScan();
+                    }
+                    if (e.key === 's' && !this.isScanning) {
+                        e.preventDefault();
+                        this.simulateSuccess();
+                    }
+                    if (e.key === 'e' && !this.isScanning) {
+                        e.preventDefault();
+                        this.simulateError();
+                    }
+                    if (e.key === 'r') {
+                        e.preventDefault();
+                        this.resetScanner();
+                    }
+                });
+            }
+
+            startScan() {
+                if (this.isScanning) return;
+
+                this.isScanning = true;
+                this.currentStatus = 'scanning';
+                this.scanCount++;
+
+                // Update UI
+                this.updateStats();
+                this.updateUI();
+
+                // Start animations
+                this.startAnimations();
+
+                // Simulate scan process
+                this.simulateScan();
+            }
+
+            startAnimations() {
+                const scannerContainer = document.getElementById('scannerContainer');
+                const fingerprintPath = document.getElementById('fingerprintPath');
+                const scannerLight = document.getElementById('scannerLight');
+
+                // Activate scanner
+                scannerContainer.classList.add('active');
+
+                // Start fingerprint drawing animation
+                fingerprintPath.classList.remove('animate');
+                void fingerprintPath.offsetWidth; // Trigger reflow
+                fingerprintPath.classList.add('animate');
+
+                // Start scanner light
+                scannerLight.classList.add('active');
+
+                // Update progress bar
+                this.updateProgress(0);
+            }
+
+            simulateScan() {
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 10;
+
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(progressInterval);
+
+                        // Decide random outcome (70% success, 30% error)
+                        const isSuccess = Math.random() > 0.3;
+
+                        if (isSuccess) {
+                            setTimeout(() => this.completeScan('success'), 500);
+                        } else {
+                            setTimeout(() => this.completeScan('error'), 500);
+                        }
+                    }
+
+                    this.updateProgress(progress);
+                }, 200);
+            }
+
+            completeScan(status) {
+                this.currentStatus = status;
+                this.isScanning = false;
+
+                if (status === 'success') {
+                    this.successCount++;
+                } else {
+                    this.errorCount++;
+                }
+
+                // Update UI
+                this.updateStats();
+                this.updateUI();
+
+                // Save to localStorage
+                this.saveStats();
+
+                // Stop animations
+                this.stopAnimations();
+
+                // Show reset button
+                document.getElementById('resetBtn').style.display = 'flex';
+            }
+
+            simulateSuccess() {
+                if (this.isScanning) return;
+
+                this.startScan();
+                // Force success after scan starts
+                setTimeout(() => {
+                    if (this.currentStatus === 'scanning') {
+                        this.completeScan('success');
+                    }
+                }, 1500);
+            }
+
+            simulateError() {
+                if (this.isScanning) return;
+
+                this.startScan();
+                // Force error after scan starts
+                setTimeout(() => {
+                    if (this.currentStatus === 'scanning') {
+                        this.completeScan('error');
+                    }
+                }, 1500);
+            }
+
+            resetScanner() {
+                this.currentStatus = 'ready';
+                this.isScanning = false;
+
+                // Update UI
+                this.updateUI();
+
+                // Reset animations
+                this.stopAnimations();
+
+                // Hide reset button
+                document.getElementById('resetBtn').style.display = 'none';
+
+                // Reset progress bar
+                this.updateProgress(0);
+            }
+
+            updateProgress(percentage) {
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = percentage + '%';
+            }
+
+            updateUI() {
+                const statusText = document.getElementById('statusText');
+                const statusIndicator = document.getElementById('statusIndicator');
+                const startBtn = document.getElementById('startBtn');
+                const successBtn = document.getElementById('successBtn');
+                const errorBtn = document.getElementById('errorBtn');
+
+                // Update buttons
+                startBtn.disabled = this.isScanning;
+                successBtn.disabled = this.isScanning;
+                errorBtn.disabled = this.isScanning;
+
+                // Update status display
+                switch (this.currentStatus) {
+                    case 'ready':
+                        statusText.textContent = 'Ready to scan';
+                        statusIndicator.style.display = 'none';
+                        break;
+
+                    case 'scanning':
+                        statusText.textContent = 'Scanning fingerprint...';
+                        statusIndicator.style.display = 'flex';
+                        statusIndicator.className = 'status-indicator status-loading';
+                        statusIndicator.innerHTML = '<div class="status-dot"></div><span>Scanning...</span>';
+                        break;
+
+                    case 'success':
+                        statusText.textContent = 'Fingerprint verified successfully!';
+                        statusIndicator.style.display = 'flex';
+                        statusIndicator.className = 'status-indicator status-success';
+                        statusIndicator.innerHTML = '<div class="status-dot"></div><span>Access Granted</span>';
+                        break;
+
+                    case 'error':
+                        statusText.textContent = 'Fingerprint verification failed!';
+                        statusIndicator.style.display = 'flex';
+                        statusIndicator.className = 'status-indicator status-error';
+                        statusIndicator.innerHTML = '<div class="status-dot"></div><span>Access Denied</span>';
+                        break;
+                }
+            }
+
+            updateStats() {
+                document.getElementById('scanCount').textContent = this.scanCount;
+                document.getElementById('successCount').textContent = this.successCount;
+                document.getElementById('errorCount').textContent = this.errorCount;
+            }
+
+            saveStats() {
+                localStorage.setItem('scanCount', this.scanCount);
+                localStorage.setItem('successCount', this.successCount);
+                localStorage.setItem('errorCount', this.errorCount);
+            }
+
+            stopAnimations() {
+                const scannerContainer = document.getElementById('scannerContainer');
+                const scannerLight = document.getElementById('scannerLight');
+
+                scannerContainer.classList.remove('active');
+                scannerLight.classList.remove('active');
+            }
+        }
+
+        // Initialize scanner
+        const scanner = new FingerprintScanner();
+
+        // Make functions available globally
+        window.startScan = () => scanner.startScan();
+        window.simulateSuccess = () => scanner.simulateSuccess();
+        window.simulateError = () => scanner.simulateError();
+        window.resetScanner = () => scanner.resetScanner();
+    </script>
+</body>
+
+</html>

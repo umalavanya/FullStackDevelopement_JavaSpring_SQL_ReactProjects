@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 49: Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #nextBtn {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        #submitBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <h2>JavaScript Quiz</h2>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="question" id="question">Loading question...</div>
+        <div class="options" id="options"></div>
+        <div class="controls">
+            <button id="prevBtn" disabled>Previous</button>
+            <button id="nextBtn">Next Question</button>
+            <button id="submitBtn" style="display: none;">Submit Quiz</button>
+        </div>
+        <div class="score" id="score"></div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What does DOM stand for?",
+                options: [
+                    "Document Object Model",
+                    "Digital Object Management",
+                    "Desktop Object Model",
+                    "Document Orientation Method"
+                ],
+                correct: 0
+            },
+            {
+                question: "Which keyword is used to declare a variable in JavaScript?",
+                options: [
+                    "var",
+                    "let",
+                    "const",
+                    "All of the above"
+                ],
+                correct: 3
+            },
+            {
+                question: "What is the result of '5' + 3 in JavaScript?",
+                options: [
+                    "8",
+                    "53",
+                    "Error",
+                    "undefined"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which method adds an element to the end of an array?",
+                options: [
+                    "push()",
+                    "pop()",
+                    "shift()",
+                    "unshift()"
+                ],
+                correct: 0
+            },
+            {
+                question: "What is the purpose of the 'this' keyword in JavaScript?",
+                options: [
+                    "Refers to the current object",
+                    "Refers to the parent object",
+                    "Refers to the global object",
+                    "All of the above"
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswers = new Array(quizData.length).fill(null);
+        let quizCompleted = false;
+
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const scoreElement = document.getElementById('score');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadQuestion() {
+            if (quizCompleted) return;
+
+            const question = quizData[currentQuestion];
+            questionElement.textContent = `Question ${currentQuestion + 1}: ${question.question}`;
+
+            optionsElement.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (selectedAnswers[currentQuestion] === index) {
+                    optionElement.classList.add('selected');
+                }
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsElement.appendChild(optionElement);
+            });
+
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.textContent = currentQuestion === quizData.length - 1 ? 'Finish' : 'Next Question';
+            submitBtn.style.display = currentQuestion === quizData.length - 1 ? 'inline-block' : 'none';
+
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            if (quizCompleted) return;
+
+            selectedAnswers[currentQuestion] = index;
+            loadQuestion();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function showResults() {
+            quizCompleted = true;
+            score = selectedAnswers.reduce((total, answer, index) => {
+                return total + (answer === quizData[index].correct ? 1 : 0);
+            }, 0);
+
+            // Show correct/incorrect answers
+            quizData.forEach((question, index) => {
+                const options = document.querySelectorAll('.option');
+                const startIdx = index * 4;
+                options[startIdx + question.correct].classList.add('correct');
+                if (selectedAnswers[index] !== null && selectedAnswers[index] !== question.correct) {
+                    options[startIdx + selectedAnswers[index]].classList.add('incorrect');
+                }
+            });
+
+            scoreElement.style.display = 'block';
+            scoreElement.textContent = `You scored ${score} out of ${quizData.length}`;
+            scoreElement.style.color = score >= quizData.length / 2 ? '#28a745' : '#dc3545';
+
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'none';
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        submitBtn.addEventListener('click', showResults);
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+
+</html>

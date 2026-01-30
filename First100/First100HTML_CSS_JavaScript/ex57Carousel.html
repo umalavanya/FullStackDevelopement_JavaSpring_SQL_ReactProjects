@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 57: Carousel with Autoplay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .carousel-container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .carousel-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8);
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            color: white;
+            padding: 50px 40px 30px;
+        }
+
+        .slide-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .slide-description {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .carousel-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            pointer-events: all;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .indicator {
+            width: 14px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .carousel-control-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 15px 35px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+
+        .slide-counter {
+            color: white;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .carousel-status {
+            text-align: center;
+            color: white;
+            margin-top: 25px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .carousel {
+                height: 400px;
+            }
+
+            .slide-title {
+                font-size: 2rem;
+            }
+
+            .slide-description {
+                font-size: 1.1rem;
+            }
+
+            .carousel-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel {
+                height: 300px;
+            }
+
+            .slide-content {
+                padding: 30px 20px 20px;
+            }
+
+            .slide-title {
+                font-size: 1.5rem;
+            }
+
+            .slide-description {
+                font-size: 1rem;
+            }
+
+            .carousel-control-panel {
+                gap: 15px;
+            }
+
+            .control-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="carousel-container">
+        <div class="carousel-title">
+            <h1>📸 Image Carousel</h1>
+            <p class="subtitle">Autoplay carousel with manual controls. Hover to pause, click to navigate.</p>
+        </div>
+
+        <div class="carousel-wrapper">
+            <div class="carousel">
+                <div class="carousel-track" id="carouselTrack">
+                    <!-- Slides will be inserted by JavaScript -->
+                </div>
+
+                <div class="carousel-controls">
+                    <button class="carousel-btn" id="prevBtn">❮</button>
+                    <button class="carousel-btn" id="nextBtn">❯</button>
+                </div>
+            </div>
+
+            <div class="carousel-indicators" id="indicators">
+                <!-- Indicators will be inserted by JavaScript -->
+            </div>
+
+            <div class="carousel-control-panel">
+                <button class="control-btn" id="autoplayBtn">
+                    <span>⏸️</span> Pause Autoplay
+                </button>
+                <button class="control-btn" id="prevSlideBtn">
+                    <span>⏮️</span> Previous
+                </button>
+                <div class="slide-counter">
+                    Slide <span id="currentSlide">1</span> of <span id="totalSlides">5</span>
+                </div>
+                <button class="control-btn" id="nextSlideBtn">
+                    <span>⏭️</span> Next
+                </button>
+                <button class="control-btn" id="speedBtn">
+                    <span>⚡</span> Speed: Normal
+                </button>
+            </div>
+
+            <div class="carousel-status" id="carouselStatus">
+                Autoplay: Running • Interval: 5s
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const carouselData = [
+            {
+                image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                title: 'Mountain Landscape',
+                description: 'Breathtaking view of snow-capped mountains against a clear blue sky.'
+            },
+            {
+                image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470',
+                title: 'Beach Sunset',
+                description: 'Golden hour at the beach with warm colors painting the horizon.'
+            },
+            {
+                image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e',
+                title: 'Forest Path',
+                description: 'Mysterious path through a dense green forest with sunlight filtering through trees.'
+            },
+            {
+                image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b',
+                title: 'Northern Lights',
+                description: 'Magical aurora borealis dancing across the Arctic night sky.'
+            },
+            {
+                image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05',
+                title: 'Misty Mountains',
+                description: 'Early morning mist covering the mountain peaks creating a mystical atmosphere.'
+            },
+            {
+                image: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000',
+                title: 'Desert Dunes',
+                description: 'Rolling sand dunes in the desert under the warm golden sun.'
+            },
+            {
+                image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b',
+                title: 'City Skyline',
+                description: 'Modern city skyline at dusk with lights beginning to twinkle.'
+            }
+        ];
+
+        const carouselTrack = document.getElementById('carouselTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicatorsContainer = document.getElementById('indicators');
+        const autoplayBtn = document.getElementById('autoplayBtn');
+        const prevSlideBtn = document.getElementById('prevSlideBtn');
+        const nextSlideBtn = document.getElementById('nextSlideBtn');
+        const speedBtn = document.getElementById('speedBtn');
+        const currentSlideElement = document.getElementById('currentSlide');
+        const totalSlidesElement = document.getElementById('totalSlides');
+        const carouselStatus = document.getElementById('carouselStatus');
+
+        let currentSlide = 0;
+        let isAutoplay = true;
+        let autoplayInterval;
+        let autoplaySpeed = 5000; // 5 seconds
+        let isHovering = false;
+
+        // Initialize carousel
+        function initializeCarousel() {
+            // Create slides
+            carouselData.forEach((slide, index) => {
+                const slideElement = document.createElement('div');
+                slideElement.className = 'carousel-slide';
+                slideElement.innerHTML = `
+                    <img src="${slide.image}" alt="${slide.title}" class="slide-image">
+                    <div class="slide-content">
+                        <h2 class="slide-title">${slide.title}</h2>
+                        <p class="slide-description">${slide.description}</p>
+                    </div>
+                `;
+                carouselTrack.appendChild(slideElement);
+            });
+
+            // Create indicators
+            carouselData.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+                indicator.dataset.index = index;
+                indicator.addEventListener('click', () => goToSlide(index));
+                indicatorsContainer.appendChild(indicator);
+            });
+
+            // Update counters
+            totalSlidesElement.textContent = carouselData.length;
+            updateSlideCounter();
+
+            // Start autoplay
+            startAutoplay();
+        }
+
+        // Update slide position
+        function updateSlidePosition() {
+            carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+
+            // Update counter
+            updateSlideCounter();
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            currentSlideElement.textContent = currentSlide + 1;
+        }
+
+        // Next slide
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % carouselData.length;
+            updateSlidePosition();
+        }
+
+        // Previous slide
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + carouselData.length) % carouselData.length;
+            updateSlidePosition();
+        }
+
+        // Go to specific slide
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlidePosition();
+        }
+
+        // Start autoplay
+        function startAutoplay() {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+            }
+
+            if (isAutoplay && !isHovering) {
+                autoplayInterval = setInterval(nextSlide, autoplaySpeed);
+                autoplayBtn.innerHTML = '<span>⏸️</span> Pause Autoplay';
+                autoplayBtn.classList.add('active');
+                updateStatus();
+            }
+        }
+
+        // Stop autoplay
+        function stopAutoplay() {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+            }
+            autoplayBtn.innerHTML = '<span>▶️</span> Play Autoplay';
+            autoplayBtn.classList.remove('active');
+            updateStatus();
+        }
+
+        // Toggle autoplay
+        function toggleAutoplay() {
+            isAutoplay = !isAutoplay;
+            if (isAutoplay) {
+                startAutoplay();
+            } else {
+                stopAutoplay();
+            }
+        }
+
+        // Toggle speed
+        function toggleSpeed() {
+            const speeds = [
+                { value: 3000, label: 'Fast' },
+                { value: 5000, label: 'Normal' },
+                { value: 8000, label: 'Slow' }
+            ];
+
+            const currentIndex = speeds.findIndex(s => s.value === autoplaySpeed);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+
+            autoplaySpeed = speeds[nextIndex].value;
+            speedBtn.innerHTML = `<span>⚡</span> Speed: ${speeds[nextIndex].label}`;
+
+            if (isAutoplay) {
+                startAutoplay();
+            }
+
+            updateStatus();
+        }
+
+        // Update status text
+        function updateStatus() {
+            const speedText = autoplaySpeed === 3000 ? '3s' : autoplaySpeed === 5000 ? '5s' : '8s';
+            const statusText = isAutoplay
+                ? `Autoplay: Running • Interval: ${speedText} • Hover to pause`
+                : `Autoplay: Paused • Interval: ${speedText} • Click play to resume`;
+            carouselStatus.textContent = statusText;
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', previousSlide);
+        nextBtn.addEventListener('click', nextSlide);
+        prevSlideBtn.addEventListener('click', previousSlide);
+        nextSlideBtn.addEventListener('click', nextSlide);
+        autoplayBtn.addEventListener('click', toggleAutoplay);
+        speedBtn.addEventListener('click', toggleSpeed);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') previousSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === ' ') {
+                e.preventDefault();
+                toggleAutoplay();
+            }
+        });
+
+        // Hover to pause
+        const carousel = document.querySelector('.carousel');
+        carousel.addEventListener('mouseenter', () => {
+            isHovering = true;
+            if (isAutoplay && autoplayInterval) {
+                clearInterval(autoplayInterval);
+                updateStatus();
+            }
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            isHovering = false;
+            if (isAutoplay) {
+                startAutoplay();
+            }
+        });
+
+        // Initialize
+        initializeCarousel();
+        updateStatus();
+    </script>
+</body>
+
+</html>

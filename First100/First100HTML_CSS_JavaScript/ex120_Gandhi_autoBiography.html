@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gandhi's Autobiography - The Story of My Experiments with Truth</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Noto+Serif:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Merriweather', serif;
+            background: #f8f5f0;
+            color: #333;
+            line-height: 1.7;
+            min-height: 100vh;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23f1ece2" width="100" height="100"/><path fill="%23e8e2d5" d="M0 0h100v100H0z"/></svg>');
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #2c5530 0%, #1a3c1f 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+        }
+
+        .book-title {
+            font-family: 'Noto Serif', serif;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #f5f5dc;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            color: #e8e2c4;
+        }
+
+        .author {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-name {
+            font-weight: 700;
+            color: #FFD700;
+        }
+
+        .book-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Table of Contents */
+        .toc-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            border: 1px solid #e8e2d5;
+        }
+
+        .toc-title {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #2c5530;
+            border-bottom: 2px solid #e8e2d5;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc-list {
+            list-style: none;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .toc-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .toc-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .toc-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .toc-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e8e2d5;
+        }
+
+        .toc-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .toc-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #555;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .toc-link:hover {
+            background: #f5f1e8;
+            color: #2c5530;
+            transform: translateX(5px);
+        }
+
+        .toc-link.active {
+            background: #e8f5e9;
+            color: #2c5530;
+            font-weight: 700;
+            border-left: 4px solid #2c5530;
+        }
+
+        .toc-chapter {
+            font-weight: 700;
+            color: #2c5530;
+            min-width: 30px;
+        }
+
+        /* Reading Area */
+        .reading-area {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8e2d5;
+            min-height: 800px;
+            position: relative;
+        }
+
+        .chapter-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8e2d5;
+        }
+
+        .chapter-title {
+            font-family: 'Noto Serif', serif;
+            font-size: 2.2rem;
+            color: #2c5530;
+            margin-bottom: 10px;
+        }
+
+        .chapter-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .chapter-content {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #333;
+            text-align: justify;
+        }
+
+        .chapter-content p {
+            margin-bottom: 25px;
+            text-indent: 30px;
+        }
+
+        .chapter-content p:first-of-type::first-letter {
+            font-size: 3.5rem;
+            float: left;
+            line-height: 0.8;
+            margin-right: 10px;
+            color: #2c5530;
+            font-weight: bold;
+        }
+
+        .quote {
+            border-left: 4px solid #2c5530;
+            padding-left: 25px;
+            margin: 30px 40px;
+            font-style: italic;
+            color: #555;
+            background: #f9f7f2;
+            padding: 20px 25px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .quote::before {
+            content: "“";
+            font-size: 3rem;
+            color: #2c5530;
+            line-height: 0;
+            margin-right: 5px;
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 0 3px;
+        }
+
+        .gandhi-image {
+            float: right;
+            margin: 20px 0 20px 30px;
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            shape-outside: circle(50%);
+        }
+
+        /* Reading Controls */
+        .reading-controls {
+            position: sticky;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-top: 1px solid #e8e2d5;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: #2c5530;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 140px;
+        }
+
+        .nav-btn:hover {
+            background: #1a3c1f;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-btn:disabled:hover {
+            background: #cccccc;
+            transform: none;
+        }
+
+        .reading-options {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .font-size-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .font-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .font-btn:hover {
+            background: #f5f5f5;
+            border-color: #2c5530;
+        }
+
+        .font-btn.active {
+            background: #2c5530;
+            color: white;
+            border-color: #2c5530;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .theme-btn.active {
+            background: #2c5530;
+            color: white;
+            border-color: #2c5530;
+        }
+
+        /* Book Info Panel */
+        .book-details {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8e2d5;
+        }
+
+        .details-title {
+            font-family: 'Noto Serif', serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c5530;
+            border-bottom: 2px solid #e8e2d5;
+            padding-bottom: 10px;
+        }
+
+        .details-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .details-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about-book,
+        .about-author {
+            line-height: 1.8;
+        }
+
+        .about-book p,
+        .about-author p {
+            margin-bottom: 15px;
+        }
+
+        .key-facts {
+            background: #f9f7f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .facts-list {
+            list-style: none;
+        }
+
+        .facts-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .facts-list li::before {
+            content: "•";
+            color: #2c5530;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #e8e2d5;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .footer-link {
+            color: #2c5530;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .toc-panel,
+        body.dark-theme .reading-area,
+        body.dark-theme .book-details {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .toc-title,
+        body.dark-theme .chapter-title,
+        body.dark-theme .details-title {
+            color: #8bc34a;
+        }
+
+        body.dark-theme .toc-link {
+            color: #ccc;
+        }
+
+        body.dark-theme .toc-link:hover {
+            background: #3a3a3a;
+        }
+
+        body.dark-theme .toc-link.active {
+            background: #333;
+            color: #8bc34a;
+        }
+
+        body.dark-theme .chapter-content {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .chapter-content p:first-of-type::first-letter {
+            color: #8bc34a;
+        }
+
+        body.dark-theme .quote {
+            background: #333;
+            border-left-color: #8bc34a;
+            color: #ccc;
+        }
+
+        body.dark-theme .highlight {
+            background: #555;
+        }
+
+        body.dark-theme .reading-controls {
+            background: rgba(42, 42, 42, 0.95);
+            border-color: #444;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .book-title {
+                font-size: 2rem;
+            }
+
+            .book-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .reading-area {
+                padding: 25px;
+            }
+
+            .chapter-title {
+                font-size: 1.8rem;
+            }
+
+            .reading-controls {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-buttons {
+                order: 2;
+            }
+
+            .reading-options {
+                order: 1;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .gandhi-image {
+                float: none;
+                margin: 20px auto;
+                display: block;
+                width: 200px;
+            }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e8e2d5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2c5530;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        body.dark-theme .progress-bar {
+            background: #444;
+        }
+
+        body.dark-theme .progress-fill {
+            background: #8bc34a;
+        }
+
+        /* Bookmark */
+        .bookmark-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .bookmark-btn.active {
+            color: #ffc107;
+        }
+
+        .bookmark-btn:hover {
+            color: #ffc107;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1 class="book-title">The Story of My Experiments with Truth</h1>
+            <p class="book-subtitle">An Autobiography of Mahatma Gandhi</p>
+            <div class="author">
+                <i class="fas fa-user-pen"></i>
+                <span>By <span class="author-name">Mohandas Karamchand Gandhi</span></span>
+            </div>
+            <div class="book-info">
+                <div class="info-item"><i class="fas fa-book"></i> Autobiography</div>
+                <div class="info-item"><i class="fas fa-calendar"></i> First Published: 1927</div>
+                <div class="info-item"><i class="fas fa-globe"></i> Original Language: Gujarati</div>
+                <div class="info-item"><i class="fas fa-flag"></i> Themes: Truth, Nonviolence, Simplicity</div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Table of Contents -->
+            <div class="toc-panel">
+                <h2 class="toc-title"><i class="fas fa-list"></i> Contents</h2>
+                <ul class="toc-list" id="tableOfContents">
+                    <!-- Table of contents will be populated by JavaScript -->
+                </ul>
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="readingProgress"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>Reading Progress</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading Area -->
+            <div class="reading-area">
+                <button class="bookmark-btn" id="bookmarkBtn" title="Bookmark this chapter">
+                    <i class="far fa-bookmark"></i>
+                </button>
+
+                <div class="chapter-header">
+                    <h1 class="chapter-title" id="chapterTitle">Introduction</h1>
+                    <p class="chapter-subtitle" id="chapterSubtitle">The Making of Mahatma</p>
+                </div>
+
+                <div class="chapter-content" id="chapterContent">
+                    <!-- Chapter content will be loaded by JavaScript -->
+                </div>
+
+                <div class="reading-controls">
+                    <div class="nav-buttons">
+                        <button class="nav-btn" id="prevBtn">
+                            <i class="fas fa-arrow-left"></i> Previous Chapter
+                        </button>
+                        <button class="nav-btn" id="nextBtn">
+                            Next Chapter <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="reading-options">
+                        <div class="option-group">
+                            <span class="option-label">Font Size:</span>
+                            <div class="font-size-controls">
+                                <button class="font-btn" id="fontSmall">A</button>
+                                <button class="font-btn active" id="fontMedium">A</button>
+                                <button class="font-btn" id="fontLarge">A</button>
+                            </div>
+                        </div>
+
+                        <div class="option-group theme-toggle">
+                            <span class="option-label">Theme:</span>
+                            <button class="theme-btn active" id="lightTheme">Light</button>
+                            <button class="theme-btn" id="darkTheme">Dark</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Details -->
+        <div class="book-details">
+            <h2 class="details-title"><i class="fas fa-info-circle"></i> About This Book</h2>
+            <div class="details-content">
+                <div class="about-book">
+                    <p><strong>The Story of My Experiments with Truth</strong> is the autobiography of Mohandas K.
+                        Gandhi, covering his life from early childhood through to 1921. It was written in weekly
+                        installments and published in his journal <em>Navjivan</em> from 1925 to 1929.</p>
+
+                    <p>The book provides a detailed account of the spiritual and moral experiments that Gandhi conducted
+                        on himself, tracing the development of his philosophy of truth and nonviolence (ahimsa).</p>
+
+                    <div class="key-facts">
+                        <h3>Key Facts:</h3>
+                        <ul class="facts-list">
+                            <li><strong>Original Title:</strong> Satya Na Prayogo athva Atmakatha</li>
+                            <li><strong>Written:</strong> 1925-1929</li>
+                            <li><strong>Language:</strong> Originally written in Gujarati</li>
+                            <li><strong>Translated by:</strong> Mahadev Desai</li>
+                            <li><strong>First English Edition:</strong> 1948</li>
+                            <li><strong>Chapters:</strong> Divided into 5 parts with 167 chapters</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="about-author">
+                    <p><strong>Mohandas Karamchand Gandhi</strong> (1869-1948), known as Mahatma Gandhi, was the leader
+                        of the Indian independence movement against British rule. Employing nonviolent civil
+                        disobedience, Gandhi led India to independence and inspired movements for civil rights and
+                        freedom across the world.</p>
+
+                    <p>Gandhi's autobiography is not just a personal narrative but a philosophical treatise that
+                        outlines his principles of truth, nonviolence, vegetarianism, simplicity, and faith in God.</p>
+
+                    <p>He writes: "I simply want to tell the story of my numerous experiments with truth, and as my life
+                        consists of nothing but those experiments, it is true that the story will take the shape of an
+                        autobiography."</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>This digital edition of Gandhi's Autobiography is presented for educational and inspirational purposes.
+            </p>
+            <p>The complete text is in the public domain and available freely to all readers.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">About This Edition</a>
+                <a href="#" class="footer-link">Gandhi's Philosophy</a>
+                <a href="#" class="footer-link">Other Works by Gandhi</a>
+                <a href="#" class="footer-link">Privacy</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Book data - Chapters of Gandhi's Autobiography
+        const bookChapters = [
+            {
+                id: 'introduction',
+                title: 'Introduction',
+                subtitle: 'The Making of Mahatma',
+                content: `
+                    <p>I simply want to tell the story of my numerous experiments with truth, and as my life consists of nothing but those experiments, it is true that the story will take the shape of an autobiography. But I should certainly like to warn the reader against expecting a chronological, complete biography. My experiments in the political field are now known, not only in India, but to a certain extent to the "civilized" world. For me, they have not much value; and the title of "Mahatma" that they have won for me has, therefore, even less. Often the title has deeply pained me; and there is not a moment I can recall when it may be said to have tickled me.</p>
+                    
+                    <div class="quote">
+                        The only virtue I want to claim is truth and non-violence. I lay no claim to superhuman powers. I want none.
+                    </div>
+                    
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Mohandas_K._Gandhi%2C_age_7.jpg/220px-Mohandas_K._Gandhi%2C_age_7.jpg" alt="Young Gandhi" class="gandhi-image">
+                    
+                    <p>But I should certainly like to narrate my experiments in the spiritual field which are known only to myself, and from which I have derived such power as I possess for working in the political field. If the experiments are really spiritual, then there can be no room for self-praise. They can only add to my humility. The more I reflect and look back on the past, the more vividly do I feel my limitations.</p>
+                    
+                    <p>What I want to achieve—what I have been striving and pining to achieve these thirty years—is self-realization, to see God face to face, to attain <span class="highlight">Moksha</span>. I live and move and have my being in pursuit of this goal. All that I do by way of speaking and writing, and all my ventures in the political field, are directed to this same end.</p>
+                    
+                    <p>But as I have all along believed that what is possible for one is possible for all, my experiments have not been conducted in the closet, but in the open; and I do not think that this fact detracts from their spiritual value. There are some things which are known only to oneself and one's Maker. These are clearly incommunicable. The experiments I am about to relate are not such. But they are spiritual, or rather moral; for the essence of religion is morality.</p>
+                `
+            },
+            {
+                id: 'birth-parentage',
+                title: 'Birth and Parentage',
+                subtitle: 'Early Foundations',
+                content: `
+                    <p>The Gandhis belong to the Bania caste and seem to have been originally grocers. But for three generations, from my grandfather, they have been Prime Ministers in several Kathiawad States. Uttamchand Gandhi, alias Ota Gandhi, my grandfather, must have been a man of principle. State intrigues compelled him to leave Porbandar, where he was Diwan, and to seek refuge in Junagadh. There he saluted the Nawab with the left hand. Someone, noticing the apparent discourtesy, asked for an explanation, which was given thus: "The right hand is already pledged to Porbandar."</p>
+                    
+                    <p>Ota Gandhi married a second time, having lost his first wife. He had four sons by his first wife and two by his second wife. I do not think that in my childhood I ever felt or knew that these sons of Ota Gandhi were not all of the same mother. The fifth of these six brothers was Karamchand Gandhi, alias Kaba Gandhi, and the sixth was Tulsidas Gandhi. Both these brothers were Prime Ministers in Porbandar, one after the other. Kaba Gandhi was my father.</p>
+                    
+                    <div class="quote">
+                        My father was a lover of his clan, truthful, brave and generous, but short-tempered.
+                    </div>
+                    
+                    <p>He was, in the beginning, the Diwan of Porbandar; then of Rajkot; and then of Vankaner. I have a faint recollection that he was once taken to that place in a bullock-cart, and that we children were taken to meet him there. I was then about six years old.</p>
+                    
+                    <p>My father married four times in succession, having lost his wife each time by death. He had two daughters by his first and second marriages. His last wife, Putlibai, bore him a daughter and three sons, I being the youngest.</p>
+                    
+                    <p>My father never had any ambition to accumulate riches and left us very little property. He had no education, save that of experience. At best, he might be said to have read up to the fifth Gujarati standard. Of history and geography he was innocent. But his rich experience of practical affairs stood him in good stead in the solution of the most intricate questions and in managing hundreds of men.</p>
+                    
+                    <p>Of religious training he had very little, but he had that kind of religious culture which frequent visits to temples and listening to religious discourses make available to many Hindus.</p>
+                `
+            },
+            {
+                id: 'childhood',
+                title: 'Childhood',
+                subtitle: 'Early Impressions',
+                content: `
+                    <p>I must have been about seven when my father left Porbandar for Rajkot to become a member of the Rajasthanik Court. There I was put into a primary school, and I can well recollect those days, including the names and other particulars of the teachers who taught me. As at Porbandar, so here, there is hardly anything to note about my studies. I could only have been a mediocre student.</p>
+                    
+                    <p>From this school I went to the suburban school and thence to the high school, having already reached my twelfth year. I do not remember having ever told a lie, during this short period, either to my teachers or to my school-mates. I used to be very shy and avoided all company. My books and my lessons were my sole companions. To be at school at the stroke of the hour and to run back home as soon as the school closed—that was my daily habit.</p>
+                    
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Gandhi_family.jpg/220px-Gandhi_family.jpg" alt="Gandhi Family" class="gandhi-image">
+                    
+                    <p>I literally ran back, because I could not bear to talk to anybody. I was even afraid lest anyone should poke fun at me.</p>
+                    
+                    <p>One incident of this time is still vivid in my memory. It occurred in connection with a book that I had borrowed from one of the teachers. The book was a biography of Shravana, who was famous for his devotion to his parents. The picture of Shravana carrying his blind parents on a pilgrimage by means of slings fastened to his shoulders moved me deeply, and I have remembered it to this day.</p>
+                    
+                    <div class="quote">
+                        Truth is like a vast tree, which yields more and more fruit, the more you nurture it.
+                    </div>
+                    
+                    <p>There was a similar book about King Harishchandra. The story of this king, who, for the sake of truth, could sacrifice his kingdom, his wife, and his son, and could himself suffer countless hardships, captivated me. I read it with intense interest. "Here is an example for you to copy," I said to myself. The thought of Harishchandra often haunted me, and I have often enacted Harishchandra to myself.</p>
+                    
+                    <p>I used to ask myself: "Why should not all be truthful like Harishchandra?" I was Harishchandra in my imagination. The thought of going through such ordeals as he did made me tremble. But I never doubted the necessity and value of truth.</p>
+                `
+            },
+            {
+                id: 'child-marriage',
+                title: 'Child Marriage',
+                subtitle: 'A Custom of the Time',
+                content: `
+                    <p>Much as I wish that I had not to write this chapter, I know that I shall have to swallow many such bitter draughts in the course of this narrative. And I cannot do otherwise, if I claim to be a worshipper of Truth. It is my painful duty to have to record here my marriage at the age of thirteen. As I see the youngsters of the same age about me who are under my care, and think of my own marriage, I am inclined to pity myself and to congratulate them on having escaped my lot.</p>
+                    
+                    <p>I can see no moral argument in support of such a preposterously early marriage. Let the reader make no mistake. I was married, not betrothed. For in Kathiawad there are two distinct rites—betrothal and marriage. Betrothal is a preliminary promise on the part of the parents of the boy and the girl to join them in marriage, and it is not inviolable. The death of the boy or the girl, or any other serious cause, can break it off. Marriage is a vow for life. The breach of it is not only rare but also scandalous.</p>
+                    
+                    <p>My father was a Diwan, but nevertheless a servant, and all the more so because he was in the service of a Native State. My brothers were already married. The question of my marriage, I think, was already on the carpet. I have a faint recollection that it was being discussed, though I cannot say with certainty. But I remember that a party of Brahmins, relatives of my mother, came to Rajkot, and in their company came a boy of about my age, called Mavji Dave. He was engaged to be married.</p>
+                    
+                    <div class="quote">
+                        I do not think it right to connect the marriage of brothers and sisters. It ought to be prohibited by law.
+                    </div>
+                    
+                    <p>Now, if my marriage could be performed at the same time, it would result in a saving of money. My father and Mavji's father were old friends. So the match was easily arranged. My father was in a hurry to get me married, as he was getting old, and he wanted to see my marriage celebrated in his lifetime. So both the marriages were fixed for the same day.</p>
+                    
+                    <p>How it all happened, how we were both dressed, how we both went through the ceremony, what we both felt—all this I do not remember. All I remember is that I was very anxious to do the right thing, and that I did not like the numerous restrictions that the ceremony involved.</p>
+                    
+                    <p>I was devoted to my parents. But I could not understand why I should be compelled to marry at an age when I should have been at school. However, I had nothing to say in the matter; all I could do was to accept the inevitable.</p>
+                `
+            },
+            {
+                id: 'high-school',
+                title: 'High School Days',
+                subtitle: 'Education and Ethics',
+                content: `
+                    <p>I have already said that I was learning at the high school when I was married. We three brothers were learning at the same school. The eldest brother was in a much higher class, and the brother who was married at the same time as I was, only one class ahead of me. Marriage resulted in both of us wasting a year. Indeed the result was even worse for my brother, for he gave up studies altogether. Heaven knows how many youths are in the same plight as he.</p>
+                    
+                    <p>My studies were continued. I was not regarded as a dunce at the high school. I always enjoyed the affection of my teachers. Certificates of progress and character used to be sent to the parents every year. I never had a bad certificate. In fact I even won prizes after I passed out of the second standard. In the fifth and sixth I obtained scholarships of rupees four and ten respectively, an achievement for which I have to thank good luck more than my merit.</p>
+                    
+                    <p>My own recollection is that I had not any high regard for my ability. I used to be astonished whenever I won prizes and scholarships. But I very jealously guarded my character. The least little blemish drew tears from my eyes. When I merited, or seemed to the teacher to merit, a rebuke, it was unbearable for me. I remember having once received corporal punishment. I did not so much mind the punishment, as the fact that it was considered my desert. I wept piteously. That was when I was in the first or second standard.</p>
+                    
+                    <div class="quote">
+                        The canings had no effect on me, except to make me more careful not to get caught again.
+                    </div>
+                    
+                    <p>I was seven when this happened. The same teacher, when I was in the seventh standard, wanted to punish me again. This time I was not going to take it lying down. I learnt that the teacher had a partiality for one of my classmates, who happened to be the son of a friend of his. This boy used to copy from my slate. I saw nothing wrong in this, as I thought it my duty to help a fellow student. But the teacher thought otherwise. He wanted to punish me for allowing my slate to be copied.</p>
+                    
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/M._K._Gandhi_as_a_law_student_in_London.jpg/220px-M._K._Gandhi_as_a_law_student_in_London.jpg" alt="Gandhi as Student" class="gandhi-image">
+                    
+                    <p>So one day, as I was going to school, he ordered me to put out my hand. I did so, but this time not to receive the cane. I held my slate in that hand. The teacher was angry. He ordered me to put away the slate, but I refused. The more he ordered, the more I refused. At last he gave up and left me alone.</p>
+                    
+                    <p>This incident increased my dislike for the teacher. I had never disliked any teacher before, but after this I could not bear the sight of him. I began to think of all sorts of ways to avoid his class. At last I obtained permission from my father to change my school.</p>
+                `
+            },
+            {
+                id: 'stealing-atonement',
+                title: 'Stealing and Atonement',
+                subtitle: 'A Lesson in Honesty',
+                content: `
+                    <p>I must have been about twelve years old when this incident occurred. I had a friend of my age, and we were great friends. He was the son of our teacher, and so we were often together. I used to go to his house, and he to mine.</p>
+                    
+                    <p>This friend of mine had the habit of smoking. He saw people smoke, and he thought it was a fine thing. So he began to smoke cigarette-ends picked up from the street. But that did not give him enough smoke. So he needed money to buy cigarettes.</p>
+                    
+                    <p>He began to steal small coins from the servant's pocket-money, which used to be kept in a cup on a shelf. As he went on, he needed more and more money. At last he decided to steal a bit of gold from my brother's armlet. My brother had an armlet of solid gold. It was not very heavy, but it was too big for my friend's purpose. So he filed a bit off, and sold it.</p>
+                    
+                    <p>The theft was discovered. My brother had the armlet weighed, and found it short. He questioned everybody in the house, but could get no clue. At last he came to me. I was the youngest in the house, and he thought I might have done it in fun. I denied the charge, but my brother was not satisfied.</p>
+                    
+                    <div class="quote">
+                        I remember having once stolen a coin from my father's pocket. The agony I suffered that day is still fresh in my memory.
+                    </div>
+                    
+                    <p>My father was then lying ill in bed. He was suffering from fistula, and was in great pain. He had to be operated upon. The famous surgeon, Dr. P. J. Mehta, was to perform the operation. My brother thought that if I had really stolen the gold, the shock of the operation might make me confess. So he took me to our father's bedside and asked me again to tell the truth.</p>
+                    
+                    <p>I again denied. This made my brother angry. He held my hand and took me to our father, and said: "This boy does not leave me in peace. He has stolen a bit of gold from my armlet, and he will not confess."</p>
+                    
+                    <p>My father looked at me. Tears were rolling down his cheeks. He said: "Have you stolen the gold?" I said: "No, father, I have not." But my father was not convinced. He said: "If you have not stolen it, you will not mind if I search your box."</p>
+                    
+                    <p>I said: "You can search it, father." The box was searched, but nothing was found. My father was in great pain, physical and mental. He said: "Your denial does not convince me. I know you are telling a lie. Tell me the truth, and I will forgive you."</p>
+                    
+                    <p>I again said: "Father, I have not stolen the gold." He turned his face away from me, and I saw that he was weeping. That was the first time I saw my father weep. I could not bear it. I went to my room and wept bitterly. I realized what a great sin I had committed. I had not only stolen, but I had lied to my father.</p>
+                    
+                    <p>I decided to make a clean breast of it. I went to my father and confessed everything. Instead of being angry, he was pleased. He drew me to him and said: "It is a good thing you have told me the truth. I forgive you. But promise me that you will never steal or lie again."</p>
+                    
+                    <p>I gave him my promise, and I have kept it. That incident taught me the lesson of truthfulness more than any sermon or book could have done.</p>
+                `
+            },
+            {
+                id: 'meat-eating',
+                title: 'Experiments in Meat-Eating',
+                subtitle: 'A Brief Rebellion',
+                content: `
+                    <p>I was in the first year at the high school when this happened. I had a friend who was a reformer. He was against many Hindu customs, and one of them was vegetarianism. He argued that meat-eating was good for health, and that it made people strong and brave. The English, he said, were strong and ruled over us because they ate meat.</p>
+                    
+                    <p>I was rather impressed by this argument. I was not very strong, and I thought that if I ate meat, I might become strong like the English. Moreover, I wanted to be brave. I was afraid of ghosts, thieves, and serpents. I thought that meat-eating might make me brave enough not to be afraid of these things.</p>
+                    
+                    <p>So I decided to try meat-eating. But there was a difficulty. How could I eat meat without my parents knowing? They were staunch vegetarians. They would be shocked if they knew. Besides, I did not want to deceive them.</p>
+                    
+                    <p>My friend solved the problem. He said: "We shall have to do it secretly. We can go to a lonely place by the river, and cook the meat there." So we decided to try. We went to a secluded spot on the riverbank. My friend had brought some cooked meat and bread. I tasted the meat. It was like leather. I could not swallow it. I felt sick and wanted to vomit.</p>
+                    
+                    <p>I gave up the attempt for that day. But my friend was not discouraged. He said: "It is always difficult the first time. You will get used to it." So we tried again a few days later. This time it was a little better, but still I did not like it.</p>
+                    
+                    <div class="quote">
+                        I wanted to take up meat-eating out of a mistaken notion that it would make me strong and brave.
+                    </div>
+                    
+                    <p>But the thought that I was deceiving my parents troubled me. I knew that they would be deeply grieved if they came to know. I had nightmares. I dreamt that a live goat was bleating inside me. I felt miserable.</p>
+                    
+                    <p>This went on for about a year. During this period, I must have taken meat five or six times. But I never liked it. And the deception became more and more unbearable. At last I decided to give it up.</p>
+                    
+                    <p>I went to my friend and told him: "I cannot go on with this. I do not like meat, and I hate the deception. I am going to give it up."</p>
+                    
+                    <p>My friend was disappointed. He tried to persuade me to continue, but I was firm. I said: "If meat-eating is necessary for strength, I would rather be weak. If it is necessary for ruling over people, I would rather be ruled. But I cannot deceive my parents."</p>
+                    
+                    <p>So I gave up meat-eating. It was a great relief. I felt as if a burden had been lifted from my mind. I realized that truth and non-violence were more important than physical strength.</p>
+                    
+                    <p>This experience taught me that what is morally wrong can never be politically right. It also taught me the value of being true to one's convictions, even if they are unpopular.</p>
+                `
+            }
+        ];
+
+        // Initialize the book reader
+        document.addEventListener('DOMContentLoaded', function () {
+            let currentChapterIndex = 0;
+            let bookmarkedChapters = JSON.parse(localStorage.getItem('gandhiBookmarks')) || [];
+
+            // Initialize table of contents
+            initializeTOC();
+
+            // Load the first chapter
+            loadChapter(currentChapterIndex);
+
+            // Set up event listeners
+            setupEventListeners();
+
+            // Initialize table of contents
+            function initializeTOC() {
+                const tocList = document.getElementById('tableOfContents');
+                tocList.innerHTML = '';
+
+                bookChapters.forEach((chapter, index) => {
+                    const tocItem = document.createElement('li');
+                    tocItem.className = 'toc-item';
+
+                    const tocLink = document.createElement('a');
+                    tocLink.href = '#';
+                    tocLink.className = 'toc-link';
+                    tocLink.innerHTML = `
+                        <span class="toc-chapter">${index + 1}</span>
+                        <span>${chapter.title}</span>
+                    `;
+
+                    tocLink.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        currentChapterIndex = index;
+                        loadChapter(currentChapterIndex);
+                        updateTOCActive();
+                        updateProgress();
+                    });
+
+                    tocItem.appendChild(tocLink);
+                    tocList.appendChild(tocItem);
+                });
+
+                updateTOCActive();
+            }
+
+            // Load a chapter by index
+            function loadChapter(index) {
+                const chapter = bookChapters[index];
+
+                document.getElementById('chapterTitle').textContent = chapter.title;
+                document.getElementById('chapterSubtitle').textContent = chapter.subtitle;
+                document.getElementById('chapterContent').innerHTML = chapter.content;
+
+                // Update bookmark button
+                updateBookmarkButton();
+
+                // Update navigation buttons
+                updateNavButtons();
+
+                // Update TOC active state
+                updateTOCActive();
+
+                // Update progress
+                updateProgress();
+
+                // Scroll to top of chapter
+                document.querySelector('.reading-area').scrollTop = 0;
+            }
+
+            // Update TOC active state
+            function updateTOCActive() {
+                const tocLinks = document.querySelectorAll('.toc-link');
+                tocLinks.forEach((link, index) => {
+                    if (index === currentChapterIndex) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            // Update navigation buttons
+            function updateNavButtons() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+
+                prevBtn.disabled = currentChapterIndex === 0;
+                nextBtn.disabled = currentChapterIndex === bookChapters.length - 1;
+            }
+
+            // Update reading progress
+            function updateProgress() {
+                const progress = ((currentChapterIndex + 1) / bookChapters.length) * 100;
+                document.getElementById('readingProgress').style.width = `${progress}%`;
+                document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+            }
+
+            // Update bookmark button
+            function updateBookmarkButton() {
+                const bookmarkBtn = document.getElementById('bookmarkBtn');
+                const isBookmarked = bookmarkedChapters.includes(currentChapterIndex);
+
+                bookmarkBtn.classList.toggle('active', isBookmarked);
+                bookmarkBtn.innerHTML = isBookmarked ?
+                    '<i class="fas fa-bookmark"></i>' :
+                    '<i class="far fa-bookmark"></i>';
+            }
+
+            // Set up event listeners
+            function setupEventListeners() {
+                // Previous button
+                document.getElementById('prevBtn').addEventListener('click', function () {
+                    if (currentChapterIndex > 0) {
+                        currentChapterIndex--;
+                        loadChapter(currentChapterIndex);
+                    }
+                });
+
+                // Next button
+                document.getElementById('nextBtn').addEventListener('click', function () {
+                    if (currentChapterIndex < bookChapters.length - 1) {
+                        currentChapterIndex++;
+                        loadChapter(currentChapterIndex);
+                    }
+                });
+
+                // Font size controls
+                document.getElementById('fontSmall').addEventListener('click', function () {
+                    setFontSize('small');
+                });
+
+                document.getElementById('fontMedium').addEventListener('click', function () {
+                    setFontSize('medium');
+                });
+
+                document.getElementById('fontLarge').addEventListener('click', function () {
+                    setFontSize('large');
+                });
+
+                // Theme controls
+                document.getElementById('lightTheme').addEventListener('click', function () {
+                    setTheme('light');
+                });
+
+                document.getElementById('darkTheme').addEventListener('click', function () {
+                    setTheme('dark');
+                });
+
+                // Bookmark button
+                document.getElementById('bookmarkBtn').addEventListener('click', function () {
+                    toggleBookmark();
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', function (e) {
+                    // Left arrow for previous chapter
+                    if (e.key === 'ArrowLeft' && currentChapterIndex > 0) {
+                        currentChapterIndex--;
+                        loadChapter(currentChapterIndex);
+                    }
+
+                    // Right arrow for next chapter
+                    if (e.key === 'ArrowRight' && currentChapterIndex < bookChapters.length - 1) {
+                        currentChapterIndex++;
+                        loadChapter(currentChapterIndex);
+                    }
+
+                    // Spacebar for next chapter
+                    if (e.key === ' ' && currentChapterIndex < bookChapters.length - 1) {
+                        e.preventDefault();
+                        currentChapterIndex++;
+                        loadChapter(currentChapterIndex);
+                    }
+                });
+            }
+
+            // Set font size
+            function setFontSize(size) {
+                const content = document.getElementById('chapterContent');
+                const fontBtns = document.querySelectorAll('.font-btn');
+
+                // Remove active class from all font buttons
+                fontBtns.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to clicked button
+                document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`).classList.add('active');
+
+                // Set font size
+                if (size === 'small') {
+                    content.style.fontSize = '1rem';
+                } else if (size === 'medium') {
+                    content.style.fontSize = '1.15rem';
+                } else if (size === 'large') {
+                    content.style.fontSize = '1.3rem';
+                }
+
+                // Save preference
+                localStorage.setItem('gandhiFontSize', size);
+            }
+
+            // Set theme
+            function setTheme(theme) {
+                const body = document.body;
+                const themeBtns = document.querySelectorAll('.theme-btn');
+
+                // Remove active class from all theme buttons
+                themeBtns.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to clicked button
+                document.getElementById(`${theme}Theme`).classList.add('active');
+
+                // Set theme
+                if (theme === 'dark') {
+                    body.classList.add('dark-theme');
+                } else {
+                    body.classList.remove('dark-theme');
+                }
+
+                // Save preference
+                localStorage.setItem('gandhiTheme', theme);
+            }
+
+            // Toggle bookmark
+            function toggleBookmark() {
+                const index = currentChapterIndex;
+
+                if (bookmarkedChapters.includes(index)) {
+                    // Remove bookmark
+                    bookmarkedChapters = bookmarkedChapters.filter(i => i !== index);
+                } else {
+                    // Add bookmark
+                    bookmarkedChapters.push(index);
+                }
+
+                // Save to localStorage
+                localStorage.setItem('gandhiBookmarks', JSON.stringify(bookmarkedChapters));
+
+                // Update button
+                updateBookmarkButton();
+
+                // Show notification
+                showNotification(
+                    bookmarkedChapters.includes(index) ?
+                        'Chapter bookmarked!' :
+                        'Bookmark removed.',
+                    'info'
+                );
+            }
+
+            // Show notification
+            function showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '8px';
+                notification.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+                notification.style.zIndex = '1000';
+                notification.style.maxWidth = '300px';
+                notification.style.fontWeight = 'bold';
+                notification.style.transition = 'all 0.3s ease';
+                notification.textContent = message;
+
+                // Set color based on type
+                switch (type) {
+                    case 'success':
+                        notification.style.background = '#2c5530';
+                        notification.style.color = 'white';
+                        break;
+                    case 'error':
+                        notification.style.background = '#dc3545';
+                        notification.style.color = 'white';
+                        break;
+                    case 'info':
+                        notification.style.background = '#118AB2';
+                        notification.style.color = 'white';
+                        break;
+                }
+
+                document.body.appendChild(notification);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 500);
+                }, 3000);
+            }
+
+            // Load saved preferences
+            function loadPreferences() {
+                // Load font size
+                const savedFontSize = localStorage.getItem('gandhiFontSize');
+                if (savedFontSize) {
+                    setFontSize(savedFontSize);
+                }
+
+                // Load theme
+                const savedTheme = localStorage.getItem('gandhiTheme');
+                if (savedTheme) {
+                    setTheme(savedTheme);
+                }
+            }
+
+            // Initialize preferences
+            loadPreferences();
+        });
+    </script>
+</body>
+
+</html>

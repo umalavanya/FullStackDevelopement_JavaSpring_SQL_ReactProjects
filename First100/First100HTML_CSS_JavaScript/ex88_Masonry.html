@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masonry Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #3498db;
+            color: #3498db;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover,
+        button.active {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Masonry Grid */
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-auto-rows: 10px;
+            /* This controls the row height */
+            grid-gap: 20px;
+        }
+
+        .masonry-item {
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            grid-row-end: span var(--span);
+        }
+
+        .masonry-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .item-content {
+            padding: 20px;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .item-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #3498db;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .item-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        /* Different heights for variety */
+        .masonry-item:nth-child(3n) {
+            --span: 26;
+        }
+
+        .masonry-item:nth-child(3n+1) {
+            --span: 22;
+        }
+
+        .masonry-item:nth-child(3n+2) {
+            --span: 30;
+        }
+
+        .masonry-item:nth-child(5n) {
+            --span: 34;
+        }
+
+        .masonry-item:nth-child(7n) {
+            --span: 28;
+        }
+
+        /* Responsive columns */
+        @media (max-width: 1200px) {
+            .masonry-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .masonry-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 200px;
+            }
+        }
+
+        .category-nature {
+            background: #2ecc71;
+        }
+
+        .category-technology {
+            background: #3498db;
+        }
+
+        .category-food {
+            background: #e74c3c;
+        }
+
+        .category-travel {
+            background: #f39c12;
+        }
+
+        .category-art {
+            background: #9b59b6;
+        }
+
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Masonry Layout</h1>
+            <p class="subtitle">CSS Grid implementation with varying height items and responsive columns</p>
+        </header>
+
+        <div class="controls">
+            <button class="active" onclick="filterItems('all')">Show All</button>
+            <button onclick="filterItems('nature')">Nature</button>
+            <button onclick="filterItems('technology')">Technology</button>
+            <button onclick="filterItems('food')">Food</button>
+            <button onclick="filterItems('travel')">Travel</button>
+            <button onclick="filterItems('art')">Art</button>
+        </div>
+
+        <div class="masonry-grid" id="masonryGrid">
+            <!-- Items will be generated by JavaScript -->
+        </div>
+
+        <div class="info-box">
+            <h3>About Masonry Layout</h3>
+            <p>This masonry layout uses CSS Grid with auto-placement and varying item heights. The grid is responsive
+                and adjusts the number of columns based on screen size. Items have different heights and the layout
+                automatically fills gaps for optimal space usage.</p>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            {
+                id: 1,
+                category: 'nature',
+                title: 'Mountain Landscape',
+                description: 'Beautiful view of mountains during sunset with vibrant colors painting the sky.',
+                color: '#2ecc71'
+            },
+            {
+                id: 2,
+                category: 'technology',
+                title: 'Modern Workspace',
+                description: 'Minimalist desk setup with multiple monitors, mechanical keyboard, and productivity tools organized for efficient work.',
+                color: '#3498db'
+            },
+            {
+                id: 3,
+                category: 'food',
+                title: 'Gourmet Breakfast',
+                description: 'Delicious avocado toast with poached eggs, fresh herbs, and artisan bread served with specialty coffee.',
+                color: '#e74c3c'
+            },
+            {
+                id: 4,
+                category: 'travel',
+                title: 'Beach Paradise',
+                description: 'Crystal clear waters and white sandy beaches in a tropical destination perfect for relaxation and adventure.',
+                color: '#f39c12'
+            },
+            {
+                id: 5,
+                category: 'art',
+                title: 'Abstract Painting',
+                description: 'Colorful abstract artwork showcasing bold brush strokes and emotional expression through mixed media techniques.',
+                color: '#9b59b6'
+            },
+            {
+                id: 6,
+                category: 'nature',
+                title: 'Forest Path',
+                description: 'Serene walking path through dense forest with sunlight filtering through the canopy creating magical light patterns.',
+                color: '#27ae60'
+            },
+            {
+                id: 7,
+                category: 'technology',
+                title: 'Smart Home Setup',
+                description: 'Integrated smart home system controlling lighting, temperature, security, and entertainment through voice commands.',
+                color: '#2980b9'
+            },
+            {
+                id: 8,
+                category: 'food',
+                title: 'Artisan Pizza',
+                description: 'Wood-fired pizza with fresh mozzarella, basil, and San Marzano tomatoes on perfectly charred crust.',
+                color: '#c0392b'
+            },
+            {
+                id: 9,
+                category: 'travel',
+                title: 'City Skyline',
+                description: 'Night view of metropolitan city with towering skyscrapers and illuminated bridges reflecting on the river.',
+                color: '#d35400'
+            },
+            {
+                id: 10,
+                category: 'art',
+                title: 'Sculpture Garden',
+                description: 'Outdoor exhibition featuring contemporary sculptures in natural landscape settings with interactive elements.',
+                color: '#8e44ad'
+            },
+            {
+                id: 11,
+                category: 'nature',
+                title: 'Waterfall Adventure',
+                description: 'Majestic waterfall cascading into turquoise pool surrounded by lush greenery and rock formations.',
+                color: '#16a085'
+            },
+            {
+                id: 12,
+                category: 'technology',
+                title: 'Virtual Reality',
+                description: 'Immersive VR experience with advanced headsets and motion tracking for gaming and educational applications.',
+                color: '#1abc9c'
+            }
+        ];
+
+        const masonryGrid = document.getElementById('masonryGrid');
+        let activeFilter = 'all';
+
+        function createItemElement(item) {
+            const div = document.createElement('div');
+            div.className = `masonry-item ${item.category}`;
+            div.dataset.category = item.category;
+
+            // Random height variation
+            const heights = [200, 250, 180, 220, 280, 240];
+            const randomHeight = heights[Math.floor(Math.random() * heights.length)];
+
+            div.innerHTML = `
+                <img src="https://via.placeholder.com/400x${randomHeight}/${item.color.substring(1)}/ffffff?text=${encodeURIComponent(item.title)}" 
+                     alt="${item.title}" class="item-image">
+                <div class="item-content">
+                    <span class="item-category category-${item.category}">${item.category}</span>
+                    <h3 class="item-title">${item.title}</h3>
+                    <p class="item-description">${item.description}</p>
+                </div>
+            `;
+
+            return div;
+        }
+
+        function renderItems(filter = 'all') {
+            masonryGrid.innerHTML = '';
+            const filteredItems = filter === 'all'
+                ? items
+                : items.filter(item => item.category === filter);
+
+            filteredItems.forEach(item => {
+                masonryGrid.appendChild(createItemElement(item));
+            });
+
+            // Update active button
+            document.querySelectorAll('.controls button').forEach(btn => {
+                if (btn.textContent.toLowerCase() === filter ||
+                    (filter === 'all' && btn.textContent.toLowerCase() === 'show all')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function filterItems(category) {
+            activeFilter = category;
+            renderItems(category);
+        }
+
+        // Initial render
+        renderItems();
+
+        // Responsive adjustments
+        window.addEventListener('resize', () => {
+            renderItems(activeFilter);
+        });
+    </script>
+</body>
+
+</html>

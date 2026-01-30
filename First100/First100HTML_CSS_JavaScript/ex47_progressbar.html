@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 47: Progress Bar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #startBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #resetBtn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #percentage {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Animated Progress Bar</h2>
+    <div id="percentage">0%</div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="controls">
+        <button id="startBtn">Start Animation</button>
+        <button id="resetBtn">Reset</button>
+    </div>
+
+    <script>
+        const progressBar = document.getElementById('progressBar');
+        const percentageDisplay = document.getElementById('percentage');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let progress = 0;
+        let animationId = null;
+
+        function animateProgress() {
+            if (progress >= 100) {
+                cancelAnimationFrame(animationId);
+                return;
+            }
+
+            progress += 0.5;
+            progressBar.style.width = progress + '%';
+            percentageDisplay.textContent = Math.round(progress) + '%';
+
+            animationId = requestAnimationFrame(animateProgress);
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (progress >= 100) return;
+            cancelAnimationFrame(animationId);
+            animateProgress();
+        });
+
+        resetBtn.addEventListener('click', () => {
+            cancelAnimationFrame(animationId);
+            progress = 0;
+            progressBar.style.width = '0%';
+            percentageDisplay.textContent = '0%';
+        });
+    </script>
+</body>
+
+</html>
