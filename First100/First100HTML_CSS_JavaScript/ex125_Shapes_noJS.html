@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometric Shapes Gallery - HTML & CSS Only</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #f1f1f1;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .subtitle i {
+            color: #4cc9f0;
+            margin: 0 5px;
+        }
+
+        .shapes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+
+        .shape-card {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .shape-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(76, 201, 240, 0.3);
+        }
+
+        .shape-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #4cc9f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .shape-title i {
+            font-size: 1.5rem;
+        }
+
+        .shape-container {
+            width: 250px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0 30px;
+            position: relative;
+        }
+
+        /* Triangle Shape */
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 140px solid #f72585;
+            filter: drop-shadow(0 5px 15px rgba(247, 37, 133, 0.4));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Square Shape */
+        .square {
+            width: 150px;
+            height: 150px;
+            background: #4361ee;
+            filter: drop-shadow(0 5px 15px rgba(67, 97, 238, 0.4));
+            animation: rotate 8s linear infinite;
+        }
+
+        /* Circle Shape */
+        .circle {
+            width: 150px;
+            height: 150px;
+            background: #4cc9f0;
+            border-radius: 50%;
+            filter: drop-shadow(0 5px 15px rgba(76, 201, 240, 0.4));
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Rectangle Shape */
+        .rectangle {
+            width: 180px;
+            height: 120px;
+            background: #7209b7;
+            filter: drop-shadow(0 5px 15px rgba(114, 9, 183, 0.4));
+            animation: slide 5s ease-in-out infinite;
+        }
+
+        /* Pentagon Shape */
+        .pentagon {
+            width: 150px;
+            height: 150px;
+            background: #f8961e;
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+            filter: drop-shadow(0 5px 15px rgba(248, 150, 30, 0.4));
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Hexagon Shape */
+        .hexagon {
+            width: 150px;
+            height: 150px;
+            background: #06d6a0;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            filter: drop-shadow(0 5px 15px rgba(6, 214, 160, 0.4));
+            animation: rotate 10s linear infinite;
+        }
+
+        /* Star Shape */
+        .star {
+            width: 150px;
+            height: 150px;
+            background: #ffd166;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            filter: drop-shadow(0 5px 15px rgba(255, 209, 102, 0.4));
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        /* Ellipse Shape */
+        .ellipse {
+            width: 180px;
+            height: 120px;
+            background: #ef476f;
+            border-radius: 50%;
+            filter: drop-shadow(0 5px 15px rgba(239, 71, 111, 0.4));
+            animation: stretch 4s ease-in-out infinite;
+        }
+
+        /* Rhombus Shape */
+        .rhombus {
+            width: 150px;
+            height: 150px;
+            background: #118ab2;
+            transform: rotate(45deg);
+            filter: drop-shadow(0 5px 15px rgba(17, 138, 178, 0.4));
+            animation: rotate 7s linear infinite;
+        }
+
+        /* Trapezoid Shape */
+        .trapezoid {
+            width: 180px;
+            height: 0;
+            border-bottom: 120px solid #9b5de5;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            filter: drop-shadow(0 5px 15px rgba(155, 93, 229, 0.4));
+            animation: slide 6s ease-in-out infinite;
+        }
+
+        /* Parallelogram Shape */
+        .parallelogram {
+            width: 180px;
+            height: 120px;
+            background: #00bbf9;
+            transform: skew(20deg);
+            filter: drop-shadow(0 5px 15px rgba(0, 187, 249, 0.4));
+            animation: skew 5s ease-in-out infinite;
+        }
+
+        /* Crescent Moon Shape */
+        .crescent {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            box-shadow: 30px 0 0 0 #ff9e00;
+            filter: drop-shadow(0 5px 15px rgba(255, 158, 0, 0.4));
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .shape-property {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .property-name {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .property-value {
+            color: #4cc9f0;
+            font-weight: 600;
+        }
+
+        .css-code {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #9eff9e;
+            border-left: 3px solid #4cc9f0;
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .css-code-title {
+            color: #ffb347;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Animation Keyframes */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes slide {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(15px);
+            }
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes stretch {
+
+            0%,
+            100% {
+                transform: scaleX(1);
+            }
+
+            50% {
+                transform: scaleX(1.1);
+            }
+        }
+
+        @keyframes skew {
+
+            0%,
+            100% {
+                transform: skew(20deg);
+            }
+
+            50% {
+                transform: skew(0deg);
+            }
+        }
+
+        /* Shape Classification */
+        .classification {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .class-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            width: 300px;
+            border-left: 5px solid;
+        }
+
+        .class-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .class-box ul {
+            list-style-type: none;
+        }
+
+        .class-box li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .class-box li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #4cc9f0;
+            font-size: 0.8rem;
+        }
+
+        .polygons {
+            border-left-color: #f72585;
+        }
+
+        .curved {
+            border-left-color: #4cc9f0;
+        }
+
+        .quadrilaterals {
+            border-left-color: #ffd166;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            color: #888;
+            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        footer i {
+            color: #f72585;
+            margin: 0 5px;
+        }
+
+        @media (max-width: 768px) {
+            .shapes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 25px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .shape-container {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .shapes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shapes"></i> Geometric Shapes Gallery</h1>
+            <p class="subtitle">Pure HTML & CSS implementation of geometric shapes with animations and visual
+                properties. <i class="fas fa-code"></i> No JavaScript used!</p>
+        </header>
+
+        <div class="shapes-grid">
+            <!-- Triangle -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-play"></i> Triangle</h2>
+                <div class="shape-container">
+                    <div class="triangle"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">3</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Polygon</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Angles Sum:</span>
+                        <span class="property-value">180°</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .triangle {<br>
+                    &nbsp;&nbsp;width: 0; height: 0;<br>
+                    &nbsp;&nbsp;border-left: 80px solid transparent;<br>
+                    &nbsp;&nbsp;border-right: 80px solid transparent;<br>
+                    &nbsp;&nbsp;border-bottom: 140px solid #f72585;<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Square -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-square"></i> Square</h2>
+                <div class="shape-container">
+                    <div class="square"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">4</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Regular Quadrilateral</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Angles:</span>
+                        <span class="property-value">90° each</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .square {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;background: #4361ee;<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Circle -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-circle"></i> Circle</h2>
+                <div class="shape-container">
+                    <div class="circle"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">Infinite</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Curved Shape</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Circumference:</span>
+                        <span class="property-value">2πr</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .circle {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;background: #4cc9f0;<br>
+                    &nbsp;&nbsp;border-radius: 50%;<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Rectangle -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-square-full"></i> Rectangle</h2>
+                <div class="shape-container">
+                    <div class="rectangle"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">4</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Quadrilateral</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Angles:</span>
+                        <span class="property-value">90° each</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .rectangle {<br>
+                    &nbsp;&nbsp;width: 180px; height: 120px;<br>
+                    &nbsp;&nbsp;background: #7209b7;<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Pentagon -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-shapes"></i> Pentagon</h2>
+                <div class="shape-container">
+                    <div class="pentagon"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">5</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Regular Polygon</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Angles Sum:</span>
+                        <span class="property-value">540°</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .pentagon {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;background: #f8961e;<br>
+                    &nbsp;&nbsp;clip-path: polygon(50% 0%, 100% 38%,<br>
+                    &nbsp;&nbsp;82% 100%, 18% 100%, 0% 38%);<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Hexagon -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-bee"></i> Hexagon</h2>
+                <div class="shape-container">
+                    <div class="hexagon"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">6</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Regular Polygon</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Angles Sum:</span>
+                        <span class="property-value">720°</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .hexagon {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;background: #06d6a0;<br>
+                    &nbsp;&nbsp;clip-path: polygon(25% 0%, 75% 0%,<br>
+                    &nbsp;&nbsp;100% 50%, 75% 100%, 25% 100%, 0% 50%);<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Star -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-star"></i> Star</h2>
+                <div class="shape-container">
+                    <div class="star"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Points:</span>
+                        <span class="property-value">10</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Decagram</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Symmetry:</span>
+                        <span class="property-value">Rotational</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .star {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;background: #ffd166;<br>
+                    &nbsp;&nbsp;clip-path: polygon(50% 0%, 61% 35%,<br>
+                    &nbsp;&nbsp;98% 35%, 68% 57%, 79% 91%, 50% 70%,<br>
+                    &nbsp;&nbsp;21% 91%, 32% 57%, 2% 35%, 39% 35%);<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Ellipse -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-egg"></i> Ellipse</h2>
+                <div class="shape-container">
+                    <div class="ellipse"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Axes:</span>
+                        <span class="property-value">Major & Minor</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Oval</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Eccentricity:</span>
+                        <span class="property-value">&lt; 1</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .ellipse {<br>
+                    &nbsp;&nbsp;width: 180px; height: 120px;<br>
+                    &nbsp;&nbsp;background: #ef476f;<br>
+                    &nbsp;&nbsp;border-radius: 50%;<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Rhombus -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-gem"></i> Rhombus</h2>
+                <div class="shape-container">
+                    <div class="rhombus"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">4</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Equilateral Quadrilateral</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Angles:</span>
+                        <span class="property-value">Opposite equal</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .rhombus {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;background: #118ab2;<br>
+                    &nbsp;&nbsp;transform: rotate(45deg);<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Trapezoid -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-traffic-cone"></i> Trapezoid</h2>
+                <div class="shape-container">
+                    <div class="trapezoid"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">4</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Quadrilateral</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Parallel Sides:</span>
+                        <span class="property-value">1 pair</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .trapezoid {<br>
+                    &nbsp;&nbsp;width: 180px; height: 0;<br>
+                    &nbsp;&nbsp;border-bottom: 120px solid #9b5de5;<br>
+                    &nbsp;&nbsp;border-left: 40px solid transparent;<br>
+                    &nbsp;&nbsp;border-right: 40px solid transparent;<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Parallelogram -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-object-ungroup"></i> Parallelogram</h2>
+                <div class="shape-container">
+                    <div class="parallelogram"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Sides:</span>
+                        <span class="property-value">4</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Quadrilateral</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Parallel Sides:</span>
+                        <span class="property-value">2 pairs</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .parallelogram {<br>
+                    &nbsp;&nbsp;width: 180px; height: 120px;<br>
+                    &nbsp;&nbsp;background: #00bbf9;<br>
+                    &nbsp;&nbsp;transform: skew(20deg);<br>
+                    }
+                </div>
+            </div>
+
+            <!-- Crescent -->
+            <div class="shape-card">
+                <h2 class="shape-title"><i class="fas fa-moon"></i> Crescent</h2>
+                <div class="shape-container">
+                    <div class="crescent"></div>
+                </div>
+                <div class="shape-info">
+                    <div class="shape-property">
+                        <span class="property-name">Type:</span>
+                        <span class="property-value">Lunate Shape</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Formed by:</span>
+                        <span class="property-value">Two circles</span>
+                    </div>
+                    <div class="shape-property">
+                        <span class="property-name">Symmetry:</span>
+                        <span class="property-value">Bilateral</span>
+                    </div>
+                </div>
+                <div class="css-code">
+                    <div class="css-code-title"><i class="fas fa-code"></i> CSS Implementation</div>
+                    .crescent {<br>
+                    &nbsp;&nbsp;width: 150px; height: 150px;<br>
+                    &nbsp;&nbsp;border-radius: 50%;<br>
+                    &nbsp;&nbsp;box-shadow: 30px 0 0 0 #ff9e00;<br>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="classification">
+            <div class="class-box polygons">
+                <h3><i class="fas fa-draw-polygon"></i> Polygons</h3>
+                <ul>
+                    <li>Triangle (3 sides)</li>
+                    <li>Square (4 equal sides)</li>
+                    <li>Pentagon (5 sides)</li>
+                    <li>Hexagon (6 sides)</li>
+                    <li>Star (10 points)</li>
+                </ul>
+            </div>
+
+            <div class="class-box quadrilaterals">
+                <h3><i class="fas fa-vector-square"></i> Quadrilaterals</h3>
+                <ul>
+                    <li>Square (all sides equal)</li>
+                    <li>Rectangle (opposite sides equal)</li>
+                    <li>Rhombus (all sides equal, tilted)</li>
+                    <li>Trapezoid (one pair parallel)</li>
+                    <li>Parallelogram (both pairs parallel)</li>
+                </ul>
+            </div>
+
+            <div class="class-box curved">
+                <h3><i class="fas fa-circle-notch"></i> Curved Shapes</h3>
+                <ul>
+                    <li>Circle (constant radius)</li>
+                    <li>Ellipse (oval shape)</li>
+                    <li>Crescent (moon shape)</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p><i class="fas fa-laptop-code"></i> Geometric Shapes Gallery - Created with pure HTML & CSS</p>
+            <p>No JavaScript used - all shapes created with CSS properties like border, clip-path, transform, and
+                border-radius</p>
+            <p style="margin-top: 15px;">Hover over shapes to see elevation effect | Each shape has unique CSS
+                animations</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry Shapes Playground</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a3a, #0d1520);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .shapes-container {
+            flex: 3;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #geometryCanvas {
+            width: 100%;
+            height: 500px;
+            display: block;
+            background: rgba(10, 20, 30, 0.7);
+        }
+
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #00c9ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.3rem;
+        }
+
+        .shape-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .shape-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(0, 201, 255, 0.3);
+            border-radius: 10px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .shape-btn:hover {
+            background: rgba(0, 201, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .shape-btn.active {
+            background: rgba(0, 201, 255, 0.3);
+            border-color: #00c9ff;
+            box-shadow: 0 0 15px rgba(0, 201, 255, 0.3);
+        }
+
+        .shape-btn i {
+            font-size: 1.5rem;
+            color: #92fe9d;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .slider-container {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .slider-value {
+            float: right;
+            color: #00c9ff;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00c9ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 201, 255, 0.8);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .properties {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        .properties p {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .properties span {
+            color: #92fe9d;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1100px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .shape-selector {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shapes"></i> Geometry Shapes Playground</h1>
+            <p class="subtitle">Explore geometric shapes, modify their properties, and see real-time visualizations.
+                Select a shape, adjust its parameters, and observe the changes.</p>
+        </header>
+
+        <div class="content">
+            <div class="shapes-container">
+                <h2 class="section-title"><i class="fas fa-drafting-compass"></i> Shapes Visualization</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="geometryCanvas"></canvas>
+                </div>
+
+                <div class="control-group">
+                    <h3 class="section-title"><i class="fas fa-sliders-h"></i> Display Controls</h3>
+                    <div class="slider-container">
+                        <label>Rotation Angle <span class="slider-value" id="rotationValue">0°</span></label>
+                        <input type="range" id="rotationSlider" min="0" max="360" value="0">
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Shape Scale <span class="slider-value" id="scaleValue">100%</span></label>
+                        <input type="range" id="scaleSlider" min="50" max="200" value="100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h2 class="section-title"><i class="fas fa-cogs"></i> Shape Controls</h2>
+
+                <div class="shape-selector">
+                    <div class="shape-btn active" data-shape="triangle">
+                        <i class="fas fa-play"></i>
+                        <span>Triangle</span>
+                    </div>
+                    <div class="shape-btn" data-shape="square">
+                        <i class="fas fa-square"></i>
+                        <span>Square</span>
+                    </div>
+                    <div class="shape-btn" data-shape="circle">
+                        <i class="fas fa-circle"></i>
+                        <span>Circle</span>
+                    </div>
+                    <div class="shape-btn" data-shape="rectangle">
+                        <i class="fas fa-square-full"></i>
+                        <span>Rectangle</span>
+                    </div>
+                    <div class="shape-btn" data-shape="pentagon">
+                        <i class="fas fa-shapes"></i>
+                        <span>Pentagon</span>
+                    </div>
+                    <div class="shape-btn" data-shape="hexagon">
+                        <i class="fas fa-bee"></i>
+                        <span>Hexagon</span>
+                    </div>
+                    <div class="shape-btn" data-shape="star">
+                        <i class="fas fa-star"></i>
+                        <span>Star</span>
+                    </div>
+                    <div class="shape-btn" data-shape="ellipse">
+                        <i class="fas fa-egg"></i>
+                        <span>Ellipse</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3 class="section-title"><i class="fas fa-palette"></i> Color Selector</h3>
+                    <div class="color-picker">
+                        <div class="color-option selected" style="background-color: #00c9ff;" data-color="#00c9ff">
+                        </div>
+                        <div class="color-option" style="background-color: #92fe9d;" data-color="#92fe9d"></div>
+                        <div class="color-option" style="background-color: #ff6b9d;" data-color="#ff6b9d"></div>
+                        <div class="color-option" style="background-color: #ffd166;" data-color="#ffd166"></div>
+                        <div class="color-option" style="background-color: #9d4edd;" data-color="#9d4edd"></div>
+                        <div class="color-option" style="background-color: #ff9e00;" data-color="#ff9e00"></div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3 class="section-title"><i class="fas fa-ruler"></i> Shape Properties</h3>
+                    <div class="properties">
+                        <p>Selected Shape: <span id="shapeName">Triangle</span></p>
+                        <p>Area: <span id="shapeArea">433.0</span> px²</p>
+                        <p>Perimeter: <span id="shapePerimeter">100.0</span> px</p>
+                        <p>Color: <span id="shapeColor">#00c9ff</span></p>
+                        <p>Rotation: <span id="shapeRotation">0°</span></p>
+                        <p>Scale: <span id="shapeScale">100%</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Geometry Shapes Playground | Created with HTML, CSS, and JavaScript | Drag sliders to modify shapes in
+                real-time</p>
+        </footer>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('geometryCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dimensions
+        function resizeCanvas() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            drawShape();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // State variables
+        let selectedShape = 'triangle';
+        let selectedColor = '#00c9ff';
+        let rotationAngle = 0;
+        let scaleFactor = 1.0;
+
+        // DOM elements
+        const shapeButtons = document.querySelectorAll('.shape-btn');
+        const colorOptions = document.querySelectorAll('.color-option');
+        const rotationSlider = document.getElementById('rotationSlider');
+        const scaleSlider = document.getElementById('scaleSlider');
+        const rotationValue = document.getElementById('rotationValue');
+        const scaleValue = document.getElementById('scaleValue');
+
+        // Shape properties display
+        const shapeNameElement = document.getElementById('shapeName');
+        const shapeAreaElement = document.getElementById('shapeArea');
+        const shapePerimeterElement = document.getElementById('shapePerimeter');
+        const shapeColorElement = document.getElementById('shapeColor');
+        const shapeRotationElement = document.getElementById('shapeRotation');
+        const shapeScaleElement = document.getElementById('shapeScale');
+
+        // Shape selection
+        shapeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                shapeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                selectedShape = button.dataset.shape;
+                shapeNameElement.textContent = selectedShape.charAt(0).toUpperCase() + selectedShape.slice(1);
+                drawShape();
+            });
+        });
+
+        // Color selection
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedColor = option.dataset.color;
+                shapeColorElement.textContent = selectedColor;
+                drawShape();
+            });
+        });
+
+        // Rotation slider
+        rotationSlider.addEventListener('input', () => {
+            rotationAngle = parseInt(rotationSlider.value);
+            rotationValue.textContent = `${rotationAngle}°`;
+            shapeRotationElement.textContent = `${rotationAngle}°`;
+            drawShape();
+        });
+
+        // Scale slider
+        scaleSlider.addEventListener('input', () => {
+            scaleFactor = parseInt(scaleSlider.value) / 100;
+            scaleValue.textContent = `${parseInt(scaleSlider.value)}%`;
+            shapeScaleElement.textContent = `${parseInt(scaleSlider.value)}%`;
+            drawShape();
+        });
+
+        // Function to draw shapes
+        function drawShape() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Set center of canvas
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Apply rotation
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotationAngle * Math.PI / 180);
+
+            // Set shape color
+            ctx.fillStyle = selectedColor;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+
+            // Draw selected shape
+            switch (selectedShape) {
+                case 'triangle':
+                    drawTriangle(centerX, centerY);
+                    break;
+                case 'square':
+                    drawSquare(centerX, centerY);
+                    break;
+                case 'circle':
+                    drawCircle(centerX, centerY);
+                    break;
+                case 'rectangle':
+                    drawRectangle(centerX, centerY);
+                    break;
+                case 'pentagon':
+                    drawPentagon(centerX, centerY);
+                    break;
+                case 'hexagon':
+                    drawHexagon(centerX, centerY);
+                    break;
+                case 'star':
+                    drawStar(centerX, centerY);
+                    break;
+                case 'ellipse':
+                    drawEllipse(centerX, centerY);
+                    break;
+            }
+
+            ctx.restore();
+
+            // Update shape properties
+            updateShapeProperties();
+        }
+
+        // Shape drawing functions
+        function drawTriangle(centerX, centerY) {
+            const size = 120 * scaleFactor;
+            ctx.beginPath();
+            ctx.moveTo(0, -size);
+            ctx.lineTo(size, size);
+            ctx.lineTo(-size, size);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Calculate area and perimeter for equilateral triangle
+            const area = (Math.sqrt(3) / 4) * Math.pow(size * 2, 2);
+            const perimeter = size * 3;
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawSquare(centerX, centerY) {
+            const size = 100 * scaleFactor;
+            ctx.fillRect(-size, -size, size * 2, size * 2);
+            ctx.strokeRect(-size, -size, size * 2, size * 2);
+
+            const area = Math.pow(size * 2, 2);
+            const perimeter = size * 8;
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawCircle(centerX, centerY) {
+            const radius = 90 * scaleFactor;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            const area = Math.PI * Math.pow(radius, 2);
+            const perimeter = 2 * Math.PI * radius;
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawRectangle(centerX, centerY) {
+            const width = 150 * scaleFactor;
+            const height = 100 * scaleFactor;
+            ctx.fillRect(-width / 2, -height / 2, width, height);
+            ctx.strokeRect(-width / 2, -height / 2, width, height);
+
+            const area = width * height;
+            const perimeter = 2 * (width + height);
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawPentagon(centerX, centerY) {
+            const radius = 100 * scaleFactor;
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 2 * Math.PI / 5) - Math.PI / 2;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Approximate area for regular pentagon
+            const sideLength = 2 * radius * Math.sin(Math.PI / 5);
+            const apothem = radius * Math.cos(Math.PI / 5);
+            const area = 0.5 * 5 * sideLength * apothem;
+            const perimeter = 5 * sideLength;
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawHexagon(centerX, centerY) {
+            const radius = 100 * scaleFactor;
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * 2 * Math.PI / 6) - Math.PI / 6;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Area for regular hexagon
+            const sideLength = radius;
+            const area = (3 * Math.sqrt(3) * Math.pow(sideLength, 2)) / 2;
+            const perimeter = 6 * sideLength;
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawStar(centerX, centerY) {
+            const outerRadius = 100 * scaleFactor;
+            const innerRadius = 40 * scaleFactor;
+            const spikes = 5;
+
+            ctx.beginPath();
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI / spikes) - Math.PI / 2;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Approximate area for star
+            const area = 0.5 * spikes * innerRadius * outerRadius * Math.sin(2 * Math.PI / spikes);
+            const perimeter = spikes * 2 * Math.sqrt(Math.pow(outerRadius, 2) + Math.pow(innerRadius, 2) - 2 * outerRadius * innerRadius * Math.cos(Math.PI / spikes));
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function drawEllipse(centerX, centerY) {
+            const radiusX = 120 * scaleFactor;
+            const radiusY = 80 * scaleFactor;
+
+            ctx.beginPath();
+            ctx.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            const area = Math.PI * radiusX * radiusY;
+            // Approximate perimeter of ellipse
+            const perimeter = Math.PI * (3 * (radiusX + radiusY) - Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY)));
+            updatePropertiesDisplay(area, perimeter);
+        }
+
+        function updatePropertiesDisplay(area, perimeter) {
+            shapeAreaElement.textContent = area.toFixed(1);
+            shapePerimeterElement.textContent = perimeter.toFixed(1);
+        }
+
+        function updateShapeProperties() {
+            // This function is called after each draw to ensure properties are updated
+            shapeColorElement.textContent = selectedColor;
+            shapeRotationElement.textContent = `${rotationAngle}°`;
+            shapeScaleElement.textContent = `${parseInt(scaleSlider.value)}%`;
+        }
+
+        // Initialize the first draw
+        drawShape();
+    </script>
+</body>
+
+</html>
