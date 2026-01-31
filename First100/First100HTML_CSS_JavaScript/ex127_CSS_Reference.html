@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Properties Hierarchy Reference</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #4a5568;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hierarchy Tree Styles */
+        .hierarchy-container {
+            font-family: 'Courier New', monospace;
+        }
+
+        .hierarchy-category {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .hierarchy-tree {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .tree-item {
+            margin: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .tree-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 15px;
+            height: 1px;
+            background: #cbd5e0;
+        }
+
+        .tree-item::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: #cbd5e0;
+        }
+
+        .tree-item:last-child::after {
+            height: 50%;
+        }
+
+        .property-name {
+            background: #edf2f7;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            color: #2d3748;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .property-values {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .property-desc {
+            color: #4a5568;
+            margin-top: 5px;
+            font-size: 0.95em;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .sub-category {
+            margin-left: 20px;
+            margin-top: 10px;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 15px;
+        }
+
+        /* Example Preview */
+        .example-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .example-title {
+            color: #495057;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .example-demo {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+
+        .demo-box {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 10px auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-box:hover {
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+        }
+
+        /* Code highlighting */
+        code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            color: #2d3748;
+        }
+
+        /* Print styles */
+        @media print {
+
+            .nav-tabs,
+            .example-preview,
+            footer {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .content-section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>CSS Properties Hierarchy Reference</h1>
+            <p class="subtitle">Complete visual guide to CSS selectors, properties, and values</p>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-section="selectors">Selectors</button>
+                <button class="nav-tab" data-section="box-model">Box Model</button>
+                <button class="nav-tab" data-section="flexbox">Flexbox</button>
+                <button class="nav-tab" data-section="grid">Grid</button>
+                <button class="nav-tab" data-section="animation">Animation</button>
+                <button class="nav-tab" data-section="forms">Forms</button>
+            </div>
+        </header>
+
+        <!-- Selectors Section -->
+        <section id="selectors" class="content-section active">
+            <h2 class="category-title">CSS Selectors Hierarchy</h2>
+            <div class="hierarchy-container">
+                <div class="hierarchy-category">
+                    <h3>I. BASIC SELECTORS</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">Element</span>
+                            <span class="property-values">tagName (div, p, h1)</span>
+                            <div class="property-desc">Selects elements by tag name</div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Class</span>
+                            <span class="property-values">.className</span>
+                            <div class="property-desc">Selects elements with specific class</div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">ID</span>
+                            <span class="property-values">#idName</span>
+                            <div class="property-desc">Selects element with specific ID</div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Universal</span>
+                            <span class="property-values">*</span>
+                            <div class="property-desc">Selects all elements</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="hierarchy-category">
+                    <h3>II. COMBINATORS</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">Descendant</span>
+                            <span class="property-values">ancestor descendant</span>
+                            <div class="property-desc">div p - selects all p inside div</div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Child</span>
+                            <span class="property-values">parent > child</span>
+                            <div class="property-desc">ul > li - direct children only</div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Adjacent Sibling</span>
+                            <span class="property-values">element + nextSibling</span>
+                            <div class="property-desc">h1 + p - p immediately after h1</div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">General Sibling</span>
+                            <span class="property-values">element ~ siblings</span>
+                            <div class="property-desc">h1 ~ p - all p after h1</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="hierarchy-category">
+                    <h3>III. Attribute Selectors</h3>
+                    
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">[attribute]</span>
+                            <span class="property-values">Selects elements with the attribute present</span>
+                            <div class="property-desc"></div>
+                        </li>
+
+                        <li class="tree-item">
+                            <span class="property-name">[]</span>
+                            <span class="property-values</spa>
+                                                    <div class=" property-desc"></div>
+                        </li>
+                        
+
+                        
+                    </ul>
+                </div>
+                <div class="hierarchy-category"></div>
+                <div class="hierarchy-category"></div>
+                <div class="hierarchy-category"></div>
+                <div class="hierarchy-category"></div>
+
+                <div class="example-preview">
+                    <h4 class="example-title">Example: Selector Usage</h4>
+                    <div class="example-demo">
+                        <style>
+                            #selector-example div {
+                                margin: 10px 0;
+                            }
+
+                            #selector-example .highlight {
+                                background: yellow;
+                            }
+
+                            #selector-example p.special {
+                                color: #667eea;
+                            }
+
+                            #selector-example div>span {
+                                font-weight: bold;
+                            }
+                        </style>
+                        <div id="selector-example">
+                            <div class="highlight">This has class="highlight"</div>
+                            <p class="special">This is p with class="special"</p>
+                            <div>Parent <span>Direct child span</span></div>
+                            <p>Paragraph after div</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Box Model Section -->
+        <section id="box-model" class="content-section">
+            <h2 class="category-title">Box Model Properties</h2>
+            <div class="hierarchy-container">
+                <div class="hierarchy-category">
+                    <h3>BOX MODEL COMPONENTS</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">Content</span>
+                            <span class="property-values">width, height</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Padding</span>
+                            <span class="property-values">padding, padding-top, etc.</span>
+                            <div class="sub-category">
+                                <div class="tree-item">
+                                    <span class="property-name">Shorthand</span>
+                                    <span class="property-values">padding: top right bottom left</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Border</span>
+                            <span class="property-values">border-width, border-style, border-color</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Margin</span>
+                            <span class="property-values">margin, margin-top, etc.</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">Box Sizing</span>
+                            <span class="property-values">box-sizing: content-box | border-box</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="example-preview">
+                    <h4 class="example-title">Box Model Visualization</h4>
+                    <div class="example-demo">
+                        <style>
+                            #box-model-demo {
+                                position: relative;
+                                width: 200px;
+                                height: 200px;
+                                margin: 20px auto;
+                            }
+
+                            #box-model-demo .margin {
+                                position: absolute;
+                                top: -20px;
+                                left: -20px;
+                                right: -20px;
+                                bottom: -20px;
+                                background: rgba(255, 215, 0, 0.2);
+                                border: 2px dashed gold;
+                            }
+
+                            #box-model-demo .border {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                background: rgba(144, 238, 144, 0.3);
+                                border: 10px solid lightgreen;
+                            }
+
+                            #box-model-demo .padding {
+                                position: absolute;
+                                top: 10px;
+                                left: 10px;
+                                right: 10px;
+                                bottom: 10px;
+                                background: rgba(173, 216, 230, 0.3);
+                                border: 1px dashed blue;
+                            }
+
+                            #box-model-demo .content {
+                                position: absolute;
+                                top: 20px;
+                                left: 20px;
+                                right: 20px;
+                                bottom: 20px;
+                                background: linear-gradient(135deg, #667eea, #764ba2);
+                                color: white;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: bold;
+                            }
+                        </style>
+                        <div id="box-model-demo">
+                            <div class="margin" title="Margin"></div>
+                            <div class="border" title="Border"></div>
+                            <div class="padding" title="Padding"></div>
+                            <div class="content" title="Content">CONTENT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Flexbox Section -->
+        <section id="flexbox" class="content-section">
+            <h2 class="category-title">Flexbox Properties</h2>
+            <div class="hierarchy-container">
+                <div class="hierarchy-category">
+                    <h3>CONTAINER PROPERTIES</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">display</span>
+                            <span class="property-values">flex | inline-flex</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">flex-direction</span>
+                            <span class="property-values">row | column | row-reverse | column-reverse</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">justify-content</span>
+                            <span class="property-values">flex-start | center | flex-end | space-between |
+                                space-around</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">align-items</span>
+                            <span class="property-values">stretch | flex-start | center | flex-end | baseline</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="example-preview">
+                    <h4 class="example-title">Flexbox Demo</h4>
+                    <div class="example-demo">
+                        <style>
+                            #flex-demo {
+                                display: flex;
+                                gap: 10px;
+                                padding: 20px;
+                                background: #f0f0f0;
+                                border-radius: 8px;
+                            }
+
+                            #flex-demo div {
+                                flex: 1;
+                                height: 60px;
+                                background: linear-gradient(135deg, #667eea, #764ba2);
+                                border-radius: 4px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-weight: bold;
+                                transition: all 0.3s ease;
+                            }
+
+                            #flex-demo div:hover {
+                                transform: translateY(-5px);
+                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                            }
+                        </style>
+                        <div id="flex-demo">
+                            <div>Flex Item 1</div>
+                            <div>Flex Item 2</div>
+                            <div>Flex Item 3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid Section -->
+        <section id="grid" class="content-section">
+            <h2 class="category-title">CSS Grid Properties</h2>
+            <div class="hierarchy-container">
+                <div class="hierarchy-category">
+                    <h3>GRID CONTAINER</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">display</span>
+                            <span class="property-values">grid | inline-grid</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">grid-template-columns</span>
+                            <span class="property-values">repeat(3, 1fr) | 100px auto 200px</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">grid-template-rows</span>
+                            <span class="property-values">auto | 100px | minmax(100px, auto)</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">gap</span>
+                            <span class="property-values">10px | 20px 10px</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="example-preview">
+                    <h4 class="example-title">Grid Layout Demo</h4>
+                    <div class="example-demo">
+                        <style>
+                            #grid-demo {
+                                display: grid;
+                                grid-template-columns: repeat(3, 1fr);
+                                gap: 10px;
+                                padding: 20px;
+                                background: #f0f0f0;
+                                border-radius: 8px;
+                            }
+
+                            #grid-demo div {
+                                height: 80px;
+                                background: linear-gradient(135deg, #667eea, #764ba2);
+                                border-radius: 4px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-weight: bold;
+                            }
+                        </style>
+                        <div id="grid-demo">
+                            <div>Grid Item 1</div>
+                            <div>Grid Item 2</div>
+                            <div>Grid Item 3</div>
+                            <div>Grid Item 4</div>
+                            <div>Grid Item 5</div>
+                            <div>Grid Item 6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animation Section -->
+        <section id="animation" class="content-section">
+            <h2 class="category-title">Animation Properties</h2>
+            <div class="hierarchy-container">
+                <div class="hierarchy-category">
+                    <h3>TRANSITIONS</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">transition</span>
+                            <span class="property-values">property duration timing-function delay</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">transition-property</span>
+                            <span class="property-values">all | specific properties</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">transition-timing-function</span>
+                            <span class="property-values">ease | linear | ease-in | ease-out | cubic-bezier()</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="example-preview">
+                    <h4 class="example-title">Animation Demo</h4>
+                    <div class="example-demo">
+                        <div class="demo-box" id="animated-box"></div>
+                        <button onclick="animateBox()"
+                            style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Trigger Animation
+                        </button>
+                        <script>
+                            function animateBox() {
+                                const box = document.getElementById('animated-box');
+                                box.style.transform = 'rotate(45deg) scale(1.2)';
+                                setTimeout(() => {
+                                    box.style.transform = '';
+                                }, 1000);
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forms Section -->
+        <section id="forms" class="content-section">
+            <h2 class="category-title">Form Styling Properties</h2>
+            <div class="hierarchy-container">
+                <div class="hierarchy-category">
+                    <h3>FORM STATES</h3>
+                    <ul class="hierarchy-tree">
+                        <li class="tree-item">
+                            <span class="property-name">:focus</span>
+                            <span class="property-values">Element has focus</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">:valid/:invalid</span>
+                            <span class="property-values">Form validation states</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">:disabled</span>
+                            <span class="property-values">Disabled form elements</span>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">::placeholder</span>
+                            <span class="property-values">Placeholder text styling</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="example-preview">
+                    <h4 class="example-title">Form Styling Demo</h4>
+                    <div class="example-demo">
+                        <style>
+                            #form-demo input,
+                            #form-demo select {
+                                width: 100%;
+                                padding: 10px;
+                                margin: 10px 0;
+                                border: 2px solid #e2e8f0;
+                                border-radius: 6px;
+                                transition: all 0.3s ease;
+                            }
+
+                            #form-demo input:focus {
+                                border-color: #667eea;
+                                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                                outline: none;
+                            }
+
+                            #form-demo input:invalid {
+                                border-color: #fc8181;
+                            }
+
+                            #form-demo button {
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                padding: 12px 24px;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                transition: background 0.3s ease;
+                            }
+
+                            #form-demo button:hover {
+                                background: #5a67d8;
+                            }
+                        </style>
+                        <form id="form-demo">
+                            <input type="text" placeholder="Enter your name" required>
+                            <input type="email" placeholder="Enter your email" required>
+                            <select>
+                                <option>Option 1</option>
+                                <option>Option 2</option>
+                                <option>Option 3</option>
+                            </select>
+                            <button type="submit">Submit Form</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>CSS Properties Hierarchy Reference</p>
+            <div class="quick-links">
+                <a href="#selectors" class="quick-link" onclick="showSection('selectors')">Selectors</a>
+                <a href="#box-model" class="quick-link" onclick="showSection('box-model')">Box Model</a>
+                <a href="#flexbox" class="quick-link" onclick="showSection('flexbox')">Flexbox</a>
+                <a href="#grid" class="quick-link" onclick="showSection('grid')">Grid</a>
+                <a href="#animation" class="quick-link" onclick="showSection('animation')">Animation</a>
+                <a href="#forms" class="quick-link" onclick="showSection('forms')">Forms</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Tab Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and sections
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding section
+                tab.classList.add('active');
+                const sectionId = tab.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Quick link navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                const sections = ['selectors', 'box-model', 'flexbox', 'grid', 'animation', 'forms'];
+                const current = document.querySelector('.content-section.active').id;
+                const currentIndex = sections.indexOf(current);
+
+                if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    showSection(sections[currentIndex - 1]);
+                } else if (e.key === 'ArrowRight' && currentIndex < sections.length - 1) {
+                    showSection(sections[currentIndex + 1]);
+                }
+            }
+        });
+
+        // Print functionality
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+
+</html>
