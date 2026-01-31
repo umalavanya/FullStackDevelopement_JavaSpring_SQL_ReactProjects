@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil Painting Eye - CSS Art</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Canvas Effect */
+        .canvas-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            filter: blur(1px);
+            z-index: 1;
+        }
+
+        .eye-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            transform: rotate(-5deg);
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Eye Socket - Oil Painting Texture */
+        .eye-socket {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                /* Base skin tones - layered for oil paint effect */
+                radial-gradient(ellipse at 30% 40%, #e8b59a 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, #d49a7c 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, #c68b6a 0%, transparent 60%),
+                linear-gradient(135deg, #b57a5a 0%, #9c6248 100%);
+
+            border-radius: 50%;
+
+            /* Oil painting texture effects */
+            box-shadow:
+                /* Inner shadows for depth */
+                inset 20px 20px 40px rgba(0, 0, 0, 0.2),
+                inset -20px -20px 40px rgba(255, 255, 255, 0.1),
+
+                /* Outer shadows */
+                0 0 60px rgba(0, 0, 0, 0.3),
+                20px 20px 60px rgba(0, 0, 0, 0.4);
+
+            /* Brush stroke simulation */
+            background-blend-mode: multiply, overlay, normal;
+
+            /* Texture overlay */
+            background-image:
+                repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.03) 2px,
+                    rgba(255, 255, 255, 0.03) 4px),
+                repeating-linear-gradient(-45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.02) 2px,
+                    rgba(0, 0, 0, 0.02) 4px);
+        }
+
+        /* Eyelid */
+        .eyelid {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 50%;
+            background:
+                radial-gradient(ellipse at 50% 0%, #8b4513 0%, #5d2906 70%),
+                linear-gradient(to bottom,
+                    rgba(139, 69, 19, 0.8) 0%,
+                    rgba(93, 41, 6, 0.9) 50%,
+                    rgba(46, 23, 3, 1) 100%);
+            border-radius: 50% 50% 40% 40%;
+            box-shadow:
+                inset 0 10px 20px rgba(0, 0, 0, 0.4),
+                inset 0 -5px 15px rgba(255, 255, 255, 0.1),
+                0 5px 30px rgba(0, 0, 0, 0.5);
+
+            /* Eyelash texture */
+            background-image:
+                radial-gradient(ellipse at 30% 10%,
+                    transparent 0%,
+                    transparent 40%,
+                    rgba(0, 0, 0, 0.8) 70%,
+                    rgba(0, 0, 0, 1) 100%),
+                radial-gradient(ellipse at 70% 10%,
+                    transparent 0%,
+                    transparent 40%,
+                    rgba(0, 0, 0, 0.8) 70%,
+                    rgba(0, 0, 0, 1) 100%);
+            z-index: 2;
+        }
+
+        /* Eyeball */
+        .eyeball {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle at 30% 30%, white 0%, #f0f0f0 100%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 40px rgba(255, 255, 255, 0.8),
+                inset 0 0 60px rgba(255, 255, 255, 0.6),
+                0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            z-index: 3;
+        }
+
+        /* Iris */
+        .iris {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background:
+                radial-gradient(circle at 30% 30%,
+                    #1a472a 0%,
+                    #2e8b57 20%,
+                    #3cb371 40%,
+                    #90ee90 60%),
+                radial-gradient(circle at 70% 30%,
+                    #006400 0%,
+                    #228b22 30%,
+                    #32cd32 60%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 50px rgba(0, 0, 0, 0.8),
+                inset 0 0 30px rgba(0, 100, 0, 0.9),
+                0 0 40px rgba(0, 100, 0, 0.6);
+
+            /* Iris texture - oil painting strokes */
+            background-image:
+                repeating-radial-gradient(circle at 40% 40%,
+                    rgba(0, 100, 0, 0.5) 0%,
+                    transparent 2%,
+                    transparent 4%),
+                radial-gradient(circle at 40% 40%,
+                    rgba(50, 205, 50, 0.8) 0%,
+                    transparent 30%);
+        }
+
+        /* Pupil */
+        .pupil {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35%;
+            height: 35%;
+            background: radial-gradient(circle at 30% 30%, #000 0%, #111 100%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 30px rgba(255, 255, 255, 0.1),
+                0 0 20px rgba(0, 0, 0, 0.8);
+
+            /* Depth effect in pupil */
+            background-image:
+                radial-gradient(circle at 40% 40%,
+                    rgba(50, 50, 50, 0.8) 0%,
+                    transparent 70%);
+        }
+
+        /* Highlights - Oil Painting Style */
+        .highlight {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+            filter: blur(1px);
+            z-index: 4;
+        }
+
+        .highlight-1 {
+            width: 20%;
+            height: 20%;
+            top: 25%;
+            left: 30%;
+            opacity: 0.8;
+        }
+
+        .highlight-2 {
+            width: 15%;
+            height: 15%;
+            top: 35%;
+            left: 60%;
+            opacity: 0.6;
+        }
+
+        /* Eyebrow - Brush Stroke Effect */
+        .eyebrow {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg);
+            width: 80%;
+            height: 40px;
+            background:
+                linear-gradient(to right,
+                    #5d2906 0%,
+                    #8b4513 30%,
+                    #a0522d 50%,
+                    #8b4513 70%,
+                    #5d2906 100%);
+
+            /* Brush stroke texture */
+            clip-path: polygon(0% 100%,
+                    5% 0%, 15% 100%,
+                    25% 0%, 35% 100%,
+                    45% 0%, 55% 100%,
+                    65% 0%, 75% 100%,
+                    85% 0%, 95% 100%,
+                    100% 0%);
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.4),
+                inset 0 -2px 10px rgba(255, 255, 255, 0.1);
+
+            /* Individual hair effect */
+            background-image:
+                repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 1px,
+                    rgba(0, 0, 0, 0.2) 1px,
+                    rgba(0, 0, 0, 0.2) 3px);
+            z-index: 1;
+        }
+
+        /* Tear Duct */
+        .tear-duct {
+            position: absolute;
+            top: 45%;
+            left: 18%;
+            width: 8%;
+            height: 8%;
+            background: radial-gradient(circle at 30% 30%, #ffcccb 0%, #ff9999 100%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 10px rgba(255, 255, 255, 0.5),
+                0 0 10px rgba(255, 200, 200, 0.3);
+            z-index: 3;
+        }
+
+        /* Oil Painting Canvas Texture Overlay */
+        .canvas-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.005' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E"),
+                linear-gradient(45deg,
+                    transparent 49%,
+                    rgba(255, 255, 255, 0.03) 50%,
+                    transparent 51%);
+            mix-blend-mode: overlay;
+            opacity: 0.4;
+            z-index: 5;
+        }
+
+        /* Paint Stroke Details */
+        .paint-stroke {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            filter: blur(2px);
+            z-index: 2;
+        }
+
+        .stroke-1 {
+            width: 40%;
+            height: 10%;
+            top: 20%;
+            left: 20%;
+            transform: rotate(45deg);
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .stroke-2 {
+            width: 30%;
+            height: 8%;
+            bottom: 25%;
+            right: 20%;
+            transform: rotate(-30deg);
+            background: linear-gradient(-30deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+        }
+
+        /* Signature */
+        .signature {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Brush Script MT', cursive;
+            font-size: 24px;
+            transform: rotate(-5deg);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* Title */
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 24px;
+            font-weight: normal;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* Frame */
+        .frame {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            border: 20px solid #5d2906;
+            border-image:
+                linear-gradient(45deg, #8b4513, #5d2906, #3d1f06) 1;
+            box-shadow:
+                inset 0 0 40px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(0, 0, 0, 0.7),
+                0 0 100px rgba(139, 69, 19, 0.3);
+            z-index: 0;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            position: absolute;
+            left: -300px;
+            background: rgba(26, 26, 46, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            width: 250px;
+            border: 1px solid rgba(139, 69, 19, 0.5);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-panel h3 {
+            color: #d49a7c;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.5);
+            padding-bottom: 5px;
+        }
+
+        .info-panel ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .info-panel li {
+            margin: 8px 0;
+            color: #ccc;
+        }
+
+        .info-panel .technique {
+            color: #90ee90;
+            font-style: italic;
+        }
+
+        /* Animation for subtle movement */
+        @keyframes subtleBlink {
+
+            0%,
+            90%,
+            100% {
+                transform: translate(-50%, -50%) scaleY(1);
+            }
+
+            95% {
+                transform: translate(-50%, -50%) scaleY(0.85);
+            }
+        }
+
+        .eyelid {
+            animation: subtleBlink 8s infinite ease-in-out;
+        }
+
+        @keyframes lightShift {
+
+            0%,
+            100% {
+                filter: brightness(1) contrast(1);
+            }
+
+            50% {
+                filter: brightness(1.05) contrast(1.1);
+            }
+        }
+
+        .eyeball {
+            animation: lightShift 10s infinite ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="canvas-effect"></div>
+        <div class="frame"></div>
+
+        <div class="eye-container">
+            <div class="eyebrow"></div>
+            <div class="eye-socket">
+                <div class="paint-stroke stroke-1"></div>
+                <div class="paint-stroke stroke-2"></div>
+            </div>
+            <div class="eyelid"></div>
+            <div class="eyeball">
+                <div class="iris">
+                    <div class="pupil"></div>
+                </div>
+                <div class="highlight highlight-1"></div>
+                <div class="highlight highlight-2"></div>
+                <div class="tear-duct"></div>
+            </div>
+            <div class="canvas-texture"></div>
+        </div>
+
+        <div class="signature">Van Gogh</div>
+        <div class="title">OIL PAINTING EYE</div>
+
+        <div class="info-panel">
+            <h3>Oil Painting Techniques</h3>
+            <ul>
+                <li><span class="technique">Layered Gradients</span> - Simulating paint layers</li>
+                <li><span class="technique">Brush Stroke Textures</span> - Using clip-path and gradients</li>
+                <li><span class="technique">Impasto Effect</span> - Multiple box-shadows for depth</li>
+                <li><span class="technique">Glazing</span> - Overlay blend modes</li>
+                <li><span class="technique">Canvas Texture</span> - SVG noise filter overlay</li>
+                <li><span class="technique">Chiaroscuro</span> - Strong light/dark contrast</li>
+                <li><span class="technique">Sfumato</span> - Soft blending at edges</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add subtle interactive effects
+        document.addEventListener('mousemove', (e) => {
+            const eye = document.querySelector('.eye-container');
+            const pupil = document.querySelector('.pupil');
+            const rect = eye.getBoundingClientRect();
+            const eyeCenterX = rect.left + rect.width / 2;
+            const eyeCenterY = rect.top + rect.height / 2;
+
+            const angleX = (e.clientX - eyeCenterX) / 50;
+            const angleY = (e.clientY - eyeCenterY) / 50;
+
+            pupil.style.transform = `translate(-50%, -50%) translate(${angleX}px, ${angleY}px)`;
+        });
+
+        // Random blinking
+        setInterval(() => {
+            const eyelid = document.querySelector('.eyelid');
+            eyelid.style.animation = 'none';
+            setTimeout(() => {
+                eyelid.style.animation = 'subtleBlink 8s infinite ease-in-out';
+            }, 10);
+        }, 8000);
+    </script>
+</body>
+
+</html>

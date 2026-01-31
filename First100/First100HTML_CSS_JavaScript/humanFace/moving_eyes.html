@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Following Eyes - CSS Art</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .eyes-wrapper {
+            display: flex;
+            gap: 100px;
+            position: relative;
+        }
+
+        /* Individual Eye Container */
+        .eye-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        /* Eye Socket */
+        .eye-socket {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 30% 40%, #e8b59a 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, #d49a7c 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, #c68b6a 0%, transparent 60%);
+            border-radius: 50%;
+            box-shadow:
+                inset 20px 20px 40px rgba(0, 0, 0, 0.2),
+                inset -20px -20px 40px rgba(255, 255, 255, 0.1),
+                0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Eyelid */
+        .eyelid {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 50%;
+            background:
+                radial-gradient(ellipse at 50% 0%, #8b4513 0%, #5d2906 70%),
+                linear-gradient(to bottom,
+                    rgba(139, 69, 19, 0.8) 0%,
+                    rgba(93, 41, 6, 0.9) 50%,
+                    rgba(46, 23, 3, 1) 100%);
+            border-radius: 50% 50% 40% 40%;
+            box-shadow:
+                inset 0 10px 20px rgba(0, 0, 0, 0.4),
+                inset 0 -5px 15px rgba(255, 255, 255, 0.1),
+                0 5px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        /* Eyeball */
+        .eyeball {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle at 30% 30%, white 0%, #f0f0f0 100%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 40px rgba(255, 255, 255, 0.8),
+                inset 0 0 60px rgba(255, 255, 255, 0.6),
+                0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            z-index: 3;
+        }
+
+        /* Iris */
+        .iris {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background:
+                radial-gradient(circle at 30% 30%,
+                    #1a472a 0%,
+                    #2e8b57 20%,
+                    #3cb371 40%,
+                    #90ee90 60%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 50px rgba(0, 0, 0, 0.8),
+                inset 0 0 30px rgba(0, 100, 0, 0.9),
+                0 0 40px rgba(0, 100, 0, 0.6);
+            transition: transform 0.1s linear;
+        }
+
+        /* Pupil - This will follow cursor */
+        .pupil {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35%;
+            height: 35%;
+            background: radial-gradient(circle at 30% 30%, #000 0%, #111 100%);
+            border-radius: 50%;
+            box-shadow:
+                inset 0 0 30px rgba(255, 255, 255, 0.1),
+                0 0 20px rgba(0, 0, 0, 0.8);
+            transition: transform 0.1s linear;
+        }
+
+        /* Highlights */
+        .highlight {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+            filter: blur(1px);
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .highlight-1 {
+            width: 20%;
+            height: 20%;
+            top: 25%;
+            left: 30%;
+            opacity: 0.8;
+        }
+
+        .highlight-2 {
+            width: 15%;
+            height: 15%;
+            top: 35%;
+            left: 60%;
+            opacity: 0.6;
+        }
+
+        /* Eyebrow */
+        .eyebrow {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background:
+                linear-gradient(to right,
+                    #5d2906 0%,
+                    #8b4513 30%,
+                    #a0522d 50%,
+                    #8b4513 70%,
+                    #5d2906 100%);
+            clip-path: polygon(0% 100%,25% 0%,45% 0%, 
+                    65% 0%,90% 0%,100% 100%,90% 100%);
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.4),
+                inset 0 -2px 10px rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        /* Blinking animation */
+        @keyframes blink {
+
+            0%,
+            90%,
+            100% {
+                transform: translateX(-50%) scaleY(1);
+            }
+
+            95% {
+                transform: translateX(-50%) scaleY(0.1);
+            }
+        }
+
+        .eyelid {
+            animation: blink 5s infinite ease-in-out;
+            
+        }
+
+        /* Title */
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 24px;
+            font-family: 'Georgia', serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Custom cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Movement limits indicator */
+        .movement-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .grid-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .horizontal {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .vertical {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="custom-cursor"></div>
+
+    <div class="container">
+        <div class="movement-grid">
+            <div class="grid-line horizontal"></div>
+            <div class="grid-line vertical"></div>
+        </div>
+
+        <div class="title">FOLLOWING EYES</div>
+
+        <div class="eyes-wrapper">
+            <!-- Left Eye -->
+            <div class="eye-container" id="left-eye">
+                <div class="eyebrow"></div>
+                <div class="eye-socket"></div>
+                <div class="eyelid"></div>
+                <div class="eyeball">
+                    <div class="iris">
+                        <div class="pupil" id="left-pupil"></div>
+                    </div>
+                    <div class="highlight highlight-1"></div>
+                    <div class="highlight highlight-2"></div>
+                </div>
+            </div>
+
+            <!-- Right Eye -->
+            <div class="eye-container" id="right-eye">
+                <div class="eyebrow"></div>
+                <div class="eye-socket"></div>
+                <div class="eyelid"></div>
+                <div class="eyeball">
+                    <div class="iris">
+                        <div class="pupil" id="right-pupil"></div>
+                    </div>
+                    <div class="highlight highlight-1"></div>
+                    <div class="highlight highlight-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            Move your cursor around - the eyes will follow you
+        </div>
+    </div>
+
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.custom-cursor');
+
+        // Pupil elements
+        const leftPupil = document.getElementById('left-pupil');
+        const rightPupil = document.getElementById('right-pupil');
+
+        // Eye containers for positioning
+        const leftEye = document.getElementById('left-eye');
+        const rightEye = document.getElementById('right-eye');
+
+        // Variables to store previous positions for smooth movement
+        let lastLeftX = 0;
+        let lastLeftY = 0;
+        let lastRightX = 0;
+        let lastRightY = 0;
+
+        // Maximum pupil movement range (percentage of iris)
+        const MAX_MOVEMENT = 20; // pixels
+
+        // Follow mouse movement
+        document.addEventListener('mousemove', (e) => {
+            // Update custom cursor position
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+
+            // Calculate movement for left eye
+            const leftEyeRect = leftEye.getBoundingClientRect();
+            const leftEyeCenterX = leftEyeRect.left + leftEyeRect.width / 2;
+            const leftEyeCenterY = leftEyeRect.top + leftEyeRect.height / 2;
+
+            // Calculate movement for right eye
+            const rightEyeRect = rightEye.getBoundingClientRect();
+            const rightEyeCenterX = rightEyeRect.left + rightEyeRect.width / 2;
+            const rightEyeCenterY = rightEyeRect.top + rightEyeRect.height / 2;
+
+            // Calculate distances from mouse to eye centers
+            const leftDeltaX = e.clientX - leftEyeCenterX;
+            const leftDeltaY = e.clientY - leftEyeCenterY;
+
+            const rightDeltaX = e.clientX - rightEyeCenterX;
+            const rightDeltaY = e.clientY - rightEyeCenterY;
+
+            // Calculate distances (for speed control)
+            const leftDistance = Math.sqrt(leftDeltaX * leftDeltaX + leftDeltaY * leftDeltaY);
+            const rightDistance = Math.sqrt(rightDeltaX * rightDeltaX + rightDeltaY * rightDeltaY);
+
+            // Normalize and limit movement for left eye
+            const leftMoveX = (leftDeltaX / leftDistance) * Math.min(MAX_MOVEMENT, leftDistance / 15);
+            const leftMoveY = (leftDeltaY / leftDistance) * Math.min(MAX_MOVEMENT, leftDistance / 15);
+
+            // Normalize and limit movement for right eye
+            const rightMoveX = (rightDeltaX / rightDistance) * Math.min(MAX_MOVEMENT, rightDistance / 15);
+            const rightMoveY = (rightDeltaY / rightDistance) * Math.min(MAX_MOVEMENT, rightDistance / 15);
+
+            // Smooth the movement using lerp (linear interpolation)
+            const smoothFactor = 0.3;
+            lastLeftX = lastLeftX + (leftMoveX - lastLeftX) * smoothFactor;
+            lastLeftY = lastLeftY + (leftMoveY - lastLeftY) * smoothFactor;
+            lastRightX = lastRightX + (rightMoveX - lastRightX) * smoothFactor;
+            lastRightY = lastRightY + (rightMoveY - lastRightY) * smoothFactor;
+
+            // Apply the smoothed movement
+            leftPupil.style.transform = `translate(-50%, -50%) translate(${lastLeftX}px, ${lastLeftY}px)`;
+            rightPupil.style.transform = `translate(-50%, -50%) translate(${lastRightX}px, ${lastRightY}px)`;
+
+            // Also move the iris slightly for more realistic effect
+            const irisMoveFactor = 0.3;
+            leftPupil.parentElement.style.transform =
+                `translate(-50%, -50%) translate(${lastLeftX * irisMoveFactor}px, ${lastLeftY * irisMoveFactor}px)`;
+            rightPupil.parentElement.style.transform =
+                `translate(-50%, -50%) translate(${lastRightX * irisMoveFactor}px, ${lastRightY * irisMoveFactor}px)`;
+        });
+
+        // Click to blink
+        document.addEventListener('click', () => {
+            const eyelids = document.querySelectorAll('.eyelid');
+
+            eyelids.forEach(eyelid => {
+                // Reset animation
+                eyelid.style.animation = 'none';
+
+                // Force a blink
+                eyelid.style.transform = 'translateX(-50%) scaleY(0.1)';
+
+                // Return to normal
+                setTimeout(() => {
+                    eyelid.style.transform = 'translateX(-50%) scaleY(1)';
+
+                    // Restart animation after a short delay
+                    setTimeout(() => {
+                        eyelid.style.animation = 'blink 5s infinite ease-in-out';
+                    }, 100);
+                }, 150);
+            });
+        });
+
+        // Random blinking (besides the regular animation)
+        function randomBlink() {
+            const eyelids = document.querySelectorAll('.eyelid');
+
+            // Only trigger if eyes are not already in the middle of a blink
+            eyelids.forEach(eyelid => {
+                if (Math.random() > 0.7) { // 30% chance
+                    eyelid.style.animation = 'none';
+                    setTimeout(() => {
+                        eyelid.style.animation = 'blink 5s infinite ease-in-out';
+                    }, 10);
+                }
+            });
+
+            // Schedule next random blink
+            setTimeout(randomBlink, 1000 + Math.random() * 4000);
+        }
+
+        // Start random blinking
+        randomBlink();
+
+        // Eye tracking when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            // Eyes look forward when mouse leaves
+            lastLeftX = 0;
+            lastLeftY = 0;
+            lastRightX = 0;
+            lastRightY = 0;
+
+            leftPupil.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+            rightPupil.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+
+            leftPupil.parentElement.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+            rightPupil.parentElement.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+        });
+
+        // Eye tracking when mouse enters window
+        document.addEventListener('mouseenter', () => {
+            // Eyes will update on next mousemove event
+        });
+
+        // Touch support for mobile devices
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches.length > 0) {
+                const touch = e.touches[0];
+
+                // Update custom cursor position
+                cursor.style.left = touch.clientX + 'px';
+                cursor.style.top = touch.clientY + 'px';
+
+                // Use the same eye tracking logic as mousemove
+                const leftEyeRect = leftEye.getBoundingClientRect();
+                const leftEyeCenterX = leftEyeRect.left + leftEyeRect.width / 2;
+                const leftEyeCenterY = leftEyeRect.top + leftEyeRect.height / 2;
+
+                const rightEyeRect = rightEye.getBoundingClientRect();
+                const rightEyeCenterX = rightEyeRect.left + rightEyeRect.width / 2;
+                const rightEyeCenterY = rightEyeRect.top + rightEyeRect.height / 2;
+
+                const leftDeltaX = touch.clientX - leftEyeCenterX;
+                const leftDeltaY = touch.clientY - leftEyeCenterY;
+                const rightDeltaX = touch.clientX - rightEyeCenterX;
+                const rightDeltaY = touch.clientY - rightEyeCenterY;
+
+                const leftDistance = Math.sqrt(leftDeltaX * leftDeltaX + leftDeltaY * leftDeltaY);
+                const rightDistance = Math.sqrt(rightDeltaX * rightDeltaX + rightDeltaY * rightDeltaY);
+
+                const leftMoveX = (leftDeltaX / leftDistance) * Math.min(MAX_MOVEMENT, leftDistance / 15);
+                const leftMoveY = (leftDeltaY / leftDistance) * Math.min(MAX_MOVEMENT, leftDistance / 15);
+                const rightMoveX = (rightDeltaX / rightDistance) * Math.min(MAX_MOVEMENT, rightDistance / 15);
+                const rightMoveY = (rightDeltaY / rightDistance) * Math.min(MAX_MOVEMENT, rightDistance / 15);
+
+                leftPupil.style.transform = `translate(-50%, -50%) translate(${leftMoveX}px, ${leftMoveY}px)`;
+                rightPupil.style.transform = `translate(-50%, -50%) translate(${rightMoveX}px, ${rightMoveY}px)`;
+            }
+        });
+
+        // Initialize eyes to look forward
+        window.addEventListener('load', () => {
+            leftPupil.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+            rightPupil.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+        });
+    </script>
+</body>
+
+</html>

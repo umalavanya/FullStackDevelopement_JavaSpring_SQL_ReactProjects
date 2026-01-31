@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Box-Shadow Examples</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .demo-box {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .code-snippet {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ====== EXAMPLE SHADOWS ====== */
+
+        /* 1. Basic Shadow */
+        .basic-shadow {
+            box-shadow: 10px 10px #4a5568;
+        }
+
+        /* 2. Soft Shadow */
+        .soft-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 3. Floating Card */
+        .floating-card {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 4. Deep Shadow */
+        .deep-shadow {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 5. Inset Shadow */
+        .inset-shadow {
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 6. Multiple Shadows */
+        .multiple-shadows {
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.1),
+                0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 7. Colored Shadow */
+        .colored-shadow {
+            box-shadow: 0 10px 20px rgba(255, 0, 100, 0.3);
+        }
+
+        /* 8. Spread Shadow */
+        .spread-shadow {
+            box-shadow: 0 0 0 10px rgba(66, 153, 225, 0.5);
+        }
+
+        /* 9. Bottom Only Shadow */
+        .bottom-shadow {
+            box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 10. Neon Glow */
+        .neon-glow {
+            box-shadow:
+                0 0 10px #0ff,
+                0 0 20px #0ff,
+                0 0 30px #0ff;
+        }
+
+        /* 11. Material Design */
+        .material-design {
+            box-shadow:
+                0 1px 3px rgba(0, 0, 0, 0.12),
+                0 1px 2px rgba(0, 0, 0, 0.24);
+            transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+        }
+
+        .material-design:hover {
+            box-shadow:
+                0 14px 28px rgba(0, 0, 0, 0.25),
+                0 10px 10px rgba(0, 0, 0, 0.22);
+        }
+
+        /* 12. Text Shadow Effect */
+        .text-shadow-box {
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+            background: transparent;
+            color: #333;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 13. Button Press Effect */
+        .button-press {
+            box-shadow: 0 4px 0 #2d3748;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .button-press:active {
+            box-shadow: 0 1px 0 #2d3748;
+            transform: translateY(3px);
+        }
+
+        /* 14. Circular Glow */
+        .circular-glow {
+            border-radius: 50%;
+            box-shadow:
+                0 0 20px rgba(66, 153, 225, 0.5),
+                inset 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 15. Complex Layered */
+        .complex-layered {
+            box-shadow:
+                5px 5px 0 #4a5568,
+                10px 10px 0 #718096,
+                15px 15px 0 #a0aec0;
+        }
+
+        /* Explanation Section */
+        .explanation {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .property-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .property-table th,
+        .property-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .property-table th {
+            background: #f7fafc;
+            font-weight: 600;
+        }
+
+        .property-table code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Example 1: Basic Shadow -->
+    <div class="example-card">
+        <h2>1. Basic Shadow</h2>
+        <div class="demo-box basic-shadow">10px 10px gray</div>
+        <div class="code-snippet">box-shadow: 10px 10px #4a5568;</div>
+    </div>
+
+    <!-- Example 2: Soft Shadow -->
+    <div class="example-card">
+        <h2>2. Soft Shadow</h2>
+        <div class="demo-box soft-shadow">0 4px 6px rgba(0,0,0,0.1)</div>
+        <div class="code-snippet">box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);</div>
+    </div>
+
+    <!-- Example 3: Floating Card -->
+    <div class="example-card">
+        <h2>3. Floating Card</h2>
+        <div class="demo-box floating-card">0 10px 25px rgba(0,0,0,0.1)</div>
+        <div class="code-snippet">box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);</div>
+    </div>
+
+    <!-- Example 4: Deep Shadow -->
+    <div class="example-card">
+        <h2>4. Deep Shadow</h2>
+        <div class="demo-box deep-shadow">0 20px 40px rgba(0,0,0,0.2)</div>
+        <div class="code-snippet">box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);</div>
+    </div>
+
+    <!-- Example 5: Inset Shadow -->
+    <div class="example-card">
+        <h2>5. Inset (Inner) Shadow</h2>
+        <div class="demo-box inset-shadow">inset 0 0 20px rgba(0,0,0,0.3)</div>
+        <div class="code-snippet">box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);</div>
+    </div>
+
+    <!-- Example 6: Multiple Shadows -->
+    <div class="example-card">
+        <h2>6. Multiple Shadows</h2>
+        <div class="demo-box multiple-shadows">Layered Shadows</div>
+        <div class="code-snippet">box-shadow:
+            0 2px 4px rgba(0,0,0,0.1),
+            0 4px 8px rgba(0,0,0,0.1),
+            0 8px 16px rgba(0,0,0,0.1);</div>
+    </div>
+
+    <!-- Example 7: Colored Shadow -->
+    <div class="example-card">
+        <h2>7. Colored Shadow</h2>
+        <div class="demo-box colored-shadow">0 10px 20px rgba(255,0,100,0.3)</div>
+        <div class="code-snippet">box-shadow: 0 10px 20px rgba(255, 0, 100, 0.3);</div>
+    </div>
+
+    <!-- Example 8: Spread Shadow -->
+    <div class="example-card">
+        <h2>8. Spread Shadow</h2>
+        <div class="demo-box spread-shadow">0 0 0 10px rgba(66,153,225,0.5)</div>
+        <div class="code-snippet">box-shadow: 0 0 0 10px rgba(66, 153, 225, 0.5);</div>
+    </div>
+
+    <!-- Example 9: Bottom Only -->
+    <div class="example-card">
+        <h2>9. Bottom Only Shadow</h2>
+        <div class="demo-box bottom-shadow">0 10px 10px -5px rgba(0,0,0,0.3)</div>
+        <div class="code-snippet">box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.3);</div>
+    </div>
+
+    <!-- Example 10: Neon Glow -->
+    <div class="example-card">
+        <h2>10. Neon Glow</h2>
+        <div class="demo-box neon-glow">Neon Effect</div>
+        <div class="code-snippet">box-shadow:
+            0 0 10px #0ff,
+            0 0 20px #0ff,
+            0 0 30px #0ff;</div>
+    </div>
+
+    <!-- Example 11: Material Design -->
+    <div class="example-card">
+        <h2>11. Material Design</h2>
+        <div class="demo-box material-design">Hover Me!</div>
+        <div class="code-snippet">/* Has hover effect */
+            box-shadow:
+            0 1px 3px rgba(0,0,0,0.12),
+            0 1px 2px rgba(0,0,0,0.24);</div>
+    </div>
+
+    <!-- Example 12: Text Shadow -->
+    <div class="example-card">
+        <h2>12. Text Shadow Effect</h2>
+        <div class="demo-box text-shadow-box">Text</div>
+        <div class="code-snippet">box-shadow: 0 0 1px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);</div>
+    </div>
+
+    <!-- Example 13: Button Press -->
+    <div class="example-card">
+        <h2>13. Button Press Effect</h2>
+        <div class="demo-box button-press">Click Me!</div>
+        <div class="code-snippet">/* Normal */
+            box-shadow: 0 4px 0 #2d3748;
+
+            /* Active/Pressed */
+            box-shadow: 0 1px 0 #2d3748;
+            transform: translateY(3px);</div>
+    </div>
+
+    <!-- Example 14: Circular Glow -->
+    <div class="example-card">
+        <h2>14. Circular Glow</h2>
+        <div class="demo-box circular-glow">●</div>
+        <div class="code-snippet">border-radius: 50%;
+            box-shadow:
+            0 0 20px rgba(66,153,225,0.5),
+            inset 0 0 20px rgba(255,255,255,0.8);</div>
+    </div>
+
+    <!-- Example 15: Complex Layered -->
+    <div class="example-card">
+        <h2>15. Complex Layered</h2>
+        <div class="demo-box complex-layered">3D Effect</div>
+        <div class="code-snippet">box-shadow:
+            5px 5px 0 #4a5568,
+            10px 10px 0 #718096,
+            15px 15px 0 #a0aec0;</div>
+    </div>
+
+    <!-- Explanation Section -->
+    <div class="explanation">
+        <h2>📖 Box-Shadow Property Explained</h2>
+
+        <table class="property-table">
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Description</th>
+                    <th>Required</th>
+                    <th>Default</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>offset-x</code></td>
+                    <td>Horizontal shadow position<br>Positive = right, Negative = left</td>
+                    <td>Required</td>
+                    <td>0</td>
+                    <td><code>10px</code></td>
+                </tr>
+                <tr>
+                    <td><code>offset-y</code></td>
+                    <td>Vertical shadow position<br>Positive = down, Negative = up</td>
+                    <td>Required</td>
+                    <td>0</td>
+                    <td><code>5px</code></td>
+                </tr>
+                <tr>
+                    <td><code>blur-radius</code></td>
+                    <td>Blur amount (higher = more blurry)</td>
+                    <td>Optional</td>
+                    <td>0</td>
+                    <td><code>10px</code></td>
+                </tr>
+                <tr>
+                    <td><code>spread-radius</code></td>
+                    <td>Shadow size (positive = expand, negative = shrink)</td>
+                    <td>Optional</td>
+                    <td>0</td>
+                    <td><code>5px</code></td>
+                </tr>
+                <tr>
+                    <td><code>color</code></td>
+                    <td>Shadow color</td>
+                    <td>Optional</td>
+                    <td>Current text color</td>
+                    <td><code>#000</code>, <code>rgba(0,0,0,0.5)</code></td>
+                </tr>
+                <tr>
+                    <td><code>inset</code></td>
+                    <td>Changes shadow to inner shadow</td>
+                    <td>Optional</td>
+                    <td>outer</td>
+                    <td><code>inset</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin-top: 30px;">🎯 Key Concepts:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>RGBA colors are best</strong> for shadows: <code>rgba(0,0,0,0.1)</code> allows transparency</li>
+            <li><strong>Multiple shadows</strong> create depth and realistic effects</li>
+            <li><strong>Negative spread</strong> can create "cut-out" effects</li>
+            <li><strong>Performance</strong: Avoid excessive blur on many elements</li>
+            <li><strong>Use inset shadows</strong> for pressed/embossed effects</li>
+        </ul>
+
+        <h3 style="margin-top: 30px;">💡 Pro Tips:</h3>
+        <div class="code-snippet" style="margin-top: 10px;">
+            /* 1. Smooth transitions */
+            transition: box-shadow 0.3s ease;
+
+            /* 2. Material Design Elevation */
+            box-shadow:
+            0 2px 4px rgba(0,0,0,0.1),
+            0 4px 8px rgba(0,0,0,0.1);
+
+            /* 3. Create depth with multiple shadows */
+            box-shadow:
+            0 1px 3px rgba(0,0,0,0.12), /* subtle close shadow */
+            0 10px 20px rgba(0,0,0,0.1); /* soft far shadow */
+
+            /* 4. Text shadow vs box shadow */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* for containers */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* for text */
+        </div>
+
+        <h3 style="margin-top: 30px;">🔍 Browser Support:</h3>
+        <p>box-shadow is supported in all modern browsers (Chrome, Firefox, Safari, Edge).</p>
+        <p>For very old browsers (IE8-), use filters or images as fallbacks.</p>
+    </div>
+
+</body>
+
+</html>

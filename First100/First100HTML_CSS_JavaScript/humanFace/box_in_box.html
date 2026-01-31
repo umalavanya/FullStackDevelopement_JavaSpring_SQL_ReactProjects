@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clip-Path Portrait Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+        }
+
+        .studio-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .canvas-info {
+            color: #ecf0f1;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* MAIN CANVAS - 500x500px */
+        .portrait-canvas {
+            width: 500px;
+            height: 500px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            margin: 0 auto 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ALL SHAPES ARE ABSOLUTELY POSITIONED DIVS */
+        .face-part {
+            position: absolute;
+            background: #f5cba7;
+            /* Skin tone */
+        }
+
+        /* ===== FACE STRUCTURE USING CLIP-PATH ===== */
+
+        /* Face Outline */
+        .face {
+            width: 300px;
+            height: 400px;
+            top: 50px;
+            left: 100px;
+            background: #f5cba7;
+            clip-path: polygon(50% 0%,
+                    85% 10%,
+                    95% 25%,
+                    98% 45%,
+                    95% 70%,
+                    85% 85%,
+                    70% 95%,
+                    50% 100%,
+                    30% 95%,
+                    15% 85%,
+                    5% 70%,
+                    2% 45%,
+                    5% 25%,
+                    15% 10%);
+        }
+
+        /* Forehead */
+        .forehead {
+            width: 180px;
+            height: 100px;
+            top: 60px;
+            left: 160px;
+            background: #f5cba7;
+            clip-path: polygon(0% 0%,
+                    100% 0%,
+                    85% 100%,
+                    15% 100%);
+        }
+
+        /* Left Cheek */
+        .cheek-left {
+            width: 120px;
+            height: 150px;
+            top: 200px;
+            left: 90px;
+            background: #f5cba7;
+            clip-path: ellipse(40% 50% at 50% 50%);
+            opacity: 0.9;
+        }
+
+        /* Right Cheek */
+        .cheek-right {
+            width: 120px;
+            height: 150px;
+            top: 200px;
+            left: 290px;
+            background: #f5cba7;
+            clip-path: ellipse(40% 50% at 50% 50%);
+            opacity: 0.9;
+        }
+
+        /* Chin */
+        .chin {
+            width: 150px;
+            height: 100px;
+            top: 350px;
+            left: 175px;
+            background: #f5cba7;
+            clip-path: ellipse(50% 40% at 50% 50%);
+        }
+
+        /* ===== EYES USING CLIP-PATH ===== */
+
+        /* Left Eye Socket */
+        .eye-socket-left {
+            width: 80px;
+            height: 50px;
+            top: 160px;
+            left: 140px;
+            background: #d5b79a;
+            clip-path: polygon(0% 50%,
+                    25% 0%,
+                    75% 0%,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%);
+        }
+
+        /* Left Eye */
+        .eye-left {
+            width: 60px;
+            height: 40px;
+            top: 165px;
+            left: 150px;
+            background: white;
+            clip-path: ellipse(50% 40% at 50% 50%);
+        }
+
+        /* Left Iris */
+        .iris-left {
+            width: 30px;
+            height: 30px;
+            top: 175px;
+            left: 165px;
+            background: #2e4053;
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        /* Left Pupil */
+        .pupil-left {
+            width: 15px;
+            height: 15px;
+            top: 182px;
+            left: 172px;
+            background: black;
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        /* Right Eye Socket */
+        .eye-socket-right {
+            width: 80px;
+            height: 50px;
+            top: 160px;
+            left: 280px;
+            background: #d5b79a;
+            clip-path: polygon(0% 50%,
+                    25% 0%,
+                    75% 0%,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%);
+        }
+
+        /* Right Eye */
+        .eye-right {
+            width: 60px;
+            height: 40px;
+            top: 165px;
+            left: 290px;
+            background: white;
+            clip-path: ellipse(50% 40% at 50% 50%);
+        }
+
+        /* Right Iris */
+        .iris-right {
+            width: 30px;
+            height: 30px;
+            top: 175px;
+            left: 305px;
+            background: #2e4053;
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        /* Right Pupil */
+        .pupil-right {
+            width: 15px;
+            height: 15px;
+            top: 182px;
+            left: 312px;
+            background: black;
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        /* ===== NOSE USING CLIP-PATH ===== */
+
+        /* Nose Bridge */
+        .nose-bridge {
+            width: 40px;
+            height: 80px;
+            top: 180px;
+            left: 230px;
+            background: #e6b89c;
+            clip-path: polygon(50% 0%,
+                    100% 30%,
+                    100% 100%,
+                    0% 100%,
+                    0% 30%);
+        }
+
+        /* Nose Tip */
+        .nose-tip {
+            width: 60px;
+            height: 40px;
+            top: 240px;
+            left: 220px;
+            background: #e6b89c;
+            clip-path: ellipse(50% 50% at 50% 50%);
+        }
+
+        /* Left Nostril */
+        .nostril-left {
+            width: 15px;
+            height: 10px;
+            top: 255px;
+            left: 230px;
+            background: #c99a7e;
+            clip-path: ellipse(60% 40% at 50% 50%);
+        }
+
+        /* Right Nostril */
+        .nostril-right {
+            width: 15px;
+            height: 10px;
+            top: 255px;
+            left: 255px;
+            background: #c99a7e;
+            clip-path: ellipse(60% 40% at 50% 50%);
+        }
+
+        /* ===== MOUTH USING CLIP-PATH ===== */
+
+        /* Upper Lip */
+        .upper-lip {
+            width: 100px;
+            height: 40px;
+            top: 320px;
+            left: 200px;
+            background: #e6b89c;
+            clip-path: polygon(0% 100%,
+                    25% 0%,
+                    75% 0%,
+                    100% 100%);
+        }
+
+        /* Lower Lip */
+        .lower-lip {
+            width: 120px;
+            height: 50px;
+            top: 340px;
+            left: 190px;
+            background: #ff6b81;
+            clip-path: polygon(0% 0%,
+                    20% 100%,
+                    80% 100%,
+                    100% 0%);
+            opacity: 0.8;
+        }
+
+        /* Mouth Line */
+        .mouth-line {
+            width: 80px;
+            height: 5px;
+            top: 345px;
+            left: 210px;
+            background: #c99a7e;
+            clip-path: polygon(0% 50%,
+                    25% 0%,
+                    75% 0%,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%);
+        }
+
+        /* ===== EYEBROWS USING CLIP-PATH ===== */
+
+        /* Left Eyebrow */
+        .eyebrow-left {
+            width: 70px;
+            height: 20px;
+            top: 135px;
+            left: 145px;
+            background: #5d4037;
+            clip-path: polygon(0% 50%,
+                    25% 0%,
+                    75% 0%,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%);
+        }
+
+        /* Right Eyebrow */
+        .eyebrow-right {
+            width: 70px;
+            height: 20px;
+            top: 135px;
+            left: 285px;
+            background: #5d4037;
+            clip-path: polygon(0% 50%,
+                    25% 0%,
+                    75% 0%,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%);
+        }
+
+        /* ===== EARS USING CLIP-PATH ===== */
+
+        /* Left Ear */
+        .ear-left {
+            width: 50px;
+            height: 80px;
+            top: 180px;
+            left: 70px;
+            background: #f5cba7;
+            clip-path: polygon(0% 50%,
+                    30% 0%,
+                    100% 20%,
+                    80% 100%,
+                    30% 80%);
+        }
+
+        /* Right Ear */
+        .ear-right {
+            width: 50px;
+            height: 80px;
+            top: 180px;
+            left: 380px;
+            background: #f5cba7;
+            clip-path: polygon(100% 50%,
+                    70% 0%,
+                    0% 20%,
+                    20% 100%,
+                    70% 80%);
+        }
+
+        /* ===== HAIR USING CLIP-PATH ===== */
+
+        /* Hair Base */
+        .hair-base {
+            width: 320px;
+            height: 150px;
+            top: 20px;
+            left: 90px;
+            background: #5d4037;
+            clip-path: polygon(0% 100%,
+                    10% 0%,
+                    25% 20%,
+                    40% 0%,
+                    60% 20%,
+                    75% 0%,
+                    90% 20%,
+                    100% 0%,
+                    100% 100%);
+        }
+
+        /* Hair Strands */
+        .hair-strand-1 {
+            width: 40px;
+            height: 100px;
+            top: 40px;
+            left: 120px;
+            background: #5d4037;
+            clip-path: polygon(50% 0%,
+                    100% 25%,
+                    100% 100%,
+                    0% 100%,
+                    0% 25%);
+            transform: rotate(-10deg);
+        }
+
+        .hair-strand-2 {
+            width: 40px;
+            height: 100px;
+            top: 35px;
+            left: 200px;
+            background: #5d4037;
+            clip-path: polygon(50% 0%,
+                    100% 25%,
+                    100% 100%,
+                    0% 100%,
+                    0% 25%);
+            transform: rotate(5deg);
+        }
+
+        .hair-strand-3 {
+            width: 40px;
+            height: 100px;
+            top: 40px;
+            left: 280px;
+            background: #5d4037;
+            clip-path: polygon(50% 0%,
+                    100% 25%,
+                    100% 100%,
+                    0% 100%,
+                    0% 25%);
+            transform: rotate(10deg);
+        }
+
+        /* ===== ADDITIONAL DETAILS ===== */
+
+        /* Eye Highlights */
+        .highlight-left {
+            width: 10px;
+            height: 10px;
+            top: 178px;
+            left: 168px;
+            background: white;
+            clip-path: circle(50% at 50% 50%);
+            opacity: 0.8;
+        }
+
+        .highlight-right {
+            width: 10px;
+            height: 10px;
+            top: 178px;
+            left: 308px;
+            background: white;
+            clip-path: circle(50% at 50% 50%);
+            opacity: 0.8;
+        }
+
+        /* Cheek Blush */
+        .blush-left {
+            width: 60px;
+            height: 40px;
+            top: 240px;
+            left: 110px;
+            background: #ff9a9e;
+            clip-path: ellipse(50% 40% at 50% 50%);
+            opacity: 0.3;
+            filter: blur(5px);
+        }
+
+        .blush-right {
+            width: 60px;
+            height: 40px;
+            top: 240px;
+            left: 330px;
+            background: #ff9a9e;
+            clip-path: ellipse(50% 40% at 50% 50%);
+            opacity: 0.3;
+            filter: blur(5px);
+        }
+
+        /* ===== CONTROLS PANEL ===== */
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            color: white;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .coordinates {
+            color: white;
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .coordinate-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        /* ===== CLIP-PATH EXAMPLES ===== */
+
+        .clip-path-examples {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .example-shape {
+            width: 80px;
+            height: 80px;
+            background: #3498db;
+            margin: 0 auto;
+        }
+
+        .example-label {
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Example clip-paths */
+        .example1 {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .example2 {
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        .example3 {
+            clip-path: ellipse(40% 50% at 50% 50%);
+        }
+
+        .example4 {
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+        }
+
+        .example5 {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        .example6 {
+            clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+        }
+
+        .example7 {
+            clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
+        }
+
+        .example8 {
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="studio-container">
+        <h1>Clip-Path Portrait Master</h1>
+        <div class="canvas-info">500px × 500px Canvas | All shapes use clip-path only</div>
+
+        <!-- PORTRAIT CANVAS -->
+        <div class="portrait-canvas">
+            <!-- Face Structure -->
+            <div class="face-part face"></div>
+            <div class="face-part forehead"></div>
+            <div class="face-part cheek-left"></div>
+            <div class="face-part cheek-right"></div>
+            <div class="face-part chin"></div>
+
+            <!-- Eyes -->
+            <div class="face-part eye-socket-left"></div>
+            <div class="face-part eye-left"></div>
+            <div class="face-part iris-left"></div>
+            <div class="face-part pupil-left"></div>
+
+            <div class="face-part eye-socket-right"></div>
+            <div class="face-part eye-right"></div>
+            <div class="face-part iris-right"></div>
+            <div class="face-part pupil-right"></div>
+
+            <!-- Eyebrows -->
+            <div class="face-part eyebrow-left"></div>
+            <div class="face-part eyebrow-right"></div>
+
+            <!-- Nose -->
+            <div class="face-part nose-bridge"></div>
+            <div class="face-part nose-tip"></div>
+            <div class="face-part nostril-left"></div>
+            <div class="face-part nostril-right"></div>
+
+            <!-- Mouth -->
+            <div class="face-part upper-lip"></div>
+            <div class="face-part lower-lip"></div>
+            <div class="face-part mouth-line"></div>
+
+            <!-- Ears -->
+            <div class="face-part ear-left"></div>
+            <div class="face-part ear-right"></div>
+
+            <!-- Hair -->
+            <div class="face-part hair-base"></div>
+            <div class="face-part hair-strand-1"></div>
+            <div class="face-part hair-strand-2"></div>
+            <div class="face-part hair-strand-3"></div>
+
+            <!-- Details -->
+            <div class="face-part highlight-left"></div>
+            <div class="face-part highlight-right"></div>
+            <div class="face-part blush-left"></div>
+            <div class="face-part blush-right"></div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <div class="control-group">
+                <label>Selected Part Position (X, Y):</label>
+                <input type="range" id="posX" min="0" max="500" value="250">
+                <input type="range" id="posY" min="0" max="500" value="250">
+            </div>
+
+            <div class="coordinates">
+                <div class="coordinate-item">Face: (100px, 50px)</div>
+                <div class="coordinate-item">Left Eye: (150px, 165px)</div>
+                <div class="coordinate-item">Right Eye: (290px, 165px)</div>
+                <div class="coordinate-item">Nose: (220px, 240px)</div>
+                <div class="coordinate-item">Mouth: (200px, 320px)</div>
+                <div class="coordinate-item">Chin: (175px, 350px)</div>
+            </div>
+        </div>
+
+        <!-- CLIP-PATH EXAMPLES -->
+        <div class="clip-path-examples">
+            <div>
+                <div class="example-shape example1"></div>
+                <div class="example-label">Triangle</div>
+            </div>
+            <div>
+                <div class="example-shape example2"></div>
+                <div class="example-label">Circle</div>
+            </div>
+            <div>
+                <div class="example-shape example3"></div>
+                <div class="example-label">Ellipse</div>
+            </div>
+            <div>
+                <div class="example-shape example4"></div>
+                <div class="example-label">Trapezoid</div>
+            </div>
+            <div>
+                <div class="example-shape example5"></div>
+                <div class="example-label">Diamond</div>
+            </div>
+            <div>
+                <div class="example-shape example6"></div>
+                <div class="example-label">Speech Bubble</div>
+            </div>
+            <div>
+                <div class="example-shape example7"></div>
+                <div class="example-label">Arrow</div>
+            </div>
+            <div>
+                <div class="example-shape example8"></div>
+                <div class="example-label">Parallelogram</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive controls
+        document.addEventListener('DOMContentLoaded', () => {
+            const faceParts = document.querySelectorAll('.face-part');
+            let selectedPart = null;
+
+            // Make parts selectable
+            faceParts.forEach(part => {
+                part.addEventListener('click', (e) => {
+                    if (selectedPart) {
+                        selectedPart.style.outline = 'none';
+                    }
+
+                    selectedPart = e.target;
+                    selectedPart.style.outline = '2px dashed #3498db';
+
+                    // Update sliders to selected part position
+                    const rect = selectedPart.getBoundingClientRect();
+                    const canvasRect = document.querySelector('.portrait-canvas').getBoundingClientRect();
+
+                    const x = rect.left - canvasRect.left + (rect.width / 2);
+                    const y = rect.top - canvasRect.top + (rect.height / 2);
+
+                    document.getElementById('posX').value = Math.round(x);
+                    document.getElementById('posY').value = Math.round(y);
+                });
+            });
+
+            // Position controls
+            document.getElementById('posX').addEventListener('input', (e) => {
+                if (selectedPart) {
+                    const x = e.target.value;
+                    selectedPart.style.left = `${x}px`;
+                }
+            });
+
+            document.getElementById('posY').addEventListener('input', (e) => {
+                if (selectedPart) {
+                    const y = e.target.value;
+                    selectedPart.style.top = `${y}px`;
+                }
+            });
+
+            // Keyboard shortcuts for precise movement
+            document.addEventListener('keydown', (e) => {
+                if (!selectedPart) return;
+
+                const step = e.shiftKey ? 10 : 1;
+                let left = parseInt(selectedPart.style.left) || 0;
+                let top = parseInt(selectedPart.style.top) || 0;
+
+                switch (e.key) {
+                    case 'ArrowUp':
+                        selectedPart.style.top = `${top - step}px`;
+                        break;
+                    case 'ArrowDown':
+                        selectedPart.style.top = `${top + step}px`;
+                        break;
+                    case 'ArrowLeft':
+                        selectedPart.style.left = `${left - step}px`;
+                        break;
+                    case 'ArrowRight':
+                        selectedPart.style.left = `${left + step}px`;
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

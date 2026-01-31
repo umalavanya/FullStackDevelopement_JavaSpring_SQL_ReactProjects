@@ -1,0 +1,320 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(36, 169, 176, 0.238);
+    font-family: sans-serif;
+}
+
+.container {
+    margin: 50px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.header {
+    border: 5px double black;
+    height: 100px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: antiquewhite;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    transition: all 0.3s ease;
+    /* Added for consistency */
+}
+
+.main {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+}
+
+/* Removed .main-item class since it's not being used on any elements */
+/* If you want these styles, apply them to .left-pane and .main-body */
+
+.left-pane {
+    height: 600px;
+    width: 20%;
+    background-color: azure;
+    border: 2px solid green;
+    border-radius: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0, 0, 255, 0.2);
+    transition: all 0.3s ease;
+    /* Combined transitions */
+}
+
+.main-body {
+    height: 800px;
+    width: 80%;
+    background-color: beige;
+    border: 2px solid green;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0, 0, 255, 0.2);
+    transition: all 0.3s ease;
+    /* Combined transitions */
+}
+
+/* Combined hover effects */
+.left-pane:hover,
+.main-body:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 255, 0.3);
+}
+
+.footer {
+    background-color: black;
+    height: 100px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: all 0.3s ease;
+    /* Added for consistency */
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablet: 769px to 1024px */
+@media (max-width: 1024px) {
+    .container {
+        margin: 30px;
+        gap: 15px;
+    }
+
+    .header {
+        height: 90px;
+        padding: 0 15px;
+    }
+
+    .left-pane,
+    .main-body {
+        height: 500px;
+    }
+}
+
+/* Mobile: 481px to 768px */
+@media (max-width: 768px) {
+    .container {
+        margin: 15px;
+        gap: 15px;
+    }
+
+    .main {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .left-pane,
+    .main-body {
+        width: 100%;
+        height: auto;
+        min-height: 300px;
+    }
+
+    .header {
+        height: 80px;
+        font-size: 0.95em;
+        padding: 0 15px;
+    }
+
+    .footer {
+        height: 80px;
+        padding: 15px;
+    }
+}
+
+/* Small Mobile: up to 480px */
+@media (max-width: 480px) {
+    .container {
+        margin: 10px;
+        gap: 10px;
+    }
+
+    .header {
+        height: 70px;
+        font-size: 0.85em;
+        padding: 0 10px;
+        border-width: 3px;
+    }
+
+    .left-pane,
+    .main-body {
+        padding: 10px;
+        min-height: 250px;
+    }
+
+    .footer {
+        height: 70px;
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    /* Optional: Stack content order on mobile */
+    .main {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .left-pane {
+        order: 2;
+        /* Moves left pane below main content */
+    }
+
+    .main-body {
+        order: 1;
+        /* Main content comes first */
+    }
+}
+
+.triangle-up {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid red;
+}
+
+.triangle-down {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 100px solid blue;
+}
+
+.triangle-left {
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-right: 100px solid green;
+    border-bottom: 50px solid transparent;
+}
+
+.triangle-right {
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-left: 100px solid orange;
+    border-bottom: 50px solid transparent;
+}
+
+.triangle-clip{
+    width: 100px ;
+    height: 100px ;
+    background-color: purple ;
+    clip-path:polygon(50% 0%, 0% 100%, 100% 100% )
+}
+
+.triangle-right-clip {
+    width: 100px;
+    height: 100px;
+    background-color: teal;
+    clip-path: polygon(0% 0%, 0% 100%, 100% 50%);
+}
+
+.triangle-left-clip {
+    width: 100px;
+    height: 100px;
+    background-color: pink;
+    clip-path: polygon(100% 0%, 100% 100%, 0% 50%);
+}
+
+.triangle-rotate{
+    transform: rotate(45deg) ;
+    overflow: hidden ;
+    position: relative ;
+
+}
+
+.triangle-rotate:after{
+    content: '';
+    position: absolute ;
+    width: 100% ;
+    height:100% ;
+    background-color: white ;
+    transform: rotate(45deg) translate(70%,0) ;
+}
+
+.random-shape{
+    background-color: cyan;
+    height: 100px ;
+    width: 100px ;
+    clip-path:polygon(0% 0%, 0% 50%, 25% 75%,75% 75%, 100% 100%);
+    box-shadow: 
+
+}
+
+/* Large screens: above 1440px */
+@media (min-width: 1440px) {
+    .container {
+        max-width: 1400px;
+        margin: 50px auto;
+    }
+
+    .left-pane,
+    .main-body {
+        height: 700px;
+        /* More vertical space on large screens */
+    }
+}
+
+/* ========== ACCESSIBILITY IMPROVEMENTS ========== */
+
+/* Better focus states for keyboard navigation */
+.header:focus,
+.left-pane:focus,
+.main-body:focus,
+.footer:focus {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
+}
+
+/* Improve text contrast */
+.left-pane {
+    color: #333;
+}
+
+.main-body {
+    color: #222;
+}
+
+/* Print styles */
+@media print {
+    .container {
+        margin: 0;
+        gap: 10px;
+    }
+
+    .header,
+    .footer {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .left-pane,
+    .main-body {
+        border: 1px solid #ccc;
+        box-shadow: none;
+        height: auto;
+        page-break-inside: avoid;
+    }
+
+    .main {
+        display: block;
+    }
+
+    .left-pane,
+    .main-body {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}

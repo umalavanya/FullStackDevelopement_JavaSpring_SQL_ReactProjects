@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Clip-Path Portrait | Detailed Features</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .studio-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 75px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 40px;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 32px;
+            grid-column: 1 / -1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            color: #a0aec0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+            grid-column: 1 / -1;
+        }
+
+        /* ===== MAIN CANVAS ===== */
+        .portrait-canvas {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(145deg, #2d3748, #4a5568);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                inset 0 0 50px rgba(0, 0, 0, 0.5),
+                0 15px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== ALL FACE PARTS ===== */
+        .face-part {
+            position: absolute;
+            transform-origin: center;
+        }
+
+        /* ===== ADVANCED HAIR SYSTEM ===== */
+
+        /* Hair Base - Very Detailed with natural flow */
+        .hair-base {
+            width: 360px;
+            height: 200px;
+            top: 10px;
+            left: 70px;
+            background: linear-gradient(145deg, #3d2818, #5d4037);
+            clip-path: polygon(0% 30%,
+                    /* Left side start */
+                    5% 0%,
+                    /* Left temple */
+                    15% 5%,
+                    /* Left front curve */
+                    25% 0%,
+                    /* Left hairline peak */
+                    35% 8%,
+                    /* Left side curve */
+                    45% 0%,
+                    /* Center-left peak */
+                    55% 10%,
+                    /* Center valley */
+                    65% 0%,
+                    /* Center peak */
+                    75% 8%,
+                    /* Center-right curve */
+                    85% 0%,
+                    /* Right hairline peak */
+                    95% 5%,
+                    /* Right front curve */
+                    100% 0%,
+                    /* Right temple */
+                    100% 80%,
+                    /* Right side mid */
+                    95% 100%,
+                    /* Right side bottom */
+                    85% 95%,
+                    /* Right back curve */
+                    75% 100%,
+                    /* Right back */
+                    65% 90%,
+                    /* Right back up */
+                    55% 100%,
+                    /* Center-right back */
+                    45% 85%,
+                    /* Center back valley */
+                    35% 100%,
+                    /* Center-left back */
+                    25% 90%,
+                    /* Left back up */
+                    15% 100%,
+                    /* Left back */
+                    5% 95%,
+                    /* Left back curve */
+                    0% 80%
+                    /* Left side mid */
+                );
+            box-shadow:
+                inset 0 -10px 20px rgba(0, 0, 0, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Individual Hair Strands with natural randomness */
+        .hair-strand-1 {
+            width: 80px;
+            height: 180px;
+            top: 15px;
+            left: 75px;
+            background: linear-gradient(to bottom, #4d3625, #3d2818);
+            clip-path: polygon(30% 0%,
+                    /* Start point */
+                    40% 10%,
+                    /* Curve right */
+                    35% 25%,
+                    /* Curve left */
+                    45% 35%,
+                    /* Curve right */
+                    40% 50%,
+                    /* Curve left */
+                    50% 65%,
+                    /* Curve right */
+                    45% 80%,
+                    /* Curve left */
+                    55% 90%,
+                    /* Curve right */
+                    50% 100%,
+                    /* Bottom point */
+                    40% 95%,
+                    /* Curve left up */
+                    30% 100%,
+                    /* Bottom left */
+                    20% 90%,
+                    /* Curve left */
+                    15% 75%,
+                    /* Up left */
+                    10% 60%,
+                    /* Up left more */
+                    5% 45%,
+                    /* Up left further */
+                    0% 30%,
+                    /* Top left */
+                    10% 20%,
+                    /* Down right */
+                    20% 10%
+                    /* Back to start */
+                );
+            transform: rotate(-15deg);
+            opacity: 0.9;
+        }
+
+        .hair-strand-2 {
+            width: 70px;
+            height: 160px;
+            top: 20px;
+            left: 145px;
+            background: linear-gradient(to bottom, #5d4037, #4d3625);
+            clip-path: polygon(50% 0%,
+                    /* Center top */
+                    60% 15%,
+                    /* Right curve */
+                    55% 30%,
+                    /* Left curve */
+                    65% 45%,
+                    /* Right curve */
+                    60% 60%,
+                    /* Left curve */
+                    70% 75%,
+                    /* Right curve */
+                    65% 85%,
+                    /* Left curve */
+                    75% 95%,
+                    /* Right curve */
+                    70% 100%,
+                    /* Bottom point */
+                    60% 90%,
+                    /* Left curve up */
+                    50% 100%,
+                    /* Bottom center */
+                    40% 90%,
+                    /* Left curve */
+                    35% 75%,
+                    /* Up left */
+                    30% 60%,
+                    /* Up left more */
+                    25% 45%,
+                    /* Up left further */
+                    20% 30%,
+                    /* Top left */
+                    30% 20%,
+                    /* Down right */
+                    40% 10%
+                    /* Back to center */
+                );
+            transform: rotate(-5deg);
+            opacity: 0.85;
+        }
+
+        .hair-strand-3 {
+            width: 75px;
+            height: 170px;
+            top: 18px;
+            left: 205px;
+            background: linear-gradient(to bottom, #4d3625, #5d4037);
+            clip-path: polygon(40% 0%,
+                    /* Left start */
+                    50% 10%,
+                    /* Curve right */
+                    55% 25%,
+                    /* Continue right */
+                    60% 40%,
+                    /* More right */
+                    65% 55%,
+                    /* Right further */
+                    70% 70%,
+                    /* Right still */
+                    65% 85%,
+                    /* Curve left */
+                    60% 100%,
+                    /* Bottom right */
+                    50% 90%,
+                    /* Curve left up */
+                    40% 100%,
+                    /* Bottom left */
+                    30% 85%,
+                    /* Curve left */
+                    25% 70%,
+                    /* Up left */
+                    20% 55%,
+                    /* Up left more */
+                    15% 40%,
+                    /* Up left further */
+                    10% 25%,
+                    /* Top left */
+                    20% 15%,
+                    /* Down right */
+                    30% 5%
+                    /* Back to start */
+                );
+            transform: rotate(2deg);
+            opacity: 0.9;
+        }
+
+        .hair-strand-4 {
+            width: 65px;
+            height: 150px;
+            top: 25px;
+            left: 270px;
+            background: linear-gradient(to bottom, #5d4037, #4d3625);
+            clip-path: polygon(60% 0%,
+                    /* Right start */
+                    70% 15%,
+                    /* Curve right */
+                    65% 30%,
+                    /* Curve left */
+                    75% 45%,
+                    /* Curve right */
+                    70% 60%,
+                    /* Curve left */
+                    80% 75%,
+                    /* Curve right */
+                    75% 85%,
+                    /* Curve left */
+                    85% 95%,
+                    /* Curve right */
+                    80% 100%,
+                    /* Bottom point */
+                    70% 90%,
+                    /* Curve left up */
+                    60% 100%,
+                    /* Bottom center */
+                    50% 90%,
+                    /* Left curve */
+                    45% 75%,
+                    /* Up left */
+                    40% 60%,
+                    /* Up left more */
+                    35% 45%,
+                    /* Up left further */
+                    30% 30%,
+                    /* Top left */
+                    40% 20%,
+                    /* Down right */
+                    50% 10%
+                    /* Back to center */
+                );
+            transform: rotate(8deg);
+            opacity: 0.85;
+        }
+
+        .hair-strand-5 {
+            width: 80px;
+            height: 180px;
+            top: 15px;
+            left: 325px;
+            background: linear-gradient(to bottom, #4d3625, #3d2818);
+            clip-path: polygon(70% 0%,
+                    /* Right start */
+                    80% 10%,
+                    /* Curve right */
+                    75% 25%,
+                    /* Curve left */
+                    85% 35%,
+                    /* Curve right */
+                    80% 50%,
+                    /* Curve left */
+                    90% 65%,
+                    /* Curve right */
+                    85% 80%,
+                    /* Curve left */
+                    95% 90%,
+                    /* Curve right */
+                    90% 100%,
+                    /* Bottom point */
+                    80% 95%,
+                    /* Curve left up */
+                    70% 100%,
+                    /* Bottom left */
+                    60% 90%,
+                    /* Curve left */
+                    55% 75%,
+                    /* Up left */
+                    50% 60%,
+                    /* Up left more */
+                    45% 45%,
+                    /* Up left further */
+                    40% 30%,
+                    /* Top left */
+                    50% 20%,
+                    /* Down right */
+                    60% 10%
+                    /* Back to start */
+                );
+            transform: rotate(15deg);
+            opacity: 0.9;
+        }
+
+        /* Hair Highlights */
+        .hair-highlight-1 {
+            width: 40px;
+            height: 120px;
+            top: 40px;
+            left: 100px;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+            clip-path: polygon(50% 0%,
+                    60% 20%,
+                    55% 40%,
+                    65% 60%,
+                    60% 80%,
+                    70% 100%,
+                    60% 100%,
+                    50% 80%,
+                    40% 100%,
+                    30% 100%,
+                    40% 80%,
+                    35% 60%,
+                    45% 40%,
+                    40% 20%);
+            transform: rotate(-12deg);
+            opacity: 0.4;
+            filter: blur(2px);
+        }
+
+        .hair-highlight-2 {
+            width: 35px;
+            height: 100px;
+            top: 50px;
+            left: 230px;
+            background: linear-gradient(-45deg, transparent 30%, rgba(255, 255, 255, 0.15) 50%, transparent 70%);
+            clip-path: polygon(50% 0%,
+                    60% 20%,
+                    55% 40%,
+                    65% 60%,
+                    60% 80%,
+                    70% 100%,
+                    60% 100%,
+                    50% 80%,
+                    40% 100%,
+                    30% 100%,
+                    40% 80%,
+                    35% 60%,
+                    45% 40%,
+                    40% 20%);
+            transform: rotate(5deg);
+            opacity: 0.3;
+            filter: blur(2px);
+        }
+
+        /* ===== FACE WITH MORE DETAILED CONTOURS ===== */
+
+        .face {
+            width: 320px;
+            height: 420px;
+            top: 80px;
+            left: 90px;
+            background: linear-gradient(145deg, #f5cba7, #e6b89c);
+            clip-path: polygon(
+                    /* Left side from top */
+                    50% 5%,
+                    /* Center forehead */
+                    65% 8%,
+                    /* Right forehead curve */
+                    78% 15%,
+                    /* Right temple */
+                    85% 25%,
+                    /* Right cheekbone top */
+                    88% 35%,
+                    /* Right cheek */
+                    90% 45%,
+                    /* Right jaw start */
+                    88% 55%,
+                    /* Right jaw curve */
+                    85% 65%,
+                    /* Right chin curve */
+                    78% 75%,
+                    /* Right chin */
+                    65% 82%,
+                    /* Right neck curve */
+                    50% 85%,
+                    /* Center chin */
+                    35% 82%,
+                    /* Left neck curve */
+                    22% 75%,
+                    /* Left chin */
+                    15% 65%,
+                    /* Left chin curve */
+                    12% 55%,
+                    /* Left jaw curve */
+                    10% 45%,
+                    /* Left jaw start */
+                    12% 35%,
+                    /* Left cheek */
+                    15% 25%,
+                    /* Left cheekbone top */
+                    22% 15%,
+                    /* Left temple */
+                    35% 8%
+                    /* Left forehead curve */
+                );
+            box-shadow:
+                inset 0 10px 30px rgba(255, 255, 255, 0.3),
+                inset 0 -10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Forehead with more detail */
+        .forehead {
+            width: 200px;
+            height: 120px;
+            top: 90px;
+            left: 150px;
+            background: linear-gradient(to bottom, #f5cba7, #e6b89c);
+            clip-path: polygon(0% 30%,
+                    /* Left start */
+                    10% 0%,
+                    /* Left curve up */
+                    30% 15%,
+                    /* Left middle */
+                    50% 0%,
+                    /* Center peak */
+                    70% 15%,
+                    /* Right middle */
+                    90% 0%,
+                    /* Right curve up */
+                    100% 30%,
+                    /* Right end */
+                    85% 60%,
+                    /* Right curve down */
+                    50% 100%,
+                    /* Center bottom */
+                    15% 60%
+                    /* Left curve down */
+                );
+            opacity: 0.95;
+        }
+
+        /* ===== DETAILED EYES ===== */
+
+        /* Eye Socket with eyelid crease */
+        .eye-socket-left {
+            width: 95px;
+            height: 60px;
+            top: 170px;
+            left: 130px;
+            background: linear-gradient(to bottom, #d5b79a, #c99a7e);
+            clip-path: polygon(0% 40%,
+                    /* Left corner */
+                    15% 20%,
+                    /* Left eyelid curve */
+                    30% 10%,
+                    /* Left eyelid peak */
+                    50% 5%,
+                    /* Center top */
+                    70% 10%,
+                    /* Right eyelid peak */
+                    85% 20%,
+                    /* Right eyelid curve */
+                    100% 40%,
+                    /* Right corner */
+                    85% 70%,
+                    /* Right bottom curve */
+                    50% 90%,
+                    /* Center bottom */
+                    15% 70%
+                    /* Left bottom curve */
+                );
+            opacity: 0.8;
+        }
+
+        .eye-socket-right {
+            width: 95px;
+            height: 60px;
+            top: 170px;
+            left: 275px;
+            background: linear-gradient(to bottom, #d5b79a, #c99a7e);
+            clip-path: polygon(0% 40%,
+                    /* Left corner */
+                    15% 20%,
+                    /* Left eyelid curve */
+                    30% 10%,
+                    /* Left eyelid peak */
+                    50% 5%,
+                    /* Center top */
+                    70% 10%,
+                    /* Right eyelid peak */
+                    85% 20%,
+                    /* Right eyelid curve */
+                    100% 40%,
+                    /* Right corner */
+                    85% 70%,
+                    /* Right bottom curve */
+                    50% 90%,
+                    /* Center bottom */
+                    15% 70%
+                    /* Left bottom curve */
+                );
+            opacity: 0.8;
+        }
+
+        /* Eyes with detailed corners */
+        .eye-left {
+            width: 70px;
+            height: 45px;
+            top: 175px;
+            left: 145px;
+            background: linear-gradient(to bottom, white, #f0f0f0);
+            clip-path: polygon(0% 40%,
+                    /* Left corner inner */
+                    10% 20%,
+                    /* Left curve up */
+                    25% 10%,
+                    /* Left peak */
+                    50% 5%,
+                    /* Top center */
+                    75% 10%,
+                    /* Right peak */
+                    90% 20%,
+                    /* Right curve down */
+                    100% 40%,
+                    /* Right corner */
+                    90% 70%,
+                    /* Right curve down */
+                    75% 85%,
+                    /* Right bottom */
+                    50% 90%,
+                    /* Bottom center */
+                    25% 85%,
+                    /* Left bottom */
+                    10% 70%
+                    /* Left curve up */
+                );
+            box-shadow:
+                inset 0 0 20px rgba(0, 0, 0, 0.1),
+                0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .eye-right {
+            width: 70px;
+            height: 45px;
+            top: 175px;
+            left: 285px;
+            background: linear-gradient(to bottom, white, #f0f0f0);
+            clip-path: polygon(0% 40%,
+                    /* Left corner inner */
+                    10% 20%,
+                    /* Left curve up */
+                    25% 10%,
+                    /* Left peak */
+                    50% 5%,
+                    /* Top center */
+                    75% 10%,
+                    /* Right peak */
+                    90% 20%,
+                    /* Right curve down */
+                    100% 40%,
+                    /* Right corner */
+                    90% 70%,
+                    /* Right curve down */
+                    75% 85%,
+                    /* Right bottom */
+                    50% 90%,
+                    /* Bottom center */
+                    25% 85%,
+                    /* Left bottom */
+                    10% 70%
+                    /* Left curve up */
+                );
+            box-shadow:
+                inset 0 0 20px rgba(0, 0, 0, 0.1),
+                0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Iris with radial pattern */
+        .iris-left {
+            width: 40px;
+            height: 40px;
+            top: 182px;
+            left: 160px;
+            background: radial-gradient(circle at 30% 30%,
+                    #2e4053 0%,
+                    #1a252f 30%,
+                    #0d1b2a 60%,
+                    #050a14 100%);
+            clip-path: polygon(0% 30%,
+                    /* Left inner */
+                    10% 15%,
+                    /* Left top curve */
+                    30% 5%,
+                    /* Left top */
+                    50% 0%,
+                    /* Top center */
+                    70% 5%,
+                    /* Right top */
+                    90% 15%,
+                    /* Right top curve */
+                    100% 30%,
+                    /* Right outer */
+                    90% 70%,
+                    /* Right bottom curve */
+                    70% 90%,
+                    /* Right bottom */
+                    50% 95%,
+                    /* Bottom center */
+                    30% 90%,
+                    /* Left bottom */
+                    10% 70%
+                    /* Left bottom curve */
+                );
+        }
+
+        .iris-right {
+            width: 40px;
+            height: 40px;
+            top: 182px;
+            left: 300px;
+            background: radial-gradient(circle at 30% 30%,
+                    #2e4053 0%,
+                    #1a252f 30%,
+                    #0d1b2a 60%,
+                    #050a14 100%);
+            clip-path: polygon(0% 30%,
+                    /* Left inner */
+                    10% 15%,
+                    /* Left top curve */
+                    30% 5%,
+                    /* Left top */
+                    50% 0%,
+                    /* Top center */
+                    70% 5%,
+                    /* Right top */
+                    90% 15%,
+                    /* Right top curve */
+                    100% 30%,
+                    /* Right outer */
+                    90% 70%,
+                    /* Right bottom curve */
+                    70% 90%,
+                    /* Right bottom */
+                    50% 95%,
+                    /* Bottom center */
+                    30% 90%,
+                    /* Left bottom */
+                    10% 70%
+                    /* Left bottom curve */
+                );
+        }
+
+        /* Pupil with depth effect */
+        .pupil-left {
+            width: 20px;
+            height: 20px;
+            top: 187px;
+            left: 170px;
+            background: radial-gradient(circle at 35% 35%,
+                    #000 0%,
+                    #111 50%,
+                    #000 100%);
+            clip-path: polygon(0% 30%,
+                    /* Left */
+                    30% 0%,
+                    /* Top */
+                    70% 0%,
+                    /* Top right */
+                    100% 30%,
+                    /* Right */
+                    70% 70%,
+                    /* Bottom right */
+                    30% 70%
+                    /* Bottom left */
+                );
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .pupil-right {
+            width: 20px;
+            height: 20px;
+            top: 187px;
+            left: 310px;
+            background: radial-gradient(circle at 35% 35%,
+                    #000 0%,
+                    #111 50%,
+                    #000 100%);
+            clip-path: polygon(0% 30%,
+                    /* Left */
+                    30% 0%,
+                    /* Top */
+                    70% 0%,
+                    /* Top right */
+                    100% 30%,
+                    /* Right */
+                    70% 70%,
+                    /* Bottom right */
+                    30% 70%
+                    /* Bottom left */
+                );
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== DETAILED EYEBROWS ===== */
+
+        .eyebrow-left {
+            width: 85px;
+            height: 25px;
+            top: 140px;
+            left: 135px;
+            background: linear-gradient(to right, #3d2818, #5d4037, #3d2818);
+            clip-path: polygon(0% 60%,
+                    /* Left start thick */
+                    10% 30%,
+                    /* Curve up */
+                    20% 15%,
+                    /* Peak left */
+                    35% 5%,
+                    /* High point */
+                    50% 10%,
+                    /* Center dip */
+                    65% 5%,
+                    /* High point right */
+                    80% 15%,
+                    /* Peak right */
+                    90% 30%,
+                    /* Curve down */
+                    100% 60%,
+                    /* Right end thick */
+                    90% 80%,
+                    /* Curve up right */
+                    75% 90%,
+                    /* Right back */
+                    60% 85%,
+                    /* Center back */
+                    45% 90%,
+                    /* Center */
+                    30% 85%,
+                    /* Left back */
+                    15% 80%
+                    /* Curve up left */
+                );
+            transform: rotate(-5deg);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .eyebrow-right {
+            width: 85px;
+            height: 25px;
+            top: 140px;
+            left: 280px;
+            background: linear-gradient(to right, #3d2818, #5d4037, #3d2818);
+            clip-path: polygon(0% 60%,
+                    /* Left start thick */
+                    10% 30%,
+                    /* Curve up */
+                    20% 15%,
+                    /* Peak left */
+                    35% 5%,
+                    /* High point */
+                    50% 10%,
+                    /* Center dip */
+                    65% 5%,
+                    /* High point right */
+                    80% 15%,
+                    /* Peak right */
+                    90% 30%,
+                    /* Curve down */
+                    100% 60%,
+                    /* Right end thick */
+                    90% 80%,
+                    /* Curve up right */
+                    75% 90%,
+                    /* Right back */
+                    60% 85%,
+                    /* Center back */
+                    45% 90%,
+                    /* Center */
+                    30% 85%,
+                    /* Left back */
+                    15% 80%
+                    /* Curve up left */
+                );
+            transform: rotate(5deg);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== DETAILED NOSE ===== */
+
+        .nose-bridge {
+            width: 45px;
+            height: 100px;
+            top: 185px;
+            left: 227px;
+            background: linear-gradient(to bottom, #f0d4b4, #e6b89c);
+            clip-path: polygon(50% 0%,
+                    /* Top center */
+                    65% 15%,
+                    /* Right curve */
+                    60% 30%,
+                    /* Left curve */
+                    70% 45%,
+                    /* Right curve */
+                    65% 60%,
+                    /* Left curve */
+                    75% 75%,
+                    /* Right curve */
+                    70% 90%,
+                    /* Left curve */
+                    65% 100%,
+                    /* Bottom right */
+                    50% 95%,
+                    /* Center bottom */
+                    35% 100%,
+                    /* Bottom left */
+                    30% 90%,
+                    /* Left curve up */
+                    25% 75%,
+                    /* Right curve */
+                    35% 60%,
+                    /* Left curve */
+                    30% 45%,
+                    /* Right curve */
+                    40% 30%,
+                    /* Left curve */
+                    35% 15%
+                    /* Right curve */
+                );
+        }
+
+        .nose-tip {
+            width: 70px;
+            height: 50px;
+            top: 250px;
+            left: 215px;
+            background: linear-gradient(to bottom, #f5cba7, #e6b89c);
+            clip-path: polygon(0% 40%,
+                    /* Left start */
+                    15% 20%,
+                    /* Left curve up */
+                    30% 10%,
+                    /* Left peak */
+                    50% 0%,
+                    /* Center top */
+                    70% 10%,
+                    /* Right peak */
+                    85% 20%,
+                    /* Right curve down */
+                    100% 40%,
+                    /* Right end */
+                    85% 70%,
+                    /* Right curve down */
+                    70% 85%,
+                    /* Right bottom */
+                    50% 90%,
+                    /* Center bottom */
+                    30% 85%,
+                    /* Left bottom */
+                    15% 70%
+                    /* Left curve up */
+                );
+        }
+
+        .nostril-left {
+            width: 18px;
+            height: 12px;
+            top: 260px;
+            left: 228px;
+            background: linear-gradient(to bottom, #c99a7e, #b5836e);
+            clip-path: polygon(0% 30%,
+                    /* Left inner */
+                    25% 0%,
+                    /* Top curve */
+                    75% 0%,
+                    /* Top right */
+                    100% 30%,
+                    /* Right outer */
+                    75% 70%,
+                    /* Bottom right */
+                    25% 70%
+                    /* Bottom left */
+                );
+            transform: rotate(10deg);
+        }
+
+        .nostril-right {
+            width: 18px;
+            height: 12px;
+            top: 260px;
+            left: 254px;
+            background: linear-gradient(to bottom, #c99a7e, #b5836e);
+            clip-path: polygon(0% 30%,
+                    /* Left inner */
+                    25% 0%,
+                    /* Top curve */
+                    75% 0%,
+                    /* Top right */
+                    100% 30%,
+                    /* Right outer */
+                    75% 70%,
+                    /* Bottom right */
+                    25% 70%
+                    /* Bottom left */
+                );
+            transform: rotate(-10deg);
+        }
+
+        /* ===== DETAILED MOUTH ===== */
+
+        .upper-lip {
+            width: 120px;
+            height: 50px;
+            top: 330px;
+            left: 190px;
+            background: linear-gradient(to bottom, #f5cba7, #e6b89c);
+            clip-path: polygon(0% 70%,
+                    /* Left corner */
+                    15% 40%,
+                    /* Left curve up */
+                    30% 20%,
+                    /* Left peak */
+                    50% 10%,
+                    /* Center top */
+                    70% 20%,
+                    /* Right peak */
+                    85% 40%,
+                    /* Right curve down */
+                    100% 70%,
+                    /* Right corner */
+                    85% 90%,
+                    /* Right curve up */
+                    70% 100%,
+                    /* Right bottom */
+                    50% 95%,
+                    /* Center bottom */
+                    30% 100%,
+                    /* Left bottom */
+                    15% 90%
+                    /* Left curve up */
+                );
+        }
+
+        .lower-lip {
+            width: 140px;
+            height: 60px;
+            top: 350px;
+            left: 180px;
+            background: linear-gradient(135deg, #ff6b81, #ff4757);
+            clip-path: polygon(0% 20%,
+                    /* Left top */
+                    15% 0%,
+                    /* Left curve up */
+                    30% 10%,
+                    /* Left valley */
+                    50% 5%,
+                    /* Center dip */
+                    70% 10%,
+                    /* Right valley */
+                    85% 0%,
+                    /* Right curve up */
+                    100% 20%,
+                    /* Right top */
+                    85% 80%,
+                    /* Right curve down */
+                    70% 100%,
+                    /* Right bottom */
+                    50% 95%,
+                    /* Center bottom */
+                    30% 100%,
+                    /* Left bottom */
+                    15% 80%
+                    /* Left curve down */
+                );
+            opacity: 0.9;
+            box-shadow:
+                inset 0 5px 15px rgba(255, 255, 255, 0.3),
+                inset 0 -5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .mouth-line {
+            width: 100px;
+            height: 10px;
+            top: 365px;
+            left: 200px;
+            background: linear-gradient(to right, transparent, #c99a7e, transparent);
+            clip-path: polygon(0% 50%,
+                    /* Left center */
+                    15% 0%,
+                    /* Left curve up */
+                    30% 20%,
+                    /* Left valley */
+                    50% 10%,
+                    /* Center dip */
+                    70% 20%,
+                    /* Right valley */
+                    85% 0%,
+                    /* Right curve up */
+                    100% 50%,
+                    /* Right center */
+                    85% 100%,
+                    /* Right curve down */
+                    70% 80%,
+                    /* Right valley */
+                    50% 90%,
+                    /* Center up */
+                    30% 80%,
+                    /* Left valley */
+                    15% 100%
+                    /* Left curve down */
+                );
+        }
+
+        /* ===== ADDITIONAL DETAILS ===== */
+
+        /* Cheek bones with more points */
+        .cheek-left {
+            width: 100px;
+            height: 120px;
+            top: 220px;
+            left: 110px;
+            background: radial-gradient(ellipse at 30% 40%,
+                    rgba(255, 154, 158, 0.2),
+                    transparent 70%);
+            clip-path: polygon(0% 40%,
+                    /* Left inner */
+                    20% 20%,
+                    /* Left curve up */
+                    40% 10%,
+                    /* Left peak */
+                    60% 20%,
+                    /* Right curve */
+                    80% 40%,
+                    /* Right outer */
+                    60% 70%,
+                    /* Right curve down */
+                    40% 80%,
+                    /* Right bottom */
+                    20% 70%,
+                    /* Left curve down */
+                    10% 50%
+                    /* Left valley */
+                );
+            filter: blur(8px);
+        }
+
+        .cheek-right {
+            width: 100px;
+            height: 120px;
+            top: 220px;
+            left: 290px;
+            background: radial-gradient(ellipse at 70% 40%,
+                    rgba(255, 154, 158, 0.2),
+                    transparent 70%);
+            clip-path: polygon(100% 40%,
+                    /* Right inner */
+                    80% 20%,
+                    /* Right curve up */
+                    60% 10%,
+                    /* Right peak */
+                    40% 20%,
+                    /* Left curve */
+                    20% 40%,
+                    /* Left outer */
+                    40% 70%,
+                    /* Left curve down */
+                    60% 80%,
+                    /* Left bottom */
+                    80% 70%,
+                    /* Right curve down */
+                    90% 50%
+                    /* Right valley */
+                );
+            filter: blur(8px);
+        }
+
+        /* Eyelid creases */
+        .eyelid-crease-left {
+            width: 75px;
+            height: 5px;
+            top: 165px;
+            left: 145px;
+            background: linear-gradient(to right, transparent, #c99a7e, transparent);
+            clip-path: polygon(0% 50%,
+                    /* Left center */
+                    15% 0%,
+                    /* Left curve up */
+                    30% 30%,
+                    /* Left valley */
+                    50% 10%,
+                    /* Center dip */
+                    70% 30%,
+                    /* Right valley */
+                    85% 0%,
+                    /* Right curve up */
+                    100% 50%,
+                    /* Right center */
+                    85% 100%,
+                    /* Right curve down */
+                    70% 70%,
+                    /* Right valley */
+                    50% 90%,
+                    /* Center up */
+                    30% 70%,
+                    /* Left valley */
+                    15% 100%
+                    /* Left curve down */
+                );
+            opacity: 0.3;
+        }
+
+        .eyelid-crease-right {
+            width: 75px;
+            height: 5px;
+            top: 165px;
+            left: 280px;
+            background: linear-gradient(to right, transparent, #c99a7e, transparent);
+            clip-path: polygon(0% 50%,
+                    /* Left center */
+                    15% 0%,
+                    /* Left curve up */
+                    30% 30%,
+                    /* Left valley */
+                    50% 10%,
+                    /* Center dip */
+                    70% 30%,
+                    /* Right valley */
+                    85% 0%,
+                    /* Right curve up */
+                    100% 50%,
+                    /* Right center */
+                    85% 100%,
+                    /* Right curve down */
+                    70% 70%,
+                    /* Right valley */
+                    50% 90%,
+                    /* Center up */
+                    30% 70%,
+                    /* Left valley */
+                    15% 100%
+                    /* Left curve down */
+                );
+            opacity: 0.3;
+        }
+
+        /* Eye highlights */
+        .highlight-left {
+            width: 12px;
+            height: 12px;
+            top: 180px;
+            left: 165px;
+            background: radial-gradient(circle, white 0%, transparent 70%);
+            clip-path: polygon(0% 30%,
+                    /* Left */
+                    30% 0%,
+                    /* Top */
+                    70% 0%,
+                    /* Top right */
+                    100% 30%,
+                    /* Right */
+                    70% 70%,
+                    /* Bottom right */
+                    30% 70%
+                    /* Bottom left */
+                );
+            opacity: 0.9;
+        }
+
+        .highlight-right {
+            width: 12px;
+            height: 12px;
+            top: 180px;
+            left: 305px;
+            background: radial-gradient(circle, white 0%, transparent 70%);
+            clip-path: polygon(0% 30%,
+                    /* Left */
+                    30% 0%,
+                    /* Top */
+                    70% 0%,
+                    /* Top right */
+                    100% 30%,
+                    /* Right */
+                    70% 70%,
+                    /* Bottom right */
+                    30% 70%
+                    /* Bottom left */
+                );
+            opacity: 0.9;
+        }
+
+        /* ===== CONTROLS PANEL ===== */
+        .controls-panel {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h2 {
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .detail-info {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #a0aec0;
+            margin-bottom: 15px;
+        }
+
+        .point-count {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .clip-path-display {
+            background: #2d3748;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            overflow-x: auto;
+            margin-top: 15px;
+            border-left: 3px solid #667eea;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e0;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #68d391;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="studio-container">
+        <h1>Advanced Clip-Path Portrait</h1>
+        <div class="subtitle">High-detail hair and facial features with complex clip-path polygons</div>
+
+        <!-- PORTRAIT CANVAS -->
+        <div class="portrait-canvas">
+            <!-- Hair System -->
+            <div class="face-part hair-base"></div>
+            <div class="face-part hair-strand-1"></div>
+            <div class="face-part hair-strand-2"></div>
+            <div class="face-part hair-strand-3"></div>
+            <div class="face-part hair-strand-4"></div>
+            <div class="face-part hair-strand-5"></div>
+            <div class="face-part hair-highlight-1"></div>
+            <div class="face-part hair-highlight-2"></div>
+
+            <!-- Face Structure -->
+            <div class="face-part face"></div>
+            <div class="face-part forehead"></div>
+            <div class="face-part cheek-left"></div>
+            <div class="face-part cheek-right"></div>
+
+            <!-- Eyebrows -->
+            <div class="face-part eyebrow-left"></div>
+            <div class="face-part eyebrow-right"></div>
+
+            <!-- Eyes with details -->
+            <div class="face-part eye-socket-left"></div>
+            <div class="face-part eye-socket-right"></div>
+            <div class="face-part eye-left"></div>
+            <div class="face-part eye-right"></div>
+            <div class="face-part iris-left"></div>
+            <div class="face-part iris-right"></div>
+            <div class="face-part pupil-left"></div>
+            <div class="face-part pupil-right"></div>
+            <div class="face-part eyelid-crease-left"></div>
+            <div class="face-part eyelid-crease-right"></div>
+            <div class="face-part highlight-left"></div>
+            <div class="face-part highlight-right"></div>
+
+            <!-- Nose -->
+            <div class="face-part nose-bridge"></div>
+            <div class="face-part nose-tip"></div>
+            <div class="face-part nostril-left"></div>
+            <div class="face-part nostril-right"></div>
+
+            <!-- Mouth -->
+            <div class="face-part upper-lip"></div>
+            <div class="face-part lower-lip"></div>
+            <div class="face-part mouth-line"></div>
+        </div>
+
+        <!-- CONTROLS AND INFO -->
+        <div class="controls-panel">
+            <div class="control-section">
+                <h2>Portrait Details</h2>
+                <div class="detail-info">
+                    This portrait uses <strong>complex clip-path polygons</strong> with
+                    <strong>high point counts</strong> for natural, organic shapes.
+                </div>
+
+                <div class="point-count">
+                    <strong>Hair Base:</strong> 26 points<br>
+                    <strong>Face Outline:</strong> 20 points<br>
+                    <strong>Eye Details:</strong> 12-16 points each<br>
+                    <strong>Total Elements:</strong> 24 individual shapes
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h2>Advanced Features</h2>
+                <ul class="feature-list">
+                    <li>Natural flowing hair with multiple strands</li>
+                    <li>Hair highlights using gradient clip-paths</li>
+                    <li>Detailed iris patterns with radial gradients</li>
+                    <li>Eyelid creases and fine facial lines</li>
+                    <li>Cheekbone structure with blush effects</li>
+                    <li>Lip gradient with realistic shading</li>
+                    <li>Multi-point eyebrow shapes</li>
+                </ul>
+            </div>
+
+            <div class="control-section">
+                <h2>Clip-Path Example</h2>
+                <div class="clip-path-display">
+                    .hair-base {<br>
+                    &nbsp;&nbsp;clip-path: polygon(<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;0% 30%, 5% 0%, 15% 5%, 25% 0%,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;35% 8%, 45% 0%, 55% 10%, 65% 0%,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;75% 8%, 85% 0%, 95% 5%, 100% 0%,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;100% 80%, 95% 100%, 85% 95%, 75% 100%,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;65% 90%, 55% 100%, 45% 85%, 35% 100%,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;25% 90%, 15% 100%, 5% 95%, 0% 80%<br>
+                    &nbsp;&nbsp;);<br>
+                    }
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h2>Techniques Used</h2>
+                <div class="detail-info">
+                    <strong>Multi-point polygons:</strong> 12-26 points per shape<br>
+                    <strong>Gradient clip-paths:</strong> Linear gradients within shapes<br>
+                    <strong>Layering:</strong> 24 layers for depth and detail<br>
+                    <strong>Transform:</strong> Rotation and scaling of strands<br>
+                    <strong>Opacity:</strong> Layered transparency for realism<br>
+                    <strong>Shadows:</strong> Inset and drop shadows for depth
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

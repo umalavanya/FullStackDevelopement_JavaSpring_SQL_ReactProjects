@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Art Studio - 500x500 Canvas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .studio-container {
+            display: flex;
+            gap: 40px;
+            max-width: 1200px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        /* Canvas Area */
+        .canvas-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .canvas-info {
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* Main Canvas */
+        #artCanvas {
+            width: 500px;
+            height: 500px;
+            background: #f8f9fa;
+            border: 3px dashed #dee2e6;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Grid Overlay (Toggleable) */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-overlay.active {
+            opacity: 1;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: #fff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        .section-title {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 18px;
+        }
+
+        /* Shape Buttons */
+        .shapes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .shape-btn {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .shape-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .shape-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        /* Position Controls */
+        .position-controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .color-btn.active {
+            box-shadow: 0 0 0 2px #667eea;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        /* Instructions */
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        /* ====== CSS SHAPE STYLES ====== */
+
+        /* Base shape styles */
+        .shape {
+            position: absolute;
+            cursor: move;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .shape:hover {
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .shape.selected {
+            outline: 3px dashed #667eea;
+            z-index: 1000;
+        }
+
+        /* Triangle */
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #ff6b6b;
+        }
+
+        /* Circle */
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #4ecdc4;
+        }
+
+        /* Square */
+        .square {
+            width: 100px;
+            height: 100px;
+            background: #45b7d1;
+        }
+
+        /* Rectangle */
+        .rectangle {
+            width: 150px;
+            height: 75px;
+            background: #96ceb4;
+        }
+
+        /* Diamond */
+        .diamond {
+            width: 100px;
+            height: 100px;
+            background: #ffd166;
+            transform: rotate(45deg);
+        }
+
+        /* Star */
+        .star {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #ff9a76;
+            position: relative;
+        }
+
+        .star:after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: -50px;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-top: 100px solid #ff9a76;
+        }
+
+        /* Heart */
+        .heart {
+            width: 100px;
+            height: 90px;
+            background: #ff6b8b;
+            position: relative;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 80px;
+            background: #ff6b8b;
+            border-radius: 50px 50px 0 0;
+        }
+
+        .heart:before {
+            left: 50px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        /* Cloud */
+        .cloud {
+            width: 120px;
+            height: 70px;
+            background: #a29bfe;
+            border-radius: 50px;
+            position: relative;
+        }
+
+        .cloud:before,
+        .cloud:after {
+            content: '';
+            position: absolute;
+            background: #a29bfe;
+            border-radius: 50%;
+        }
+
+        .cloud:before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 20px;
+        }
+
+        .cloud:after {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            right: 20px;
+        }
+
+        /* Moon */
+        .moon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            box-shadow: 15px 15px 0 0 #fdcb6e;
+        }
+
+        /* Pentagon */
+        .pentagon {
+            width: 100px;
+            height: 100px;
+            background: #6c5ce7;
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        }
+
+        /* Hexagon */
+        .hexagon {
+            width: 100px;
+            height: 100px;
+            background: #00b894;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        /* Cross */
+        .cross {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            background: #e17055;
+        }
+
+        .cross:before,
+        .cross:after {
+            content: '';
+            position: absolute;
+            background: #e17055;
+            border-radius: 5px;
+        }
+
+        .cross:before {
+            width: 20px;
+            height: 100px;
+            left: 40px;
+        }
+
+        .cross:after {
+            width: 100px;
+            height: 20px;
+            top: 40px;
+        }
+
+        /* Bubble */
+        .bubble {
+            width: 80px;
+            height: 80px;
+            background: #74b9ff;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .bubble:before {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            top: 20px;
+            left: 20px;
+        }
+
+        /* Lightning */
+        .lightning {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 100px solid #ffeaa7;
+            position: relative;
+        }
+
+        .lightning:before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: -25px;
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 100px solid #ffeaa7;
+        }
+
+        /* Counter for shapes */
+        .shape-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1001;
+        }
+
+        /* Dragging feedback */
+        .shape.dragging {
+            opacity: 0.8;
+            transform: scale(1.05);
+            cursor: grabbing;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="studio-container">
+        <div class="canvas-container">
+            <h1>CSS Art Studio</h1>
+            <div class="canvas-info">500px × 500px Canvas | Drag shapes to position them</div>
+
+            <div id="artCanvas">
+                <div class="grid-overlay" id="gridOverlay"></div>
+                <div class="shape-counter" id="shapeCounter">0 shapes</div>
+
+                <!-- Example shapes will be added here by JavaScript -->
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <h2 class="section-title">Shapes Library</h2>
+
+            <div class="shapes-grid">
+                <button class="shape-btn" data-shape="triangle" title="Triangle">△</button>
+                <button class="shape-btn" data-shape="circle" title="Circle">○</button>
+                <button class="shape-btn" data-shape="square" title="Square">□</button>
+                <button class="shape-btn" data-shape="rectangle" title="Rectangle">▭</button>
+                <button class="shape-btn" data-shape="diamond" title="Diamond">◇</button>
+                <button class="shape-btn" data-shape="star" title="Star">★</button>
+                <button class="shape-btn" data-shape="heart" title="Heart">♥</button>
+                <button class="shape-btn" data-shape="cloud" title="Cloud">☁</button>
+                <button class="shape-btn" data-shape="moon" title="Moon">☾</button>
+                <button class="shape-btn" data-shape="pentagon" title="Pentagon">⬟</button>
+                <button class="shape-btn" data-shape="hexagon" title="Hexagon">⬢</button>
+                <button class="shape-btn" data-shape="cross" title="Cross">✚</button>
+            </div>
+
+            <h2 class="section-title">Position Controls</h2>
+            <div class="position-controls">
+                <div class="control-group">
+                    <label>Horizontal Position (X): <span id="xValue">250</span>px</label>
+                    <input type="range" id="xPosition" min="0" max="500" value="250">
+                </div>
+
+                <div class="control-group">
+                    <label>Vertical Position (Y): <span id="yValue">250</span>px</label>
+                    <input type="range" id="yPosition" min="0" max="500" value="250">
+                </div>
+
+                <div class="control-group">
+                    <label>Rotation: <span id="rotationValue">0</span>°</label>
+                    <input type="range" id="rotation" min="0" max="360" value="0">
+                </div>
+
+                <div class="control-group">
+                    <label>Size: <span id="sizeValue">100</span>%</label>
+                    <input type="range" id="size" min="50" max="200" value="100">
+                </div>
+            </div>
+
+            <h2 class="section-title">Color Palette</h2>
+            <div class="color-picker">
+                <div class="color-btn active" style="background: #ff6b6b;" data-color="#ff6b6b"></div>
+                <div class="color-btn" style="background: #4ecdc4;" data-color="#4ecdc4"></div>
+                <div class="color-btn" style="background: #45b7d1;" data-color="#45b7d1"></div>
+                <div class="color-btn" style="background: #96ceb4;" data-color="#96ceb4"></div>
+                <div class="color-btn" style="background: #ffd166;" data-color="#ffd166"></div>
+                <div class="color-btn" style="background: #6c5ce7;" data-color="#6c5ce7"></div>
+                <div class="color-btn" style="background: #a29bfe;" data-color="#a29bfe"></div>
+                <div class="color-btn" style="background: #fdcb6e;" data-color="#fdcb6e"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="addShape">Add Selected Shape</button>
+                <button class="btn btn-secondary" id="toggleGrid">Toggle Grid</button>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="clearAll">Clear Canvas</button>
+                <button class="btn btn-secondary" id="randomArt">Random Art</button>
+            </div>
+
+            <div class="instructions">
+                <h3>How to Use:</h3>
+                <ul>
+                    <li>1. Select a shape from the library</li>
+                    <li>2. Click "Add Selected Shape" or drag shape icon to canvas</li>
+                    <li>3. Drag shapes to reposition them</li>
+                    <li>4. Click a shape to select it</li>
+                    <li>5. Use sliders to adjust selected shape</li>
+                    <li>6. Press Delete key to remove selected shape</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let selectedShape = null;
+        let currentShapeType = 'triangle';
+        let currentColor = '#ff6b6b';
+        let shapes = [];
+        let shapeIdCounter = 0;
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+
+        // DOM Elements
+        const canvas = document.getElementById('artCanvas');
+        const gridOverlay = document.getElementById('gridOverlay');
+        const shapeCounter = document.getElementById('shapeCounter');
+        const xPosition = document.getElementById('xPosition');
+        const yPosition = document.getElementById('yPosition');
+        const rotation = document.getElementById('rotation');
+        const size = document.getElementById('size');
+        const xValue = document.getElementById('xValue');
+        const yValue = document.getElementById('yValue');
+        const rotationValue = document.getElementById('rotationValue');
+        const sizeValue = document.getElementById('sizeValue');
+
+        // Initialize
+        function init() {
+            setupEventListeners();
+            updateShapeCounter();
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Shape selection buttons
+            document.querySelectorAll('.shape-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentShapeType = btn.dataset.shape;
+                });
+            });
+
+            // Color selection buttons
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentColor = btn.dataset.color;
+                    if (selectedShape) {
+                        updateShapeColor(selectedShape, currentColor);
+                    }
+                });
+            });
+
+            // Control buttons
+            document.getElementById('addShape').addEventListener('click', addNewShape);
+            document.getElementById('toggleGrid').addEventListener('click', toggleGrid);
+            document.getElementById('clearAll').addEventListener('click', clearCanvas);
+            document.getElementById('randomArt').addEventListener('click', createRandomArt);
+
+            // Position controls
+            xPosition.addEventListener('input', updateSelectedShapePosition);
+            yPosition.addEventListener('input', updateSelectedShapePosition);
+            rotation.addEventListener('input', updateSelectedShapePosition);
+            size.addEventListener('input', updateSelectedShapePosition);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+
+            // Canvas drag and drop
+            setupDragAndDrop();
+
+            // Make shape buttons draggable
+            setupShapeDragging();
+        }
+
+        // Add a new shape to canvas
+        function addNewShape(x = 250, y = 250) {
+            const shapeId = `shape-${shapeIdCounter++}`;
+            const shape = document.createElement('div');
+
+            shape.className = `shape ${currentShapeType}`;
+            shape.id = shapeId;
+            shape.dataset.x = x;
+            shape.dataset.y = y;
+            shape.dataset.rotation = 0;
+            shape.dataset.scale = 1;
+            shape.dataset.type = currentShapeType;
+            shape.dataset.color = currentColor;
+
+            // Apply initial styles
+            updateShapeStyles(shape, x, y, 0, 1, currentColor);
+
+            // Add event listeners to shape
+            shape.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectShape(shape);
+            });
+
+            // Add to canvas
+            canvas.appendChild(shape);
+            shapes.push(shape);
+
+            // Select the new shape
+            selectShape(shape);
+            updateShapeCounter();
+
+            return shape;
+        }
+
+        // Update shape styles
+        function updateShapeStyles(shape, x, y, rotation, scale, color) {
+            shape.style.left = `${x}px`;
+            shape.style.top = `${y}px`;
+            shape.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
+
+            // Update shape color based on type
+            if (shape.classList.contains('triangle')) {
+                shape.style.borderBottomColor = color;
+            } else if (shape.classList.contains('star')) {
+                shape.style.borderBottomColor = color;
+                shape.style.borderTopColor = color;
+            } else if (shape.classList.contains('heart') ||
+                shape.classList.contains('cloud') ||
+                shape.classList.contains('cross')) {
+                shape.style.backgroundColor = color;
+                if (shape.classList.contains('heart')) {
+                    shape.style.setProperty('--heart-color', color);
+                }
+            } else if (shape.classList.contains('moon')) {
+                shape.style.boxShadow = `15px 15px 0 0 ${color}`;
+            } else {
+                shape.style.backgroundColor = color;
+            }
+
+            // Save data attributes
+            shape.dataset.x = x;
+            shape.dataset.y = y;
+            shape.dataset.rotation = rotation;
+            shape.dataset.scale = scale;
+            shape.dataset.color = color;
+        }
+
+        // Select a shape
+        function selectShape(shape) {
+            if (selectedShape) {
+                selectedShape.classList.remove('selected');
+            }
+
+            selectedShape = shape;
+            selectedShape.classList.add('selected');
+
+            // Update control values
+            xPosition.value = parseInt(shape.dataset.x);
+            yPosition.value = parseInt(shape.dataset.y);
+            rotation.value = parseInt(shape.dataset.rotation);
+            size.value = Math.round(parseFloat(shape.dataset.scale) * 100);
+
+            // Update displayed values
+            xValue.textContent = xPosition.value;
+            yValue.textContent = yPosition.value;
+            rotationValue.textContent = rotation.value;
+            sizeValue.textContent = size.value;
+
+            // Update active color
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.color === shape.dataset.color) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Update selected shape position
+        function updateSelectedShapePosition() {
+            if (!selectedShape) return;
+
+            const x = parseInt(xPosition.value);
+            const y = parseInt(yPosition.value);
+            const rot = parseInt(rotation.value);
+            const scale = parseInt(size.value) / 100;
+
+            updateShapeStyles(selectedShape, x, y, rot, scale, selectedShape.dataset.color);
+
+            // Update displayed values
+            xValue.textContent = x;
+            yValue.textContent = y;
+            rotationValue.textContent = rot;
+            sizeValue.textContent = size.value;
+        }
+
+        // Update shape color
+        function updateShapeColor(shape, color) {
+            updateShapeStyles(shape,
+                parseInt(shape.dataset.x),
+                parseInt(shape.dataset.y),
+                parseInt(shape.dataset.rotation),
+                parseFloat(shape.dataset.scale),
+                color
+            );
+        }
+
+        // Toggle grid overlay
+        function toggleGrid() {
+            gridOverlay.classList.toggle('active');
+        }
+
+        // Clear canvas
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear the canvas?')) {
+                shapes.forEach(shape => shape.remove());
+                shapes = [];
+                selectedShape = null;
+                updateShapeCounter();
+            }
+        }
+
+        // Create random art
+        function createRandomArt() {
+            clearCanvas();
+
+            const shapeTypes = ['triangle', 'circle', 'square', 'rectangle', 'diamond',
+                'star', 'heart', 'cloud', 'moon', 'pentagon', 'hexagon', 'cross'];
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffd166',
+                '#6c5ce7', '#a29bfe', '#fdcb6e', '#e17055', '#74b9ff'];
+
+            for (let i = 0; i < 8; i++) {
+                const type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const x = Math.floor(Math.random() * 400) + 50;
+                const y = Math.floor(Math.random() * 400) + 50;
+                const rot = Math.floor(Math.random() * 360);
+                const scale = (Math.random() * 0.5) + 0.75;
+
+                // Set current shape and color
+                currentShapeType = type;
+                currentColor = color;
+
+                const shape = addNewShape(x, y);
+                updateShapeStyles(shape, x, y, rot, scale, color);
+            }
+        }
+
+        // Setup drag and drop for shapes on canvas
+        function setupDragAndDrop() {
+            canvas.addEventListener('mousedown', (e) => {
+                const shape = e.target.closest('.shape');
+                if (!shape) return;
+
+                isDragging = true;
+                selectShape(shape);
+
+                const rect = shape.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+
+                dragOffset.x = e.clientX - rect.left;
+                dragOffset.y = e.clientY - rect.top;
+
+                shape.classList.add('dragging');
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging || !selectedShape) return;
+
+                const canvasRect = canvas.getBoundingClientRect();
+
+                // Calculate new position relative to canvas
+                let x = e.clientX - canvasRect.left - dragOffset.x + (selectedShape.offsetWidth / 2);
+                let y = e.clientY - canvasRect.top - dragOffset.y + (selectedShape.offsetHeight / 2);
+
+                // Constrain to canvas bounds
+                x = Math.max(0, Math.min(500, x));
+                y = Math.max(0, Math.min(500, y));
+
+                // Update position
+                updateShapeStyles(selectedShape, x, y,
+                    parseInt(selectedShape.dataset.rotation),
+                    parseFloat(selectedShape.dataset.scale),
+                    selectedShape.dataset.color
+                );
+
+                // Update controls
+                xPosition.value = x;
+                yPosition.value = y;
+                xValue.textContent = x;
+                yValue.textContent = y;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging && selectedShape) {
+                    selectedShape.classList.remove('dragging');
+                }
+                isDragging = false;
+            });
+        }
+
+        // Setup shape dragging from buttons
+        function setupShapeDragging() {
+            const shapeBtns = document.querySelectorAll('.shape-btn');
+
+            shapeBtns.forEach(btn => {
+                btn.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('shapeType', btn.dataset.shape);
+                    e.dataTransfer.effectAllowed = 'copy';
+                });
+            });
+
+            canvas.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+            });
+
+            canvas.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const shapeType = e.dataTransfer.getData('shapeType');
+                if (shapeType) {
+                    currentShapeType = shapeType;
+                    const canvasRect = canvas.getBoundingClientRect();
+                    const x = e.clientX - canvasRect.left;
+                    const y = e.clientY - canvasRect.top;
+                    addNewShape(x, y);
+                }
+            });
+        }
+
+        // Handle keyboard shortcuts
+        function handleKeyboardShortcuts(e) {
+            if (!selectedShape) return;
+
+            switch (e.key) {
+                case 'Delete':
+                case 'Backspace':
+                    deleteSelectedShape();
+                    break;
+                case 'ArrowUp':
+                    moveSelectedShape(0, -10);
+                    e.preventDefault();
+                    break;
+                case 'ArrowDown':
+                    moveSelectedShape(0, 10);
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                    moveSelectedShape(-10, 0);
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight':
+                    moveSelectedShape(10, 0);
+                    e.preventDefault();
+                    break;
+                case 'r':
+                    if (e.ctrlKey) {
+                        const newRot = (parseInt(selectedShape.dataset.rotation) + 45) % 360;
+                        updateShapeStyles(selectedShape,
+                            parseInt(selectedShape.dataset.x),
+                            parseInt(selectedShape.dataset.y),
+                            newRot,
+                            parseFloat(selectedShape.dataset.scale),
+                            selectedShape.dataset.color
+                        );
+                        rotation.value = newRot;
+                        rotationValue.textContent = newRot;
+                    }
+                    break;
+            }
+        }
+
+        // Move selected shape
+        function moveSelectedShape(dx, dy) {
+            if (!selectedShape) return;
+
+            let x = parseInt(selectedShape.dataset.x) + dx;
+            let y = parseInt(selectedShape.dataset.y) + dy;
+
+            // Constrain to canvas
+            x = Math.max(0, Math.min(500, x));
+            y = Math.max(0, Math.min(500, y));
+
+            updateShapeStyles(selectedShape, x, y,
+                parseInt(selectedShape.dataset.rotation),
+                parseFloat(selectedShape.dataset.scale),
+                selectedShape.dataset.color
+            );
+
+            // Update controls
+            xPosition.value = x;
+            yPosition.value = y;
+            xValue.textContent = x;
+            yValue.textContent = y;
+        }
+
+        // Delete selected shape
+        function deleteSelectedShape() {
+            if (!selectedShape) return;
+
+            const index = shapes.indexOf(selectedShape);
+            if (index > -1) {
+                shapes.splice(index, 1);
+            }
+
+            selectedShape.remove();
+            selectedShape = null;
+            updateShapeCounter();
+        }
+
+        // Update shape counter
+        function updateShapeCounter() {
+            shapeCounter.textContent = `${shapes.length} shape${shapes.length !== 1 ? 's' : ''}`;
+        }
+
+        // Initialize the studio
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
