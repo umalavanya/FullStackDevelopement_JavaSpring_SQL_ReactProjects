@@ -396,13 +396,35 @@
                         </li>
 
                         <li class="tree-item">
-                            <span class="property-name">[]</span>
-                            <span class="property-values</spa>
-                                                    <div class=" property-desc"></div>
+                            <span class="property-name">[attribute = "value"]</span>
+                            <span class="property-values">Exact Match</span>
+                            <div class=" property-desc"></div>
                         </li>
-                        
-
-                        
+                        <li class="tree-item">
+                            <span class="property-name">[attribute ~= "value"]</span>
+                            <span class="property-values">Contains word in space-separated list</span>
+                            <div class=" property-desc"></div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">[attribute |= "value"]</span>
+                            <span class="property-values">Value is exactly "value" or begins with "value-"</span>
+                            <div class=" property-desc"></div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">[attribute ^= "value"]</span>
+                            <span class="property-values">Begins with "value"</span>
+                            <div class=" property-desc"></div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">[attribute $= "value"]</span>
+                            <span class="property-values">Ends with "value"</span>
+                            <div class=" property-desc"></div>
+                        </li>
+                        <li class="tree-item">
+                            <span class="property-name">[attribute *= "value"]</span>
+                            <span class="property-values">Contains substring "value"</span>
+                            <div class=" property-desc"></div>
+                        </li>                        
                     </ul>
                 </div>
                 <div class="hierarchy-category"></div>

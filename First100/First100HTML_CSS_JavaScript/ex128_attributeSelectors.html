@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete CSS Attribute Selectors Demo</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #3498db;
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        h3 {
+            color: #e74c3c;
+            margin: 20px 0 10px 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-area {
+            margin: 15px 0;
+            padding: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            min-height: 100px;
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .example {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+        }
+
+        /* =========================================== */
+        /* 1. PRESENCE SELECTOR [attribute] */
+        /* =========================================== */
+        [data-demo] {
+            border: 2px solid #3498db;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        /* =========================================== */
+        /* 2. EXACT VALUE SELECTOR [attribute="value"] */
+        /* =========================================== */
+        [data-status="active"] {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        [data-status="inactive"] {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* =========================================== */
+        /* 3. CONTAINS SELECTOR [attribute*="value"] */
+        /* =========================================== */
+        [class*="btn"] {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        [class*="btn"]:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s;
+        }
+
+        /* =========================================== */
+        /* 4. BEGINS WITH SELECTOR [attribute^="value"] */
+        /* =========================================== */
+        a[href^="https"] {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 5px 10px;
+            border-radius: 3px;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        a[href^="http://"] {
+            border-left: 4px solid #dc3545;
+        }
+
+        a[href^="https://"] {
+            border-left: 4px solid #28a745;
+        }
+
+        /* =========================================== */
+        /* 5. ENDS WITH SELECTOR [attribute$="value"] */
+        /* =========================================== */
+        a[href$=".pdf"] {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>') no-repeat right center;
+            padding-right: 20px;
+            color: #e74c3c;
+        }
+
+        img[src$=".jpg"] {
+            border: 3px solid #f39c12;
+        }
+
+        img[src$=".png"] {
+            border: 3px solid #3498db;
+        }
+
+        /* =========================================== */
+        /* 6. SPACE-SEPARATED LIST [attribute~="value"] */
+        /* =========================================== */
+        [class~="warning"] {
+            border: 2px solid #ffc107;
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        [class~="success"] {
+            border: 2px solid #28a745;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        /* =========================================== */
+        /* 7. HYPHEN-SEPARATED [attribute|="value"] */
+        /* =========================================== */
+        [lang|="en"] {
+            font-family: Arial, sans-serif;
+        }
+
+        [lang|="es"] {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+        }
+
+        /* =========================================== */
+        /* 8. CASE-INSENSITIVE [attribute="value" i] */
+        /* =========================================== */
+        [data-role="admin" i] {
+            background-color: #4a148c;
+            color: white;
+            padding: 10px;
+        }
+
+        /* =========================================== */
+        /* COMBINED SELECTORS */
+        /* =========================================== */
+        input[type="text"][required] {
+            border: 2px solid #e74c3c;
+            background-color: #ffe6e6;
+        }
+
+        input[type="email"][required] {
+            border: 2px solid #3498db;
+            background-color: #e6f7ff;
+        }
+
+        /* =========================================== */
+        /* FORM STYLING EXAMPLES */
+        /* =========================================== */
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            background: #2980b9;
+        }
+
+        input[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* =========================================== */
+        /* VISUAL STYLES FOR DEMO ELEMENTS */
+        /* =========================================== */
+        .demo-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .highlight {
+            animation: highlight 2s;
+        }
+
+        @keyframes highlight {
+            0% {
+                background-color: yellow;
+            }
+
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>📚 Complete CSS Attribute Selectors Demo</h1>
+        <p>All attribute selector types in one interactive HTML file</p>
+    </header>
+
+    <div class="container">
+        <!-- Left Column -->
+        <div class="section">
+            <h2>1. Presence Selector <code>[attribute]</code></h2>
+            <p>Selects elements that have the specified attribute</p>
+            <div class="example">
+                <code>css
+[data-demo] { border: 2px solid #3498db; }</code>
+            </div>
+            <div class="demo-area">
+                <div class="demo-item">No data-demo attribute</div>
+                <div class="demo-item" data-demo>Has data-demo attribute</div>
+                <div class="demo-item" data-demo="true">Has data-demo="true"</div>
+            </div>
+
+            <h2>2. Exact Value <code>[attribute="value"]</code></h2>
+            <p>Attribute value must exactly match</p>
+            <div class="example">
+                <code>css
+[data-status="active"] { background: #d4edda; }
+[data-status="inactive"] { background: #f8d7da; }</code>
+            </div>
+            <div class="demo-area">
+                <div class="demo-item" data-status="active">Active Item</div>
+                <div class="demo-item" data-status="inactive">Inactive Item</div>
+                <div class="demo-item" data-status="pending">Pending Item (no match)</div>
+            </div>
+
+            <h2>3. Contains <code>[attribute*="value"]</code></h2>
+            <p>Attribute value contains the substring</p>
+            <div class="example">
+                <code>css
+[class*="btn"] { padding: 8px 16px; border-radius: 4px; }</code>
+            </div>
+            <div class="demo-area">
+                <button class="btn-primary">Primary Button</button>
+                <button class="btn-secondary">Secondary Button</button>
+                <button class="btn-danger">Danger Button</button>
+                <button class="cta-button">CTA Button (also matches)</button>
+                <button class="action">Action (no match)</button>
+            </div>
+
+            <h2>4. Begins With <code>[attribute^="value"]</code></h2>
+            <p>Attribute value starts with the string</p>
+            <div class="example">
+                <code>css
+a[href^="https"] { background: #d1ecf1; }
+a[href^="http://"] { border-left-color: #dc3545; }</code>
+            </div>
+            <div class="demo-area">
+                <a href="https://example.com">Secure Link (HTTPS)</a><br><br>
+                <a href="http://example.com">Insecure Link (HTTP)</a><br><br>
+                <a href="#section">Anchor Link (no match)</a>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="section">
+            <h2>5. Ends With <code>[attribute$="value"]</code></h2>
+            <p>Attribute value ends with the string</p>
+            <div class="example">
+                <code>css
+a[href$=".pdf"] { color: #e74c3c; padding-right: 20px; }
+img[src$=".jpg"] { border: 3px solid #f39c12; }</code>
+            </div>
+            <div class="demo-area">
+                <a href="document.pdf">PDF Document</a><br><br>
+                <a href="report.doc">Word Document (no match)</a><br><br>
+                <img src="photo.jpg" alt="JPG Image" width="100" height="60">
+                <img src="logo.png" alt="PNG Image" width="100" height="60">
+            </div>
+
+            <h2>6. Space-Separated List <code>[attribute~="value"]</code></h2>
+            <p>Attribute value contains word in whitespace-separated list</p>
+            <div class="example">
+                <code>css
+[class~="warning"] { border: 2px solid #ffc107; }
+[class~="success"] { border: 2px solid #28a745; }</code>
+            </div>
+            <div class="demo-area">
+                <div class="demo-item alert warning">Alert with warning class</div>
+                <div class="demo-item message success">Message with success class</div>
+                <div class="demo-item warning-message">warning-message (no match - hyphenated)</div>
+            </div>
+
+            <h2>7. Hyphen-Separated <code>[attribute|="value"]</code></h2>
+            <p>Attribute value is exactly or begins with value followed by hyphen</p>
+            <div class="example">
+                <code>css
+[lang|="en"] { font-family: Arial; }
+[lang|="es"] { font-family: "Times New Roman", italic; }</code>
+            </div>
+            <div class="demo-area">
+                <div class="demo-item" lang="en">English (en)</div>
+                <div class="demo-item" lang="en-US">English US (en-US)</div>
+                <div class="demo-item" lang="es">Spanish (es)</div>
+                <div class="demo-item" lang="es-MX">Spanish Mexico (es-MX)</div>
+                <div class="demo-item" lang="english">english (no match)</div>
+            </div>
+
+            <h2>8. Case-Insensitive <code>[attribute="value" i]</code></h2>
+            <p>Attribute value comparison is case-insensitive</p>
+            <div class="example">
+                <code>css
+[data-role="admin" i] { background: #4a148c; color: white; }</code>
+            </div>
+            <div class="demo-area">
+                <div class="demo-item" data-role="admin">Admin (lowercase)</div>
+                <div class="demo-item" data-role="ADMIN">ADMIN (uppercase)</div>
+                <div class="demo-item" data-role="Admin">Admin (capitalized)</div>
+                <div class="demo-item" data-role="user">User (no match)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Combined Examples Section -->
+    <div class="section" style="grid-column: 1 / -1; margin-top: 30px;">
+        <h2>Combined Attribute Selectors</h2>
+
+        <h3>Form Example with Multiple Attribute Selectors</h3>
+        <div class="example">
+            <code>css
+input[type="text"][required] { border: 2px solid #e74c3c; }
+input[type="email"][required] { border: 2px solid #3498db; }
+input[disabled] { opacity: 0.5; }</code>
+        </div>
+
+        <div class="demo-area">
+            <form id="demoForm">
+                <label>Text Input (required):</label>
+                <input type="text" name="username" required placeholder="Required text field">
+
+                <label>Email Input (required):</label>
+                <input type="email" name="email" required placeholder="Required email">
+
+                <label>Normal Text Input:</label>
+                <input type="text" name="optional" placeholder="Optional field">
+
+                <label>Disabled Input:</label>
+                <input type="text" name="disabled" disabled placeholder="Disabled field" value="Cannot edit">
+
+                <br><br>
+                <input type="submit" value="Submit Form">
+            </form>
+        </div>
+
+        <h3>Link Examples with Multiple Attributes</h3>
+        <div class="example">
+            <code>css
+a[href^="https"][target="_blank"] { 
+    background: #d4edda; 
+    border-left-color: #28a745;
+}</code>
+        </div>
+
+        <div class="demo-area">
+            <a href="https://example.com" target="_blank">
+                Secure External Link (https + _blank)
+            </a><br><br>
+
+            <a href="https://example.com" target="_self">
+                Secure Same Window Link (https + _self)
+            </a><br><br>
+
+            <a href="http://example.com" target="_blank">
+                Insecure External Link (http + _blank)
+            </a>
+        </div>
+    </div>
+
+    <div class="section" style="grid-column: 1 / -1; background: #e8f4f8;">
+        <h2>💡 Practical Usage Examples</h2>
+
+        <div class="example">
+            <h3>Styling External vs Internal Links</h3>
+            <code>css
+/* External links */
+a[href^="http"]::after {
+    content: " ↗";
+}
+
+/* Internal links */
+a[href^="/"], 
+a[href^="#"] {
+    color: #3498db;
+}
+
+/* Email links */
+a[href^="mailto:"] {
+    color: #e74c3c;
+}</code>
+        </div>
+
+        <div class="example">
+            <h3>File Type Indicators</h3>
+            <code>css
+a[href$=".pdf"]::before { content: "📄 "; }
+a[href$=".zip"]::before { content: "📦 "; }
+a[href$=".doc"]::before,
+a[href$=".docx"]::before { content: "📝 "; }</code>
+        </div>
+
+        <div class="example">
+            <h3>Data Attribute Styling</h3>
+            <code>html
+&lt;div data-price="10"&gt;$10 Product&lt;/div&gt;
+&lt;div data-price="25"&gt;$25 Product&lt;/div&gt;
+
+css
+[data-price]::after { content: " USD"; color: #27ae60; }
+[data-price="10"] { background: #fff3cd; }
+[data-price="25"] { background: #d1ecf1; }</code>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>CSS Attribute Selectors Demo</strong> | All examples in a single HTML file</p>
+        <p>Attribute selectors specificity: Same as class selectors (0-1-0)</p>
+        <p>Browser support: All modern browsers, IE7+ for basic selectors</p>
+    </footer>
+
+    <script>
+        // Add interactive highlighting when clicking on elements
+        document.addEventListener('DOMContentLoaded', function () {
+            const demoItems = document.querySelectorAll('.demo-item, button, a, input, div[data-demo]');
+
+            demoItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    // Remove highlight from all items
+                    demoItems.forEach(el => el.classList.remove('highlight'));
+
+                    // Add highlight to clicked item
+                    this.classList.add('highlight');
+
+                    // Prevent link navigation for demo links
+                    if (this.tagName === 'A' && this.getAttribute('href')?.startsWith('#')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Form submission prevention
+            document.getElementById('demoForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                alert('Form submission prevented for demo purposes');
+            });
+        });
+    </script>
+</body>
+
+</html>
