@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation practice</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1{
+           font-size: 28px ;
+           margin-bottom: 10px; 
+        }
+    </style>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+
+    <div class="container">
+        <div class=""header">
+            <h1><i class="fas fa-user-check"></i>Account Registration</h1>
+            <p class="subtitle">Create your acount with secure validation</p>
+        </div>
+
+        <div class="form-container">
+            <form id="registrationForm">
+
+                <!-- Full Name -->
+
+                <div class="form-group">
+                    <label for="fullName"><i class="fas fa-user"> </i> Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name">
+                    <span class="input-icon" id="nameIcon"></span>
+                    <div class="error-message" id="nameError">
+                        Name must be at least 2 characters and contain only letters and spaces
+                    </div>
+                            
+                </div>
+
+                <!-- Email -->
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"> </i>Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email address">
+                    <span class="input-icon" id="emailIcon"></span>
+                    <div class="error-message" id="emailError">
+                        Please enter a valid email address
+                    </div>
+                
+                </div>
+
+                <!-- Password -->
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"> </i>Password</label>
+                    
+                    <input type="password" id="password" placeholder="Create a strong password">
+                    
+                    <button type=""button" class="password-toggle" id="passwordToggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    
+                    <span class="input-icon" id="passwordIcon"></span>
+
+                    <div class=""strength-label" id=""strengthLabel">Password strength</div>
+                    
+                    <div class="error-message" id="passwordError">
+                        Password must be at least 8 characters with uppercase, lowercase, number, and special character
+                    </div>
+                
+                </div>
+
+                <!-- confirm password -->
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter your password">
+                    <button type="button" class="password-toggle" id="confirmPasswordToggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <span class="input-icon" id="confirmPasswordIcon"></span>
+                    <div class="error-message" id="confirmPasswordError">
+                        Passwords do not match
+                    </div>
+                </div>
+
+
+                <!-- phone number -->
+                <div class="form-group">
+                    <label for="phone">
+                        <i class="fas fa-phone"></i> Phone Number
+                    </label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number">
+                    <span class="input-icon" id="phoneIcon"></span>
+                    <div class="error-message" id="phoneError">
+                        Please enter a valid phone number
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+
+                <div class="form-group">
+                    <label for="birthdate">
+                        <i class="fas fa-birthday-cake"></i> Date of Birth
+                    </label>
+                    <input type="date" id="birthdate">
+                    <span class="input-icon" id="birthdateIcon"></span>
+                    <div class="error-message" id="birthdateError">
+                        You must be at least 18 years old
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">
+                        <i class="fas fa-globe"></i> Country
+                    </label>
+                    <select id="country">
+                        <option value="">Select your country</option>
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <span class="input-icon" id="countryIcon"></span>
+                    <div class="error-message" id="countryError">
+                        Please select your country
+                    </div>
+                </div>
+                
+                <div class="terms-group">
+                    <input type="checkbox" id="terms">
+                    <label for="terms" class="terms-label">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+                <div class="error-message" id="termsError" style="margin-top: 5px;">
+                    You must agree to the terms
+                </div>
+                
+                <div class="validation-summary" id="validationSummary">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Please fix the following errors:</h3>
+                    <ul id="errorList"></ul>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    <h2>Registration Successful!</h2>
+                    <p>Your account has been created successfully.</p>
+                    <p>Welcome to our community!</p>
+                </div>
+                
+                <div class="form-footer">
+                    <button type="button" class="btn btn-reset" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset Form
+                    </button>
+                    <button type="submit" class="btn btn-submit" id="submitBtn">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </div>
+                </form>
+
+        </div>
+
+
+    </div>
+    
+</body>
+</html>
