@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Finder - Profiles & Jobs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0077b5 0%, #0e76a8 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #0077b5;
+            border-bottom: 3px solid #0077b5;
+        }
+
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #0077b5;
+        }
+
+        .search-btn {
+            background: #0077b5;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            background: #00669c;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .profile-card {
+            border-left: 5px solid #0077b5;
+        }
+
+        .job-card {
+            border-left: 5px solid #28a745;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e9f5fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #0077b5;
+            font-size: 1.8rem;
+        }
+
+        .job-icon {
+            background: #e8f5e9;
+            color: #28a745;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .result-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .result-details {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .tag {
+            background: #f0f7ff;
+            color: #0077b5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .job-tag {
+            background: #f0f9f0;
+            color: #28a745;
+        }
+
+        .result-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-profile {
+            background: #0077b5;
+            color: white;
+        }
+
+        .view-profile:hover {
+            background: #00669c;
+        }
+
+        .apply-job {
+            background: #28a745;
+            color: white;
+        }
+
+        .apply-job:hover {
+            background: #218838;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .results-header {
+            color: white;
+            margin: 25px 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 30px;
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fab fa-linkedin"></i> LinkedIn Finder</h1>
+            <p>Discover profiles and job opportunities on LinkedIn</p>
+        </header>
+
+        <div class="search-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="profiles">Find Profiles</div>
+                <div class="tab" data-tab="jobs">Find Jobs</div>
+            </div>
+
+            <form id="searchForm" class="search-form">
+                <div class="form-group">
+                    <label for="keywords">Keywords / Job Title</label>
+                    <input type="text" id="keywords" placeholder="e.g., Software Engineer, Marketing Manager">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="e.g., New York, Remote, Worldwide">
+                </div>
+
+                <div class="form-group" id="industryGroup">
+                    <label for="industry">Industry</label>
+                    <select id="industry">
+                        <option value="">Any Industry</option>
+                        <option value="technology">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="education">Education</option>
+                    </select>
+                </div>
+
+                <div class="form-group hidden" id="jobTypeGroup">
+                    <label for="jobType">Job Type</label>
+                    <select id="jobType">
+                        <option value="">Any Type</option>
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="contract">Contract</option>
+                        <option value="internship">Internship</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search LinkedIn
+                </button>
+            </form>
+
+            <div class="disclaimer">
+                <i class="fas fa-info-circle"></i> This tool simulates LinkedIn search functionality. For actual
+                LinkedIn data, you would need to use the official LinkedIn API with proper authentication.
+            </div>
+        </div>
+
+        <div class="results-header">
+            <h2 id="resultsTitle">Search Results</h2>
+            <div class="results-count" id="resultsCount">0 results</div>
+        </div>
+
+        <div class="loading hidden" id="loading">
+            <div class="spinner"></div>
+            <p>Searching LinkedIn...</p>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <!-- Results will be dynamically inserted here -->
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                <p>Enter search criteria and click "Search LinkedIn" to find profiles or jobs</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const tabs = document.querySelectorAll('.tab');
+        const searchForm = document.getElementById('searchForm');
+        const industryGroup = document.getElementById('industryGroup');
+        const jobTypeGroup = document.getElementById('jobTypeGroup');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const loadingElement = document.getElementById('loading');
+        const noResultsElement = document.getElementById('noResults');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsCount = document.getElementById('resultsCount');
+
+        let currentTab = 'profiles';
+
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.getAttribute('data-tab');
+
+                // Update form based on selected tab
+                if (currentTab === 'profiles') {
+                    industryGroup.classList.remove('hidden');
+                    jobTypeGroup.classList.add('hidden');
+                    resultsTitle.textContent = 'Profile Results';
+                } else {
+                    industryGroup.classList.add('hidden');
+                    jobTypeGroup.classList.remove('hidden');
+                    resultsTitle.textContent = 'Job Results';
+                }
+
+                // Clear results
+                clearResults();
+            });
+        });
+
+        // Form submission
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const keywords = document.getElementById('keywords').value;
+            const location = document.getElementById('location').value;
+
+            if (!keywords.trim()) {
+                alert('Please enter keywords to search');
+                return;
+            }
+
+            // Show loading
+            loadingElement.classList.remove('hidden');
+            noResultsElement.classList.add('hidden');
+            clearResults();
+
+            // Simulate API call delay
+            setTimeout(() => {
+                if (currentTab === 'profiles') {
+                    const industry = document.getElementById('industry').value;
+                    searchProfiles(keywords, location, industry);
+                } else {
+                    const jobType = document.getElementById('jobType').value;
+                    searchJobs(keywords, location, jobType);
+                }
+            }, 1500);
+        });
+
+        // Clear results
+        function clearResults() {
+            const resultCards = document.querySelectorAll('.result-card');
+            resultCards.forEach(card => card.remove());
+        }
+
+        // Search profiles function
+        function searchProfiles(keywords, location, industry) {
+            // Simulated profile data
+            const profiles = [
+                {
+                    name: "Alex Johnson",
+                    title: "Senior Software Engineer",
+                    company: "TechCorp Inc.",
+                    location: location || "San Francisco, CA",
+                    industry: industry || "Technology",
+                    about: "Experienced full-stack developer with 8+ years in web technologies. Specializing in React, Node.js, and cloud architecture.",
+                    skills: ["JavaScript", "React", "Node.js", "AWS", "Python"],
+                    connectionLevel: "2nd"
+                },
+                {
+                    name: "Maria Garcia",
+                    title: "Marketing Director",
+                    company: "Global Brands LLC",
+                    location: location || "New York, NY",
+                    industry: industry || "Marketing",
+                    about: "Digital marketing expert with a focus on brand strategy and customer engagement. Proven track record in growing online presence.",
+                    skills: ["Digital Marketing", "SEO", "Brand Strategy", "Social Media", "Analytics"],
+                    connectionLevel: "3rd"
+                },
+                {
+                    name: "David Chen",
+                    title: "Data Scientist",
+                    company: "DataInsights Co.",
+                    location: location || "Remote",
+                    industry: industry || "Technology",
+                    about: "Passionate about turning data into actionable insights. Experienced in machine learning, statistical analysis, and big data technologies.",
+                    skills: ["Python", "Machine Learning", "SQL", "TensorFlow", "Data Visualization"],
+                    connectionLevel: "2nd"
+                },
+                {
+                    name: "Sarah Williams",
+                    title: "Financial Analyst",
+                    company: "Capital Finance Group",
+                    location: location || "Chicago, IL",
+                    industry: industry || "Finance",
+                    about: "CFA with expertise in financial modeling, investment analysis, and portfolio management. Strong background in equity research.",
+                    skills: ["Financial Modeling", "Excel", "Investment Analysis", "VBA", "Bloomberg Terminal"],
+                    connectionLevel: "1st"
+                },
+                {
+                    name: "James Wilson",
+                    title: "Healthcare Administrator",
+                    company: "MediCare Systems",
+                    location: location || "Boston, MA",
+                    industry: industry || "Healthcare",
+                    about: "Healthcare management professional with 10+ years of experience in hospital administration and patient care systems.",
+                    skills: ["Healthcare Management", "Patient Care", "Budgeting", "Staff Management", "Compliance"],
+                    connectionLevel: "3rd"
+                },
+                {
+                    name: "Lisa Kim",
+                    title: "UX/UI Designer",
+                    company: "Creative Digital Agency",
+                    location: location || "Austin, TX",
+                    industry: industry || "Technology",
+                    about: "Award-winning designer focused on creating intuitive user experiences. Passionate about user research and interaction design.",
+                    skills: ["Figma", "User Research", "Wireframing", "Prototyping", "Design Systems"],
+                    connectionLevel: "2nd"
+                }
+            ];
+
+            // Filter profiles based on search criteria
+            const filteredProfiles = profiles.filter(profile => {
+                const keywordMatch = profile.title.toLowerCase().includes(keywords.toLowerCase()) ||
+                    profile.skills.some(skill => skill.toLowerCase().includes(keywords.toLowerCase()));
+
+                const industryMatch = !industry || profile.industry.toLowerCase() === industry.toLowerCase();
+
+                return keywordMatch && industryMatch;
+            });
+
+            displayProfiles(filteredProfiles);
+        }
+
+        // Display profiles function
+        function displayProfiles(profiles) {
+            loadingElement.classList.add('hidden');
+
+            if (profiles.length === 0) {
+                noResultsElement.classList.remove('hidden');
+                resultsCount.textContent = "0 results";
+                return;
+            }
+
+            profiles.forEach(profile => {
+                const profileCard = document.createElement('div');
+                profileCard.className = 'result-card profile-card';
+
+                // Generate initials for avatar
+                const names = profile.name.split(' ');
+                const initials = names[0].charAt(0) + (names[1] ? names[1].charAt(0) : '');
+
+                // Create tags HTML
+                const tagsHTML = profile.skills.map(skill => `<span class="tag">${skill}</span>`).join('');
+
+                profileCard.innerHTML = `
+                    <div class="result-header">
+                        <div class="avatar">
+                            ${initials}
+                        </div>
+                        <div>
+                            <div class="result-title">${profile.name}</div>
+                            <div class="result-subtitle">${profile.title} at ${profile.company}</div>
+                            <div class="result-subtitle"><i class="fas fa-map-marker-alt"></i> ${profile.location} • ${profile.industry} • ${profile.connectionLevel} connection</div>
+                        </div>
+                    </div>
+                    <div class="result-details">
+                        ${profile.about}
+                    </div>
+                    <div class="result-tags">
+                        ${tagsHTML}
+                    </div>
+                    <div class="result-actions">
+                        <button class="action-btn view-profile" onclick="viewProfile('${profile.name}')">
+                            <i class="fab fa-linkedin"></i> View Profile
+                        </button>
+                        <button class="action-btn" onclick="connectWith('${profile.name}')" style="background: #f0f7ff; color: #0077b5;">
+                            <i class="fas fa-user-plus"></i> Connect
+                        </button>
+                    </div>
+                `;
+
+                resultsContainer.insertBefore(profileCard, noResultsElement);
+            });
+
+            resultsCount.textContent = `${profiles.length} profile${profiles.length !== 1 ? 's' : ''} found`;
+        }
+
+        // Search jobs function
+        function searchJobs(keywords, location, jobType) {
+            // Simulated job data
+            const jobs = [
+                {
+                    title: "Senior Frontend Developer",
+                    company: "TechSolutions Inc.",
+                    location: location || "Remote",
+                    type: jobType || "Full-time",
+                    posted: "2 days ago",
+                    description: "We're looking for an experienced frontend developer to join our team. You'll be working with React, TypeScript, and modern web technologies.",
+                    requirements: ["5+ years experience", "React expertise", "TypeScript", "CSS/SCSS", "Testing"],
+                    salary: "$120,000 - $150,000"
+                },
+                {
+                    title: "Marketing Manager",
+                    company: "BrandBoost Marketing",
+                    location: location || "New York, NY",
+                    type: jobType || "Full-time",
+                    posted: "1 week ago",
+                    description: "Lead our marketing team in developing and executing digital marketing strategies for global clients.",
+                    requirements: ["7+ years experience", "Team management", "Digital marketing", "Analytics", "Content strategy"],
+                    salary: "$100,000 - $130,000"
+                },
+                {
+                    title: "Data Analyst",
+                    company: "DataDriven Insights",
+                    location: location || "Chicago, IL",
+                    type: jobType || "Contract",
+                    posted: "3 days ago",
+                    description: "Analyze large datasets to provide insights and recommendations for business decision-making.",
+                    requirements: ["3+ years experience", "SQL", "Python", "Tableau", "Statistical analysis"],
+                    salary: "$80,000 - $100,000"
+                },
+                {
+                    title: "UX Designer",
+                    company: "DesignFirst Agency",
+                    location: location || "San Francisco, CA",
+                    type: jobType || "Full-time",
+                    posted: "5 days ago",
+                    description: "Create beautiful and functional user experiences for our enterprise clients.",
+                    requirements: ["4+ years experience", "Figma/Sketch", "User research", "Prototyping", "Design systems"],
+                    salary: "$110,000 - $140,000"
+                },
+                {
+                    title: "DevOps Engineer",
+                    company: "CloudSystems Corp",
+                    location: location || "Remote",
+                    type: jobType || "Full-time",
+                    posted: "1 day ago",
+                    description: "Build and maintain our cloud infrastructure and CI/CD pipelines.",
+                    requirements: ["5+ years experience", "AWS/Azure", "Kubernetes", "Docker", "Terraform"],
+                    salary: "$130,000 - $160,000"
+                },
+                {
+                    title: "Product Manager",
+                    company: "InnovateTech",
+                    location: location || "Austin, TX",
+                    type: jobType || "Full-time",
+                    posted: "1 week ago",
+                    description: "Lead product strategy and development for our SaaS platform.",
+                    requirements: ["6+ years experience", "Product lifecycle", "Agile/Scrum", "User stories", "Market research"],
+                    salary: "$140,000 - $170,000"
+                }
+            ];
+
+            // Filter jobs based on search criteria
+            const filteredJobs = jobs.filter(job => {
+                const keywordMatch = job.title.toLowerCase().includes(keywords.toLowerCase()) ||
+                    job.requirements.some(req => req.toLowerCase().includes(keywords.toLowerCase()));
+
+                const typeMatch = !jobType || job.type.toLowerCase() === jobType.toLowerCase();
+
+                return keywordMatch && typeMatch;
+            });
+
+            displayJobs(filteredJobs);
+        }
+
+        // Display jobs function
+        function displayJobs(jobs) {
+            loadingElement.classList.add('hidden');
+
+            if (jobs.length === 0) {
+                noResultsElement.classList.remove('hidden');
+                resultsCount.textContent = "0 results";
+                return;
+            }
+
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'result-card job-card';
+
+                // Create requirements tags HTML
+                const tagsHTML = job.requirements.map(req => `<span class="tag job-tag">${req}</span>`).join('');
+
+                jobCard.innerHTML = `
+                    <div class="result-header">
+                        <div class="avatar job-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div>
+                            <div class="result-title">${job.title}</div>
+                            <div class="result-subtitle">${job.company} • <i class="fas fa-map-marker-alt"></i> ${job.location}</div>
+                            <div class="result-subtitle"><i class="far fa-clock"></i> ${job.type} • Posted ${job.posted} • ${job.salary}</div>
+                        </div>
+                    </div>
+                    <div class="result-details">
+                        ${job.description}
+                    </div>
+                    <div class="result-tags">
+                        ${tagsHTML}
+                    </div>
+                    <div class="result-actions">
+                        <button class="action-btn apply-job" onclick="applyForJob('${job.title}', '${job.company}')">
+                            <i class="fas fa-paper-plane"></i> Apply Now
+                        </button>
+                        <button class="action-btn" onclick="saveJob('${job.title}', '${job.company}')" style="background: #f0f9f0; color: #28a745;">
+                            <i class="far fa-bookmark"></i> Save Job
+                        </button>
+                    </div>
+                `;
+
+                resultsContainer.insertBefore(jobCard, noResultsElement);
+            });
+
+            resultsCount.textContent = `${jobs.length} job${jobs.length !== 1 ? 's' : ''} found`;
+        }
+
+        // Action functions
+        function viewProfile(name) {
+            alert(`This would redirect to ${name}'s LinkedIn profile\n\nIn a real application, this would open the actual LinkedIn profile URL.`);
+        }
+
+        function connectWith(name) {
+            alert(`Connection request would be sent to ${name}\n\nIn a real LinkedIn integration, this would use the LinkedIn API to send a connection request.`);
+        }
+
+        function applyForJob(title, company) {
+            alert(`Application process would start for: ${title} at ${company}\n\nIn a real application, this would redirect to the job application page.`);
+        }
+
+        function saveJob(title, company) {
+            alert(`Job saved: ${title} at ${company}\n\nIn a real LinkedIn integration, this would save the job to your LinkedIn account.`);
+        }
+
+        // Initialize with some results
+        window.onload = function () {
+            // Show some sample profiles on load
+            searchProfiles("Software", "San Francisco", "technology");
+            noResultsElement.classList.add('hidden');
+        };
+    </script>
+</body>
+
+</html>

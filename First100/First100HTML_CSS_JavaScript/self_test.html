@@ -3,54 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Self Test 1</title>
+    <title>Document</title>
     <style>
 
         body{
             margin: 0 ;
-            padding: 0 ;
-            background-color: lightgoldenrodyellow ;
+            padding: 0 ; 
         }
 
-        .container{
-            text-align: center;
-            display: flex ;
+        .main-container{
+            height: 400px ;
+            width: 300px ;
+            background-color: rgb(45, 44, 44) ;
+            overflow: visible;
+            
+        }
+        
+        .sub-container{
+            height: 30px ;
+            width: 30px ;
+            background-color: white ;
+            top: 40% ;
+            left: 60% ;
+            
+        }
+
+        .inner-box{
+            height: 5px ;
+            width: 5px ;
+            border-radius: 5px ;
+            background-color: red ;
+            top: 30% ;
+            left: 50% ;
+        }
+
+        .box-1{
+            background-color: aqua;
+
+        }
+        .box-2{
+            background-color:blue;
+
+        }
+        .box-3{
+            background-color:brown;
+
+        }
+        .box-4{
+            background-color:yellow;
+
+        }
+        .box-5{
+            background-color:yellowgreen;
 
         }
 
+        .main-container{position:absolute}
+        .sub-container{position:absolute}
+        .inner-box{position:absolute}
 
     </style>
 </head>
 <body>
 
-    <div class="container">
-
-        <div class="container-header container-item">
-            <h2>Login</h2>
+    <div class="main-container">
+        <div class="sub-container box-1">
+            <div class="inner-box"></div> 
         </div>
-        
-        <div class="form-container container-item">
-        
-        <form action="post">
-
-        <label for="name">Name: </label>
-        <input type="text" id="name" name="name">
-        <label>email: </label>
-        <input type="email" id="email" name="email">
-        <label for=""password">Password</label>
-        <input type="password" id="passwoed" name="password">
-    </form>
-
-
+        <div class="sub-container box-2">
+            <div class="inner-box"></div>
+        </div>
+        <div class="sub-container box-3">
+            <div class="inner-box"></div>
+            <div class="inner-box"></div>
+            <div class="inner-box"></div>
+            <div class="inner-box"></div>
+            <div class="inner-box"></div>
+        </div>
+        <div class="sub-container box-4">
+            <div class="inner-box"></div>
+        </div>
+        <div class="sub-container box-5">
+            <div class="inner-box"></div>
+        </div>
     </div>
-
-    </div>
-
-
-    
-
-    
-    
     
 </body>
 </html>

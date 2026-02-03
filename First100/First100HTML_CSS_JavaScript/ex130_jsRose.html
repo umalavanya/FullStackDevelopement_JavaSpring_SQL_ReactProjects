@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic CSS Rose</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            padding: 15px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #a5b1c2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        /* Rose Container */
+        .rose-scene {
+            position: relative;
+            width: 450px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rose-container {
+            position: relative;
+            width: 300px;
+            height: 500px;
+        }
+
+        /* Base rose structure */
+        .rose {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            top: 50px;
+            left: 0;
+            transform-origin: center 250px;
+        }
+
+        /* Petal styles - more realistic shape */
+        .petal {
+            position: absolute;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow:
+                inset 0px -15px 30px rgba(0, 0, 0, 0.2),
+                2px 5px 20px rgba(0, 0, 0, 0.3);
+            transform-origin: center bottom;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Stem */
+        .stem {
+            position: absolute;
+            width: 14px;
+            height: 320px;
+            background: linear-gradient(to right, #1e5631, #2d8f2d, #27ae60, #2d8f2d);
+            top: 300px;
+            left: 143px;
+            border-radius: 7px;
+            box-shadow:
+                inset 0 0 15px rgba(0, 0, 0, 0.3),
+                3px 5px 15px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        /* Leaves */
+        .leaf {
+            position: absolute;
+            background: linear-gradient(to right, #1e5631, #27ae60, #2ecc71);
+            border-radius: 0 50% 50% 0;
+            box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .leaf-1 {
+            width: 100px;
+            height: 50px;
+            top: 350px;
+            left: 155px;
+            transform: rotate(-30deg);
+            border-radius: 50% 0 50% 50%;
+        }
+
+        .leaf-2 {
+            width: 90px;
+            height: 45px;
+            top: 400px;
+            left: 120px;
+            transform: rotate(25deg);
+            border-radius: 0 50% 50% 0;
+        }
+
+        .leaf-3 {
+            width: 110px;
+            height: 50px;
+            top: 450px;
+            left: 160px;
+            transform: rotate(15deg);
+            border-radius: 50% 0 50% 50%;
+        }
+
+        /* Thorns */
+        .thorn {
+            position: absolute;
+            width: 10px;
+            height: 25px;
+            background: linear-gradient(to bottom, #1e5631, #0f2f18);
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .thorn-1 {
+            top: 320px;
+            left: 135px;
+            transform: rotate(45deg);
+        }
+
+        .thorn-2 {
+            top: 380px;
+            left: 150px;
+            transform: rotate(-45deg);
+        }
+
+        .thorn-3 {
+            top: 430px;
+            left: 140px;
+            transform: rotate(60deg);
+        }
+
+        /* Dew drops for realism */
+        .dew-drop {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(1px);
+            z-index: 10;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 500px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: fit-content;
+            margin-top: 40px;
+        }
+
+        .controls-panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ff9a9e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #ffdd59;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .slider-container label {
+            min-width: 120px;
+            font-weight: 500;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ff9a9e;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 94, 125, 0.5);
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: #ffdd59;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff5e7d, #ff2e63);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(255, 94, 125, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.reset {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        button.bloom {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+
+        button.wilt {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+        }
+
+        .rose-info {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .rose-info h3 {
+            color: #ffdd59;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            min-width: 100px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff9a9e;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a5b1c2;
+            margin-top: 5px;
+        }
+
+        /* Petal colors */
+        .petal-outer {
+            background: linear-gradient(to bottom right, #c70039, #ff2e63, #ff5e7d);
+        }
+
+        .petal-middle {
+            background: linear-gradient(to bottom right, #ff2e63, #ff5e7d, #ff9a9e);
+        }
+
+        .petal-inner {
+            background: linear-gradient(to bottom right, #ff5e7d, #ff9a9e, #fad0c4);
+        }
+
+        /* Animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(0.5deg);
+            }
+        }
+
+        @keyframes petal-shimmer {
+
+            0%,
+            100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.2);
+            }
+        }
+
+        @keyframes bloom {
+            0% {
+                transform: scale(0.5) rotate(0deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) rotate(var(--rotate));
+                opacity: 1;
+            }
+        }
+
+        .rose {
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .petal {
+            animation: petal-shimmer 5s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            color: #a5b1c2;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .footer a {
+            color: #ff9a9e;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #ffdd59;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls-panel {
+                max-width: 90%;
+            }
+
+            .rose-scene {
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .rose-scene {
+                transform: scale(0.7);
+                height: 500px;
+            }
+
+            .controls-panel {
+                padding: 20px;
+            }
+
+            .buttons button {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-rose"></i> Realistic CSS Rose</h1>
+            <p>An interactive, realistic rose with JavaScript controls. Adjust petals, colors, and watch it bloom!</p>
+        </div>
+
+        <div class="main-content">
+            <div class="rose-scene">
+                <div class="rose-container">
+                    <div class="stem"></div>
+
+                    <div class="leaf leaf-1"></div>
+                    <div class="leaf leaf-2"></div>
+                    <div class="leaf leaf-3"></div>
+
+                    <div class="thorn thorn-1"></div>
+                    <div class="thorn thorn-2"></div>
+                    <div class="thorn thorn-3"></div>
+
+                    <div class="rose" id="rose">
+                        <!-- Petals will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <h2><i class="fas fa-sliders-h"></i> Rose Controls</h2>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-feather-alt"></i> Petal Settings</h3>
+
+                    <div class="slider-container">
+                        <label>Petal Count:</label>
+                        <input type="range" id="petalCount" min="15" max="50" value="25" step="1">
+                        <span class="slider-value" id="petalCountValue">25</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Petal Size:</label>
+                        <input type="range" id="petalSize" min="80" max="150" value="120" step="1">
+                        <span class="slider-value" id="petalSizeValue">120</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Bloom Level:</label>
+                        <input type="range" id="bloomLevel" min="0" max="100" value="80" step="1">
+                        <span class="slider-value" id="bloomLevelValue">80</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-palette"></i> Color Settings</h3>
+
+                    <div class="slider-container">
+                        <label>Red Intensity:</label>
+                        <input type="range" id="redColor" min="150" max="255" value="220" step="1">
+                        <span class="slider-value" id="redColorValue">220</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Saturation:</label>
+                        <input type="range" id="saturation" min="50" max="100" value="85" step="1">
+                        <span class="slider-value" id="saturationValue">85</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Brightness:</label>
+                        <input type="range" id="brightness" min="70" max="100" value="90" step="1">
+                        <span class="slider-value" id="brightnessValue">90</span>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button id="bloomBtn" class="bloom">
+                        <i class="fas fa-seedling"></i> Bloom Rose
+                    </button>
+                    <button id="wiltBtn" class="wilt">
+                        <i class="fas fa-leaf"></i> Wilt Rose
+                    </button>
+                    <button id="resetBtn" class="reset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                    <button id="randomBtn">
+                        <i class="fas fa-random"></i> Randomize
+                    </button>
+                </div>
+
+                <div class="rose-info">
+                    <h3><i class="fas fa-chart-bar"></i> Rose Stats</h3>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="totalPetals">25</div>
+                            <div class="stat-label">Petals</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="roseSize">120px</div>
+                            <div class="stat-label">Size</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="bloomPercent">80%</div>
+                            <div class="stat-label">Bloom</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="colorDepth">High</div>
+                            <div class="stat-label">Color Depth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Interactive CSS Rose with JavaScript |
+                <a href="#" id="viewCode">View Code Explanation</a> |
+                <a href="#" id="moreRoses">More Flowers</a>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.8rem; color: #7f8c8d;">
+                Move sliders to adjust the rose. Click buttons for animations.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Rose configuration
+        const roseConfig = {
+            petalCount: 25,
+            petalSize: 120,
+            bloomLevel: 80,
+            redColor: 220,
+            saturation: 85,
+            brightness: 90,
+            animationSpeed: 5
+        };
+
+        // DOM elements
+        const rose = document.getElementById('rose');
+        const petalCountSlider = document.getElementById('petalCount');
+        const petalSizeSlider = document.getElementById('petalSize');
+        const bloomLevelSlider = document.getElementById('bloomLevel');
+        const redColorSlider = document.getElementById('redColor');
+        const saturationSlider = document.getElementById('saturation');
+        const brightnessSlider = document.getElementById('brightness');
+
+        const petalCountValue = document.getElementById('petalCountValue');
+        const petalSizeValue = document.getElementById('petalSizeValue');
+        const bloomLevelValue = document.getElementById('bloomLevelValue');
+        const redColorValue = document.getElementById('redColorValue');
+        const saturationValue = document.getElementById('saturationValue');
+        const brightnessValue = document.getElementById('brightnessValue');
+
+        const bloomBtn = document.getElementById('bloomBtn');
+        const wiltBtn = document.getElementById('wiltBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const randomBtn = document.getElementById('randomBtn');
+
+        const totalPetalsStat = document.getElementById('totalPetals');
+        const roseSizeStat = document.getElementById('roseSize');
+        const bloomPercentStat = document.getElementById('bloomPercent');
+        const colorDepthStat = document.getElementById('colorDepth');
+
+        // Initialize the rose
+        function initRose() {
+            generatePetals();
+            updateStats();
+        }
+
+        // Generate petals based on current configuration
+        function generatePetals() {
+            // Clear existing petals
+            rose.innerHTML = '';
+
+            const centerX = 150;
+            const centerY = 250;
+            const petalCount = roseConfig.petalCount;
+            const bloomFactor = roseConfig.bloomLevel / 100;
+
+            // Create center of the rose (stamen)
+            const stamen = document.createElement('div');
+            stamen.className = 'petal-center';
+            stamen.style.position = 'absolute';
+            stamen.style.width = '50px';
+            stamen.style.height = '50px';
+            stamen.style.borderRadius = '50%';
+            stamen.style.background = 'radial-gradient(circle, #ffdd59, #ff9f1a, #ff6b00)';
+            stamen.style.boxShadow = 'inset 0px -10px 20px rgba(255, 107, 0, 0.5), 0px 0px 25px rgba(255, 221, 89, 0.7)';
+            stamen.style.top = `${centerY - 25}px`;
+            stamen.style.left = `${centerX - 25}px`;
+            stamen.style.zIndex = '1';
+            rose.appendChild(stamen);
+
+            // Generate petals in layers
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+
+                // Calculate position in a spiral pattern
+                const angle = (i * 137.5) * (Math.PI / 180); // Golden angle
+                const radius = (i / petalCount) * (roseConfig.petalSize * 0.7) * bloomFactor;
+
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle) * 0.8;
+
+                // Size decreases towards the center
+                const size = roseConfig.petalSize * (1 - (i / petalCount) * 0.5);
+                const width = size;
+                const height = size * 0.8;
+
+                // Rotation follows the spiral
+                const rotation = angle * (180 / Math.PI);
+
+                // Determine petal layer (outer, middle, inner)
+                let petalClass = 'petal-outer';
+                if (i > petalCount * 0.7) {
+                    petalClass = 'petal-inner';
+                } else if (i > petalCount * 0.4) {
+                    petalClass = 'petal-middle';
+                }
+
+                // Calculate color based on position and settings
+                const red = Math.floor(roseConfig.redColor * (1 - (i / petalCount) * 0.3));
+                const green = Math.floor(50 * (i / petalCount));
+                const blue = Math.floor(100 * (i / petalCount));
+
+                const color = `rgb(${red}, ${green}, ${blue})`;
+                const color2 = `rgb(${Math.min(255, red + 30)}, ${Math.min(255, green + 20)}, ${Math.min(255, blue + 30)})`;
+                const color3 = `rgb(${Math.max(0, red - 30)}, ${Math.max(0, green - 10)}, ${Math.max(0, blue - 20)})`;
+
+                // Apply styles
+                petal.style.cssText = `
+                    width: ${width}px;
+                    height: ${height}px;
+                    top: ${y - height / 2}px;
+                    left: ${x - width / 2}px;
+                    transform: rotate(${rotation}deg);
+                    background: linear-gradient(to bottom right, ${color}, ${color2}, ${color3});
+                    border-radius: ${width / 2}px ${width / 2}px ${width / 3}px ${width / 3}px / ${height}px ${height}px ${height / 2}px ${height / 2}px;
+                    box-shadow: 
+                        inset 0px -15px 30px rgba(0, 0, 0, 0.3),
+                        2px 5px 20px rgba(0, 0, 0, 0.4);
+                    filter: saturate(${roseConfig.saturation}%) brightness(${roseConfig.brightness}%);
+                    opacity: ${0.7 + (i / petalCount) * 0.3};
+                    z-index: ${Math.floor(petalCount - i)};
+                    --i: ${i % 10};
+                    animation-delay: ${(i % 10) * 0.1}s;
+                `;
+
+                // Add dew drops randomly
+                if (Math.random() > 0.7) {
+                    const dewDrop = document.createElement('div');
+                    dewDrop.className = 'dew-drop';
+                    dewDrop.style.top = `${Math.random() * height / 2}px`;
+                    dewDrop.style.left = `${Math.random() * width / 2}px`;
+                    petal.appendChild(dewDrop);
+                }
+
+                rose.appendChild(petal);
+            }
+
+            // Add some inner petals for more realism
+            for (let i = 0; i < 5; i++) {
+                const innerPetal = document.createElement('div');
+                innerPetal.className = 'petal petal-inner';
+
+                const angle = i * 72;
+                const radius = 20;
+                const x = centerX + radius * Math.cos(angle * Math.PI / 180);
+                const y = centerY + radius * Math.sin(angle * Math.PI / 180);
+                const size = 40 + i * 5;
+
+                innerPetal.style.cssText = `
+                    width: ${size}px;
+                    height: ${size * 0.9}px;
+                    top: ${y - size / 2}px;
+                    left: ${x - size / 2}px;
+                    transform: rotate(${angle + 30}deg);
+                    background: linear-gradient(to bottom right, #ffdd59, #ff9f1a, #ff6b00);
+                    border-radius: 50%;
+                    opacity: 0.9;
+                    z-index: 0;
+                    box-shadow: inset 0px -5px 15px rgba(255, 107, 0, 0.4);
+                `;
+
+                rose.appendChild(innerPetal);
+            }
+        }
+
+        // Update stats display
+        function updateStats() {
+            totalPetalsStat.textContent = roseConfig.petalCount;
+            roseSizeStat.textContent = `${roseConfig.petalSize}px`;
+            bloomPercentStat.textContent = `${roseConfig.bloomLevel}%`;
+
+            const colorDepth = roseConfig.saturation > 80 ? 'High' :
+                roseConfig.saturation > 60 ? 'Medium' : 'Low';
+            colorDepthStat.textContent = colorDepth;
+        }
+
+        // Update rose based on slider values
+        function updateRose() {
+            roseConfig.petalCount = parseInt(petalCountSlider.value);
+            roseConfig.petalSize = parseInt(petalSizeSlider.value);
+            roseConfig.bloomLevel = parseInt(bloomLevelSlider.value);
+            roseConfig.redColor = parseInt(redColorSlider.value);
+            roseConfig.saturation = parseInt(saturationSlider.value);
+            roseConfig.brightness = parseInt(brightnessSlider.value);
+
+            // Update value displays
+            petalCountValue.textContent = roseConfig.petalCount;
+            petalSizeValue.textContent = roseConfig.petalSize;
+            bloomLevelValue.textContent = roseConfig.bloomLevel;
+            redColorValue.textContent = roseConfig.redColor;
+            saturationValue.textContent = roseConfig.saturation;
+            brightnessValue.textContent = roseConfig.brightness;
+
+            generatePetals();
+            updateStats();
+        }
+
+        // Bloom animation
+        function bloomRose() {
+            // Animate from small to full size
+            const originalBloom = roseConfig.bloomLevel;
+            roseConfig.bloomLevel = 0;
+
+            generatePetals();
+
+            let bloom = 0;
+            const bloomInterval = setInterval(() => {
+                bloom += 2;
+                roseConfig.bloomLevel = Math.min(originalBloom, bloom);
+
+                generatePetals();
+
+                if (bloom >= originalBloom) {
+                    clearInterval(bloomInterval);
+                    bloomLevelSlider.value = originalBloom;
+                    bloomLevelValue.textContent = originalBloom;
+                }
+            }, 30);
+        }
+
+        // Wilt animation
+        function wiltRose() {
+            const originalBloom = roseConfig.bloomLevel;
+
+            let bloom = originalBloom;
+            const wiltInterval = setInterval(() => {
+                bloom -= 2;
+                roseConfig.bloomLevel = Math.max(0, bloom);
+
+                generatePetals();
+
+                if (bloom <= 0) {
+                    clearInterval(wiltInterval);
+                    bloomLevelSlider.value = 0;
+                    bloomLevelValue.textContent = 0;
+                }
+            }, 30);
+        }
+
+        // Reset to default values
+        function resetRose() {
+            roseConfig.petalCount = 25;
+            roseConfig.petalSize = 120;
+            roseConfig.bloomLevel = 80;
+            roseConfig.redColor = 220;
+            roseConfig.saturation = 85;
+            roseConfig.brightness = 90;
+
+            petalCountSlider.value = roseConfig.petalCount;
+            petalSizeSlider.value = roseConfig.petalSize;
+            bloomLevelSlider.value = roseConfig.bloomLevel;
+            redColorSlider.value = roseConfig.redColor;
+            saturationSlider.value = roseConfig.saturation;
+            brightnessSlider.value = roseConfig.brightness;
+
+            updateRose();
+        }
+
+        // Randomize rose
+        function randomizeRose() {
+            roseConfig.petalCount = Math.floor(Math.random() * 36) + 15; // 15-50
+            roseConfig.petalSize = Math.floor(Math.random() * 71) + 80; // 80-150
+            roseConfig.bloomLevel = Math.floor(Math.random() * 101); // 0-100
+            roseConfig.redColor = Math.floor(Math.random() * 106) + 150; // 150-255
+            roseConfig.saturation = Math.floor(Math.random() * 51) + 50; // 50-100
+            roseConfig.brightness = Math.floor(Math.random() * 31) + 70; // 70-100
+
+            petalCountSlider.value = roseConfig.petalCount;
+            petalSizeSlider.value = roseConfig.petalSize;
+            bloomLevelSlider.value = roseConfig.bloomLevel;
+            redColorSlider.value = roseConfig.redColor;
+            saturationSlider.value = roseConfig.saturation;
+            brightnessSlider.value = roseConfig.brightness;
+
+            updateRose();
+        }
+
+        // Event Listeners
+        petalCountSlider.addEventListener('input', updateRose);
+        petalSizeSlider.addEventListener('input', updateRose);
+        bloomLevelSlider.addEventListener('input', updateRose);
+        redColorSlider.addEventListener('input', updateRose);
+        saturationSlider.addEventListener('input', updateRose);
+        brightnessSlider.addEventListener('input', updateRose);
+
+        bloomBtn.addEventListener('click', bloomRose);
+        wiltBtn.addEventListener('click', wiltRose);
+        resetBtn.addEventListener('click', resetRose);
+        randomBtn.addEventListener('click', randomizeRose);
+
+        // Initialize
+        initRose();
+
+        // Add interactive hover effects
+        rose.addEventListener('mouseenter', () => {
+            document.querySelectorAll('.petal').forEach(petal => {
+                petal.style.transform += ' scale(1.05)';
+                petal.style.transition = 'transform 0.5s ease';
+            });
+        });
+
+        rose.addEventListener('mouseleave', () => {
+            document.querySelectorAll('.petal').forEach(petal => {
+                petal.style.transform = petal.style.transform.replace(' scale(1.05)', '');
+            });
+        });
+
+        // Add click to add dew drop
+        rose.addEventListener('click', (e) => {
+            if (e.target.classList.contains('petal') || e.target.classList.contains('dew-drop')) {
+                const petal = e.target.classList.contains('petal') ? e.target : e.target.parentElement;
+
+                const dewDrop = document.createElement('div');
+                dewDrop.className = 'dew-drop';
+
+                const rect = petal.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                dewDrop.style.top = `${y}px`;
+                dewDrop.style.left = `${x}px`;
+
+                petal.appendChild(dewDrop);
+
+                // Remove after some time
+                setTimeout(() => {
+                    if (dewDrop.parentElement) {
+                        dewDrop.style.opacity = '0';
+                        dewDrop.style.transition = 'opacity 1s';
+                        setTimeout(() => dewDrop.remove(), 1000);
+                    }
+                }, 3000);
+            }
+        });
+
+        // Footer links
+        document.getElementById('viewCode').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('This rose is created using:\n- 25+ CSS-generated petals\n- JavaScript for interactivity\n- HSL color gradients for realism\n- Spiral algorithm for petal placement\n- Interactive controls for customization');
+        });
+
+        document.getElementById('moreRoses').addEventListener('click', (e) => {
+            e.preventDefault();
+            randomizeRose();
+            bloomRose();
+        });
+    </script>
+</body>
+
+</html>

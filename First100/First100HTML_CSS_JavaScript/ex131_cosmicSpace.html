@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Space with Zodiac Constellations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Cosmic Space Canvas */
+        .cosmic-space {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0c1445 0%, #020111 60%, #000000 100%);
+            overflow: hidden;
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .star.small {
+            width: 1px;
+            height: 1px;
+        }
+
+        .star.medium {
+            width: 2px;
+            height: 2px;
+        }
+
+        .star.large {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Nebulas */
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            mix-blend-mode: screen;
+        }
+
+        .nebula.purple {
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.7) 0%, rgba(75, 0, 130, 0.3) 70%);
+        }
+
+        .nebula.blue {
+            background: radial-gradient(circle, rgba(0, 191, 255, 0.6) 0%, rgba(0, 104, 139, 0.2) 70%);
+        }
+
+        .nebula.red {
+            background: radial-gradient(circle, rgba(255, 69, 0, 0.5) 0%, rgba(139, 0, 0, 0.2) 70%);
+        }
+
+        .nebula.green {
+            background: radial-gradient(circle, rgba(50, 205, 50, 0.4) 0%, rgba(0, 100, 0, 0.2) 70%);
+        }
+
+        /* Zodiac Constellations */
+        .constellation {
+            position: absolute;
+            opacity: 0.8;
+            transition: all 0.5s ease;
+        }
+
+        .constellation-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            height: 1px;
+            transform-origin: 0 0;
+        }
+
+        .constellation-star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        /* Constellation specific colors */
+        .constellation.aries .constellation-star {
+            background-color: #ff6b6b;
+        }
+
+        .constellation.taurus .constellation-star {
+            background-color: #ffd166;
+        }
+
+        .constellation.gemini .constellation-star {
+            background-color: #06d6a0;
+        }
+
+        .constellation.cancer .constellation-star {
+            background-color: #118ab2;
+        }
+
+        .constellation.leo .constellation-star {
+            background-color: #ff9e00;
+        }
+
+        .constellation.virgo .constellation-star {
+            background-color: #83d483;
+        }
+
+        .constellation.libra .constellation-star {
+            background-color: #a882dd;
+        }
+
+        .constellation.scorpio .constellation-star {
+            background-color: #ef476f;
+        }
+
+        .constellation.sagittarius .constellation-star {
+            background-color: #ff9a76;
+        }
+
+        .constellation.capricorn .constellation-star {
+            background-color: #7bdff2;
+        }
+
+        .constellation.aquarius .constellation-star {
+            background-color: #5dbb63;
+        }
+
+        .constellation.pisces .constellation-star {
+            background-color: #a2d2ff;
+        }
+
+        /* Special Constellations */
+        .constellation.orion .constellation-star {
+            background-color: #4cc9f0;
+        }
+
+        .constellation.pegasus .constellation-star {
+            background-color: #b388eb;
+        }
+
+        /* Constellation Labels */
+        .constellation-label {
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 0 5px currentColor;
+            opacity: 0.7;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: rgba(0, 10, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            z-index: 100;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .controls-header h2 {
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #4cc9f0, #b388eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .controls-group {
+            margin-bottom: 20px;
+        }
+
+        .controls-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #a2d2ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-switch label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .toggle-switch i {
+            font-size: 1.2rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4cc9f0;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Zodiac Selector */
+        .zodiac-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .zodiac-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .zodiac-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .zodiac-button.active {
+            background: rgba(76, 201, 240, 0.2);
+            border-color: #4cc9f0;
+            box-shadow: 0 0 15px rgba(76, 201, 240, 0.4);
+        }
+
+        .zodiac-button i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .zodiac-button span {
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Slider Controls */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .slider-container label {
+            min-width: 120px;
+            font-size: 0.9rem;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4cc9f0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.7);
+        }
+
+        /* Info Display */
+        .info-display {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            background: rgba(0, 10, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            z-index: 100;
+        }
+
+        .info-display h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #b388eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .constellation-info {
+            margin-bottom: 15px;
+        }
+
+        .constellation-info h4 {
+            font-size: 1.1rem;
+            color: #4cc9f0;
+            margin-bottom: 5px;
+        }
+
+        .constellation-info p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px white;
+            opacity: 0;
+        }
+
+        /* Planet */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f1c40f, #e67e22);
+            box-shadow: 0 0 40px rgba(241, 196, 15, 0.5);
+            z-index: 1;
+        }
+
+        .planet-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transform-style: preserve-3d;
+        }
+
+        /* Title */
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .title h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #4cc9f0, #b388eb, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
+        }
+
+        .title p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animation */
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slow-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .star {
+            animation: twinkle 3s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        .planet {
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .planet-ring {
+            animation: slow-rotate 40s linear infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .controls-panel {
+                width: 280px;
+            }
+
+            .info-display {
+                width: 280px;
+            }
+
+            .zodiac-selector {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls-panel {
+                width: 260px;
+                padding: 15px;
+            }
+
+            .info-display {
+                width: 260px;
+                padding: 15px;
+            }
+
+            .zodiac-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="cosmic-space" id="cosmicSpace">
+            <!-- Stars, Nebulas, and Constellations will be generated by JavaScript -->
+        </div>
+
+        <div class="title">
+            <h1><i class="fas fa-star-and-crescent"></i> Cosmic Zodiac Space</h1>
+            <p>Explore stars, nebulas, and constellations of the zodiac</p>
+        </div>
+
+        <div class="controls-panel">
+            <div class="controls-header">
+                <h2><i class="fas fa-cogs"></i> Cosmic Controls</h2>
+                <button id="toggleControls"
+                    style="background:none;border:none;color:#4cc9f0;font-size:1.2rem;cursor:pointer;">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+
+            <div class="controls-content" id="controlsContent">
+                <div class="controls-group">
+                    <h3><i class="fas fa-stars"></i> Visual Elements</h3>
+
+                    <div class="toggle-switch">
+                        <label>
+                            <i class="fas fa-star" style="color:#FFD700;"></i>
+                            <span>Stars</span>
+                        </label>
+                        <div class="switch">
+                            <input type="checkbox" id="toggleStars" checked>
+                            <span class="slider"></span>
+                        </div>
+                    </div>
+
+                    <div class="toggle-switch">
+                        <label>
+                            <i class="fas fa-cloud" style="color:#b388eb;"></i>
+                            <span>Nebulas</span>
+                        </label>
+                        <div class="switch">
+                            <input type="checkbox" id="toggleNebulas" checked>
+                            <span class="slider"></span>
+                        </div>
+                    </div>
+
+                    <div class="toggle-switch">
+                        <label>
+                            <i class="fas fa-star-of-life" style="color:#4cc9f0;"></i>
+                            <span>Constellations</span>
+                        </label>
+                        <div class="switch">
+                            <input type="checkbox" id="toggleConstellations" checked>
+                            <span class="slider"></span>
+                        </div>
+                    </div>
+
+                    <div class="toggle-switch">
+                        <label>
+                            <i class="fas fa-meteor" style="color:#ff6b6b;"></i>
+                            <span>Shooting Stars</span>
+                        </label>
+                        <div class="switch">
+                            <input type="checkbox" id="toggleShootingStars" checked>
+                            <span class="slider"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls-group">
+                    <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+
+                    <div class="slider-container">
+                        <label>Star Density:</label>
+                        <input type="range" id="starDensity" min="100" max="500" value="300">
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Brightness:</label>
+                        <input type="range" id="brightness" min="30" max="100" value="70">
+                    </div>
+
+                    <div class="slider-container">
+                        <label>Animation Speed:</label>
+                        <input type="range" id="animationSpeed" min="1" max="10" value="5">
+                    </div>
+                </div>
+
+                <div class="controls-group">
+                    <h3><i class="fas fa-zodiac"></i> Zodiac Signs</h3>
+
+                    <div class="zodiac-selector" id="zodiacSelector">
+                        <!-- Zodiac buttons will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-display">
+            <h3><i class="fas fa-info-circle"></i> Constellation Info</h3>
+            <div class="constellation-info">
+                <h4 id="constellationName">Orion</h4>
+                <p id="constellationDescription">Orion is one of the most conspicuous and recognizable constellations in
+                    the night sky. It is named after Orion, a hunter in Greek mythology.</p>
+            </div>
+            <div style="font-size:0.8rem; color:rgba(255,255,255,0.6);">
+                <i class="fas fa-mouse-pointer"></i> Click on stars to highlight constellations
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Zodiac constellation data
+        const zodiacData = {
+            aries: {
+                name: "Aries",
+                symbol: "♈",
+                description: "Aries is one of the constellations of the zodiac. It is located in the Northern Hemisphere between Pisces to the west and Taurus to the east.",
+                stars: [[30, 30], [70, 40], [110, 60], [50, 80], [90, 100]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4]],
+                color: "#ff6b6b",
+                icon: "fas fa-ram"
+            },
+            taurus: {
+                name: "Taurus",
+                symbol: "♉",
+                description: "Taurus is one of the constellations of the zodiac. Its name means 'bull' in Latin. The constellation is known for its bright star Aldebaran.",
+                stars: [[40, 40], [80, 50], [120, 70], [60, 90], [100, 110], [140, 90]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]],
+                color: "#ffd166",
+                icon: "fas fa-bull"
+            },
+            gemini: {
+                name: "Gemini",
+                symbol: "♊",
+                description: "Gemini is one of the constellations of the zodiac. It represents the twins Castor and Pollux in Greek mythology.",
+                stars: [[30, 30], [60, 50], [90, 30], [120, 50], [150, 30], [30, 80], [60, 100], [90, 80], [120, 100], [150, 80]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [5, 6], [6, 7], [7, 8], [8, 9]],
+                color: "#06d6a0",
+                icon: "fas fa-users"
+            },
+            cancer: {
+                name: "Cancer",
+                symbol: "♋",
+                description: "Cancer is one of the twelve constellations of the zodiac. Its name is Latin for crab and it is commonly represented as one.",
+                stars: [[50, 30], [30, 70], [70, 70], [50, 110], [90, 90], [110, 130]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]],
+                color: "#118ab2",
+                icon: "fas fa-crab"
+            },
+            leo: {
+                name: "Leo",
+                symbol: "♌",
+                description: "Leo is one of the constellations of the zodiac. Its name is Latin for lion. Its brightest star, Regulus, lies very close to the ecliptic.",
+                stars: [[40, 40], [80, 30], [120, 40], [100, 80], [140, 100], [80, 110], [40, 100]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0]],
+                color: "#ff9e00",
+                icon: "fas fa-lion"
+            },
+            virgo: {
+                name: "Virgo",
+                symbol: "♍",
+                description: "Virgo is one of the constellations of the zodiac. Its name is Latin for virgin. It is the second-largest constellation in the sky.",
+                stars: [[30, 30], [70, 40], [110, 50], [50, 80], [90, 90], [130, 100], [70, 130], [110, 150]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
+                color: "#83d483",
+                icon: "fas fa-female"
+            },
+            libra: {
+                name: "Libra",
+                symbol: "♎",
+                description: "Libra is a constellation of the zodiac. Its name is Latin for weighing scales. It is the only zodiac constellation that represents an object.",
+                stars: [[40, 40], [80, 30], [120, 40], [60, 80], [100, 90], [140, 80], [80, 130]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]],
+                color: "#a882dd",
+                icon: "fas fa-balance-scale"
+            },
+            scorpio: {
+                name: "Scorpio",
+                symbol: "♏",
+                description: "Scorpius is one of the constellations of the zodiac. Its name is Latin for scorpion. It is one of the 48 constellations identified by Ptolemy.",
+                stars: [[30, 30], [70, 40], [110, 50], [150, 70], [130, 110], [90, 130], [50, 150], [30, 190]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
+                color: "#ef476f",
+                icon: "fas fa-scorpion"
+            },
+            sagittarius: {
+                name: "Sagittarius",
+                symbol: "♐",
+                description: "Sagittarius is one of the constellations of the zodiac. It is commonly represented as a centaur pulling back a bow.",
+                stars: [[40, 40], [80, 30], [120, 40], [100, 80], [140, 100], [180, 120], [160, 160], [120, 180]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
+                color: "#ff9a76",
+                icon: "fas fa-archery"
+            },
+            capricorn: {
+                name: "Capricorn",
+                symbol: "♑",
+                description: "Capricornus is one of the constellations of the zodiac. Its name is Latin for 'horned goat' or 'goat horn'.",
+                stars: [[30, 40], [70, 30], [110, 40], [90, 80], [130, 90], [170, 110], [150, 150], [110, 170]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]],
+                color: "#7bdff2",
+                icon: "fas fa-goat"
+            },
+            aquarius: {
+                name: "Aquarius",
+                symbol: "♒",
+                description: "Aquarius is a constellation of the zodiac. Its name is Latin for 'water-carrier' or 'cup-carrier'. It is one of the oldest recognized constellations.",
+                stars: [[40, 40], [80, 30], [120, 40], [60, 80], [100, 90], [140, 80], [80, 130], [120, 140], [160, 150]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]],
+                color: "#5dbb63",
+                icon: "fas fa-water"
+            },
+            pisces: {
+                name: "Pisces",
+                symbol: "♓",
+                description: "Pisces is a constellation of the zodiac. Its name is the Latin plural for fish. It lies between Aquarius to the west and Aries to the east.",
+                stars: [[30, 30], [70, 40], [110, 50], [50, 80], [90, 90], [130, 100], [70, 130], [110, 140], [150, 150]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]],
+                color: "#a2d2ff",
+                icon: "fas fa-fish"
+            },
+            orion: {
+                name: "Orion",
+                symbol: "⛎",
+                description: "Orion is a prominent constellation located on the celestial equator. It is one of the most recognizable constellations in the night sky.",
+                stars: [[50, 30], [30, 70], [70, 70], [50, 110], [30, 150], [70, 150]],
+                lines: [[0, 1], [1, 2], [2, 0], [1, 3], [2, 3], [3, 4], [3, 5], [4, 5]],
+                color: "#4cc9f0",
+                icon: "fas fa-user-astronaut"
+            },
+            pegasus: {
+                name: "Pegasus",
+                symbol: "🐎",
+                description: "Pegasus is a constellation in the northern sky, named after the winged horse Pegasus in Greek mythology.",
+                stars: [[40, 40], [80, 30], [120, 40], [100, 80], [140, 100], [80, 110], [40, 100], [60, 140]],
+                lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0], [5, 7]],
+                color: "#b388eb",
+                icon: "fas fa-horse"
+            }
+        };
+
+        // Configuration
+        const config = {
+            starCount: 300,
+            nebulaCount: 6,
+            brightness: 70,
+            animationSpeed: 5,
+            showStars: true,
+            showNebulas: true,
+            showConstellations: true,
+            showShootingStars: true,
+            activeConstellation: "orion"
+        };
+
+        // DOM elements
+        const cosmicSpace = document.getElementById('cosmicSpace');
+        const toggleStars = document.getElementById('toggleStars');
+        const toggleNebulas = document.getElementById('toggleNebulas');
+        const toggleConstellations = document.getElementById('toggleConstellations');
+        const toggleShootingStars = document.getElementById('toggleShootingStars');
+        const starDensitySlider = document.getElementById('starDensity');
+        const brightnessSlider = document.getElementById('brightness');
+        const animationSpeedSlider = document.getElementById('animationSpeed');
+        const zodiacSelector = document.getElementById('zodiacSelector');
+        const constellationName = document.getElementById('constellationName');
+        const constellationDescription = document.getElementById('constellationDescription');
+        const toggleControls = document.getElementById('toggleControls');
+        const controlsContent = document.getElementById('controlsContent');
+
+        // Initialize the cosmic space
+        function initCosmicSpace() {
+            createStars();
+            createNebulas();
+            createPlanet();
+            createZodiacButtons();
+            createAllConstellations();
+            setupEventListeners();
+            updateInfoDisplay(config.activeConstellation);
+            startShootingStars();
+        }
+
+        // Create background stars
+        function createStars() {
+            const starsContainer = document.createElement('div');
+            starsContainer.className = 'stars';
+            starsContainer.id = 'starsContainer';
+
+            for (let i = 0; i < config.starCount; i++) {
+                const star = document.createElement('div');
+                const size = Math.random();
+                let starClass = 'star small';
+
+                if (size > 0.7) {
+                    starClass = 'star large';
+                } else if (size > 0.4) {
+                    starClass = 'star medium';
+                }
+
+                star.className = starClass;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.opacity = 0.3 + Math.random() * 0.7;
+                star.style.setProperty('--i', i % 10);
+
+                // Add slight color variation
+                if (Math.random() > 0.9) {
+                    const hue = 30 + Math.random() * 30; // Yellow to orange
+                    star.style.backgroundColor = `hsl(${hue}, 100%, ${70 + Math.random() * 30}%)`;
+                } else if (Math.random() > 0.8) {
+                    const hue = 200 + Math.random() * 40; // Blue to cyan
+                    star.style.backgroundColor = `hsl(${hue}, 100%, ${70 + Math.random() * 30}%)`;
+                }
+
+                starsContainer.appendChild(star);
+            }
+
+            cosmicSpace.appendChild(starsContainer);
+        }
+
+        // Create nebulas
+        function createNebulas() {
+            const nebulaColors = ['purple', 'blue', 'red', 'green'];
+
+            for (let i = 0; i < config.nebulaCount; i++) {
+                const nebula = document.createElement('div');
+                const colorClass = nebulaColors[Math.floor(Math.random() * nebulaColors.length)];
+
+                nebula.className = `nebula ${colorClass}`;
+                nebula.style.width = `${200 + Math.random() * 400}px`;
+                nebula.style.height = nebula.style.width;
+                nebula.style.left = `${Math.random() * 100}%`;
+                nebula.style.top = `${Math.random() * 100}%`;
+                nebula.style.opacity = 0.1 + Math.random() * 0.3;
+
+                cosmicSpace.appendChild(nebula);
+            }
+        }
+
+        // Create a planet
+        function createPlanet() {
+            // Main planet
+            const planet = document.createElement('div');
+            planet.className = 'planet';
+            planet.style.width = '120px';
+            planet.style.height = '120px';
+            planet.style.left = '80%';
+            planet.style.top = '15%';
+
+            // Planet ring
+            const ring = document.createElement('div');
+            ring.className = 'planet-ring';
+            ring.style.width = '180px';
+            ring.style.height = '40px';
+            ring.style.left = '-30px';
+            ring.style.top = '40px';
+
+            planet.appendChild(ring);
+            cosmicSpace.appendChild(planet);
+        }
+
+        // Create zodiac constellation buttons
+        function createZodiacButtons() {
+            Object.keys(zodiacData).forEach(key => {
+                const zodiac = zodiacData[key];
+
+                const button = document.createElement('div');
+                button.className = `zodiac-button ${key === config.activeConstellation ? 'active' : ''}`;
+                button.dataset.constellation = key;
+
+                button.innerHTML = `
+                    <i class="${zodiac.icon}"></i>
+                    <span>${zodiac.symbol} ${zodiac.name}</span>
+                `;
+
+                button.addEventListener('click', () => {
+                    highlightConstellation(key);
+                });
+
+                zodiacSelector.appendChild(button);
+            });
+        }
+
+        // Create all constellations
+        function createAllConstellations() {
+            Object.keys(zodiacData).forEach(key => {
+                createConstellation(key, zodiacData[key]);
+            });
+        }
+
+        // Create a single constellation
+        function createConstellation(key, data) {
+            const container = document.createElement('div');
+            container.className = `constellation ${key}`;
+            container.id = `constellation-${key}`;
+            container.dataset.constellation = key;
+
+            // Calculate random position on screen
+            const left = 10 + Math.random() * 80;
+            const top = 10 + Math.random() * 80;
+            container.style.left = `${left}%`;
+            container.style.top = `${top}%`;
+
+            // Create stars
+            data.stars.forEach((starPos, index) => {
+                const star = document.createElement('div');
+                star.className = 'constellation-star';
+                star.dataset.index = index;
+
+                const size = 5 + Math.random() * 8;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${starPos[0]}%`;
+                star.style.top = `${starPos[1]}%`;
+
+                // Add click event to highlight constellation
+                star.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    highlightConstellation(key);
+                });
+
+                container.appendChild(star);
+            });
+
+            // Create lines connecting stars
+            data.lines.forEach(line => {
+                const startStar = data.stars[line[0]];
+                const endStar = data.stars[line[1]];
+
+                const lineEl = document.createElement('div');
+                lineEl.className = 'constellation-line';
+
+                // Calculate line length and angle
+                const dx = endStar[0] - startStar[0];
+                const dy = endStar[1] - startStar[1];
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+                lineEl.style.width = `${length}%`;
+                lineEl.style.left = `${startStar[0]}%`;
+                lineEl.style.top = `${startStar[1]}%`;
+                lineEl.style.transform = `rotate(${angle}deg)`;
+
+                container.appendChild(lineEl);
+            });
+
+            // Add label
+            const label = document.createElement('div');
+            label.className = 'constellation-label';
+            label.textContent = data.name;
+            label.style.left = '50%';
+            label.style.top = '105%';
+
+            container.appendChild(label);
+
+            // Add click event to the whole constellation
+            container.addEventListener('click', () => {
+                highlightConstellation(key);
+            });
+
+            cosmicSpace.appendChild(container);
+        }
+
+        // Highlight a specific constellation
+        function highlightConstellation(key) {
+            // Update active constellation
+            config.activeConstellation = key;
+
+            // Update zodiac buttons
+            document.querySelectorAll('.zodiac-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.constellation === key);
+            });
+
+            // Update info display
+            updateInfoDisplay(key);
+
+            // Highlight the constellation
+            document.querySelectorAll('.constellation').forEach(constellation => {
+                if (constellation.dataset.constellation === key) {
+                    constellation.style.opacity = '1';
+                    constellation.style.transform = 'scale(1.1)';
+                    constellation.style.zIndex = '10';
+
+                    // Make stars pulse
+                    constellation.querySelectorAll('.constellation-star').forEach(star => {
+                        star.style.animation = 'pulse 1s infinite alternate';
+                        star.style.boxShadow = `0 0 20px ${zodiacData[key].color}`;
+                    });
+                } else {
+                    constellation.style.opacity = '0.3';
+                    constellation.style.transform = 'scale(1)';
+                    constellation.style.zIndex = '1';
+
+                    constellation.querySelectorAll('.constellation-star').forEach(star => {
+                        star.style.animation = '';
+                        star.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.7)';
+                    });
+                }
+            });
+        }
+
+        // Update info display
+        function updateInfoDisplay(key) {
+            const zodiac = zodiacData[key];
+            constellationName.textContent = `${zodiac.symbol} ${zodiac.name}`;
+            constellationDescription.textContent = zodiac.description;
+        }
+
+        // Create shooting stars
+        function startShootingStars() {
+            if (!config.showShootingStars) return;
+
+            setInterval(() => {
+                if (Math.random() > 0.7 && config.showShootingStars) {
+                    createShootingStar();
+                }
+            }, 3000);
+        }
+
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+
+            // Random starting position
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 30;
+
+            shootingStar.style.left = `${startX}%`;
+            shootingStar.style.top = `${startY}%`;
+
+            cosmicSpace.appendChild(shootingStar);
+
+            // Animate the shooting star
+            const animation = shootingStar.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${200 + Math.random() * 200}px, ${100 + Math.random() * 100}px)`, opacity: 0 }
+            ], {
+                duration: 1000 + Math.random() * 2000,
+                easing: 'linear'
+            });
+
+            animation.onfinish = () => {
+                shootingStar.remove();
+            };
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Toggle controls
+            toggleStars.addEventListener('change', () => {
+                config.showStars = toggleStars.checked;
+                document.getElementById('starsContainer').style.display = config.showStars ? 'block' : 'none';
+            });
+
+            toggleNebulas.addEventListener('change', () => {
+                config.showNebulas = toggleNebulas.checked;
+                document.querySelectorAll('.nebula').forEach(nebula => {
+                    nebula.style.display = config.showNebulas ? 'block' : 'none';
+                });
+            });
+
+            toggleConstellations.addEventListener('change', () => {
+                config.showConstellations = toggleConstellations.checked;
+                document.querySelectorAll('.constellation').forEach(constellation => {
+                    constellation.style.display = config.showConstellations ? 'block' : 'none';
+                });
+            });
+
+            toggleShootingStars.addEventListener('change', () => {
+                config.showShootingStars = toggleShootingStars.checked;
+            });
+
+            // Slider controls
+            starDensitySlider.addEventListener('input', () => {
+                config.starCount = parseInt(starDensitySlider.value);
+                document.getElementById('starsContainer').remove();
+                createStars();
+            });
+
+            brightnessSlider.addEventListener('input', () => {
+                config.brightness = parseInt(brightnessSlider.value);
+                document.querySelectorAll('.star').forEach(star => {
+                    star.style.opacity = (config.brightness / 100) * (0.3 + Math.random() * 0.7);
+                });
+            });
+
+            animationSpeedSlider.addEventListener('input', () => {
+                config.animationSpeed = parseInt(animationSpeedSlider.value);
+                document.querySelectorAll('.star').forEach((star, index) => {
+                    star.style.animationDuration = `${4 - (config.animationSpeed / 10) * 3}s`;
+                });
+            });
+
+            // Toggle controls panel
+            toggleControls.addEventListener('click', () => {
+                const isVisible = controlsContent.style.display !== 'none';
+                controlsContent.style.display = isVisible ? 'none' : 'block';
+                toggleControls.innerHTML = isVisible ?
+                    '<i class="fas fa-chevron-down"></i>' :
+                    '<i class="fas fa-chevron-up"></i>';
+            });
+
+            // Add pulse animation to CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { transform: translate(-50%, -50%) scale(1); }
+                    100% { transform: translate(-50%, -50%) scale(1.2); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initCosmicSpace);
+
+        // Make the space interactive - click to add a star
+        cosmicSpace.addEventListener('click', (e) => {
+            if (e.target === cosmicSpace) {
+                const star = document.createElement('div');
+                star.className = 'star medium';
+                star.style.left = `${(e.clientX / window.innerWidth) * 100}%`;
+                star.style.top = `${(e.clientY / window.innerHeight) * 100}%`;
+                star.style.opacity = '1';
+                star.style.animation = 'twinkle 3s infinite';
+                star.style.setProperty('--i', Math.floor(Math.random() * 10));
+
+                // Random color
+                const hue = Math.random() * 360;
+                star.style.backgroundColor = `hsl(${hue}, 100%, 80%)`;
+
+                cosmicSpace.appendChild(star);
+
+                // Remove after a while
+                setTimeout(() => {
+                    star.style.opacity = '0';
+                    star.style.transition = 'opacity 2s';
+                    setTimeout(() => star.remove(), 2000);
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>

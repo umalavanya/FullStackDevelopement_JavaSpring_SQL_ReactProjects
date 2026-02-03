@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie App & GitHub Profiles Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary-color: #10b981;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #9ca3af;
+            --movie-color: #ef4444;
+            --github-color: #24292e;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+        }
+
+        .logo span:nth-child(2) {
+            color: var(--movie-color);
+        }
+
+        .logo span:nth-child(4) {
+            color: var(--github-color);
+        }
+
+        .search-type-toggle {
+            display: flex;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 5px;
+        }
+
+        .toggle-btn {
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        main {
+            padding: 2rem 0;
+        }
+
+        .search-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .search-info {
+            margin-top: 1rem;
+            padding: 10px;
+            background-color: #f0f9ff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Movie card styles */
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 1.2rem;
+        }
+
+        .movie-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .movie-overview {
+            font-size: 0.9rem;
+            color: #6b7280;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* GitHub profile card styles */
+        .github-header {
+            background-color: var(--github-color);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .github-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .github-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .github-username {
+            color: #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        .github-info {
+            padding: 1.2rem;
+        }
+
+        .github-bio {
+            margin-bottom: 1rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .github-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .github-link {
+            display: block;
+            text-align: center;
+            background-color: var(--github-color);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .github-link:hover {
+            background-color: #000;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-color);
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .results-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .search-container {
+                flex-direction: column;
+            }
+
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-film"></i>
+                    <span>Movie</span>
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                    <span>Search</span>
+                </div>
+
+                <div class="search-type-toggle">
+                    <button class="toggle-btn active" id="movieToggle">Movie Search</button>
+                    <button class="toggle-btn" id="githubToggle">GitHub Search</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="search-section">
+            <h2 id="searchTitle">Search for Movies</h2>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Enter movie title...">
+                <button class="search-btn" id="searchBtn">Search</button>
+            </div>
+            <div class="search-info" id="searchInfo">
+                <i class="fas fa-info-circle"></i>
+                <span>Search for movies by title. Try "Avengers", "Inception", or "The Godfather".</span>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <h3 class="section-title">
+                <i class="fas fa-list"></i>
+                <span id="resultsTitle">Movie Results</span>
+            </h3>
+
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Loading results...</p>
+            </div>
+
+            <div class="results-container" id="resultsContainer">
+                <!-- Results will be dynamically inserted here -->
+                <div class="no-results" id="noResults">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>No results to display. Try searching for movies or GitHub profiles!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Movie App & GitHub Profiles Search &copy; 2023 | Built with HTML, CSS & JavaScript</p>
+            <p>Movie data from OMDB API | GitHub data from GitHub API</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const movieToggle = document.getElementById('movieToggle');
+        const githubToggle = document.getElementById('githubToggle');
+        const searchTitle = document.getElementById('searchTitle');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInfo = document.getElementById('searchInfo');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const noResults = document.getElementById('noResults');
+
+        // Current search type
+        let currentSearchType = 'movie';
+
+        // Toggle between movie and GitHub search
+        movieToggle.addEventListener('click', () => {
+            setSearchType('movie');
+        });
+
+        githubToggle.addEventListener('click', () => {
+            setSearchType('github');
+        });
+
+        // Set search type function
+        function setSearchType(type) {
+            currentSearchType = type;
+
+            // Update toggle buttons
+            if (type === 'movie') {
+                movieToggle.classList.add('active');
+                githubToggle.classList.remove('active');
+                searchTitle.textContent = 'Search for Movies';
+                searchInput.placeholder = 'Enter movie title...';
+                searchInfo.innerHTML = '<i class="fas fa-info-circle"></i><span>Search for movies by title. Try "Avengers", "Inception", or "The Godfather".</span>';
+                resultsTitle.textContent = 'Movie Results';
+            } else {
+                movieToggle.classList.remove('active');
+                githubToggle.classList.add('active');
+                searchTitle.textContent = 'Search for GitHub Profiles';
+                searchInput.placeholder = 'Enter GitHub username...';
+                searchInfo.innerHTML = '<i class="fas fa-info-circle"></i><span>Search for GitHub users by username. Try "torvalds", "gaearon", or "defunkt".</span>';
+                resultsTitle.textContent = 'GitHub Profile Results';
+            }
+
+            // Clear previous results
+            resultsContainer.innerHTML = '';
+            noResults.style.display = 'block';
+        }
+
+        // Search button click event
+        searchBtn.addEventListener('click', performSearch);
+
+        // Enter key event for search input
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Perform search function
+        async function performSearch() {
+            const query = searchInput.value.trim();
+
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            resultsContainer.innerHTML = '';
+            noResults.style.display = 'none';
+
+            try {
+                if (currentSearchType === 'movie') {
+                    await searchMovies(query);
+                } else {
+                    await searchGitHubProfiles(query);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Failed to fetch data. Please try again.');
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Search for movies
+        async function searchMovies(query) {
+            // Using a proxy to avoid CORS issues with OMDB API
+            const proxyUrl = 'https://api.allorigins.win/raw?url=';
+            const apiUrl = `http://www.omdbapi.com/?s=${encodeURIComponent(query)}&apikey=d2c743f6`;
+
+            const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+            const data = await response.json();
+
+            if (data.Response === 'True') {
+                displayMovieResults(data.Search);
+            } else {
+                showError(data.Error || 'No movies found');
+            }
+        }
+
+        // Search for GitHub profiles
+        async function searchGitHubProfiles(query) {
+            // Using GitHub API
+            const response = await fetch(`https://api.github.com/search/users?q=${encodeURIComponent(query)}&per_page=9`);
+
+            if (!response.ok) {
+                throw new Error('GitHub API request failed');
+            }
+
+            const data = await response.json();
+
+            if (data.items && data.items.length > 0) {
+                // Fetch detailed information for each user
+                const detailedUsers = await Promise.all(
+                    data.items.slice(0, 9).map(user =>
+                        fetch(user.url).then(res => res.json())
+                    )
+                );
+
+                displayGitHubResults(detailedUsers);
+            } else {
+                showError('No GitHub users found');
+            }
+        }
+
+        // Display movie results
+        function displayMovieResults(movies) {
+            resultsContainer.innerHTML = '';
+
+            movies.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'result-card';
+
+                // Handle missing poster
+                const posterSrc = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450/cccccc/666666?text=No+Poster';
+
+                movieCard.innerHTML = `
+                    <img src="${posterSrc}" alt="${movie.Title}" class="movie-poster">
+                    <div class="movie-info">
+                        <h3 class="movie-title">${movie.Title}</h3>
+                        <div class="movie-meta">
+                            <span>${movie.Year}</span>
+                            <span>${movie.Type}</span>
+                        </div>
+                        <p class="movie-overview">More details available on IMDb. Search for "${movie.Title}" to learn more about this ${movie.Type}.</p>
+                    </div>
+                `;
+
+                resultsContainer.appendChild(movieCard);
+            });
+
+            noResults.style.display = 'none';
+        }
+
+        // Display GitHub results
+        function displayGitHubResults(users) {
+            resultsContainer.innerHTML = '';
+
+            users.forEach(user => {
+                const profileCard = document.createElement('div');
+                profileCard.className = 'result-card';
+
+                profileCard.innerHTML = `
+                    <div class="github-header">
+                        <img src="${user.avatar_url}" alt="${user.login}" class="github-avatar">
+                        <div>
+                            <h3 class="github-name">${user.name || user.login}</h3>
+                            <p class="github-username">@${user.login}</p>
+                        </div>
+                    </div>
+                    <div class="github-info">
+                        <p class="github-bio">${user.bio || 'No bio available'}</p>
+                        <div class="github-stats">
+                            <div class="stat">
+                                <div class="stat-value">${user.public_repos}</div>
+                                <div class="stat-label">Repos</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${user.followers}</div>
+                                <div class="stat-label">Followers</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${user.following}</div>
+                                <div class="stat-label">Following</div>
+                            </div>
+                        </div>
+                        <a href="${user.html_url}" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Profile
+                        </a>
+                    </div>
+                `;
+
+                resultsContainer.appendChild(profileCard);
+            });
+
+            noResults.style.display = 'none';
+        }
+
+        // Show error message
+        function showError(message) {
+            resultsContainer.innerHTML = '';
+            noResults.innerHTML = `
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: #ef4444;"></i>
+                <p>${message}</p>
+            `;
+            noResults.style.display = 'block';
+        }
+
+        // Initialize with some movie results
+        window.addEventListener('DOMContentLoaded', () => {
+            // Show initial message
+            noResults.innerHTML = `
+                <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p>No results to display. Try searching for movies or GitHub profiles!</p>
+                <p style="font-size: 0.9rem; margin-top: 1rem;">Try searching for "Avengers" or "torvalds" to get started.</p>
+            `;
+        });
+    </script>
+</body>
+
+</html>

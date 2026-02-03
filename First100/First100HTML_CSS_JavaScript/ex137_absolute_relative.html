@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Positioning Combinations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .scenario {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .scenario-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .position-info {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Common styles for all positioning demos */
+        .demo-area {
+            height: 150px;
+            width: 100%;
+            border: 2px dashed #ccc;
+            position: relative;
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            overflow: visible;
+        }
+
+        .parent {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 2px solid red;
+        }
+
+        .child {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 128, 0, 0.3);
+            border: 2px solid green;
+            top: 15px;
+            left: 15px;
+        }
+
+        .grandchild {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 255, 0.3);
+            border: 2px solid blue;
+            top: 15px;
+            left: 15px;
+        }
+
+        .position-label {
+            position: absolute;
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            z-index: 10;
+        }
+
+        .parent-label {
+            top: 5px;
+            left: 5px;
+        }
+
+        .child-label {
+            top: 20px;
+            left: 20px;
+        }
+
+        .grandchild-label {
+            top: 35px;
+            left: 35px;
+        }
+
+        /* Color indicators */
+        .pos-absolute {
+            background-color: rgba(255, 0, 0, 0.1) !important;
+        }
+
+        .pos-relative {
+            background-color: rgba(0, 255, 0, 0.1) !important;
+        }
+
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+        }
+
+        .legend h2 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .legend-items {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .legend-absolute {
+            background-color: rgba(255, 0, 0, 0.1);
+            border: 1px solid red;
+        }
+
+        .legend-relative {
+            background-color: rgba(0, 255, 0, 0.1);
+            border: 1px solid green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="legend">
+        <h2>CSS Positioning Combinations</h2>
+        <div class="legend-items">
+            <div class="legend-item">
+                <div class="legend-color legend-absolute"></div>
+                <span>position: absolute</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-relative"></div>
+                <span>position: relative</span>
+            </div>
+            <div class="legend-item">
+                <span>Red = Parent, Green = Child, Blue = Grandchild</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Combination 1 -->
+        <div class="scenario" id="scenario1">
+            <div class="scenario-title">1. Absolute Parent → Absolute Child → Absolute Grandchild</div>
+            <div class="position-info">All positioned relative to body/document</div>
+            <div class="demo-area">
+                <div class="parent pos-absolute" style="position: absolute; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (absolute)</span>
+                    <div class="child pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (absolute)</span>
+                        <div class="grandchild pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (absolute)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 2 -->
+        <div class="scenario" id="scenario2">
+            <div class="scenario-title">2. Absolute Parent → Absolute Child → Relative Grandchild</div>
+            <div class="position-info">Grandchild positioned relative to Child</div>
+            <div class="demo-area">
+                <div class="parent pos-absolute" style="position: absolute; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (absolute)</span>
+                    <div class="child pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (absolute)</span>
+                        <div class="grandchild pos-relative" style="position: relative; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (relative)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 3 -->
+        <div class="scenario" id="scenario3">
+            <div class="scenario-title">3. Absolute Parent → Relative Child → Absolute Grandchild</div>
+            <div class="position-info">Grandchild positioned relative to Child</div>
+            <div class="demo-area">
+                <div class="parent pos-absolute" style="position: absolute; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (absolute)</span>
+                    <div class="child pos-relative" style="position: relative; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (relative)</span>
+                        <div class="grandchild pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (absolute)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 4 -->
+        <div class="scenario" id="scenario4">
+            <div class="scenario-title">4. Absolute Parent → Relative Child → Relative Grandchild</div>
+            <div class="position-info">All offset from normal flow positions</div>
+            <div class="demo-area">
+                <div class="parent pos-absolute" style="position: absolute; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (absolute)</span>
+                    <div class="child pos-relative" style="position: relative; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (relative)</span>
+                        <div class="grandchild pos-relative" style="position: relative; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (relative)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 5 -->
+        <div class="scenario" id="scenario5">
+            <div class="scenario-title">5. Relative Parent → Absolute Child → Absolute Grandchild</div>
+            <div class="position-info">Child & Grandchild positioned relative to Parent</div>
+            <div class="demo-area">
+                <div class="parent pos-relative" style="position: relative; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (relative)</span>
+                    <div class="child pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (absolute)</span>
+                        <div class="grandchild pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (absolute)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 6 -->
+        <div class="scenario" id="scenario6">
+            <div class="scenario-title">6. Relative Parent → Absolute Child → Relative Grandchild</div>
+            <div class="position-info">Child relative to Parent, Grandchild relative to Child</div>
+            <div class="demo-area">
+                <div class="parent pos-relative" style="position: relative; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (relative)</span>
+                    <div class="child pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (absolute)</span>
+                        <div class="grandchild pos-relative" style="position: relative; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (relative)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 7 -->
+        <div class="scenario" id="scenario7">
+            <div class="scenario-title">7. Relative Parent → Relative Child → Absolute Grandchild</div>
+            <div class="position-info">Grandchild positioned relative to Child</div>
+            <div class="demo-area">
+                <div class="parent pos-relative" style="position: relative; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (relative)</span>
+                    <div class="child pos-relative" style="position: relative; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (relative)</span>
+                        <div class="grandchild pos-absolute" style="position: absolute; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (absolute)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combination 8 -->
+        <div class="scenario" id="scenario8">
+            <div class="scenario-title">8. Relative Parent → Relative Child → Relative Grandchild</div>
+            <div class="position-info">All offset from normal flow positions</div>
+            <div class="demo-area">
+                <div class="parent pos-relative" style="position: relative; top: 10px; left: 10px;">
+                    <span class="position-label parent-label">Parent (relative)</span>
+                    <div class="child pos-relative" style="position: relative; top: 15px; left: 15px;">
+                        <span class="position-label child-label">Child (relative)</span>
+                        <div class="grandchild pos-relative" style="position: relative; top: 15px; left: 15px;">
+                            <span class="position-label grandchild-label">Grandchild (relative)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity to show positioning details
+        document.querySelectorAll('.scenario').forEach(scenario => {
+            scenario.addEventListener('mouseenter', function () {
+                const title = this.querySelector('.scenario-title').textContent;
+                console.log('Hovering over:', title);
+            });
+        });
+    </script>
+</body>
+
+</html>
