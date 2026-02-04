@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Event Handlers Reference</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1,
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        .event-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .event-section:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card:hover {
+            border-color: #3498db;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .event-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .event-desc {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .event-example {
+            background: #f1f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .event-card.active .event-example {
+            display: block;
+        }
+
+        .demo-area {
+            background: #f1f8ff;
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 40px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .demo-area h3 {
+            text-align: center;
+            color: #3498db;
+            margin-top: 0;
+        }
+
+        .log {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            height: 150px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .interactive-box {
+            width: 150px;
+            height: 150px;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .interactive-box:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .form-demo {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .form-demo input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-demo input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .draggable {
+            background: #e74c3c;
+            position: absolute;
+            cursor: move;
+        }
+
+        .drop-zone {
+            border: 3px dashed #9b59b6;
+            background: rgba(155, 89, 182, 0.1);
+        }
+    </style>
+</head>
+
+<body onload="logEvent('window.onload', 'Page loaded successfully!')"
+    onresize="logEvent('window.onresize', 'Window resized')" onscroll="logEvent('window.onscroll', 'Page scrolled')">
+    <div class="container">
+        <h1>HTML Event Handlers Reference</h1>
+
+        <!-- Window Events Section -->
+        <div class="event-section">
+            <h2>🌐 Window Events</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('load')">
+                    <div class="event-name">onload</div>
+                    <div class="event-desc">Fires when the page or an element has loaded</div>
+                    <div class="event-example" id="load">&lt;body onload="init()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('unload')">
+                    <div class="event-name">onunload</div>
+                    <div class="event-desc">Fires when the page is about to unload</div>
+                    <div class="event-example" id="unload">&lt;body onunload="cleanup()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('resize')">
+                    <div class="event-name">onresize</div>
+                    <div class="event-desc">Fires when the browser window is resized</div>
+                    <div class="event-example" id="resize">window.onresize = function()
+                        {<br>&nbsp;&nbsp;console.log('Window resized');<br>}</div>
+                </div>
+                <div class="event-card" onclick="showExample('scroll')">
+                    <div class="event-name">onscroll</div>
+                    <div class="event-desc">Fires when the element's scrollbar is scrolled</div>
+                    <div class="event-example" id="scroll">&lt;div onscroll="handleScroll()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('beforeunload')">
+                    <div class="event-name">onbeforeunload</div>
+                    <div class="event-desc">Fires before the document is unloaded</div>
+                    <div class="event-example" id="beforeunload">window.onbeforeunload = function()
+                        {<br>&nbsp;&nbsp;return 'Are you sure?';<br>}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Events Section -->
+        <div class="event-section">
+            <h2>📝 Form Events</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('submit')">
+                    <div class="event-name">onsubmit</div>
+                    <div class="event-desc">Fires when a form is submitted</div>
+                    <div class="event-example" id="submit">&lt;form onsubmit="return validate()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('change')">
+                    <div class="event-name">onchange</div>
+                    <div class="event-desc">Fires when an element's value changes</div>
+                    <div class="event-example" id="change">&lt;select onchange="updateSelection()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('input')">
+                    <div class="event-name">oninput</div>
+                    <div class="event-desc">Fires when user inputs data</div>
+                    <div class="event-example" id="input">&lt;input oninput="liveSearch()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('focus')">
+                    <div class="event-name">onfocus</div>
+                    <div class="event-desc">Fires when an element gets focus</div>
+                    <div class="event-example" id="focus">&lt;input onfocus="showHint()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('blur')">
+                    <div class="event-name">onblur</div>
+                    <div class="event-desc">Fires when an element loses focus</div>
+                    <div class="event-example" id="blur">&lt;input onblur="validateField()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('reset')">
+                    <div class="event-name">onreset</div>
+                    <div class="event-desc">Fires when a form is reset</div>
+                    <div class="event-example" id="reset">&lt;form onreset="confirmReset()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('select')">
+                    <div class="event-name">onselect</div>
+                    <div class="event-desc">Fires when text is selected</div>
+                    <div class="event-example" id="select">&lt;input onselect="textSelected()"&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mouse Events Section -->
+        <div class="event-section">
+            <h2>🖱️ Mouse Events</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('click')">
+                    <div class="event-name">onclick</div>
+                    <div class="event-desc">Fires on mouse click</div>
+                    <div class="event-example" id="click">&lt;button onclick="handleClick()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('dblclick')">
+                    <div class="event-name">ondblclick</div>
+                    <div class="event-desc">Fires on mouse double-click</div>
+                    <div class="event-example" id="dblclick">&lt;div ondblclick="editItem()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('mousedown')">
+                    <div class="event-name">onmousedown</div>
+                    <div class="event-desc">Fires when mouse button is pressed</div>
+                    <div class="event-example" id="mousedown">&lt;div onmousedown="startDrag()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('mouseup')">
+                    <div class="event-name">onmouseup</div>
+                    <div class="event-desc">Fires when mouse button is released</div>
+                    <div class="event-example" id="mouseup">&lt;div onmouseup="endDrag()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('mousemove')">
+                    <div class="event-name">onmousemove</div>
+                    <div class="event-desc">Fires when mouse moves over element</div>
+                    <div class="event-example" id="mousemove">&lt;canvas onmousemove="draw()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('mouseover')">
+                    <div class="event-name">onmouseover</div>
+                    <div class="event-desc">Fires when mouse enters element</div>
+                    <div class="event-example" id="mouseover">&lt;div onmouseover="showTooltip()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('mouseout')">
+                    <div class="event-name">onmouseout</div>
+                    <div class="event-desc">Fires when mouse leaves element</div>
+                    <div class="event-example" id="mouseout">&lt;div onmouseout="hideTooltip()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('contextmenu')">
+                    <div class="event-name">oncontextmenu</div>
+                    <div class="event-desc">Fires on right-click (context menu)</div>
+                    <div class="event-example" id="contextmenu">&lt;div oncontextmenu="return false"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('wheel')">
+                    <div class="event-name">onwheel</div>
+                    <div class="event-desc">Fires when mouse wheel is rotated</div>
+                    <div class="event-example" id="wheel">&lt;div onwheel="zoom(event)"&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyboard Events Section -->
+        <div class="event-section">
+            <h2>⌨️ Keyboard Events</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('keydown')">
+                    <div class="event-name">onkeydown</div>
+                    <div class="event-desc">Fires when key is pressed down</div>
+                    <div class="event-example" id="keydown">&lt;input onkeydown="checkKey(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('keyup')">
+                    <div class="event-name">onkeyup</div>
+                    <div class="event-desc">Fires when key is released</div>
+                    <div class="event-example" id="keyup">&lt;input onkeyup="search()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('keypress')">
+                    <div class="event-name">onkeypress</div>
+                    <div class="event-desc">Fires when key is pressed (character keys)</div>
+                    <div class="event-example" id="keypress">&lt;input onkeypress="validateChar(event)"&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drag & Drop Events Section -->
+        <div class="event-section">
+            <h2>📦 Drag & Drop Events</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('dragstart')">
+                    <div class="event-name">ondragstart</div>
+                    <div class="event-desc">Fires when dragging starts</div>
+                    <div class="event-example" id="dragstart">&lt;div ondragstart="dragStart(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('drag')">
+                    <div class="event-name">ondrag</div>
+                    <div class="event-desc">Fires while element is being dragged</div>
+                    <div class="event-example" id="drag">&lt;div ondrag="drag(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('dragend')">
+                    <div class="event-name">ondragend</div>
+                    <div class="event-desc">Fires when dragging ends</div>
+                    <div class="event-example" id="dragend">&lt;div ondragend="dragEnd(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('dragover')">
+                    <div class="event-name">ondragover</div>
+                    <div class="event-desc">Fires when dragged over drop target</div>
+                    <div class="event-example" id="dragover">&lt;div ondragover="allowDrop(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('dragenter')">
+                    <div class="event-name">ondragenter</div>
+                    <div class="event-desc">Fires when dragged item enters drop target</div>
+                    <div class="event-example" id="dragenter">&lt;div ondragenter="highlight(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('dragleave')">
+                    <div class="event-name">ondragleave</div>
+                    <div class="event-desc">Fires when dragged item leaves drop target</div>
+                    <div class="event-example" id="dragleave">&lt;div ondragleave="unhighlight(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('drop')">
+                    <div class="event-name">ondrop</div>
+                    <div class="event-desc">Fires when item is dropped</div>
+                    <div class="event-example" id="drop">&lt;div ondrop="drop(event)"&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Touch Events Section -->
+        <div class="event-section">
+            <h2>👆 Touch Events (Mobile)</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('touchstart')">
+                    <div class="event-name">ontouchstart</div>
+                    <div class="event-desc">Fires when touch starts</div>
+                    <div class="event-example" id="touchstart">&lt;div ontouchstart="touchStart(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('touchmove')">
+                    <div class="event-name">ontouchmove</div>
+                    <div class="event-desc">Fires when touch moves</div>
+                    <div class="event-example" id="touchmove">&lt;div ontouchmove="touchMove(event)"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('touchend')">
+                    <div class="event-name">ontouchend</div>
+                    <div class="event-desc">Fires when touch ends</div>
+                    <div class="event-example" id="touchend">&lt;div ontouchend="touchEnd(event)"&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Media Events Section -->
+        <div class="event-section">
+            <h2>🎵 Media Events</h2>
+            <div class="event-grid">
+                <div class="event-card" onclick="showExample('play')">
+                    <div class="event-name">onplay</div>
+                    <div class="event-desc">Fires when media starts playing</div>
+                    <div class="event-example" id="play">&lt;video onplay="onVideoPlay()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('pause')">
+                    <div class="event-name">onpause</div>
+                    <div class="event-desc">Fires when media is paused</div>
+                    <div class="event-example" id="pause">&lt;video onpause="onVideoPause()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('ended')">
+                    <div class="event-name">onended</div>
+                    <div class="event-desc">Fires when media ends</div>
+                    <div class="event-example" id="ended">&lt;audio onended="playNext()"&gt;</div>
+                </div>
+                <div class="event-card" onclick="showExample('volumechange')">
+                    <div class="event-name">onvolumechange</div>
+                    <div class="event-desc">Fires when volume changes</div>
+                    <div class="event-example" id="volumechange">&lt;audio onvolumechange="updateVolumeUI()"&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Area -->
+        <div class="demo-area">
+            <h3>🎮 Event Demo Area</h3>
+
+            <!-- Interactive Box -->
+            <div class="interactive-box" onclick="logEvent('onclick', 'Box clicked!')"
+                ondblclick="logEvent('ondblclick', 'Box double-clicked!')"
+                onmousedown="logEvent('onmousedown', 'Mouse button pressed on box')"
+                onmouseup="logEvent('onmouseup', 'Mouse button released')"
+                onmouseover="logEvent('onmouseover', 'Mouse entered box')"
+                onmouseout="logEvent('onmouseout', 'Mouse left box')"
+                oncontextmenu="logEvent('oncontextmenu', 'Right-clicked box'); return false"
+                onwheel="logEvent('onwheel', 'Mouse wheel scrolled on box')">
+                Click &amp; Hover Me!
+            </div>
+
+            <!-- Form Demo -->
+            <div class="form-demo">
+                <input type="text" placeholder="Type here..." onfocus="logEvent('onfocus', 'Input focused')"
+                    onblur="logEvent('onblur', 'Input lost focus')"
+                    oninput="logEvent('oninput', 'Input changed: ' + this.value)"
+                    onchange="logEvent('onchange', 'Input value committed')"
+                    onkeydown="logEvent('onkeydown', 'Key down: ' + event.key)"
+                    onkeyup="logEvent('onkeyup', 'Key up: ' + event.key)"
+                    onselect="logEvent('onselect', 'Text selected')">
+
+                <button onclick="logEvent('onclick', 'Button clicked')">
+                    Click Me
+                </button>
+
+                <button ondblclick="logEvent('ondblclick', 'Button double-clicked')">
+                    Double Click Me
+                </button>
+            </div>
+
+            <!-- Drag & Drop Demo -->
+            <div style="position: relative; height: 100px; margin-top: 30px;">
+                <div class="draggable" style="width: 80px; height: 80px; border-radius: 8px; top: 10px; left: 10px;"
+                    draggable="true"
+                    ondragstart="logEvent('ondragstart', 'Dragging started'); event.dataTransfer.setData('text', 'dragged')"
+                    ondrag="logEvent('ondrag', 'Dragging...')" ondragend="logEvent('ondragend', 'Dragging ended')">
+                    Drag Me
+                </div>
+
+                <div class="drop-zone"
+                    style="position: absolute; width: 200px; height: 100px; right: 10px; top: 10px; border-radius: 8px; text-align: center; line-height: 100px;"
+                    ondragover="event.preventDefault(); logEvent('ondragover', 'Dragging over drop zone')"
+                    ondragenter="logEvent('ondragenter', 'Entered drop zone')"
+                    ondragleave="logEvent('ondragleave', 'Left drop zone')"
+                    ondrop="logEvent('ondrop', 'Dropped in zone'); event.preventDefault()">
+                    Drop Zone
+                </div>
+            </div>
+
+            <!-- Event Log -->
+            <div class="log" id="eventLog">
+                Event log will appear here...
+            </div>
+
+            <button onclick="clearLog()" style="margin-top: 10px;">Clear Log</button>
+        </div>
+    </div>
+
+    <script>
+        let activeCard = null;
+
+        function showExample(eventName) {
+            if (activeCard) {
+                activeCard.classList.remove('active');
+            }
+
+            const card = event.target.closest('.event-card');
+            card.classList.add('active');
+            activeCard = card;
+
+            logEvent(eventName + ' example', 'Viewing example code');
+        }
+
+        function logEvent(eventType, message) {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] <b>${eventType}</b>: ${message}<br>`;
+
+            log.innerHTML = logEntry + log.innerHTML;
+
+            // Keep log at reasonable size
+            if (log.children.length > 50) {
+                log.removeChild(log.lastChild);
+            }
+
+            // Scroll to top
+            log.scrollTop = 0;
+        }
+
+        function clearLog() {
+            document.getElementById('eventLog').innerHTML = 'Event log cleared...';
+            logEvent('clear', 'Log cleared');
+        }
+
+        // Additional event handlers for demo
+        document.addEventListener('keydown', function (e) {
+            if (e.target.tagName !== 'INPUT') {
+                logEvent('document.onkeydown', 'Key pressed: ' + e.key);
+            }
+        });
+
+        document.addEventListener('keyup', function (e) {
+            if (e.target.tagName !== 'INPUT') {
+                logEvent('document.onkeyup', 'Key released: ' + e.key);
+            }
+        });
+
+        // Mouse move throttled to avoid spam
+        let mouseMoveTimer;
+        document.addEventListener('mousemove', function (e) {
+            clearTimeout(mouseMoveTimer);
+            mouseMoveTimer = setTimeout(() => {
+                logEvent('document.onmousemove', `Mouse at: ${e.clientX}, ${e.clientY}`);
+            }, 100);
+        });
+
+        // Window resize throttled
+        let resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                logEvent('window.onresize', `Window: ${window.innerWidth}x${window.innerHeight}`);
+            }, 250);
+        });
+
+        // Page scroll throttled
+        let scrollTimer;
+        window.addEventListener('scroll', function () {
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                logEvent('window.onscroll', `Scroll position: ${window.pageYOffset}px`);
+            }, 100);
+        });
+
+        // Form submit prevention
+        document.querySelector('.form-demo input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                logEvent('form.onsubmit', 'Enter key pressed (submit prevented)');
+            }
+        });
+    </script>
+</body>
+
+</html>
