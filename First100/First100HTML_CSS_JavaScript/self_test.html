@@ -175,6 +175,151 @@
         </tfoot>
     </table>
 
+    <!-- Form Elements -->
+    <h2>Form Elements</h2>
+    <form action="/submit" method="POST" enctype="multipart/form-data" autocomplete="on">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="full_name" value="John Doe" placeholder="Enter your name" required
+            maxlength="50" pattern="[A-Za-z\s]+">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" min="18" max="100">
+
+        <label for="website">Website:</label>
+        <input type="url" id="website" name="website">
+
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}">
+
+        <label for="birthdate">Birthdate:</label>
+        <input type="date" id="birthdate" name="birthdate">
+
+        <label for="color">Favorite Color:</label>
+        <input type="color" id="color" name="color" value="#ff0000">
+
+        <label for="file">Upload File:</label>
+        <input type="file" id="file" name="file">
+
+        <label>
+            <input type="checkbox" name="subscribe" checked>
+            Subscribe to newsletter
+        </label>
+
+        <label>
+            <input type="radio" name="gender" value="male">
+            Male
+        </label>
+        <label>
+            <input type="radio" name="gender" value="female">
+            Female
+        </label>
+
+        <label for="range">Volume:</label>
+        <input type="range" id="range" name="volume" min="0" max="100" value="50">
+
+        <label for="search">Search:</label>
+        <input type="search" id="search" name="search">
+
+        <input type="hidden" name="user_id" value="12345">
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" cols="40" placeholder="Enter your message"></textarea>
+
+        <label for="country">Country:</label>
+        <select id="country" name="country">
+            <option value="">Select a country</option>
+            <optgroup label="North America">
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </optgroup>
+            <optgroup label="Europe">
+                <option value="uk">United Kingdom</option>
+                <option value="fr">France</option>
+            </optgroup>
+        </select>
+
+        <label for="browser">Choose a browser:</label>
+        <input list="browsers" id="browser" name="browser">
+        <datalist id="browsers">
+            <option value="Chrome">
+            <option value="Firefox">
+            <option value="Safari">
+            <option value="Edge">
+        </datalist>
+
+        <fieldset>
+            <legend>Additional Information</legend>
+            <label for="news">Newsletter:</label>
+            <input type="checkbox" id="news" name="newsletter">
+        </fieldset>
+
+        <label for="progress">Progress:</label>
+        <progress id="progress" value="70" max="100">70%</progress>
+
+        <label for="meter">Disk Usage:</label>
+        <meter id="meter" value="0.6" min="0" max="1">60%</meter>
+
+        <output name="result" for="range">50</output>
+
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+        <button type="button" onclick="alert('Button clicked!')">Regular Button</button>
+    </form>
+
+    <!-- Embedded Content -->
+    <h2>Embedded Content</h2>
+
+    <h3>Images</h3>
+    <img src="https://via.placeholder.com/300x200" alt="Placeholder Image" width="300" height="200">
+
+    <h3>Picture Element</h3>
+    <picture>
+        <source srcset="https://via.placeholder.com/600x400" media="(min-width: 800px)">
+        <source srcset="https://via.placeholder.com/400x300" media="(min-width: 500px)">
+        <img src="https://via.placeholder.com/300x200" alt="Responsive Image">
+    </picture>
+
+    <h3>Audio</h3>
+    <audio controls>
+        <source src="audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <h3>Video</h3>
+    <video width="320" height="240" controls poster="https://via.placeholder.com/320x240">
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+        <track kind="subtitles" src="subtitles.vtt" srclang="en" label="English">
+    </video>
+
+    <h3>Iframe</h3>
+    <iframe src="https://example.com" width="300" height="200" title="Example Website"></iframe>
+
+    <h3>Embed</h3>
+    <embed src="file.swf" type="application/x-shockwave-flash" width="300" height="200">
+
+    <h3>SVG</h3>
+    <svg width="100" height="100">
+        <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+    </svg>
+
+    <!-- Scripting -->
+    <h2>Scripting</h2>
+    <script>
+        console.log("Inline JavaScript executed");
+    </script>
+
+    <!-- Noscript -->
+    <noscript>
+        <p>Your browser does not support JavaScript or it is disabled.</p>
+    </noscript>
+
 </body>
 
 </html>
