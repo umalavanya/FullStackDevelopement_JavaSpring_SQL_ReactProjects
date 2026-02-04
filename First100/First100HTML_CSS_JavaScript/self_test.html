@@ -1,147 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HTML Elements Reference</title>
 </head>
+
 <body>
 
     <!-- Content Sectioning -->
-
     <header>Page Header</header>
     <nav>Navigation Menu</nav>
-    <main>Main</main>
-    <article>Independent Articles</article>
-    <section>Thematic grouping</section>
-    <aside>Related content</aside>
-    <footer>Page footer</footer>
+    <main>
+        <article>
+            <h1>Independent Article</h1>
+            <p>Article content goes here.</p>
+        </article>
+        <section>
+            <h2>Thematic Grouping</h2>
+            <p>Section content goes here.</p>
+        </section>
+        <aside>Related Content</aside>
+    </main>
+    <footer>Page Footer</footer>
 
-    <!-- text content & Inline Semanitics -->
-     <!-- Heading Elements -->
-      <h1>Most Important</h1>
-      <h2>Subheading</h2>
-      <h3>Sub-subheading</h3>
-      <h4>Level 4 heading</h4>
-      <h5>Level 5 heading</h5>
-      <h6>Lebel 6 Heading</h6>
+    <!-- Text Content & Inline Semantics -->
 
-      <!-- Paragraph & Breakes -->
-       <p>Paragraph Text</p>
-       <br>Line break
-       <hr>Thematic break
+    <!-- Heading Elements -->
+    <h1>Most Important</h1>
+    <h2>Subheading</h2>
+    <h3>Sub-subheading</h3>
+    <h4>Level 4 Heading</h4>
+    <h5>Level 5 Heading</h5>
+    <h6>Level 6 Heading</h6>
 
+    <!-- Paragraph & Breaks -->
+    <p>Paragraph Text</p>
+    <p>Line <br> break</p>
+    <hr>
+    <p>Thematic break</p>
 
-       <!-- Lists -->
-        <p><u>Ordered List</u><br>Attribites: type, start, reversed</p>
-        <ol>
-            <li>List Items</li>
-            <li>List Items</li>
-            <li>List Items</li>
-            <li>List Items</li>
-            
-        </ol>
+    <!-- Lists -->
+    <h2>Lists</h2>
+    <p><u>Ordered List</u><br>Attributes: type, start, reversed</p>
+    <ol>
+        <li>List Item 1</li>
+        <li>List Item 2</li>
+        <li>List Item 3</li>
+        <li>List Item 4</li>
+    </ol>
 
-        <p><u>Unordered List</u></p>
-        <ul>
-            <li>List Items</li>
-            <li>List Items</li>
-            <li>List Items</li>
-            <li>List Items</li>
-        </ul>
+    <p><u>Unordered List</u></p>
+    <ul>
+        <li>List Item 1</li>
+        <li>List Item 2</li>
+        <li>List Item 3</li>
+        <li>List Item 4</li>
+    </ul>
 
-        <p><u>Description List</u></p>
-        <dl>
-            <dt>Term:</dt>
-            <dd>Description</dd>
-        </dl>
+    <p><u>Description List</u></p>
+    <dl>
+        <dt>Term:</dt>
+        <dd>Description</dd>
+        <dt>Another Term:</dt>
+        <dd>Another Description</dd>
+    </dl>
 
+    <!-- Inline Text Semantics -->
+    <h2>Inline Text Semantics</h2>
 
-        <!-- Inline Text Semantics -->
-         <h2>Inline Text Semantics </h2>
+    <p><a href="https://example.com">Hyperlink</a> - Attributes: target, rel, download</p>
 
-        <a href="url">Hyperlink</a>
-        <p>Attributes: target, rel, download</p>
+    <!-- Text Formatting -->
+    <p><strong>Strong Importance</strong> - for important text</p>
+    <p><em>Emphasis</em> - for emphasized text</p>
+    <p><b>Bold (stylistic)</b> - without extra importance</p>
+    <p><i>Italic (stylistic)</i> - for technical terms, thoughts, etc.</p>
+    <p><u>Underline</u> - for proper names, misspelling</p>
+    <p><s>Strikethrough</s> - no longer accurate/relevant</p>
+    <p><mark>Highlighted text</mark> - for reference</p>
+    <p><small>Small print</small> - for fine print</p>
+    <p>X<sup>Superscript</sup> - for exponents</p>
+    <p>X<sub>Subscript</sub> - for chemical formulas</p>
 
-        <!-- Text Formatting -->
-         <strong>Strong Importance</strong>
-         <em>Emphasis</em>
-         <b>Bold (stylistic)</b>
-         <i>itallic (stylistic)</i>
-         <u>Underline</u>
-         <s>Strikethrough</s>
-         <mark>Highlighted text</mark>
-         <small>small print</small>
-         X<sup>Superscript</sup>
-         X<sub>Subscript</sub>
+    <!-- Computer Code -->
+    <h2>Computer Code</h2>
+    <p><code>Inline code</code> - for code snippets</p>
+    <pre>Preformatted Block - preserves whitespace</pre>
+    <p>Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy</p>
+    <p><samp>Sample Output</samp> - program output</p>
 
+    <!-- Quotations -->
+    <h2>Quotations</h2>
+    <blockquote>
+        Long Quotation - for block quotes
+        <cite>Citation Source</cite>
+    </blockquote>
+    <p>He said, <q>Short Inline Quote</q></p>
 
-         <!-- Computer code -->
-          <code>Inline code</code>
-          <pre>Preformatted Block</pre>
-          <kbd>Keyboard Input</kbd>
-          <samp>Sample Output</samp>
+    <!-- Semantic Text -->
+    <h2>Semantic Text</h2>
+    <p><abbr title="HyperText Markup Language">HTML</abbr> - Abbreviation</p>
+    <p><time datetime="2024-01-15">January 15, 2024</time> - Time/Date</p>
+    <p><data value="123">Product ID</data> - Machine-readable</p>
+    <p><dfn>Definition term</dfn> - term being defined</p>
+    <p><var>x</var> - Variable in math/code</p>
 
-          <!-- Quotations -->
+    <!-- Other Inline Elements -->
+    <h2>Other Inline Elements</h2>
+    <p><span style="color: blue;">Generic inline container</span></p>
+    <p><ruby>漢<rt>kan</rt>字<rt>ji</rt></ruby> - Ruby annotations</p>
+    <p><bdi>Bi-directional isolation</bdi></p>
+    <p><bdo dir="rtl">Bi-directional override</bdo></p>
+    <p>VeryLongWord<wbr>BreakOpportunity</p>
 
-          <blockquote>Long Quotation</blockquote>
-          <q>Short Inline Quote</q>
-          <cite>Citation</cite>
+    <!-- Block-level Elements -->
+    <h2>Block Level Text</h2>
+    <div>Generic block container</div>
+    <figure>
+        <img src="https://via.placeholder.com/150" alt="Placeholder">
+        <figcaption>Figure caption</figcaption>
+    </figure>
+    <address>
+        Contact Information<br>
+        123 Street<br>
+        City, Country
+    </address>
 
-          <!-- Sematic text -->
-           <abbr title="...">Abbreviation</abbr>
-           <time datetime="...">Time/Date</time>
-           <data value="...">Machine-readable</data>
-           <dfn>Definition term</dfn>
-           <var>Variable</var>
+    <!-- Interactive Elements -->
+    <h2>Interactive Elements</h2>
+    <details>
+        <summary>Click to expand</summary>
+        <p>Additional details here.</p>
+    </details>
 
-           <!-- Other inline elements -->
-            <span>Generic inline container</span>
-            <ruby>Ruby annotations</ruby>
-            <rt>Ruby text</rt>
-            <rp>Parenthesis fallback</rp>
-            <bdi>Bi-directional isolation</bdi>
-            <bdo dir="rtl">Bi-directional override</bdo>
-            <wbr>Word Break oppurtunity</wbr>
+    <button onclick="document.querySelector('dialog').showModal()">
+        Open Dialog
+    </button>
+    <dialog>
+        <p>Modal dialog content</p>
+        <button onclick="this.closest('dialog').close()">Close</button>
+    </dialog>
 
+    <!-- Table Content -->
+    <h2>Table Content</h2>
+    <table border="1">
+        <caption>Table Title</caption>
+        <colgroup>
+            <col span="1" style="background-color: #f0f0f0;">
+            <col span="1" style="background-color: #e0e0e0;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Header Cell 1</th>
+                <th>Header Cell 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1, Cell 1</td>
+                <td>Row 1, Cell 2</td>
+            </tr>
+            <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Footer 1</td>
+                <td>Footer 2</td>
+            </tr>
+        </tfoot>
+    </table>
 
-            <!-- Block-level -->
-             <h2>Block Level Text</h2>
-             <div>Generic block container</div>
-             <figure>Figure with optional caption</figure>
-             <figcaption>Figure caption</figcaption>
-             <address>Contact Information</address>
-
-
-             <!-- Interactive Elements -->
-              <details>
-                <summary>Summary</summary>
-
-              </details>
-              <dialog>Modal dialog</dialog>
-
-              <!-- Table content -->
-               <h3>Table Content</h3>
-               <table>
-                <caption>Table title</caption>
-                <colgroup><col span="2" styles="..."></colgroup>
-
-                <thead>Table header</thead>
-                <tr><th>Header cell</th></tr>
-                <tbody>Table Body</tbody>
-                <tfoot></tfoot>
-
-
-               </table>
-
-
-
-
-
-
-
-
-
-    
 </body>
+
 </html>
