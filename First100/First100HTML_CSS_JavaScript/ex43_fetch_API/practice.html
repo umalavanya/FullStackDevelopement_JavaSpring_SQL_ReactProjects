@@ -78,7 +78,277 @@
             font-size : 22px ;
             margin-bottom: 25px ;
             padding-bottom: 15px ;
+            border-bottom: 2px solid #eaeaea;
         }
+
+        .api-controls{
+            display: flex ;
+            flex-direction: column ;
+            gap: 20px ;
+        }
+
+        .endpoint-buttons{
+            display: grid ;
+            grid-template-columns: repeat(2,1fr);
+            gap: 10px ;
+        }
+
+        .endpoint-btn{
+            padding: 15px ;
+            background-color: #f5f5f5;
+            border: 2px solid #eaeaea ;
+            border-radius: 10px;
+            cursor: pointer ;
+            transition: all 0.3s ;
+            font-weight: 600 ;
+            color: #333 ;
+            text-align: left ;
+            display: flex ;
+            align-items: center ;
+            gap: 10px ;
+
+        }
+
+        .endpoint-btn:hover{
+            background-color: #1a2980;
+            color: white ;
+            border-color: #1a2980 ;
+        }
+
+        .fetch-btn{
+
+            padding: 15px ;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white ;
+            border: none ;
+            border-radius: 10px ;
+            font-size: 16px ;
+            font-weight: 600 ;
+            cursor: pointer ;
+            transition: all 0.3s ;
+            display: flex ;
+            align-items: center ;
+            justify-content: center ;
+            gap: 10px ;
+            margin-top: 10px ;
+        }
+
+        .fetch-btn:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(26,41,128,0.3) ;
+        }
+
+        .fetch-btn:disabled{
+            opacity: 0.5 ;
+            cursor: not-allowed ;
+            transform: none !important ;
+        }
+
+        .status-indicator{
+
+            padding: 15px ;
+            border-radius: 10px ;
+            margin-top: 20px ;
+            display: felx ;
+            align-items: center ;
+            gap: 10px ;
+            font-weight: 600 ;
+        }
+
+        .status-loading{
+            background-color: #fff3e0 ;
+            color: #f57c00 ;
+        }
+
+        .status-success{
+            background-color: #e8f5e9 ;
+            color: #c62828 ;
+        }
+
+        .status-error{
+            background: #ffebee ;
+        }
+
+        .data-display{
+
+            flex: 1 ;
+            background-color: white ;
+            border-radius: 10px ;
+            padding: 20px ;
+            margin-top: 20px ;
+            overflow-y: auto ;
+            border: 2px solid #eaeaea ;
+            min-height: 400px ;
+
+        }
+
+        .data-display pre{
+            font-family: 'Courier New', Courier, monospace ;
+            font-size: 14px ;
+            line-height: 1.5 ;
+            white-space: pre-warp ;
+            word-wrap: break-word ;
+        }
+
+        .user-list{
+            display: grid ;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px ;
+        }
+
+       .user-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #eaeaea;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: #1a2980;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .user-details {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .user-details div {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background-color: #e3f2fd;
+            border-color: #1a2980;
+        }
+
+        .page-btn.active {
+            background-color: #1a2980;
+            color: white;
+            border-color: #1a2980;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #eaeaea;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2980;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #eaeaea;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .filter-input:focus {
+            border-color: #1a2980;
+            outline: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fa-spin {
+            animation: spin 1s linear infinite;
+        }
+
 
 
     </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -93,17 +363,95 @@
         </div>
         <div class="dashboard">
             <div class="sidebar">
-                <div clas="section-title">
+                <div class="section-title">
                     <i class="fas fa-sliders-h"></i>
-                    <h2>API Controls</h2>
+                    <h2 >API Controls</h2>
                 </div>
+
+                <div class="api-controls">
+                    <button class="endpoint-btn active" data-endpoint="users">
+                          <i class="fas fa-users"></i> Users
+                    </button>
+
+                    <button class="endpoint-btn" data-endpoint="posts">
+                        <i class="fas fa-newspaper"></i> Posts
+                    </button>
+
+                    <button class="endpoint-btn" data-endpoint="comments">
+                        <i class="fas fa-comments"></i> Comments
+                    </button>
+
+                    <button class="endpoint-btn" data-endpoint="albums">
+                        <i class="fas fa-images"></i> Albums
+                    </button>
+
+                    <button class="endpoint-btn" data-endpoint="photos">
+                        <i class="fas fa-camera"></i> Photos
+                    </button>
+
+                    <button class="endpoint-btn" data-endpoint="todos">
+                        <i class="fas fa-tasks"></i> Todos
+                    </button> 
+                </div>
+
+                <button class="fetch-btn" id="fetchErrorBtn">
+                    <i class="fas fa-download"></i> Fetch Data
+                </button>
+
+                <button class="fetch-btn" id="fetchErrorBtn">
+                    <i class="fas fa-exclamation-triangle"></i> Test Error
+                </button>
+
+                <div class="status-indicator" id="statusIndicator">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Ready to fetch data</span>
+
+                </div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="dataCount">0</div>
+                    <div class="stat-label">Time(ms)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="fetchCount">0</div>
+                    <div class="stat-label">Fetches</div>
+                </div>
+
+                <div>
 
             </div>
 
+            </div>
 
+            <div class="main-content">
+                <div class="section-title">
+                    <i class="fas fa-database"></i>
+                    <h2>Data Display</h2>
+                </div>
+
+
+                <div class="filter-controls">
+                    <input type="text" id="searchInput" class="filter-input" placeholder="Search data...">
+                    <select id="sortSelect" class="filter-input" style="width:auto">
+                        <option value="">Sort by</option>
+                        <option value="name">Name</option>
+                        <option value="id">ID</option>
+                    </select>
+                </div>
+
+
+                <div class="data-display" id="dataDisplay">
+                    <div class="empty-state">
+                        <i class="fas fa-cloud"></i>
+                    <h3>No Data Loaded</h3>
+                    <p>Select an endpoint and click "Fetch data"</p>                      
+                    </div>
+                </div>
+
+                <div class="paginatoin" id="pagination">
+                    <!-- Pagination will be added by JavaScript -->
+                </div>
+            </div>
         </div>
-        
-
     </div>
     
 </body>
