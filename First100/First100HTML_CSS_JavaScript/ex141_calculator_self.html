@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(#FFE0A3, #E18237, #943939,  #6A2634);
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #1a1a1a;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .display {
+            height: 120px;
+            background-color: #000000;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            overflow: hidden;
+        }
+
+        .previous-operation {
+            font-size: 1.2rem;
+            color: #888;
+            text-align: right;
+            min-height: 25px;
+            word-wrap: break-word;
+        }
+
+        .current-operation {
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-align: right;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .key-board-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .key-item {
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .key-item:hover {
+            background-color: #444;
+            transform: translateY(-2px);
+        }
+
+        .key-item:active {
+            transform: translateY(1px);
+            background-color: #555;
+        }
+
+        .key-item.operator {
+            background-color: #ff9500;
+        }
+
+        .key-item.operator:hover {
+            background-color: #ffaa33;
+        }
+
+        .key-item.function {
+            background-color: #a6a6a6;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        .key-item.function:hover {
+            background-color: #bfbfbf;
+        }
+
+        .key-item.zero {
+            grid-column: span 2;
+        }
+
+        .key-item.equals {
+            background-color: #ff9500;
+        }
+
+        .key-item.equals:hover {
+            background-color: #ffaa33;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="display">
+            <div class="previous-operation"></div>
+            <div class="current-operation">0</div>
+        </div>
+        <div class="key-board-container">
+            <!-- Row 1 -->
+            <div class="key-item function" data-action="clear">AC</div>
+            <div class="key-item function" data-action="backspace">⌫</div>
+            <div class="key-item operator" data-action="divide">/</div>
+            <div class="key-item operator" data-action="multiply">×</div>
+
+            <!-- Row 2 -->
+            <div class="key-item" data-number="7">7</div>
+            <div class="key-item" data-number="8">8</div>
+            <div class="key-item" data-number="9">9</div>
+            <div class="key-item operator" data-action="subtract">-</div>
+
+            <!-- Row 3 -->
+            <div class="key-item" data-number="4">4</div>
+            <div class="key-item" data-number="5">5</div>
+            <div class="key-item" data-number="6">6</div>
+            <div class="key-item operator" data-action="add">+</div>
+
+            <!-- Row 4 -->
+            <div class="key-item" data-number="1">1</div>
+            <div class="key-item" data-number="2">2</div>
+            <div class="key-item" data-number="3">3</div>
+            <div class="key-item equals" data-action="equals">=</div>
+
+            <!-- Row 5 -->
+            <div class="key-item zero" data-number="0">0</div>
+            <div class="key-item" data-action="decimal">.</div>
+            <div class="key-item" data-action="percentage">%</div>
+        </div>
+    </div>
+
+    <script>
+        class Calculator {
+            constructor() {
+                this.previousOperandElement = document.querySelector('.previous-operation');
+                this.currentOperandElement = document.querySelector('.current-operation');
+                this.clear();
+                this.setupEventListeners();
+            }
+
+            clear() {
+                this.currentOperand = '0';
+                this.previousOperand = '';
+                this.operation = undefined;
+                this.shouldResetScreen = false;
+                this.updateDisplay();
+            }
+
+            delete() {
+                if (this.currentOperand === '0') return;
+                if (this.currentOperand.length === 1) {
+                    this.currentOperand = '0';
+                } else {
+                    this.currentOperand = this.currentOperand.slice(0, -1);
+                }
+            }
+
+            appendNumber(number) {
+                if (this.shouldResetScreen) {
+                    this.currentOperand = '';
+                    this.shouldResetScreen = false;
+                }
+
+                if (number === '.' && this.currentOperand.includes('.')) return;
+
+                if (this.currentOperand === '0' && number !== '.') {
+                    this.currentOperand = number;
+                } else {
+                    this.currentOperand += number;
+                }
+            }
+
+            chooseOperation(operation) {
+                if (this.currentOperand === '') return;
+
+                if (this.previousOperand !== '') {
+                    this.calculate();
+                }
+
+                this.operation = operation;
+                this.previousOperand = this.currentOperand;
+                this.currentOperand = '';
+            }
+
+            calculate() {
+                let computation;
+                const prev = parseFloat(this.previousOperand);
+                const current = parseFloat(this.currentOperand);
+
+                if (isNaN(prev) || isNaN(current)) return;
+
+                switch (this.operation) {
+                    case '+':
+                        computation = prev + current;
+                        break;
+                    case '-':
+                        computation = prev - current;
+                        break;
+                    case '×':
+                        computation = prev * current;
+                        break;
+                    case '/':
+                        if (current === 0) {
+                            alert("Error: Cannot divide by zero!");
+                            this.clear();
+                            return;
+                        }
+                        computation = prev / current;
+                        break;
+                    case '%':
+                        computation = prev % current;
+                        break;
+                    default:
+                        return;
+                }
+
+                this.currentOperand = computation.toString();
+                this.operation = undefined;
+                this.previousOperand = '';
+                this.shouldResetScreen = true;
+            }
+
+            getPercentage() {
+                const current = parseFloat(this.currentOperand);
+                if (isNaN(current)) return;
+                this.currentOperand = (current / 100).toString();
+            }
+
+            formatDisplayNumber(number) {
+                const stringNumber = number.toString();
+                const integerDigits = parseFloat(stringNumber.split('.')[0]);
+                const decimalDigits = stringNumber.split('.')[1];
+
+                let integerDisplay;
+
+                if (isNaN(integerDigits)) {
+                    integerDisplay = '';
+                } else {
+                    integerDisplay = integerDigits.toLocaleString('en', {
+                        maximumFractionDigits: 0
+                    });
+                }
+
+                if (decimalDigits != null) {
+                    return `${integerDisplay}.${decimalDigits}`;
+                } else {
+                    return integerDisplay;
+                }
+            }
+
+            updateDisplay() {
+                this.currentOperandElement.textContent = this.formatDisplayNumber(this.currentOperand);
+
+                if (this.operation != null) {
+                    this.previousOperandElement.textContent =
+                        `${this.formatDisplayNumber(this.previousOperand)} ${this.operation}`;
+                } else {
+                    this.previousOperandElement.textContent = '';
+                }
+            }
+
+            setupEventListeners() {
+                // Number buttons
+                document.querySelectorAll('[data-number]').forEach(button => {
+                    button.addEventListener('click', () => {
+                        this.appendNumber(button.getAttribute('data-number'));
+                        this.updateDisplay();
+                    });
+                });
+
+                // Operation buttons
+                document.querySelectorAll('[data-action="add"], [data-action="subtract"], [data-action="multiply"], [data-action="divide"], [data-action="percentage"]').forEach(button => {
+                    button.addEventListener('click', () => {
+                        let operation;
+                        switch (button.getAttribute('data-action')) {
+                            case 'add': operation = '+'; break;
+                            case 'subtract': operation = '-'; break;
+                            case 'multiply': operation = '×'; break;
+                            case 'divide': operation = '/'; break;
+                            case 'percentage': operation = '%'; break;
+                        }
+                        this.chooseOperation(operation);
+                        this.updateDisplay();
+                    });
+                });
+
+                // Equals button
+                document.querySelector('[data-action="equals"]').addEventListener('click', () => {
+                    this.calculate();
+                    this.updateDisplay();
+                });
+
+                // Clear button
+                document.querySelector('[data-action="clear"]').addEventListener('click', () => {
+                    this.clear();
+                });
+
+                // Delete button
+                document.querySelector('[data-action="backspace"]').addEventListener('click', () => {
+                    this.delete();
+                    this.updateDisplay();
+                });
+
+                // Decimal button
+                document.querySelector('[data-action="decimal"]').addEventListener('click', () => {
+                    this.appendNumber('.');
+                    this.updateDisplay();
+                });
+
+                // Keyboard support
+                document.addEventListener('keydown', (event) => {
+                    if (event.key >= '0' && event.key <= '9') {
+                        this.appendNumber(event.key);
+                        this.updateDisplay();
+                    } else if (event.key === '.') {
+                        this.appendNumber('.');
+                        this.updateDisplay();
+                    } else if (event.key === '+' || event.key === '-') {
+                        this.chooseOperation(event.key);
+                        this.updateDisplay();
+                    } else if (event.key === '*') {
+                        this.chooseOperation('×');
+                        this.updateDisplay();
+                    } else if (event.key === '/') {
+                        event.preventDefault();
+                        this.chooseOperation('/');
+                        this.updateDisplay();
+                    } else if (event.key === 'Enter' || event.key === '=') {
+                        event.preventDefault();
+                        this.calculate();
+                        this.updateDisplay();
+                    } else if (event.key === 'Escape') {
+                        this.clear();
+                    } else if (event.key === 'Backspace') {
+                        this.delete();
+                        this.updateDisplay();
+                    } else if (event.key === '%') {
+                        this.getPercentage();
+                        this.updateDisplay();
+                    }
+                });
+            }
+        }
+
+        // Initialize calculator
+        const calculator = new Calculator();
+    </script>
+</body>
+
+</html>
