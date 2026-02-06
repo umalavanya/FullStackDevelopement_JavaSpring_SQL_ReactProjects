@@ -1,0 +1,293 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 300px;
+    height: 300px;
+    position: relative;
+}
+
+.face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Head shape */
+.head {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, #ffc0cb, #ff9999);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Ears */
+.ears {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.ear {
+    position: absolute;
+    width: 40px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffc0cb, #ff9999);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.left-ear {
+    left: -20px;
+}
+
+.right-ear {
+    right: -20px;
+}
+
+/* Eyes container */
+.eyes {
+    position: absolute;
+    width: 180px;
+    height: 80px;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Eye styling */
+.eye {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Eye blink animation */
+.eye::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 50%;
+    animation: blink 3s infinite;
+    z-index: 2;
+}
+
+/* Eye pupils */
+.eye::after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #333;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+/* Eye shine effect */
+.eye .shine {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: white;
+    border-radius: 50%;
+    top: 25%;
+    left: 30%;
+    z-index: 2;
+}
+
+/* Nose */
+.nose {
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff9999, #ff6666);
+    border-radius: 20px 20px 30px 30px;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: noseTwitch 5s infinite;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mouth */
+.mouth {
+    position: absolute;
+    width: 120px;
+    height: 60px;
+    background: linear-gradient(135deg, #ff6666, #cc3333);
+    border-radius: 0 0 60px 60px;
+    top: 75%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: mouthMove 4s infinite;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mouth smile lines */
+.mouth::before,
+.mouth::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    background: transparent;
+    border-bottom: 3px solid #ff6666;
+    border-radius: 50%;
+    top: -10px;
+}
+
+.mouth::before {
+    left: 20px;
+}
+
+.mouth::after {
+    right: 20px;
+}
+
+/* Blink animation */
+@keyframes blink {
+
+    0%,
+    40%,
+    45%,
+    100% {
+        height: 100%;
+        top: 0;
+    }
+
+    42.5% {
+        height: 0;
+        top: 50%;
+    }
+}
+
+/* Nose twitch animation */
+@keyframes noseTwitch {
+
+    0%,
+    90%,
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
+
+    92%,
+    96% {
+        transform: translateX(-50%) scale(1.1);
+    }
+
+    94%,
+    98% {
+        transform: translateX(-50%) scale(0.9);
+    }
+}
+
+/* Mouth movement animation */
+@keyframes mouthMove {
+
+    0%,
+    60%,
+    100% {
+        height: 60px;
+        border-radius: 0 0 60px 60px;
+    }
+
+    30% {
+        height: 40px;
+        border-radius: 0 0 40px 40px;
+    }
+
+    45% {
+        height: 80px;
+        border-radius: 0 0 80px 80px;
+    }
+
+    65% {
+        height: 30px;
+        border-radius: 0 0 30px 30px;
+    }
+}
+
+/* Adding shine to eyes */
+.left-eye::after,
+.right-eye::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: white;
+    border-radius: 50%;
+    top: 25%;
+    left: 30%;
+    z-index: 2;
+}
+
+/* Eye movement */
+.eye {
+    animation: eyeMove 8s infinite;
+}
+
+@keyframes eyeMove {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-5px);
+    }
+
+    50% {
+        transform: translateY(0);
+    }
+
+    75% {
+        transform: translateY(5px);
+    }
+}
+
+/* Subtle head movement */
+.head {
+    animation: headTilt 10s infinite alternate;
+}
+
+@keyframes headTilt {
+    0% {
+        transform: translate(-50%, -50%) rotate(-2deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(2deg);
+    }
+}
