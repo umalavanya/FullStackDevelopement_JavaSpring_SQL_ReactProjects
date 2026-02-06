@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            border: 2px solid #333;
+            padding: 15px;
+            background-color: #4fc3f7;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container-item {
+            height: 60px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .container-item:hover {
+            background-color: #e1f5fe;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .container-item:nth-child(odd) {
+            background-color: #f8bbd9;
+        }
+
+        .container-item:nth-child(even) {
+            background-color: #c8e6c9;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>10 × 10 Grid Layout</h1>
+
+    <script>
+        // Create the main container div
+        const containerDiv = document.createElement('div');
+        containerDiv.className = "container";
+        document.body.appendChild(containerDiv);
+
+        // Create 100 div elements inside the container
+        const totalItems = 100;
+
+        for (let i = 1; i <= totalItems; i++) {
+            const newDiv = document.createElement('div');
+            newDiv.className = "container-item";
+            newDiv.textContent = i;
+            newDiv.title = `Item ${i}`; // Tooltip
+
+            // Add click event for interactivity
+            newDiv.addEventListener('click', function () {
+                alert(`You clicked item ${i}`);
+            });
+
+            containerDiv.appendChild(newDiv);
+        }
+
+        // Optional: Add some information about the grid
+        const info = document.createElement('p');
+        info.textContent = `Total items: ${totalItems} (10 columns × 10 rows)`;
+        info.style.cssText = `
+            text-align: center;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+            color: #666;
+        `;
+        document.body.appendChild(info);
+    </script>
+</body>
+
+</html>

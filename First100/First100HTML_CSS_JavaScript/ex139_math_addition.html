@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Problem Solver: 436 + 289</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .problem-display {
+            font-size: 3.5rem;
+            text-align: center;
+            margin: 30px 0;
+            font-weight: bold;
+            color: #2c3e50;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .solution-section,
+        .explanation-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: #3498db;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: #6a11cb;
+        }
+
+        .answer-display {
+            text-align: center;
+            padding: 30px;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+
+        .answer {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 15px 0;
+        }
+
+        .answer-label {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .steps {
+            margin-top: 25px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .step.active {
+            border-left-color: #3498db;
+            background-color: #e3f2fd;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .step-description {
+            color: #555;
+        }
+
+        .visualization {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .place-value {
+            text-align: center;
+        }
+
+        .place-label {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        .blocks {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .hundreds-block {
+            width: 40px;
+            height: 80px;
+            background-color: #e74c3c;
+            border-radius: 5px;
+        }
+
+        .tens-block {
+            width: 30px;
+            height: 60px;
+            background-color: #3498db;
+            border-radius: 5px;
+        }
+
+        .ones-block {
+            width: 20px;
+            height: 40px;
+            background-color: #2ecc71;
+            border-radius: 5px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #f1f2f6;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dfe4ea;
+            transform: translateY(-3px);
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(46, 204, 113, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            width: 100%;
+            border-top: 1px solid #eee;
+        }
+
+        .calculation {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .problem-display {
+                font-size: 2.5rem;
+            }
+
+            .answer {
+                font-size: 3rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Interactive Math Problem Solver</h1>
+            <p class="subtitle">Learn how to solve addition problems step-by-step with visual aids</p>
+        </header>
+
+        <div class="problem-display">
+            436 + 289 = ?
+        </div>
+
+        <div class="content">
+            <section class="solution-section">
+                <h2><i class="fas fa-lightbulb"></i> Solution</h2>
+
+                <div class="answer-display">
+                    <div class="answer-label">The answer is:</div>
+                    <div class="answer">725</div>
+                    <div class="answer-label">Four hundred thirty-six plus two hundred eighty-nine equals seven hundred
+                        twenty-five</div>
+                </div>
+
+                <h2><i class="fas fa-chart-bar"></i> Visual Representation</h2>
+                <div class="visualization">
+                    <div class="place-value">
+                        <div class="place-label">436</div>
+                        <div class="blocks">
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                        </div>
+                        <div class="blocks" style="margin-top: 10px;">
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                        </div>
+                        <div class="blocks" style="margin-top: 10px;">
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="place-value">
+                        <div class="place-label">+</div>
+                        <div style="font-size: 3rem; margin: 20px 0;">+</div>
+                    </div>
+
+                    <div class="place-value">
+                        <div class="place-label">289</div>
+                        <div class="blocks">
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                        </div>
+                        <div class="blocks" style="margin-top: 10px;">
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                        </div>
+                        <div class="blocks" style="margin-top: 10px;">
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="place-value">
+                        <div class="place-label">=</div>
+                        <div style="font-size: 3rem; margin: 20px 0;">=</div>
+                    </div>
+
+                    <div class="place-value">
+                        <div class="place-label">725</div>
+                        <div class="blocks">
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                            <div class="hundreds-block" style="height: 160px;"></div>
+                        </div>
+                        <div class="blocks" style="margin-top: 10px;">
+                            <div class="tens-block" style="height: 120px;"></div>
+                            <div class="tens-block" style="height: 120px;"></div>
+                        </div>
+                        <div class="blocks" style="margin-top: 10px;">
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                            <div class="ones-block" style="height: 80px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="explanation-section">
+                <h2><i class="fas fa-list-ol"></i> Step-by-Step Solution</h2>
+
+                <div class="calculation">
+                    <div> 436</div>
+                    <div>+ 289</div>
+                    <div>-----</div>
+                    <div> 725</div>
+                </div>
+
+                <div class="steps">
+                    <div class="step active" id="step1">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Add the ones place</div>
+                            <div class="step-description">6 + 9 = 15. Write down 5 in the ones place and carry over 1 to
+                                the tens place.</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step2">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Add the tens place (with carry-over)</div>
+                            <div class="step-description">3 + 8 + 1 (carry-over) = 12. Write down 2 in the tens place
+                                and carry over 1 to the hundreds place.</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step3">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Add the hundreds place (with carry-over)</div>
+                            <div class="step-description">4 + 2 + 1 (carry-over) = 7. Write down 7 in the hundreds
+                                place.</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step4">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Combine the results</div>
+                            <div class="step-description">Hundreds: 7, Tens: 2, Ones: 5. The final answer is 725.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn-secondary" id="prev-btn">
+                        <i class="fas fa-arrow-left"></i> Previous Step
+                    </button>
+                    <button class="btn-primary" id="next-btn">
+                        Next Step <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-success" id="solve-btn">
+                        <i class="fas fa-bolt"></i> Show All Steps
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Interactive Math Problem Solver &copy; 2023 | Practice addition with visual aids</p>
+            <p>Try solving other problems on your own using the same step-by-step method!</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const steps = document.querySelectorAll('.step');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const solveBtn = document.getElementById('solve-btn');
+            let currentStep = 0;
+
+            // Initialize step colors
+            updateStepColors();
+
+            // Function to update step colors
+            function updateStepColors() {
+                steps.forEach((step, index) => {
+                    if (index <= currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+
+                // Update button states
+                prevBtn.disabled = currentStep === 0;
+                nextBtn.disabled = currentStep === steps.length - 1;
+
+                // Style disabled buttons
+                prevBtn.style.opacity = currentStep === 0 ? '0.5' : '1';
+                prevBtn.style.cursor = currentStep === 0 ? 'not-allowed' : 'pointer';
+                nextBtn.style.opacity = currentStep === steps.length - 1 ? '0.5' : '1';
+                nextBtn.style.cursor = currentStep === steps.length - 1 ? 'not-allowed' : 'pointer';
+            }
+
+            // Next button click handler
+            nextBtn.addEventListener('click', function () {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    updateStepColors();
+                }
+            });
+
+            // Previous button click handler
+            prevBtn.addEventListener('click', function () {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateStepColors();
+                }
+            });
+
+            // Solve all button click handler
+            solveBtn.addEventListener('click', function () {
+                currentStep = steps.length - 1;
+                updateStepColors();
+
+                // Add a little animation effect
+                solveBtn.innerHTML = '<i class="fas fa-check"></i> All Steps Revealed!';
+                solveBtn.style.backgroundColor = '#27ae60';
+
+                setTimeout(() => {
+                    solveBtn.innerHTML = '<i class="fas fa-bolt"></i> Show All Steps';
+                    solveBtn.style.backgroundColor = '';
+                }, 2000);
+            });
+
+            // Add click functionality to steps
+            steps.forEach((step, index) => {
+                step.addEventListener('click', function () {
+                    currentStep = index;
+                    updateStepColors();
+                });
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'ArrowRight') {
+                    if (currentStep < steps.length - 1) {
+                        currentStep++;
+                        updateStepColors();
+                    }
+                } else if (event.key === 'ArrowLeft') {
+                    if (currentStep > 0) {
+                        currentStep--;
+                        updateStepColors();
+                    }
+                } else if (event.key === ' ') {
+                    event.preventDefault();
+                    if (currentStep < steps.length - 1) {
+                        currentStep++;
+                    } else {
+                        currentStep = 0;
+                    }
+                    updateStepColors();
+                }
+            });
+
+            // Add animation to the answer display on load
+            const answerElement = document.querySelector('.answer');
+            answerElement.style.transform = 'scale(0.8)';
+            answerElement.style.opacity = '0.7';
+
+            setTimeout(() => {
+                answerElement.style.transition = 'all 0.5s ease';
+                answerElement.style.transform = 'scale(1)';
+                answerElement.style.opacity = '1';
+            }, 300);
+
+            // Add animation to blocks
+            const blocks = document.querySelectorAll('.hundreds-block, .tens-block, .ones-block');
+            blocks.forEach((block, index) => {
+                block.style.opacity = '0';
+                block.style.transform = 'translateY(20px)';
+
+                setTimeout(() => {
+                    block.style.transition = `opacity 0.5s ease ${index * 0.02}s, transform 0.5s ease ${index * 0.02}s`;
+                    block.style.opacity = '1';
+                    block.style.transform = 'translateY(0)';
+                }, 500);
+            });
+        });
+    </script>
+</body>
+
+</html>
