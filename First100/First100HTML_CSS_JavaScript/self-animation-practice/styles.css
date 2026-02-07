@@ -14,22 +14,23 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* .container {
+.container {
     width: 300px;
     height: 300px;
     position: relative;
-} */
+}
 
-/* .face {
+.face {
     position: relative;
     width: 100%;
     height: 100%;
-}  */
+    background-color: antiquewhite;
+}
 
 /* Head shape */
-/* .head {
+.head {
     position: absolute;
-    width: 250px;
+    width: 200px;
     height: 250px;
     background: linear-gradient(135deg, #ffc0cb, #ff9999);
     border-radius: 50%;
@@ -37,16 +38,17 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-} */
+    z-index: 2;
+}
 
 /* Ears */
-/* .ears {
+.ears {
     position: absolute;
     width: 100%;
     height: 100%;
-} */
+}
 
-/* .ear {
+.ear {
     position: absolute;
     width: 40px;
     height: 60px;
@@ -54,18 +56,19 @@ body {
     border-radius: 50%;
     top: 50%;
     transform: translateY(-50%);
-} */
+    z-index: 1
+}
 
-/* .left-ear {
-    left: -20px;
+ .left-ear {
+    left: 20px;
 }
 
 .right-ear {
-    right: -20px;
-} */
+    right: 20px;
+}
 
 /* Eyes container */
-/* .eyes {
+.eyes {
     position: absolute;
     width: 180px;
     height: 80px;
@@ -73,11 +76,12 @@ body {
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    justify-content: space-between; */
+    justify-content: space-between;
+    z-index: 3;
 }
 
 /* Eye styling */
-/* .eye {
+.eye {
     width: 80px;
     height: 80px;
     background-color: white;
@@ -88,13 +92,21 @@ body {
     display: flex ;
     justify-content: center ;
     align-items: center ;
-} */
+}
 
-/* .eye-box{
+.eye-box{
     border: 10px solid black ;
-} */
+    border-radius: 50px ;
+    height: 50px ;
+    width: 50px ;
+    background-color: rgba(94, 24, 24, 0.881);
+}
 
 /* Eye blink animation */
+
+.eye::before{
+    animation: blink 3s infinite;
+}
 /* .eye::before {
     content: '';
     position: absolute;
@@ -135,7 +147,7 @@ body {
 } */
 
 /* Nose */
-/* .nose {
+.nose {
     position: absolute;
     width: 40px;
     height: 50px;
@@ -146,13 +158,14 @@ body {
     transform: translateX(-50%);
     animation: noseTwitch 5s infinite;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-} */
+    z-index: 2;
+}
 
 /* Mouth */
-/* .mouth {
+.mouth {
     position: absolute;
-    width: 120px;
-    height: 60px;
+    width: 90px;
+    height: 30px;
     background: linear-gradient(135deg, #ff6666, #cc3333);
     border-radius: 0 0 60px 60px;
     top: 75%;
@@ -160,10 +173,11 @@ body {
     transform: translateX(-50%);
     animation: mouthMove 4s infinite;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-} */
+    z-index: 3;
+}
 
 /* Mouth smile lines */
-/* .mouth::before,
+.mouth::before,
 .mouth::after {
     content: '';
     position: absolute;
@@ -181,10 +195,10 @@ body {
 
 .mouth::after {
     right: 20px;
-} */
+}
 
 /* Blink animation */
-/* @keyframes blink {
+@keyframes blink {
 
     0%,
     40%,
@@ -198,10 +212,10 @@ body {
         height: 0;
         top: 50%;
     }
-} */
+}
 
 /* Nose twitch animation */
-/* @keyframes noseTwitch {
+@keyframes noseTwitch {
 
     0%,
     90%,
@@ -218,36 +232,36 @@ body {
     98% {
         transform: translateX(-50%) scale(0.9);
     }
-} */
+}
 
 /* Mouth movement animation */
-/* @keyframes mouthMove {
+@keyframes mouthMove {
 
     0%,
     60%,
     100% {
-        height: 60px;
+        height: 20px;
         border-radius: 0 0 60px 60px;
     }
 
     30% {
-        height: 40px;
+        height: 20px;
         border-radius: 0 0 40px 40px;
     }
 
     45% {
-        height: 80px;
+        height: 30px;
         border-radius: 0 0 80px 80px;
     }
 
     65% {
-        height: 30px;
+        height: 10px;
         border-radius: 0 0 30px 30px;
     }
-} */
+}
 
 /* Adding shine to eyes */
-/* .left-eye::after,
+.left-eye::after,
 .right-eye::after {
     content: '';
     position: absolute;
@@ -258,10 +272,10 @@ body {
     top: 25%;
     left: 30%;
     z-index: 2;
-} */
+}
 
 /* Eye movement */
-/* .eye {
+.eye {
     animation: eyeMove 8s infinite;
 }
 
@@ -283,10 +297,10 @@ body {
     75% {
         transform: translateY(5px);
     }
-} */
+}
 
 /* Subtle head movement */
-/* .head {
+.head {
     animation: headTilt 10s infinite alternate;
 }
 
@@ -298,5 +312,5 @@ body {
     100% {
         transform: translate(-50%, -50%) rotate(2deg);
     }
-} */
+}
 
