@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palette Switcher Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base CSS Variables - Default to Original Pastel Palette */
+        :root {
+            /* Color Variables */
+            --primary-light: #F5E6E8;
+            --primary-medium: #D5C6E0;
+            --primary-accent: #E5D4ED;
+            --background: #F2E9E4;
+            --secondary-light: #C9A8D9;
+            --secondary-medium: #D4A6C8;
+            --secondary-dark: #B185A7;
+            --neutral: #C9C0BB;
+            --text-light: #6D6875;
+            --text-dark: #4A4453;
+
+            /* Utility Variables */
+            --border-radius: 16px;
+            --box-shadow: 0 10px 30px rgba(181, 131, 141, 0.1);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            /* Current Palette Info */
+            --palette-name: "Original Pastel";
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-medium);
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--secondary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+        }
+
+        .palette-switcher {
+            position: relative;
+        }
+
+        .palette-button {
+            background-color: var(--secondary-medium);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .palette-button:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-3px);
+        }
+
+        .palette-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            min-width: 220px;
+            margin-top: 10px;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .palette-dropdown.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .palette-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .palette-option:hover {
+            background-color: var(--primary-accent);
+        }
+
+        .palette-option.active {
+            background-color: var(--primary-medium);
+            font-weight: 600;
+        }
+
+        .palette-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .palette-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .palette-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .palette-count {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .current-palette {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .current-palette span {
+            font-weight: 700;
+            color: var(--secondary-dark);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-accent));
+            padding: 50px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--text-light);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 i {
+            color: var(--secondary-medium);
+        }
+
+        .card p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .color-display {
+            display: flex;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .color-box {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-name {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .palette-showcase {
+            background-color: var(--primary-medium);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .palette-showcase h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        .palette-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .palette-mini {
+            width: 160px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .palette-mini:hover {
+            transform: scale(1.05);
+        }
+
+        .palette-mini.active {
+            outline: 3px solid var(--secondary-dark);
+            outline-offset: 3px;
+        }
+
+        .mini-color {
+            height: 30px;
+        }
+
+        .mini-label {
+            padding: 10px;
+            text-align: center;
+            background-color: var(--primary-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            border-top: 2px solid var(--primary-medium);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--secondary-dark);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .palette-switcher {
+                width: 100%;
+            }
+
+            .palette-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .palette-dropdown {
+                width: 100%;
+                right: auto;
+                left: 0;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-palette"></i>
+                Palette Switcher
+            </div>
+
+            <div class="palette-switcher">
+                <button class="palette-button" id="paletteToggle">
+                    <i class="fas fa-swatchbook"></i>
+                    Change Color Palette
+                </button>
+
+                <div class="palette-dropdown" id="paletteDropdown">
+                    <!-- Palette options will be generated by JavaScript -->
+                </div>
+
+                <div class="current-palette">
+                    Current palette: <span id="currentPaletteName">Original Pastel</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <h1>Explore Beautiful Color Palettes</h1>
+            <p>This website showcases multiple color palettes that you can switch between instantly. Each palette
+                maintains consistent styling while offering a completely different visual experience.</p>
+        </section>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3><i class="fas fa-magic"></i> Dynamic Colors</h3>
+                <p>All colors on this page are controlled by CSS custom properties. Changing the palette updates every
+                    element instantly.</p>
+                <div class="color-display">
+                    <div class="color-box" style="background-color: var(--primary-light);">
+                        <div class="color-name">Primary Light</div>
+                    </div>
+                    <div class="color-box" style="background-color: var(--primary-medium);">
+                        <div class="color-name">Primary Medium</div>
+                    </div>
+                    <div class="color-box" style="background-color: var(--secondary-medium);">
+                        <div class="color-name">Secondary Medium</div>
+                    </div>
+                    <div class="color-box" style="background-color: var(--secondary-dark);">
+                        <div class="color-name">Secondary Dark</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-exchange-alt"></i> Easy Switching</h3>
+                <p>Use the palette switcher in the header to change between different color schemes. The change applies
+                    immediately across the entire website.</p>
+                <p>You can also click on any palette preview in the showcase section below to activate it.</p>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-plus-circle"></i> Expandable System</h3>
+                <p>This system is designed to easily add new palettes. Just add a new palette object to the JavaScript
+                    array, and it will automatically appear in the switcher.</p>
+                <p>All palettes use the same CSS variable names, ensuring consistent styling across different color
+                    schemes.</p>
+            </div>
+        </div>
+
+        <section class="palette-showcase">
+            <h2>Available Color Palettes</h2>
+            <div class="palette-container" id="paletteContainer">
+                <!-- Palette previews will be generated by JavaScript -->
+            </div>
+        </section>
+
+        <footer>
+            <p>Palette Switcher Demo &copy; 2023 | Built with HTML, CSS & JavaScript | <a href="#"
+                    id="addPaletteLink">Click here to learn how to add more palettes</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Define all color palettes
+        const colorPalettes = [
+            {
+                id: "original-pastel",
+                name: "Original Pastel",
+                colors: {
+                    "--primary-light": "#F5E6E8",
+                    "--primary-medium": "#D5C6E0",
+                    "--primary-accent": "#E5D4ED",
+                    "--background": "#F2E9E4",
+                    "--secondary-light": "#C9A8D9",
+                    "--secondary-medium": "#D4A6C8",
+                    "--secondary-dark": "#B185A7",
+                    "--neutral": "#C9C0BB",
+                    "--text-light": "#6D6875",
+                    "--text-dark": "#4A4453"
+                }
+            },
+            {
+                id: "muted-earthy",
+                name: "Muted Earthy",
+                colors: {
+                    "--primary-light": "#F0EBE6",
+                    "--primary-medium": "#D8CEC4",
+                    "--primary-accent": "#E6DFD5",
+                    "--background": "#F5F1E8",
+                    "--secondary-light": "#C4B6A6",
+                    "--secondary-medium": "#D4C2B8",
+                    "--secondary-dark": "#A89A91",
+                    "--neutral": "#B8B0A6",
+                    "--text-light": "#6B6459",
+                    "--text-dark": "#4A443C"
+                }
+            },
+            {
+                id: "cool-tones",
+                name: "Cool Tones",
+                colors: {
+                    "--primary-light": "#F0F5F8",
+                    "--primary-medium": "#D1E0E6",
+                    "--primary-accent": "#E0EDF2",
+                    "--background": "#E8F2F5",
+                    "--secondary-light": "#A8C9D9",
+                    "--secondary-medium": "#A6C8D4",
+                    "--secondary-dark": "#85A7B1",
+                    "--neutral": "#BBC9C9",
+                    "--text-light": "#68757A",
+                    "--text-dark": "#44535A"
+                }
+            },
+            {
+                id: "warm-sunset",
+                name: "Warm Sunset",
+                colors: {
+                    "--primary-light": "#F8F0E6",
+                    "--primary-medium": "#E6D1C4",
+                    "--primary-accent": "#F2E0D5",
+                    "--background": "#F5E8E0",
+                    "--secondary-light": "#D9A8A8",
+                    "--secondary-medium": "#D4A6A6",
+                    "--secondary-dark": "#B18585",
+                    "--neutral": "#C9BBBB",
+                    "--text-light": "#756868",
+                    "--text-dark": "#534445"
+                }
+            },
+            {
+                id: "spring-garden",
+                name: "Spring Garden",
+                colors: {
+                    "--primary-light": "#F0F8E6",
+                    "--primary-medium": "#D1E6C4",
+                    "--primary-accent": "#E0F2D5",
+                    "--background": "#E8F5E0",
+                    "--secondary-light": "#A8D9A8",
+                    "--secondary-medium": "#A6D4A6",
+                    "--secondary-dark": "#85B185",
+                    "--neutral": "#BBC9BB",
+                    "--text-light": "#687568",
+                    "--text-dark": "#445344"
+                }
+            }
+        ];
+
+        // DOM Elements
+        const paletteToggle = document.getElementById('paletteToggle');
+        const paletteDropdown = document.getElementById('paletteDropdown');
+        const paletteContainer = document.getElementById('paletteContainer');
+        const currentPaletteName = document.getElementById('currentPaletteName');
+        const addPaletteLink = document.getElementById('addPaletteLink');
+
+        // Current palette
+        let currentPaletteId = "original-pastel";
+
+        // Initialize the palette switcher
+        function initPaletteSwitcher() {
+            // Generate palette options for dropdown
+            colorPalettes.forEach(palette => {
+                // Create dropdown option
+                const option = document.createElement('div');
+                option.className = `palette-option ${palette.id === currentPaletteId ? 'active' : ''}`;
+                option.dataset.id = palette.id;
+
+                // Create color preview
+                const preview = document.createElement('div');
+                preview.className = 'palette-preview';
+                preview.style.background = `linear-gradient(45deg, ${palette.colors['--primary-light']}, ${palette.colors['--secondary-medium']})`;
+
+                // Create palette info
+                const info = document.createElement('div');
+                info.className = 'palette-info';
+
+                const name = document.createElement('div');
+                name.className = 'palette-name';
+                name.textContent = palette.name;
+
+                const count = document.createElement('div');
+                count.className = 'palette-count';
+                count.textContent = `${Object.keys(palette.colors).length} colors`;
+
+                info.appendChild(name);
+                info.appendChild(count);
+
+                option.appendChild(preview);
+                option.appendChild(info);
+
+                // Add click event
+                option.addEventListener('click', () => {
+                    switchPalette(palette.id);
+                    closeDropdown();
+                });
+
+                paletteDropdown.appendChild(option);
+            });
+
+            // Generate palette previews for showcase
+            renderPalettePreviews();
+
+            // Set current palette name
+            const currentPalette = colorPalettes.find(p => p.id === currentPaletteId);
+            currentPaletteName.textContent = currentPalette.name;
+        }
+
+        // Render palette previews in showcase
+        function renderPalettePreviews() {
+            paletteContainer.innerHTML = '';
+
+            colorPalettes.forEach(palette => {
+                const paletteMini = document.createElement('div');
+                paletteMini.className = `palette-mini ${palette.id === currentPaletteId ? 'active' : ''}`;
+                paletteMini.dataset.id = palette.id;
+
+                // Create color strips
+                const colors = [
+                    palette.colors['--primary-light'],
+                    palette.colors['--primary-medium'],
+                    palette.colors['--secondary-medium'],
+                    palette.colors['--secondary-dark'],
+                    palette.colors['--text-dark']
+                ];
+
+                colors.forEach(color => {
+                    const colorDiv = document.createElement('div');
+                    colorDiv.className = 'mini-color';
+                    colorDiv.style.backgroundColor = color;
+                    paletteMini.appendChild(colorDiv);
+                });
+
+                // Add label
+                const label = document.createElement('div');
+                label.className = 'mini-label';
+                label.textContent = palette.name;
+                paletteMini.appendChild(label);
+
+                // Add click event
+                paletteMini.addEventListener('click', () => {
+                    switchPalette(palette.id);
+                });
+
+                paletteContainer.appendChild(paletteMini);
+            });
+        }
+
+        // Switch to a specific palette
+        function switchPalette(paletteId) {
+            const palette = colorPalettes.find(p => p.id === paletteId);
+
+            if (!palette) return;
+
+            // Update CSS variables
+            const root = document.documentElement;
+            Object.entries(palette.colors).forEach(([property, value]) => {
+                root.style.setProperty(property, value);
+            });
+
+            // Update current palette
+            currentPaletteId = paletteId;
+            currentPaletteName.textContent = palette.name;
+
+            // Update active states
+            document.querySelectorAll('.palette-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.id === paletteId);
+            });
+
+            document.querySelectorAll('.palette-mini').forEach(mini => {
+                mini.classList.toggle('active', mini.dataset.id === paletteId);
+            });
+
+            // Save to localStorage
+            localStorage.setItem('preferredPalette', paletteId);
+        }
+
+        // Open/close dropdown
+        function toggleDropdown() {
+            paletteDropdown.classList.toggle('active');
+        }
+
+        function closeDropdown() {
+            paletteDropdown.classList.remove('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!paletteToggle.contains(event.target) && !paletteDropdown.contains(event.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Event Listeners
+        paletteToggle.addEventListener('click', toggleDropdown);
+
+        addPaletteLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert(`To add a new palette:\n\n1. Add a new object to the 'colorPalettes' array in JavaScript\n2. Follow the same structure as existing palettes\n3. Include all 10 color variables\n4. The new palette will automatically appear in the switcher`);
+        });
+
+        // Load saved palette from localStorage
+        function loadSavedPalette() {
+            const savedPalette = localStorage.getItem('preferredPalette');
+            if (savedPalette && colorPalettes.some(p => p.id === savedPalette)) {
+                switchPalette(savedPalette);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initPaletteSwitcher();
+            loadSavedPalette();
+        });
+
+        // Example function to add a new palette (for demonstration)
+        function addNewPalette() {
+            // This is an example of how to add a new palette programmatically
+            const newPalette = {
+                id: "ocean-breeze",
+                name: "Ocean Breeze",
+                colors: {
+                    "--primary-light": "#E6F0F5",
+                    "--primary-medium": "#C4D8E6",
+                    "--primary-accent": "#D5E6F2",
+                    "--background": "#E0E8F5",
+                    "--secondary-light": "#A8B6D9",
+                    "--secondary-medium": "#A6A7D4",
+                    "--secondary-dark": "#8585B1",
+                    "--neutral": "#BBBFC9",
+                    "--text-light": "#686875",
+                    "--text-dark": "#444453"
+                }
+            };
+
+            // Add to palettes array
+            colorPalettes.push(newPalette);
+
+            // Reinitialize the switcher to include the new palette
+            initPaletteSwitcher();
+
+            // Show success message
+            alert(`New palette "${newPalette.name}" added successfully!`);
+        }
+
+        // Expose function for demonstration (can be called from browser console)
+        window.addNewPalette = addNewPalette;
+    </script>
+</body>
+
+</html>
