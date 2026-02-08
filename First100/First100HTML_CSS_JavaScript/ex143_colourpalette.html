@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Demo</title>
+    <style>
+
+        /*
+
+        1. Original Pastel Palette
+css
+:root {
+    --lavender-blush: #F5E6E8;
+    --rose-quartz: #D5C6E0;
+    --thistle: #E5D4ED;
+    --pearl: #F2E9E4;
+    --lilac: #C9A8D9;
+    --dusty-rose: #D4A6C8;
+    --wisteria: #B185A7;
+    --pale-silver: #C9C0BB;
+    --light-text: #6D6875;
+    --dark-text: #4A4453;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(181, 131, 141, 0.1);
+    --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+2. Muted Earthy Palette
+css
+:root {
+    --lavender-blush: #F0EBE6;
+    --rose-quartz: #D8CEC4;
+    --thistle: #E6DFD5;
+    --pearl: #F5F1E8;
+    --lilac: #C4B6A6;
+    --dusty-rose: #D4C2B8;
+    --wisteria: #A89A91;
+    --pale-silver: #B8B0A6;
+    --light-text: #6B6459;
+    --dark-text: #4A443C;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(168, 154, 145, 0.1);
+    --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+3. Cool Tones Palette
+css
+:root {
+    --lavender-blush: #F0F5F8;
+    --rose-quartz: #D1E0E6;
+    --thistle: #E0EDF2;
+    --pearl: #E8F2F5;
+    --lilac: #A8C9D9;
+    --dusty-rose: #A6C8D4;
+    --wisteria: #85A7B1;
+    --pale-silver: #BBC9C9;
+    --light-text: #68757A;
+    --dark-text: #44535A;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(131, 168, 181, 0.1);
+    --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+4. Warm Sunset Palette
+css
+:root {
+    --lavender-blush: #F8F0E6;
+    --rose-quartz: #E6D1C4;
+    --thistle: #F2E0D5;
+    --pearl: #F5E8E0;
+    --lilac: #D9A8A8;
+    --dusty-rose: #D4A6A6;
+    --wisteria: #B18585;
+    --pale-silver: #C9BBBB;
+    --light-text: #756868;
+    --dark-text: #534445;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(181, 131, 131, 0.1);
+    --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+5. Jewel Tones Palette
+css
+:root {
+    --lavender-blush: #E8E6F5;
+    --rose-quartz: #C6C4E0;
+    --thistle: #D4D5ED;
+    --pearl: #E9E4F2;
+    --lilac: #A8A9D9;
+    --dusty-rose: #A6A7D4;
+    --wisteria: #8585B1;
+    --pale-silver: #C0BBC9;
+    --light-text: #686875;
+    --dark-text: #444453;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(131, 131, 181, 0.1);
+    --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+6. Spring Garden Palette
+css
+:root {
+    --lavender-blush: #F0F8E6;
+    --rose-quartz: #D1E6C4;
+    --thistle: #E0F2D5;
+    --pearl: #E8F5E0;
+    --lilac: #A8D9A8;
+    --dusty-rose: #A6D4A6;
+    --wisteria: #85B185;
+    --pale-silver: #BBC9BB;
+    --light-text: #687568;
+    --dark-text: #445344;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 30px rgba(131, 181, 131, 0.1);
+    --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+    
+        */
+        /* Copy and paste your chosen palette here */
+        :root {
+            --lavender-blush: #F0F8E6;
+            --rose-quartz: #D1E6C4;
+            --thistle: #E0F2D5;
+            --pearl: #E8F5E0;
+            --lilac: #A8D9A8;
+            --dusty-rose: #A6D4A6;
+            --wisteria: #85B185;
+            --pale-silver: #BBC9BB;
+            --light-text: #687568;
+            --dark-text: #445344;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 30px rgba(131, 181, 131, 0.1);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            background-color: var(--pearl);
+            color: var(--dark-text);
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--lavender-blush);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Spring Garden Palette Demo</h1>
+    <div class="card">
+        <h2>Card Title</h2>
+        <p>This card uses the Spring Garden color palette with all the same CSS variable names.</p>
+    </div>
+</body>
+
+</html>
