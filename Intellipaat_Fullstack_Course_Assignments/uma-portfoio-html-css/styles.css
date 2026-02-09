@@ -7,6 +7,10 @@
     --text-color-10 : white ;
     --text-color-20: rgb(201, 134, 0) ;
 
+
+    /* body-containers padding */
+    --section-padding: 50px ;
+
     --z-sticky : 2 ;
 }
 
@@ -84,7 +88,7 @@ button{
 
 #home{
     min-height: 350px ;
-    padding: 100px ;
+    padding: var(--section-padding) ;
     text-align: left  ;
 
 }
@@ -95,7 +99,7 @@ h3 {
 
 #about{
     min-height: 350px ;
-    padding: 50px ;
+    padding: var(--section-padding);
     margin-top: 200px ;
     display: flex ; 
     background-color: var(--primary-dark-black);
@@ -119,7 +123,7 @@ h3 {
 
     display: flex ;
     height: fit-content;
-    padding: 50px ;
+    padding: var(--section-padding);
     background-color: var(--primary-light-black);
 }
 
@@ -136,32 +140,58 @@ h3 {
     border-radius: 10px ;;
 }
 
-#portfolio{
-
+#portfolio {
     background-color: var(--primary-dark-black);
-    height: fit-content ;
-
+    height: fit-content;
+    padding: var(--section-padding);
+    /* Add some vertical spacing */
 }
 
-.portfolio-container{
-    display: grid ;
-    grid-template-columns: repeat(3,1fr) ;
-    grid-template-rows: repeat(2,1fr);
-    gap: 15px ;
-}
-
-.portfolio-grid-item{
-    background-color: var(--primary-light-black);
-    padding: 20px ;
-    border: 2px solid white ;
-    aspect-ratio: 1/1;
-    height: 100px ;
-    grid-row: 1/3 ;
-
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows:repeat(2,1fr);
+    gap: 10px ;
+    padding: 10px ;
     
 }
 
+.portfolio-grid-item {
+    background-color: var(--primary-light-black);
+    padding: 20px;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    border-radius: 5px ;
+    /* Prevent content overflow */
+}
 
+#grid-item-1{
+    grid-row: 1/3;
+}
+
+.portfolio-grid-item:hover {
+    transform: scale(1.02);
+}
+
+
+#experiance{
+    padding: var(--section-padding);
+}
+
+#contact{
+    padding: var(--section-padding); 
+}
+
+.footer-container{
+
+    height: 200px ;
+    align-items: center ;;
+
+}
 
 
 
