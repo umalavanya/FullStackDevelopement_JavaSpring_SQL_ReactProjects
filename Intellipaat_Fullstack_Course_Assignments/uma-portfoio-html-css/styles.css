@@ -1,5 +1,5 @@
 :root{
-    --primary : #160225;
+    --primary : #1e0234;
     --primary-dark-black: #000000 ;
     --secondary: #4c1d95;
     --tertiary: rgb(228, 187, 3) ;
@@ -12,12 +12,14 @@
 body{
     margin: 0 ;
     padding: 0 ;
+    box-sizing: border-box;
 
 }
 
 .container{
     background-color: var(--primary);
     color : var(--text-color-10) ;
+    
 }
 .me{
     color: var(--text-color-20) ;
@@ -33,25 +35,27 @@ body{
     justify-content: space-between;
     align-items: center ;
     height: 100px ;
-    tra
+
     
 }
 
 .header-name{
-    font-size: 20px 
+    font-size: 20px ;
 }
 
 .nav-items{
     display: flex ;
     gap: 10px ;
     padding: 10px ;
+    flex-wrap: wrap ; 
 
 }
 
 .nav-item{
     border: 1px solid  ;
     padding: 5px 10px ;
-    border-radius: 10px ;;
+    border-radius: 10px ;
+    box-shadow: 0 5px 5px white;
 }
 
 .nav-item:hover{
@@ -62,9 +66,57 @@ body{
 
 }
 
-.nav-iem a{
+.nav-item>a{
     text-decoration: none ;
     color: white ;
+    font-size:  16px ;
+}
+
+button{
+    padding: 5px 10px ;
+    border-radius: 10px ;
+    background-color: var(--text-color-20) ;
+    border: 2px solid var(--text-color-20) ;
+    box-shadow: 0 10px 10px var(--primary-dark-black) ;
+}
+
+#home{
+    min-height: 350px ;
+    padding: 100px ;
+    text-align: left  ;
+
+}
+
+h3 {
+    color: var(--text-color-20)
+}
+
+#about{
+    min-height: 350px ;
+    padding: 50px ;
+    margin-top: 200px ;
+    display: flex ;
+
+}
+
+.about-me-container{
+    display: flex ;
+    gap: 60px ;
+    height: 330px ;
+}
+
+.profile-pic{
+    border: 15px solid var(--text-color-20) ;
+    border-radius: 10px ;
+
+}
+
+#services{
+
+    display: flex ;
+    height: 800px ;
+    margin-top: 100px
+    padding: 
 }
 
 

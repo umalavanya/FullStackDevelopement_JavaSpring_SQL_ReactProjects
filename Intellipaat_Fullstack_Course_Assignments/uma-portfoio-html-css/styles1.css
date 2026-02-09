@@ -1,35 +1,246 @@
-:root{
-
-
-    /* Primary Colors */
-        --primary-50: #eff6ff;
-        --primary-100: #dbeafe;
-        --primary-200: #bfdbfe;
-        --primary-300: #93c5fd;
-        --primary-400: #60a5fa;
-        --primary-500: #3b82f6; /* Main primary color */
-        --primary-600: #2563eb;
-        --primary-700: #1d4ed8;
-        --primary-800: #1e40af;
-        --primary-900: #7833d8;
-
+:root {
+    /* Purple/Violet Color Palette - Gradient Blend */
+        --purple-50: #faf5ff;
+        --purple-100: #f3e8ff;
+        --purple-200: #e9d5ff;
+        --purple-300: #d8b4fe;
+        --purple-400: #c084fc;
+        --purple-500: #a855f7;
+        /* Vibrant purple - main color */
+        --purple-600: #9333ea;
+        --purple-700: #7e22ce;
+        --purple-800: #6b21a8;
+        --purple-900: #581c87;
+        --purple-950: #3b0764;
+    
+        /* Violet/Indigo Blend */
+        --violet-50: #f5f3ff;
+        --violet-100: #ede9fe;
+        --violet-200: #ddd6fe;
+        --violet-300: #c4b5fd;
+        --violet-400: #a78bfa;
+        --violet-500: #8b5cf6;
+        --violet-600: #7c3aed;
+        --violet-700: #6d28d9;
+        --violet-800: #5b21b6;
+        --violet-900: #4c1d95;
+        --violet-950: #2e1065;
+    
+        /* Dark Purple/Royal Purple */
+        --dark-purple-50: #faf5ff;
+        --dark-purple-100: #f3e8ff;
+        --dark-purple-200: #e9d5ff;
+        --dark-purple-300: #d8b4fe;
+        --dark-purple-400: #c084fc;
+        --dark-purple-500: #a855f7;
+        --dark-purple-600: #9333ea;
+        --dark-purple-700: #7e22ce;
+        --dark-purple-800: #6b21a8;
+        --dark-purple-900: #581c87;
+    
+        /* Rich Plum/Dark Purple */
+        --plum-50: #fdf4ff;
+        --plum-100: #fae8ff;
+        --plum-200: #f5d0fe;
+        --plum-300: #f0abfc;
+        --plum-400: #e879f9;
+        --plum-500: #d946ef;
+        --plum-600: #c026d3;
+        --plum-700: #a21caf;
+        --plum-800: #86198f;
+        --plum-900: #701a75;
+    
+        /* Purple Gradient Suggestions */
+        --gradient-purple: linear-gradient(135deg, var(--purple-500) 0%, var(--violet-700) 100%);
+        --gradient-dark-purple: linear-gradient(135deg, var(--purple-700) 0%, var(--plum-800) 100%);
+        --gradient-royal: linear-gradient(135deg, var(--violet-500) 0%, var(--dark-purple-900) 100%);
+    
+        /* Primary Color System (using the purple blend) */
+        --primary-50: var(--purple-50);
+        --primary-100: var(--purple-100);
+        --primary-200: var(--purple-200);
+        --primary-300: var(--purple-300);
+        --primary-400: var(--purple-400);
+        --primary-500: var(--purple-500);
+        /* Main primary - vibrant purple */
+        --primary-600: var(--purple-600);
+        --primary-700: var(--purple-700);
+        /* Deep purple */
+        --primary-800: var(--purple-800);
+        /* Dark purple */
+        --primary-900: var(--purple-900);
+        /* Very dark purple */
+    
+        /* Secondary Color System (using violet) */
+        --secondary-50: var(--violet-50);
+        --secondary-100: var(--violet-100);
+        --secondary-200: var(--violet-200);
+        --secondary-300: var(--violet-300);
+        --secondary-400: var(--violet-400);
+        --secondary-500: var(--violet-500);
+        /* Secondary accent */
+        --secondary-600: var(--violet-600);
+        --secondary-700: var(--violet-700);
+        --secondary-800: var(--violet-800);
+        --secondary-900: var(--violet-900);
+    
+        /* Accent Color (using plum) */
+        --accent-50: var(--plum-50);
+        --accent-100: var(--plum-100);
+        --accent-200: var(--plum-200);
+        --accent-300: var(--plum-300);
+        --accent-400: var(--plum-400);
+        --accent-500: var(--plum-500);
+        /* Pop accent color */
+        --accent-600: var(--plum-600);
+        --accent-700: var(--plum-700);
+        --accent-800: var(--plum-800);
+        --accent-900: var(--plum-900);
+    
     /* Neutral/Grayscale */
-        --white: #ffffff;
-        --gray-50: #f9fafb;
-        --gray-100: #f3f4f6;
-        --gray-200: #e5e7eb;
-        --gray-300: #d1d5db;
-        --gray-400: #9ca3af;
-        --gray-500: #6b7280;
-        --gray-600: #4b5563;
-        --gray-700: #374151;
-        --gray-800: #1f2937;
-        --gray-900: #111827;
-        --black: #000000;
+    --white: #ffffff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --black: #000000;
 
-}
+   
 
-body{
-    margin: 0 ;
-    padding: 0 ;
+    /* Semantic Colors */
+    --success-50: #f0fdf4;
+    --success-500: #22c55e;
+    --success-900: #14532d;
+
+    --warning-50: #fefce8;
+    --warning-500: #eab308;
+    --warning-900: #713f12;
+
+    --error-50: #fef2f2;
+    --error-500: #ef4444;
+    --error-900: #7f1d1d;
+
+    /* Text Colors */
+    --text-primary: var(--gray-900);
+    --text-secondary: var(--gray-600);
+    --text-tertiary: var(--gray-400);
+    --text-inverse: var(--white);
+    --text-on-primary: var(--white);
+    --text-on-dark: var(--gray-100);
+
+    /* Background Colors */
+    --bg-primary: var(--white);
+    --bg-secondary: var(--gray-50);
+    --bg-tertiary: var(--gray-100);
+    --bg-dark: var(--gray-900);
+    --bg-overlay: rgba(0, 0, 0, 0.5);
+
+    /* Border Colors */
+    --border-light: var(--gray-200);
+    --border-default: var(--gray-300);
+    --border-dark: var(--gray-400);
+    --border-focus: var(--primary-500);
+
+    /* Shadow Colors */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+    /* Typography */
+    --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-family-heading: var(--font-family-base);
+    --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+    /* Font Sizes - Using REM or clamp() for responsiveness */
+    --text-xs: 0.75rem;
+    /* 12px */
+    --text-sm: 0.875rem;
+    /* 14px */
+    --text-base: 1rem;
+    /* 16px */
+    --text-lg: 1.125rem;
+    /* 18px */
+    --text-xl: 1.25rem;
+    /* 20px */
+    --text-2xl: 1.5rem;
+    /* 24px */
+    --text-3xl: 1.875rem;
+    /* 30px */
+    --text-4xl: 2.25rem;
+    /* 36px */
+    --text-5xl: 3rem;
+    /* 48px */
+
+    /* Line Heights */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+
+    /* Spacing Scale */
+    --space-0: 0;
+    --space-1: 0.25rem;
+    /* 4px */
+    --space-2: 0.5rem;
+    /* 8px */
+    --space-3: 0.75rem;
+    /* 12px */
+    --space-4: 1rem;
+    /* 16px */
+    --space-5: 1.25rem;
+    /* 20px */
+    --space-6: 1.5rem;
+    /* 24px */
+    --space-8: 2rem;
+    /* 32px */
+    --space-10: 2.5rem;
+    /* 40px */
+    --space-12: 3rem;
+    /* 48px */
+    --space-16: 4rem;
+    /* 64px */
+    --space-20: 5rem;
+    /* 80px */
+
+    /* Border Radius */
+    --radius-none: 0;
+    --radius-sm: 0.125rem;
+    /* 2px */
+    --radius-md: 0.375rem;
+    /* 6px */
+    --radius-lg: 0.5rem;
+    /* 8px */
+    --radius-xl: 0.75rem;
+    /* 12px */
+    --radius-2xl: 1rem;
+    /* 16px */
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Z-index Layers */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+
+    /* Container Max-widths */
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+    --container-2xl: 1536px;
 }
