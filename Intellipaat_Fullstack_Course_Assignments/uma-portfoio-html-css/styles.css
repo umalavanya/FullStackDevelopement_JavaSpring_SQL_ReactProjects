@@ -5,6 +5,8 @@
     --tertiary: rgb(228, 187, 3) ;
     --text-color-10 : white ;
     --text-color-20: rgb(201, 134, 0) ;
+
+    --z-sticky : 2 ;
 }
 
 body{
@@ -31,6 +33,7 @@ body{
     justify-content: space-between;
     align-items: center ;
     height: 100px ;
+    tra
     
 }
 
