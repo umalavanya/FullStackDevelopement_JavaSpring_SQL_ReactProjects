@@ -1,7 +1,7 @@
 :root{
     --primary : #1e0234;
     --primary-dark-black: #000000 ;
-    --primary-light-black: #161616;
+    --primary-light-black: #121212;
     --secondary: #4c1d95;
     --tertiary: rgb(228, 187, 3) ;
     --text-color-10 : white ;
@@ -14,6 +14,7 @@ body{
     margin: 0 ;
     padding: 0 ;
     box-sizing: border-box;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 
 }
 
@@ -117,7 +118,7 @@ h3 {
 #services{
 
     display: flex ;
-    height: 400px ;
+    height: fit-content;
     padding: 50px ;
     background-color: var(--primary-light-black);
 }
@@ -125,6 +126,7 @@ h3 {
 .service-card-container{
     display: flex ;
     gap: 20px ;
+    margin-top: 30px ;;
 }
 
 .service-card{
@@ -132,6 +134,31 @@ h3 {
     text-align: center ;
     padding: 20px ;
     border-radius: 10px ;;
+}
+
+#portfolio{
+
+    background-color: var(--primary-dark-black);
+    height: fit-content ;
+
+}
+
+.portfolio-container{
+    display: grid ;
+    grid-template-columns: repeat(3,1fr) ;
+    grid-template-rows: repeat(2,1fr);
+    gap: 15px ;
+}
+
+.portfolio-grid-item{
+    background-color: var(--primary-light-black);
+    padding: 20px ;
+    border: 2px solid white ;
+    aspect-ratio: 1/1;
+    height: 100px ;
+    grid-row: 1/3 ;
+
+    
 }
 
 
