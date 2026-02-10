@@ -1,0 +1,429 @@
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #1a2980, #26d0ce);
+        color: #333;
+        min-height: 100vh;
+        padding-bottom: 50px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Header Styles */
+    header {
+        text-align: center;
+        padding: 30px 0;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+        font-size: 3.5rem;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #FFD700, #FFA500);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 800px;
+        margin: 0 auto 20px;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .nav-tab {
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: bold;
+    }
+
+    .nav-tab:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+    }
+
+    .nav-tab.active {
+        background: white;
+        color: #1a2980;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Content Area */
+    .content-area {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        min-height: 500px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Chapter Content */
+    .chapter {
+        display: none;
+        animation: fadeIn 0.5s;
+    }
+
+    .chapter.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .chapter-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #1a2980;
+    }
+
+    .chapter-icon {
+        font-size: 2.5rem;
+        margin-right: 20px;
+        color: #1a2980;
+    }
+
+    .chapter-title {
+        font-size: 2rem;
+        color: #1a2980;
+    }
+
+    .chapter-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        font-style: italic;
+    }
+
+    /* SQL Code Blocks */
+    .sql-code {
+        background: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        font-family: 'Consolas', 'Monaco', monospace;
+        overflow-x: auto;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .sql-keyword {
+        color: #f92672;
+        font-weight: bold;
+    }
+
+    .sql-function {
+        color: #66d9ef;
+    }
+
+    .sql-string {
+        color: #e6db74;
+    }
+
+    .sql-comment {
+        color: #75715e;
+    }
+
+    .sql-table {
+        color: #a6e22e;
+    }
+
+    .sql-column {
+        color: #fd971f;
+    }
+
+    /* Character Cards */
+    .characters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .character-card {
+        background: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        border-left: 5px solid #1a2980;
+    }
+
+    .character-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .character-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .character-icon {
+        font-size: 1.8rem;
+        margin-right: 15px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1a2980;
+        color: white;
+        border-radius: 50%;
+    }
+
+    .character-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #1a2980;
+    }
+
+    .character-role {
+        font-size: 0.9rem;
+        color: #666;
+        font-style: italic;
+    }
+
+    .character-description {
+        margin-top: 10px;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    /* Interactive Query Builder */
+    .query-builder {
+        background: #f0f8ff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .query-parts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .query-part {
+        padding: 10px 15px;
+        background: white;
+        border: 2px dashed #1a2980;
+        border-radius: 5px;
+        cursor: move;
+        font-weight: bold;
+        color: #1a2980;
+    }
+
+    .query-canvas {
+        min-height: 100px;
+        background: white;
+        border: 2px solid #1a2980;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .execute-btn {
+        background: #1a2980;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .execute-btn:hover {
+        background: #26d0ce;
+    }
+
+    /* Story Progress */
+    .progress-container {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 30px;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+
+    .progress-label {
+        margin-right: 20px;
+        font-weight: bold;
+    }
+
+    .progress-bar {
+        flex-grow: 1;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #FFD700, #FFA500);
+        border-radius: 10px;
+        width: 10%;
+        transition: width 0.5s;
+    }
+
+    /* Navigation Buttons */
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .nav-btn {
+        padding: 12px 24px;
+        background: #1a2980;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nav-btn:hover {
+        background: #26d0ce;
+        transform: translateY(-3px);
+    }
+
+    .nav-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        .nav-tabs {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-tab {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .characters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .chapter-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .chapter-icon {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
+    }
+
+    /* Kingdom Map */
+    .kingdom-map {
+        width: 100%;
+        height: 400px;
+        background: #e8f4f8;
+        border-radius: 10px;
+        position: relative;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    .castle {
+        position: absolute;
+        width: 80px;
+        height: 100px;
+        background: #d4a574;
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .castle:hover {
+        transform: scale(1.1);
+        z-index: 10;
+    }
+
+    .castle-roof {
+        width: 100px;
+        height: 30px;
+        background: #8b4513;
+        position: absolute;
+        top: -30px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .castle-label {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .sql-command {
+        background: #1a2980;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        margin: 0 5px;
+    }

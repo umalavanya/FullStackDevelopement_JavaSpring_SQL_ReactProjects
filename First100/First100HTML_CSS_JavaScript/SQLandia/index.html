@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLandia: The Interactive Kingdom</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-crown"></i> SQLandia</h1>
+            <p class="subtitle">The Interactive Kingdom Where SQL Commands Come to Life</p>
+            <p>Explore the epic tale of databases, learn SQL through storytelling, and interact with SQL characters!</p>
+        </header>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-chapter="intro">Introduction</div>
+            <div class="nav-tab" data-chapter="characters">Characters</div>
+            <div class="nav-tab" data-chapter="story">The Story</div>
+            <div class="nav-tab" data-chapter="kingdom">Kingdom Map</div>
+            <div class="nav-tab" data-chapter="queries">Query Builder</div>
+            <div class="nav-tab" data-chapter="practice">Practice</div>
+        </div>
+
+        <div class="content-area">
+            <!-- Introduction Chapter -->
+            <div class="chapter active" id="intro">
+                <div class="chapter-header">
+                    <div class="chapter-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div>
+                        <h2 class="chapter-title">Welcome to SQLandia</h2>
+                        <p class="chapter-subtitle">A land where data lives in harmony and SQL commands rule</p>
+                    </div>
+                </div>
+
+                <div class="sql-code">
+                    <span class="sql-keyword">CREATE DATABASE</span> <span
+                        class="sql-table">KingdomOf_SQLandia</span>;<br>
+                    <span class="sql-comment">-- And so begins our story...</span>
+                </div>
+
+                <p>In a digital realm of endless data, there existed a <strong class="highlight">chaotic wasteland of
+                        information</strong> – numbers, names, dates, and facts floating aimlessly without structure or
+                    purpose.</p>
+
+                <p>Then came <span class="sql-command">King CREATE</span>, the wise ruler who established order,
+                    structure, and meaning to the data chaos.</p>
+
+                <div class="characters-grid" style="margin-top: var(--space-lg);">
+                    <div class="character-card">
+                        <div class="character-header">
+                            <div class="character-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div>
+                                <div class="character-name">King CREATE</div>
+                                <div class="character-role">The Founder</div>
+                            </div>
+                        </div>
+                        <div class="character-description">
+                            Establishes new structures, castles (tables), and the entire kingdom. Without him, nothing
+                            exists.
+                        </div>
+                        <div class="sql-code" style="margin-top: var(--space-sm); font-size: var(--font-xs);">
+                            <span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">Citizens</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="sql-column">ID</span> <span class="sql-keyword">INT
+                                PRIMARY KEY</span>,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="sql-column">Name</span> <span
+                                class="sql-keyword">VARCHAR</span>(100)<br>
+                            );
+                        </div>
+                    </div>
+
+                    <div class="character-card">
+                        <div class="character-header">
+                            <div class="character-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div>
+                                <div class="character-name">Sir SELECT</div>
+                                <div class="character-role">Royal Inquisitor</div>
+                            </div>
+                        </div>
+                        <div class="character-description">
+                            Gathers information from the kingdom with precision. Always asking the right questions.
+                        </div>
+                        <div class="sql-code" style="margin-top: var(--space-sm); font-size: var(--font-xs);">
+                            <span class="sql-keyword">SELECT</span> <span class="sql-column">Name</span>, <span
+                                class="sql-column">Age</span><br>
+                            <span class="sql-keyword">FROM</span> <span class="sql-table">Citizens</span><br>
+                            <span class="sql-keyword">WHERE</span> <span class="sql-column">Age</span> <span
+                                class="sql-keyword">></span> 18;
+                        </div>
+                    </div>
+
+                    <div class="character-card">
+                        <div class="character-header">
+                            <div class="character-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div>
+                                <div class="character-name">Lady INSERT</div>
+                                <div class="character-role">Citizen Registrar</div>
+                            </div>
+                        </div>
+                        <div class="character-description">
+                            Welcomes new citizens (records) to SQLandia with proper documentation and ceremony.
+                        </div>
+                        <div class="sql-code" style="margin-top: var(--space-sm); font-size: var(--font-xs);">
+                            <span class="sql-keyword">INSERT INTO</span> <span class="sql-table">Citizens</span> (<span
+                                class="sql-column">ID</span>, <span class="sql-column">Name</span>)<br>
+                            <span class="sql-keyword">VALUES</span> (1, <span class="sql-string">'Sir Lancelot'</span>);
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--space-lg);">
+                    <button class="nav-btn" onclick="nextChapter()">
+                        Begin the Adventure <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Characters Chapter -->
+            <div class="chapter" id="characters">
+                <div class="chapter-header">
+                    <div class="chapter-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h2 class="chapter-title">The Royal Court of SQLandia</h2>
+                        <p class="chapter-subtitle">Meet the characters that make SQL work</p>
+                    </div>
+                </div>
+
+                <div class="characters-grid" id="characters-container">
+                    <!-- Characters will be loaded via JavaScript -->
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevChapter()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="nav-btn" onclick="nextChapter()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Story Chapter -->
+            <div class="chapter" id="story">
+                <div class="chapter-header">
+                    <div class="chapter-icon">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <div>
+                        <h2 class="chapter-title">The Epic Tale of SQLandia</h2>
+                        <p class="chapter-subtitle">Follow the story chapter by chapter</p>
+                    </div>
+                </div>
+
+                <div id="story-content">
+                    <div id="story-chapters">
+                        <!-- Story chapters will be loaded via JS -->
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevChapter()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="nav-btn" onclick="nextChapter()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kingdom Map Chapter -->
+            <div class="chapter" id="kingdom">
+                <div class="chapter-header">
+                    <div class="chapter-icon">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <div>
+                        <h2 class="chapter-title">The Kingdom Map</h2>
+                        <p class="chapter-subtitle">Explore the geography of SQLandia</p>
+                    </div>
+                </div>
+
+                <p>SQLandia is organized into different regions, each representing a key SQL concept. Click on any
+                    castle to learn more!</p>
+
+                <div class="kingdom-map" id="kingdom-map">
+                    <!-- Castles will be positioned via JavaScript -->
+                </div>
+
+                <div class="castle-info" id="castle-info">
+                    <h3 id="castle-name"></h3>
+                    <p id="castle-description"></p>
+                    <div class="sql-code" id="castle-sql" style="margin-top: var(--space-md);"></div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevChapter()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="nav-btn" onclick="nextChapter()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Query Builder Chapter -->
+            <div class="chapter" id="queries">
+                <div class="chapter-header">
+                    <div class="chapter-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <h2 class="chapter-title">SQL Query Builder</h2>
+                        <p class="chapter-subtitle">Drag and drop to build SQL queries</p>
+                    </div>
+                </div>
+
+                <p>Build your own SQL queries by dragging commands into the query area. Learn how different SQL commands
+                    work together!</p>
+
+                <div class="query-builder">
+                    <h3>Available Commands:</h3>
+                    <div class="query-parts" id="query-parts">
+                        <div class="query-part" draggable="true" data-command="SELECT">SELECT</div>
+                        <div class="query-part" draggable="true" data-command="FROM">FROM</div>
+                        <div class="query-part" draggable="true" data-command="WHERE">WHERE</div>
+                        <div class="query-part" draggable="true" data-command="INSERT INTO">INSERT INTO</div>
+                        <div class="query-part" draggable="true" data-command="VALUES">VALUES</div>
+                        <div class="query-part" draggable="true" data-command="UPDATE">UPDATE</div>
+                        <div class="query-part" draggable="true" data-command="SET">SET</div>
+                        <div class="query-part" draggable="true" data-command="DELETE FROM">DELETE FROM</div>
+                        <div class="query-part" draggable="true" data-command="JOIN">JOIN</div>
+                        <div class="query-part" draggable="true" data-command="ON">ON</div>
+                        <div class="query-part" draggable="true" data-command="GROUP BY">GROUP BY</div>
+                        <div class="query-part" draggable="true" data-command="ORDER BY">ORDER BY</div>
+                    </div>
+
+                    <h3>Your Query:</h3>
+                    <div class="query-canvas empty" id="query-canvas" ondrop="drop(event)"
+                        ondragover="allowDrop(event)">
+                        <!-- Query parts will be added here -->
+                    </div>
+
+                    <button class="execute-btn" onclick="executeQuery()">
+                        <i class="fas fa-play"></i> Execute Query
+                    </button>
+
+                    <div id="query-result" style="margin-top: var(--space-md); display: none;">
+                        <h3>Query Result:</h3>
+                        <div class="sql-code" id="result-content"></div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevChapter()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="nav-btn" onclick="nextChapter()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Practice Chapter -->
+            <div class="chapter" id="practice">
+                <div class="chapter-header">
+                    <div class="chapter-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h2 class="chapter-title">Practice Queries</h2>
+                        <p class="chapter-subtitle">Test your SQL knowledge with challenges</p>
+                    </div>
+                </div>
+
+                <div id="practice-content">
+                    <div class="practice-challenge">
+                        <h3>Challenge 1: Find All Royal Citizens</h3>
+                        <p>Write a SQL query to select all citizens who are royalty (Royalty = 1).</p>
+                        <div class="sql-code" id="practice-1">
+                            <span contenteditable="true" style="outline: none; min-height: 30px; display: block;">Type
+                                your query here...</span>
+                        </div>
+                        <button class="execute-btn" style="margin-top: var(--space-sm);"
+                            onclick="checkPractice(1)">Check Answer</button>
+                        <div id="practice-1-result" class="practice-result"></div>
+                    </div>
+
+                    <div class="practice-challenge">
+                        <h3>Challenge 2: Add a New Citizen</h3>
+                        <p>Write a SQL query to insert a new citizen named "Sir Galahad", born in 1015, who is not
+                            royalty.</p>
+                        <div class="sql-code" id="practice-2">
+                            <span contenteditable="true" style="outline: none; min-height: 30px; display: block;">Type
+                                your query here...</span>
+                        </div>
+                        <button class="execute-btn" style="margin-top: var(--space-sm);"
+                            onclick="checkPractice(2)">Check Answer</button>
+                        <div id="practice-2-result" class="practice-result"></div>
+                    </div>
+
+                    <div class="practice-challenge">
+                        <h3>Challenge 3: Update Citizen Information</h3>
+                        <p>Write a SQL query to update citizen with ID 3 to have the profession "Royal Advisor".</p>
+                        <div class="sql-code" id="practice-3">
+                            <span contenteditable="true" style="outline: none; min-height: 30px; display: block;">Type
+                                your query here...</span>
+                        </div>
+                        <button class="execute-btn" style="margin-top: var(--space-sm);"
+                            onclick="checkPractice(3)">Check Answer</button>
+                        <div id="practice-3-result" class="practice-result"></div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label">Your SQL Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevChapter()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="nav-btn" onclick="restartAdventure()">
+                        <i class="fas fa-redo"></i> Restart Adventure
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js">
+    </script>
+</body>
+
+</html>
