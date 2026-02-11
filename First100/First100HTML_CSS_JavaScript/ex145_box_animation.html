@@ -49,8 +49,38 @@
 
             /* Transform properties */
 
+            transform: translateY(0) scale(1) ;
+            transition: all 0.4s ease ;
+
+            /* Animation */
+            animation: bounce 2s ease-in-out infinite ;
+
+
             
-            
+        }
+
+        .container-items:hover{
+            transform: translateY(-5px) scale(1.1) ;
+            color: #ffeaa5 ;
+            text-shadow : 4px 4px 8px rgba(0,0,0,0.4) ;
+        }
+
+        /* keyframe animations */
+        /* floating animation for container */
+
+        @keyframes float{
+            0%{
+                transform: translateY(0px) scale(1);
+            }
+
+            50%{
+                transform: translatY(-10px) scale(1.02) ;
+                background: linear-gradient(145deg, #ff8e8e, #ff6b6b);
+            }
+
+            100%{
+                transform: translateY(0px) scale(1) ;
+            }
         }
 
 
