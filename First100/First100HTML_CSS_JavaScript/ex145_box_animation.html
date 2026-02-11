@@ -83,6 +83,46 @@
             }
         }
 
+        @keyframes bounce{
+            0%, 100% {
+                transform: translateY(0) scale(1) ;
+            }
+            50%{
+                transform: translateY(-8px) 
+            }
+        }
+
+        /* Rotate animation - additional effect */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Pulse animation - additional effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Add this class for additional animation effects */
+.container-items.active {
+    animation: rotate 1s ease-in-out;
+}
+
 
 
     </style>
