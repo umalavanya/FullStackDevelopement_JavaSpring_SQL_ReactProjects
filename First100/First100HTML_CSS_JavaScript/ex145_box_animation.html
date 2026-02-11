@@ -13,25 +13,45 @@
         }
 
         .container{
+            width: 200px ;
+            height: 200px ;
+            background: linear-gradient(145deg, #ff6b6b, #ff8e8e) ;
+            border-radius: 20px ;
             display: flex ;
             justify-content: center ;
             align-items: center ;
-            flex-wrap: wrap ;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) ;
 
+            /* Transformation properties */
+
+            transform: scale(1) ;
+            transition: all 0.5s cubic-bezier(0.4,0,0.2, 1) ; 
+
+            /* Animation */
+            animation : float 3s ease-in-out infinite ;
          }
 
+         /* Contaner hover effect with transform  */
+
+         .container:hover{
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4) ;
+         }
+
+         /* Container items styling */
+
         .container-items{
-            border: 1px solid green ;
-            height: 100px ; 
-            width: 100px ;
-            display: flex ;
-            justify-content: center ;
-            align-items: center ;
-            border-top : 5x solid red    ;
+
+            color: white ;
+            font-size:5rem ;
+            font-weight: bold ;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3) ;
+
+            /* Transform properties */
+
             
-            border-le1ft` : 5x solid blue    ;
             
-            ;
+        }
 
 
 
