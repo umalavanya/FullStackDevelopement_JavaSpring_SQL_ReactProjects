@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Mixing Visualizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .description {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .color-mixer {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .color-input {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9fbfd;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .color-input h3 {
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .color-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 5px solid white;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .input-group span {
+            background-color: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 8px 0 0 8px;
+            color: #4a6fa5;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e1e8f0;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+
+        .mix-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        #mix-colors {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 7px 15px rgba(74, 111, 165, 0.3);
+        }
+
+        #mix-colors:hover {
+            background-color: #3a5a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(74, 111, 165, 0.4);
+        }
+
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px dashed #e1e8f0;
+        }
+
+        .results-section h2 {
+            color: #4a6fa5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mixed-color-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .mixed-color-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 8px solid white;
+        }
+
+        .mixed-color-info {
+            background-color: #f9fbfd;
+            padding: 25px;
+            border-radius: 15px;
+            min-width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .mixed-color-info h3 {
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .mixed-color-info p {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .mixed-color-info .hex-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .color-blending-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px dashed #e1e8f0;
+        }
+
+        .blending-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .blending-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .blending-color {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 5px solid white;
+            margin-bottom: 10px;
+        }
+
+        .plus-sign {
+            font-size: 2.5rem;
+            color: #888;
+            font-weight: 300;
+            margin: 0 10px;
+        }
+
+        .equals-sign {
+            font-size: 2.5rem;
+            color: #888;
+            font-weight: 300;
+            margin: 0 10px;
+        }
+
+        .mix-info {
+            background-color: #f0f7ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .mix-info h3 {
+            color: #4a6fa5;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mix-info p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .color-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .suggestion {
+            padding: 10px 20px;
+            background-color: #f1f5f9;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .suggestion:hover {
+            background-color: #e1e8f0;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .input-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .color-input {
+                width: 100%;
+            }
+
+            .mixed-color-display {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-blender"></i> Color Mixing Visualizer</h1>
+            <p class="description">Enter three hexadecimal color codes to visualize them and discover what color results
+                from mixing them together. This tool helps you understand how colors combine in both additive (light)
+                and subtractive (paint) color mixing.</p>
+        </header>
+
+        <div class="color-mixer">
+            <div class="input-section">
+                <div class="color-input">
+                    <h3>Color 1</h3>
+                    <div class="color-preview" id="preview1" style="background-color: #FF6B6B;"></div>
+                    <div class="input-group">
+                        <span>#</span>
+                        <input type="text" id="color1" maxlength="6" value="FF6B6B" placeholder="Enter hex code">
+                    </div>
+                </div>
+
+                <div class="color-input">
+                    <h3>Color 2</h3>
+                    <div class="color-preview" id="preview2" style="background-color: #4ECDC4;"></div>
+                    <div class="input-group">
+                        <span>#</span>
+                        <input type="text" id="color2" maxlength="6" value="4ECDC4" placeholder="Enter hex code">
+                    </div>
+                </div>
+
+                <div class="color-input">
+                    <h3>Color 3</h3>
+                    <div class="color-preview" id="preview3" style="background-color: #FFD166;"></div>
+                    <div class="input-group">
+                        <span>#</span>
+                        <input type="text" id="color3" maxlength="6" value="FFD166" placeholder="Enter hex code">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mix-button-container">
+                <button id="mix-colors">
+                    <i class="fas fa-blender"></i> Mix Colors
+                </button>
+            </div>
+
+            <div class="results-section" id="results" style="display: none;">
+                <h2>Mixed Color Result</h2>
+
+                <div class="mixed-color-display">
+                    <div class="mixed-color-preview" id="mixed-color"></div>
+
+                    <div class="mixed-color-info">
+                        <h3>Mixed Color Information</h3>
+                        <p><strong>Hex Code:</strong></p>
+                        <div class="hex-value" id="mixed-hex">#FFFFFF</div>
+                        <p><strong>Color Mixing Type:</strong> <span id="mixing-type">Additive (Light)</span></p>
+                        <p><strong>Result Interpretation:</strong> <span id="color-description">This is a warm, vibrant
+                                color.</span></p>
+                    </div>
+                </div>
+
+                <div class="color-blending-visual">
+                    <h3>Color Blending Process</h3>
+                    <div class="blending-steps">
+                        <div class="blending-step">
+                            <div class="blending-color" id="blend1"></div>
+                            <div>Color 1</div>
+                        </div>
+
+                        <div class="plus-sign">+</div>
+
+                        <div class="blending-step">
+                            <div class="blending-color" id="blend2"></div>
+                            <div>Color 2</div>
+                        </div>
+
+                        <div class="plus-sign">+</div>
+
+                        <div class="blending-step">
+                            <div class="blending-color" id="blend3"></div>
+                            <div>Color 3</div>
+                        </div>
+
+                        <div class="equals-sign">=</div>
+
+                        <div class="blending-step">
+                            <div class="blending-color" id="blend-result"></div>
+                            <div>Mixed Color</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mix-info">
+                <h3>Understanding Color Mixing</h3>
+                <p><strong>Additive Color Mixing (Light):</strong> When mixing colored light (like on screens), colors
+                    combine additively. Red, green, and blue are the primary additive colors. Combining all three at
+                    full intensity creates white light.</p>
+                <p><strong>Subtractive Color Mixing (Paints):</strong> When mixing paints or pigments, colors combine
+                    subtractively. Cyan, magenta, and yellow are the primary subtractive colors. Combining all three
+                    absorbs all light, resulting in black or dark brown.</p>
+                <p><strong>How this tool works:</strong> This visualizer averages the RGB values of your three colors to
+                    simulate what happens when you mix them. This gives you an approximation of both additive and
+                    subtractive mixing.</p>
+
+                <div class="color-suggestions">
+                    <p style="width: 100%; text-align: center; margin-bottom: 10px;"><strong>Try these
+                            combinations:</strong></p>
+                    <div class="suggestion" data-colors="FF0000,00FF00,0000FF">Primary Colors (RGB)</div>
+                    <div class="suggestion" data-colors="FF6B6B,4ECDC4,FFD166">Coral, Turquoise & Gold</div>
+                    <div class="suggestion" data-colors="9B5DE5,F15BB5,FEE440">Purple, Pink & Yellow</div>
+                    <div class="suggestion" data-colors="00BBF9,00F5D4,FF99C8">Blue, Mint & Pink</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Color Mixing Visualizer | Created with HTML, CSS & JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM elements
+        const colorInputs = [
+            document.getElementById('color1'),
+            document.getElementById('color2'),
+            document.getElementById('color3')
+        ];
+
+        const colorPreviews = [
+            document.getElementById('preview1'),
+            document.getElementById('preview2'),
+            document.getElementById('preview3')
+        ];
+
+        const blendPreviews = [
+            document.getElementById('blend1'),
+            document.getElementById('blend2'),
+            document.getElementById('blend3')
+        ];
+
+        const mixButton = document.getElementById('mix-colors');
+        const resultsSection = document.getElementById('results');
+        const mixedColorElement = document.getElementById('mixed-color');
+        const mixedHexElement = document.getElementById('mixed-hex');
+        const blendResultElement = document.getElementById('blend-result');
+        const mixingTypeElement = document.getElementById('mixing-type');
+        const colorDescriptionElement = document.getElementById('color-description');
+        const suggestions = document.querySelectorAll('.suggestion');
+
+        // Initialize with default colors
+        updateColorPreviews();
+
+        // Add event listeners to color inputs
+        colorInputs.forEach((input, index) => {
+            input.addEventListener('input', function () {
+                const hexValue = this.value.toUpperCase();
+                this.value = hexValue.replace(/[^A-F0-9]/g, '').substring(0, 6);
+                updateSingleColorPreview(index);
+            });
+
+            input.addEventListener('change', function () {
+                if (this.value.length === 3) {
+                    // Expand 3-digit hex to 6-digit
+                    this.value = this.value.split('').map(c => c + c).join('');
+                }
+                updateSingleColorPreview(index);
+            });
+        });
+
+        // Mix colors button
+        mixButton.addEventListener('click', mixColors);
+
+        // Add event listeners to suggestions
+        suggestions.forEach(suggestion => {
+            suggestion.addEventListener('click', function () {
+                const colors = this.dataset.colors.split(',');
+                colorInputs[0].value = colors[0];
+                colorInputs[1].value = colors[1];
+                colorInputs[2].value = colors[2];
+                updateColorPreviews();
+                mixColors();
+            });
+        });
+
+        // Update all color previews
+        function updateColorPreviews() {
+            colorInputs.forEach((input, index) => {
+                updateSingleColorPreview(index);
+            });
+        }
+
+        // Update single color preview
+        function updateSingleColorPreview(index) {
+            const hexValue = colorInputs[index].value;
+            const fullHex = hexValue.length === 6 ? `#${hexValue}` : `#${hexValue}${hexValue}`.substring(0, 7);
+
+            // Update preview color
+            colorPreviews[index].style.backgroundColor = fullHex;
+
+            // Update blending preview if it exists
+            if (blendPreviews[index]) {
+                blendPreviews[index].style.backgroundColor = fullHex;
+            }
+        }
+
+        // Mix the colors
+        function mixColors() {
+            // Get the hex values
+            const hexColors = colorInputs.map(input => {
+                let value = input.value.toUpperCase();
+                // Ensure we have a valid 6-digit hex
+                if (value.length === 3) {
+                    value = value.split('').map(c => c + c).join('');
+                }
+                return value.length === 6 ? value : '000000';
+            });
+
+            // Convert hex to RGB
+            const rgbColors = hexColors.map(hex => hexToRgb(hex));
+
+            // Calculate average RGB values (simulating color mixing)
+            const avgR = Math.round(rgbColors.reduce((sum, color) => sum + color.r, 0) / 3);
+            const avgG = Math.round(rgbColors.reduce((sum, color) => sum + color.g, 0) / 3);
+            const avgB = Math.round(rgbColors.reduce((sum, color) => sum + color.b, 0) / 3);
+
+            // Convert back to hex
+            const mixedHex = rgbToHex(avgR, avgG, avgB);
+
+            // Update the UI with the mixed color
+            displayMixedColor(mixedHex, rgbColors, avgR, avgG, avgB);
+
+            // Show the results section
+            resultsSection.style.display = 'block';
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Convert hex to RGB object
+        function hexToRgb(hex) {
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            return { r, g, b };
+        }
+
+        // Convert RGB to hex
+        function rgbToHex(r, g, b) {
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+        }
+
+        // Display the mixed color and information
+        function displayMixedColor(hex, originalRgbs, r, g, b) {
+            // Update mixed color display
+            mixedColorElement.style.backgroundColor = hex;
+            mixedHexElement.textContent = hex;
+            blendResultElement.style.backgroundColor = hex;
+
+            // Determine mixing type based on the original colors
+            const isAdditive = determineMixingType(originalRgbs);
+            mixingTypeElement.textContent = isAdditive ? "Additive (Light)" : "Subtractive (Paint/Pigment)";
+
+            // Generate color description
+            colorDescriptionElement.textContent = generateColorDescription(r, g, b, isAdditive);
+
+            // Update blending previews
+            originalRgbs.forEach((rgb, index) => {
+                const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+                blendPreviews[index].style.backgroundColor = hex;
+            });
+        }
+
+        // Determine the mixing type based on input colors
+        function determineMixingType(rgbColors) {
+            // If colors are close to RGB primaries, it's likely additive mixing
+            const rgbPrimaries = [
+                { r: 255, g: 0, b: 0 },   // Red
+                { r: 0, g: 255, b: 0 },   // Green
+                { r: 0, g: 0, b: 255 }    // Blue
+            ];
+
+            // Check if any input color is close to an RGB primary
+            let additiveScore = 0;
+            rgbColors.forEach(color => {
+                rgbPrimaries.forEach(primary => {
+                    const distance = Math.sqrt(
+                        Math.pow(color.r - primary.r, 2) +
+                        Math.pow(color.g - primary.g, 2) +
+                        Math.pow(color.b - primary.b, 2)
+                    );
+                    // If distance is less than 100, it's somewhat close to a primary
+                    if (distance < 100) additiveScore++;
+                });
+            });
+
+            // If at least 2 colors are close to RGB primaries, it's additive
+            return additiveScore >= 2;
+        }
+
+        // Generate a description of the mixed color
+        function generateColorDescription(r, g, b, isAdditive) {
+            // Calculate brightness
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+            // Determine color family
+            let colorFamily = "";
+            if (r > g && r > b) {
+                if (Math.abs(r - g) > 50 && Math.abs(r - b) > 50) {
+                    colorFamily = "red";
+                } else if (g > b) {
+                    colorFamily = "orange";
+                } else {
+                    colorFamily = "pink";
+                }
+            } else if (g > r && g > b) {
+                if (Math.abs(g - r) > 50 && Math.abs(g - b) > 50) {
+                    colorFamily = "green";
+                } else if (r > b) {
+                    colorFamily = "yellow-green";
+                } else {
+                    colorFamily = "blue-green";
+                }
+            } else if (b > r && b > g) {
+                if (Math.abs(b - r) > 50 && Math.abs(b - g) > 50) {
+                    colorFamily = "blue";
+                } else if (r > g) {
+                    colorFamily = "purple";
+                } else {
+                    colorFamily = "cyan";
+                }
+            } else if (Math.abs(r - g) < 30 && Math.abs(r - b) < 30) {
+                // All channels are similar
+                if (brightness > 200) {
+                    colorFamily = "white or light gray";
+                } else if (brightness < 50) {
+                    colorFamily = "black or dark gray";
+                } else {
+                    colorFamily = "gray";
+                }
+            } else {
+                colorFamily = "a balanced, complex color";
+            }
+
+            // Determine brightness description
+            let brightnessDesc = "";
+            if (brightness > 200) {
+                brightnessDesc = "very light";
+            } else if (brightness > 150) {
+                brightnessDesc = "light";
+            } else if (brightness > 100) {
+                brightnessDesc = "medium";
+            } else if (brightness > 50) {
+                brightnessDesc = "dark";
+            } else {
+                brightnessDesc = "very dark";
+            }
+
+            // Determine saturation
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            const saturation = max === 0 ? 0 : (max - min) / max;
+
+            let saturationDesc = "";
+            if (saturation > 0.7) {
+                saturationDesc = "vibrant";
+            } else if (saturation > 0.4) {
+                saturationDesc = "moderately saturated";
+            } else if (saturation > 0.1) {
+                saturationDesc = "muted";
+            } else {
+                saturationDesc = "desaturated";
+            }
+
+            // Combine descriptions
+            let mixingContext = isAdditive
+                ? "When mixing light, "
+                : "When mixing pigments, ";
+
+            return `${mixingContext}you get a ${brightnessDesc}, ${saturationDesc} ${colorFamily}.`;
+        }
+
+        // Initialize with a mixed color
+        mixColors();
+    </script>
+</body>
+
+</html>

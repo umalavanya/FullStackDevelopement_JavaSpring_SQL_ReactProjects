@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Guessing Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .game-description {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-area {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .color-to-guess {
+            margin-bottom: 30px;
+        }
+
+        .color-to-guess h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .hex-code {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #333;
+            background-color: #f1f5f9;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            font-family: 'Courier New', monospace;
+        }
+
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .color-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 5px solid white;
+        }
+
+        .color-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .color-circle.selected {
+            border: 5px solid #4a6fa5;
+            transform: scale(1.05);
+        }
+
+        .message {
+            min-height: 60px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .message.correct {
+            background-color: #e7f7e7;
+            color: #2a7a2a;
+        }
+
+        .message.wrong {
+            background-color: #fdeaea;
+            color: #c33;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4a6fa5;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #next-round {
+            background-color: #4a6fa5;
+            color: white;
+        }
+
+        #next-round:hover {
+            background-color: #3a5a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(74, 111, 165, 0.3);
+        }
+
+        #next-round:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #play-again {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        #play-again:hover {
+            background-color: #4cae4c;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(92, 184, 92, 0.3);
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            width: 100%;
+        }
+
+        .instructions {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 600px;
+        }
+
+        .instructions h3 {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            text-align: left;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .color-circle {
+                width: 80px;
+                height: 80px;
+            }
+
+            .hex-code {
+                font-size: 2.2rem;
+            }
+
+            .color-options {
+                gap: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-palette"></i> Color Guessing Game</h1>
+            <p class="game-description">Test your color perception skills! Match the hexadecimal color code with the
+                correct color circle.</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="round">1/10</div>
+                <div class="stat-label">Round</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="color-to-guess">
+                <h2>Guess this color:</h2>
+                <div class="hex-code" id="color-code">#FFFFFF</div>
+            </div>
+
+            <div class="message" id="message">Select the matching color circle!</div>
+
+            <div class="color-options" id="color-options">
+                <!-- Color circles will be generated by JavaScript -->
+            </div>
+
+            <div class="controls">
+                <button id="next-round" disabled>
+                    <i class="fas fa-forward"></i> Next Round
+                </button>
+                <button id="play-again">
+                    <i class="fas fa-redo"></i> Play Again
+                </button>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>How to Play:</h3>
+            <ol>
+                <li>A hexadecimal color code is displayed at the center</li>
+                <li>Click on the color circle that matches the code</li>
+                <li>You'll get immediate feedback if you're correct or wrong</li>
+                <li>Click "Next Round" to continue playing</li>
+                <li>Complete 10 rounds to see your final score!</li>
+            </ol>
+        </div>
+
+        <footer>
+            <p>Color Guessing Game | Created with HTML, CSS & JavaScript</p>
+        </footer>
+    </div>
+
+    <script>
+        // Game variables
+        let score = 0;
+        let currentRound = 1;
+        let correctCount = 0;
+        const totalRounds = 10;
+        let correctColor = '';
+        let gameActive = true;
+        let colorOptions = [];
+
+        // DOM elements
+        const colorCodeElement = document.getElementById('color-code');
+        const colorOptionsElement = document.getElementById('color-options');
+        const messageElement = document.getElementById('message');
+        const scoreElement = document.getElementById('score');
+        const roundElement = document.getElementById('round');
+        const correctCountElement = document.getElementById('correct-count');
+        const nextRoundButton = document.getElementById('next-round');
+        const playAgainButton = document.getElementById('play-again');
+
+        // Initialize the game
+        function initGame() {
+            score = 0;
+            currentRound = 1;
+            correctCount = 0;
+            gameActive = true;
+
+            updateStats();
+            generateColorRound();
+            setupEventListeners();
+        }
+
+        // Update score and round display
+        function updateStats() {
+            scoreElement.textContent = score;
+            roundElement.textContent = `${currentRound}/${totalRounds}`;
+            correctCountElement.textContent = correctCount;
+        }
+
+        // Generate a random hex color
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Generate color options for a round
+        function generateColorRound() {
+            // Clear previous color options
+            colorOptionsElement.innerHTML = '';
+            colorOptions = [];
+
+            // Generate the correct color
+            correctColor = generateRandomColor();
+
+            // Set the color code display
+            colorCodeElement.textContent = correctColor.toUpperCase();
+
+            // Generate 6 color options (including the correct one)
+            colorOptions.push(correctColor);
+
+            // Generate 5 similar but different colors
+            for (let i = 0; i < 5; i++) {
+                // Generate a color that's somewhat similar to the correct color
+                // This makes the game more challenging
+                let similarColor = generateSimilarColor(correctColor);
+                colorOptions.push(similarColor);
+            }
+
+            // Shuffle the color options
+            shuffleArray(colorOptions);
+
+            // Create color circles
+            colorOptions.forEach((color, index) => {
+                const colorCircle = document.createElement('div');
+                colorCircle.className = 'color-circle';
+                colorCircle.style.backgroundColor = color;
+                colorCircle.dataset.color = color;
+
+                colorCircle.addEventListener('click', () => selectColor(color, colorCircle));
+                colorOptionsElement.appendChild(colorCircle);
+            });
+
+            // Reset message and button states
+            messageElement.textContent = 'Select the matching color circle!';
+            messageElement.className = 'message';
+            nextRoundButton.disabled = true;
+        }
+
+        // Generate a color similar to the provided color
+        function generateSimilarColor(baseColor) {
+            // Convert hex to RGB
+            const r = parseInt(baseColor.slice(1, 3), 16);
+            const g = parseInt(baseColor.slice(3, 5), 16);
+            const b = parseInt(baseColor.slice(5, 7), 16);
+
+            // Adjust each color component by a random amount (-30 to +30)
+            const newR = Math.max(0, Math.min(255, r + Math.floor(Math.random() * 61) - 30));
+            const newG = Math.max(0, Math.min(255, g + Math.floor(Math.random() * 61) - 30));
+            const newB = Math.max(0, Math.min(255, b + Math.floor(Math.random() * 61) - 30));
+
+            // Convert back to hex
+            return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+        }
+
+        // Fisher-Yates shuffle algorithm
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Handle color selection
+        function selectColor(selectedColor, colorCircleElement) {
+            if (!gameActive) return;
+
+            // Remove selected class from all circles
+            document.querySelectorAll('.color-circle').forEach(circle => {
+                circle.classList.remove('selected');
+            });
+
+            // Add selected class to clicked circle
+            colorCircleElement.classList.add('selected');
+
+            // Check if the selected color is correct
+            if (selectedColor === correctColor) {
+                // Correct guess
+                score += 10;
+                correctCount++;
+                messageElement.textContent = 'Correct! Well done!';
+                messageElement.className = 'message correct';
+            } else {
+                // Wrong guess
+                score = Math.max(0, score - 5); // Don't go below 0
+                messageElement.textContent = `Wrong! The correct color was ${correctColor.toUpperCase()}`;
+                messageElement.className = 'message wrong';
+
+                // Highlight the correct color
+                document.querySelectorAll('.color-circle').forEach(circle => {
+                    if (circle.dataset.color === correctColor) {
+                        circle.style.border = '5px solid #5cb85c';
+                        circle.style.boxShadow = '0 0 0 3px rgba(92, 184, 92, 0.5)';
+                    }
+                });
+            }
+
+            // Update stats and enable next round button
+            updateStats();
+            nextRoundButton.disabled = false;
+            gameActive = false;
+        }
+
+        // Move to the next round
+        function nextRound() {
+            if (currentRound >= totalRounds) {
+                endGame();
+                return;
+            }
+
+            currentRound++;
+            updateStats();
+            gameActive = true;
+            generateColorRound();
+        }
+
+        // End the game
+        function endGame() {
+            gameActive = false;
+            messageElement.textContent = `Game Over! Final Score: ${score}. You got ${correctCount} out of ${totalRounds} correct!`;
+            messageElement.className = 'message correct';
+            nextRoundButton.disabled = true;
+
+            // Disable all color circles
+            document.querySelectorAll('.color-circle').forEach(circle => {
+                circle.style.pointerEvents = 'none';
+            });
+        }
+
+        // Reset the game
+        function resetGame() {
+            initGame();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            nextRoundButton.addEventListener('click', nextRound);
+            playAgainButton.addEventListener('click', resetGame);
+        }
+
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+
+</html>
