@@ -47,3 +47,61 @@ textarea,
 select{
     font: inherit ;
 }
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+    overflow-wrap: break-word ;
+}
+
+/*Remove all animations, transactions and smooth scroll for people that prefer not to see them  */
+@media(prefers-reduced-motion: reduce){
+    html:focus-within{
+        scroll-behavior: auto ;
+    }
+
+    *,
+    *::before,
+    *::after{
+        animation-duration: 0.01ms !important ;
+        animation-iteration-count: 1 !important ;
+        transition-duration: 0.01ms !important ;
+        scroll-behavior: auto !important ;
+    }
+}
+
+#root,
+#__next{
+    isolation: isolate ;
+}
+
+body{
+    --blue-400: #88cafc ;
+    background-color: var(--blue-400);
+    font-family: "Rusty Hooks",sans-serif ;
+}
+
+.container{
+
+    margin: auto auto ;
+    position: relative ;
+    min-height: 662px ;
+    height: 662px ;
+    max-height: 662px ;
+
+    min-width: 917px ;
+    width: 917px ;
+    max-width: 917px ;
+
+    border: 2px solid black ;
+    display: grid ;
+    justify-content: center ;
+    align-items: center;
+
+    
+}
+
