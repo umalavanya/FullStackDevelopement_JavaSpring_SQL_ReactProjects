@@ -1,0 +1,14 @@
+{
+    "ravi":{
+        "education":"phd",
+    },
+    "uma":{
+        "education":"phd"
+    }
+
+}
+
+image.ravi.education
+
+array = [45,67,90]
+array[0]
