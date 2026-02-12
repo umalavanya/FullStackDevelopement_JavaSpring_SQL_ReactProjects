@@ -1,0 +1,49 @@
+@import url("https://fonts.cdnfonts.com/css/rusty-hooks") ;
+
+*,
+*::before,
+*::after{
+    box-sizing: border-box ;
+}
+
+*{
+    margin: 0 ;
+}
+
+html,
+body{
+    height: 100% ;
+}
+
+body{
+    line-height: 1.5 ;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeSpeed ;
+}
+
+/* Remove list styles on ul,ol elements with a list role, which suggests default styling will be removed */
+ul[role="list"],
+ol[role="list"]{
+    list-style: none ;
+}
+
+html:focus-within{
+    scroll-behavior: smooth;
+}
+
+img,
+picture,
+video,
+canvas,
+svg{
+    display: block ;
+    max-width: 100% ;
+
+}
+
+input,
+button,
+textarea,
+select{
+    font: inherit ;
+}
