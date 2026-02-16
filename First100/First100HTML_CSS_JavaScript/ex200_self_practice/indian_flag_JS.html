@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian flag with JavaScript</title>
+    <style>
+         *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f0e7 0%, #e8e0d3 100%);
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .flag-container {
+            border: 2px solid rgba(0, 0, 0, 0.25);
+            height: 270px;
+            width: min(90%, 560px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .flag-box {
+            width: 100%;
+            height: 90px;
+            flex: 1 1 auto;
+        }
+
+        /* saffron */
+        .top {
+            background-color: #ff9933;
+        }
+
+        /* green */
+        .bottom {
+            background-color: #138808;
+        }
+
+        /* middle (white) with chakra */
+        .middle {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ---------- Ashoka Chakra ---------- */
+        .chakra {
+            border: 3px solid #000080;
+            height: 90px;
+            width: 90px;
+            border-radius: 50%;
+            position: relative;
+            background: #ffffff;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.5);
+        }
+
+        .spoke {
+            position: absolute;
+            width: 2px;
+            height: 62px;
+            background: #000080;
+            left: 50%;
+            top: 50%;
+            transform-origin: 50% 0;
+            border-radius: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flag-container">
+        <div class="flag-box top"></div>
+        <div class="flag-box middle">
+            <div class="chakra" id="chakra"></div>
+        </div>
+        <div class="flag-box bottom"></div>
+    </div>
+
+    <script>
+
+        function createSpokes(){
+            const chakra = document.getElementById('chakra') ;
+            chakra.innerHTML = '' ;
+
+            for(let i=0; i<24; i++){
+                const spoke = document.createElement('div') ;
+                spoke.className = 'spoke' ;
+
+                chakra.appendChild(spoke)
+
+            }
+
+            
+        }
+        
+        document.addEventListener('DOMContentLoaded',createSpokes) ;
+
+    </script>
+    
+</body>
+</html>
