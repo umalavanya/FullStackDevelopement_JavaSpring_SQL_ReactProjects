@@ -77,10 +77,10 @@
         .spoke {
             position: absolute;
             width: 2px;
-            height: 38px;
+            height: 62px;
             background: #000080;
-            left: 50%;
-            top: 50%;
+            left: 52%;
+            top: 86%;
             transform: translate(-50%, -50%) rotate(0deg);
             margin-left: -1px;    /* center the 2px width */
             margin-top: -19px;    /* pulls up so that center of spoke aligns with circle center */
@@ -114,21 +114,6 @@
         .spoke-23 { transform: translate(-50%, -50%) rotate(330deg); }
         .spoke-24 { transform: translate(-50%, -50%) rotate(345deg); }
 
-        /* optional small center dot ( Buddhist 'dharma chakra' often has tiny circle) */
-        .chakra::after {
-            content: '';
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #000080;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 0 1px white;  /* subtle separation */
-        }
-
-        /* fine tune border of chakra (already has border) */
     </style>
 </head>
 <body>
