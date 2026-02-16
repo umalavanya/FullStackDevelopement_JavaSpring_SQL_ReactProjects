@@ -61,8 +61,8 @@
         /* ---------- Ashoka Chakra ---------- */
         .chakra {
             border: 3px solid #000080;    /* navy blue */
-            height: 82px;                  /* slightly smaller than stripe height (90) */
-            width: 82px;
+            height: 90px;                  /* slightly smaller than stripe height (90) */
+            width: 90px;
             border-radius: 50%;
             display: flex;
             flex-wrap: wrap;
@@ -73,95 +73,7 @@
             box-shadow: 0 0 0 1px rgba(255,255,255,0.5); /* subtle separation */
         }
 
-        /* spikes = 24 spokes (simulated with 12 rotated lines + inner hidden circle) 
-           we make 12 double‑sided spokes using border trick, then rotate each */
-        .spike {
-            position: absolute;
-            height: 100%;
-            width: 2px;                   /* spoke thickness */
-            background: #000080;
-            left: 50%;
-            top: 0;
-            transform-origin: 50% 50%;
-            margin-left: -1px;             /* center the 2px line */
-            border-radius: 1px;
-        }
-
-        /* create 24 spokes by using 12 lines, each line covers two opposite directions.
-           But for authenticity we want 24 individual lines. Simpler: create 24 absolute 
-           lines via loop in css? We'll do 24 explicit .spoke elements with individual rotation.
-           (pseudo‑elements would be messy for 24) – we'll generate 24 divs in HTML.
-           Then style them uniformly. */
-
-        .spoke {
-            position: absolute;
-            height: 50%;                  /* from center to outer rim */
-            width: 1.5px;
-            background: #000080;
-            left: calc(50% - 0.75px);
-            top: 0%;                       /* start from top, but we'll rotate from center */
-            transform-origin: 50% 100%;    /* pivot at center of chakra */
-            border-radius: 0.5px;
-        }
-
-        /* half length toward bottom would cover other side, but we need full spoke.
-           easier: set height 100% and move down so pivot is at middle. */
-        .spoke {
-            height: 48%;                    /* slightly less than half to avoid touching edges */
-            width: 1.8px;
-            background: #000080;
-            left: calc(50% - 0.9px);
-            top: 2%;                        /* push down a bit to start near center? */
-            transform-origin: 50% 100%;      /* bottom of line = center of circle */
-            border-radius: 1px;
-        }
-        /* but that makes only half spoke. better: two elements per spoke? 
-           simpler and robust: use conic-gradient? but we need real spokes.
-           Let's adopt a reliable approach: 24 small lines radiating from center.
-           I'll make .spoke height = 46% and top = 50% → start at center and go outward.
-           using transform-origin: 0% 0%? easier: set top:50%; height:46%; transform-origin: 50% 0%;
-        */
-        .spoke {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 1.8px;
-            height: 41%;                 /* reach almost the blue ring */
-            background: #000080;
-            transform: translate(-50%, -50%) rotate(0deg) translateY(-50%); /* too complex */
-            transform-origin: 50% 0%;    /* pivot at top center, but we want pivot at center */
-        }
-        /* clean solution: spoke starts at center, goes upward. pivot at bottom (center of circle) */
-        .spoke {
-            background: #000080;
-            width: 2px;
-            height: 40px;                /* fixed, relative to chakra size */
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) rotate(0deg) translateY(-20px); /* shifts up */
-            transform-origin: 50% 100%;   /* rotation point at the bottom end (center) */
-        }
-        /* better to use dynamic chakra size : we set chakra width 82px → radius 41px.
-           spoke length ~ 38px to leave gap. */
-        .chakra {
-            position: relative;
-        }
-        .spoke {
-            position: absolute;
-            width: 2px;
-            height: 38px;
-            background: #000080;
-            left: calc(50% - 1px);
-            top: 50%;
-            transform: translateY(-50%) rotate(0deg) translateY(-19px); /* half height? */
-            transform-origin: 50% 19px;   /* point at center = (0,0) from top-left? too messy */
-        }
-
-        /* Let's restart that part: I'll use 24 lines, each defined with simple transform.
-           We set .spoke with width:2px; height:38px; background:navy;
-           position:absolute; left:50%; top:50%; margin-left:-1px; margin-top:-19px;
-           so the spoke is centered at the center, extending upward 19px and downward 19px.
-           Then rotate each spoke by incremental 15° (360/24). Perfect. */
+       
         .spoke {
             position: absolute;
             width: 2px;
@@ -227,31 +139,34 @@
         <!-- white stripe with Ashoka Chakra -->
         <div class="flag-box middle">
             <div class="chakra">
-                <!-- 24 spokes (manually listed) -->
-                <div class="spoke spoke-1"></div>
-                <div class="spoke spoke-2"></div>
-                <div class="spoke spoke-3"></div>
-                <div class="spoke spoke-4"></div>
-                <div class="spoke spoke-5"></div>
-                <div class="spoke spoke-6"></div>
-                <div class="spoke spoke-7"></div>
-                <div class="spoke spoke-8"></div>
-                <div class="spoke spoke-9"></div>
-                <div class="spoke spoke-10"></div>
-                <div class="spoke spoke-11"></div>
-                <div class="spoke spoke-12"></div>
-                <div class="spoke spoke-13"></div>
-                <div class="spoke spoke-14"></div>
-                <div class="spoke spoke-15"></div>
-                <div class="spoke spoke-16"></div>
-                <div class="spoke spoke-17"></div>
-                <div class="spoke spoke-18"></div>
-                <div class="spoke spoke-19"></div>
-                <div class="spoke spoke-20"></div>
-                <div class="spoke spoke-21"></div>
-                <div class="spoke spoke-22"></div>
-                <div class="spoke spoke-23"></div>
-                <div class="spoke spoke-24"></div>
+                <div class="spikes">
+                    <!-- 24 spokes (manually listed) -->
+                    <div class="spoke spoke-1"></div>
+                    <div class="spoke spoke-2"></div>
+                    <div class="spoke spoke-3"></div>
+                    <div class="spoke spoke-4"></div>
+                    <div class="spoke spoke-5"></div>
+                    <div class="spoke spoke-6"></div>
+                    <div class="spoke spoke-7"></div>
+                    <div class="spoke spoke-8"></div>
+                    <div class="spoke spoke-9"></div>
+                    <div class="spoke spoke-10"></div>
+                    <div class="spoke spoke-11"></div>
+                    <div class="spoke spoke-12"></div>
+                    <div class="spoke spoke-13"></div>
+                    <div class="spoke spoke-14"></div>
+                    <div class="spoke spoke-15"></div>
+                    <div class="spoke spoke-16"></div>
+                    <div class="spoke spoke-17"></div>
+                    <div class="spoke spoke-18"></div>
+                    <div class="spoke spoke-19"></div>
+                    <div class="spoke spoke-20"></div>
+                    <div class="spoke spoke-21"></div>
+                    <div class="spoke spoke-22"></div>
+                    <div class="spoke spoke-23"></div>
+                    <div class="spoke spoke-24"></div>
+
+                </div>
             </div>
         </div>
         
