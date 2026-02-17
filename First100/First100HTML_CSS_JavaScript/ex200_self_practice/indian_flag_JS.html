@@ -70,10 +70,10 @@
         .spoke {
             position: absolute;
             width: 2px;
-            height: 62px;
+            height: 46px;
             background: #000080;
             left: 50%;
-            top: 50%;
+            top: 77%;
             transform-origin: 50% 0;
             border-radius: 1px;
         }
@@ -98,6 +98,10 @@
             for(let i=0; i<24; i++){
                 const spoke = document.createElement('div') ;
                 spoke.className = 'spoke' ;
+
+                const angle = i * 15;
+                spoke.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+                
 
                 chakra.appendChild(spoke)
 

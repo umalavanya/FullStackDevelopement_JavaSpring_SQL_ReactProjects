@@ -16,11 +16,155 @@
         body{
             background-color: aqua;
         }
+
+        .container{
+            height: auto  ;
+            border-style: solid ;
+            position: relative ;
+        }
+
+        .strip{
+            height: 20px ;
+        }
+
+        .red{
+            background-color: rgb(168, 52, 52) ;
+        }
+        .white{
+            background-color: white ;
+        }
+
+        .star-container{
+            height: 140px ;
+            width: 140px ;
+            background-color: navy;
+            position:absolute ;
+            top: 0px ;
+            left: 0px ;
+            z-index: 2 ;
+            display: flex ;
+            flex-direction: column ;
+        }
+
+        .star-line1{
+            display: flex  ;
+            justify-content: space-around;
+            gap: 15px ;
+
+        }
+        .star-line2{
+            display: flex  ;
+            gap: 15px ;
+            justify-content: space-around;
+            
+        }
+
+        .star{
+            color: white ;  
+            margin: 0 ;
+            padding: 0 ;
+             
+        }
+
+
     </style>
 </head>
 <body>
 
-    <div class="flag-container"></div>
+    <div class="container">
+        <div class="strip red"></div>
+        <div class="strip white"></div>
+        <div class="strip red"></div>
+        <div class="strip white"></div>
+        <div class="strip red"></div>
+        <div class="strip white"></div>
+        <div class="strip red"></div>
+        <div class="strip white"></div>
+        <div class="strip red"></div>
+        <div class="strip white"></div>
+        <div class="strip red"></div>
+        <div class="strip white"></div>
+        <div class="strip red"></div>
+        <div class="star-container">
+
+            <div class="star-set">
+                <div class="star-line1">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                 </div>
+                <div class="star-line2">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+            </div>
+
+
+            <div class="star-set">
+                <div class="star-line1">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+                <div class="star-line2">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+            </div>
+
+
+
+            <div class="star-set">
+                <div class="star-line1">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+                <div class="star-line2">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+            </div>
+
+
+            <div class="star-set">
+                <div class="star-line1">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+                <div class="star-line2">
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                    <div class="star">*</div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
     
 </body>
 </html>
