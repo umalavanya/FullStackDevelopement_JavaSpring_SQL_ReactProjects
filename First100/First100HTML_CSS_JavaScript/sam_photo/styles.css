@@ -27,11 +27,47 @@ body {
     /* Centers the image */
     background-repeat: no-repeat;
     /* Prevents image from repeating */
+    position: relative ;
 }
 
 div{
     height: 10px ;
     width: 10px ;
     border: 1px solid green ;
-    
+
+}
+
+.nose{
+    position: absolute ;
+    width: 28px ;
+    height: 50px ;
+    top: 225px ;
+    left: 214px ;
+    background-color: rgb(157, 118, 63);
+    border: none ;
+    border-radius: 10px;
+}
+
+.eyes-container{
+    position: absolute ;
+    height: 50px ;
+    width: 200px ;
+    top: 200px ;
+    left: 120px ;
+    display: flex ;
+    justify-content: space-around;
+    align-items: center ;
+}
+
+.eye-box{
+    border: none ;
+}
+
+
+.eye-pupil{
+    height: 20px ;
+    width: 20px ;
+    background-color: black ;
+    border-radius: 50% ;;
+    border-color: rgb(56, 54, 54);
 }
