@@ -5,3 +5,33 @@
     padding: 0 ;
     box-sizing: border-box ;
 }
+
+body {
+    background-color: rgb(25, 25, 25);
+    margin: 0;
+    padding: 0;
+    display: flex ;
+    justify-content: center ;
+    align-items: center ;
+    height: 100vh ;
+}
+
+.container {
+    background-image: url('SAM.jpeg');
+    height: 600px;
+    width: 400px;
+    border: 1px solid rgb(75, 72, 72);
+    background-size: cover;
+    /* Makes the image cover the entire container */
+    background-position: center;
+    /* Centers the image */
+    background-repeat: no-repeat;
+    /* Prevents image from repeating */
+}
+
+div{
+    height: 10px ;
+    width: 10px ;
+    border: 1px solid green ;
+    
+}
