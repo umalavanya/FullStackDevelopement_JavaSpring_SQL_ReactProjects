@@ -115,3 +115,23 @@ div{
     border-color: rgb(46, 45, 45);
     box-shadow: 1px 1px 10px rgb(71, 23, 23) ;
 }
+
+.mouth{
+    position: absolute ;
+    top: 300px ;
+    left: 170px ;
+    height: 40px ;
+    width: 100px;
+}
+.lips{
+    height: 100% ;
+    width: 100% ;
+    position: relative;
+}
+
+.lip{
+    background-color: pink;
+    border: 1px solid pink ;
+    position: absolute ;
+    height: 20px ;
+}
