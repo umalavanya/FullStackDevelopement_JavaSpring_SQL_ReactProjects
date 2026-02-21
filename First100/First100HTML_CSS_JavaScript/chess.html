@@ -9,14 +9,26 @@
         :root{
 
             --white-color: white ;
-            --black-color: #c11515 ; 
-            --box-height: 50px ;
-            --box-width: 50px ;
+            --black-color: #590e0e ; 
+            --aspect-ratio: 40px ;
+            --box-height: var(--aspect-ratio) ;
+            --box-width: var(--aspect-ratio) ;
 
         }
-        body{
-            margin:0 ;
+
+        *,
+        *::before,
+        *::after{
+            margin: 0 ;
             padding: 0 ;
+            box-sizing: border-box ;
+        }
+        body{
+
+            display: flex ;
+            justify-content: center;
+            align-items: center ;
+            height: 100vh ;
         }
 
         .chess-container{
@@ -27,6 +39,8 @@
 
         .row-one, .row-two{
             display: flex;
+            justify-content: center ;
+            align-items: center ;
         }
         .black {
 
@@ -41,6 +55,10 @@
             width: var(--box-width) ;
             background : var(--white-color) ;
             
+        }
+
+        .chess-container:hover{
+            transform: scale(1.4) ;
         }
 
         
@@ -136,6 +154,11 @@
     
     </div>
     </div>
+
+    <script>
+
+
+    </script>
     
 
 
