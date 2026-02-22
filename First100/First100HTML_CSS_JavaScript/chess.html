@@ -37,6 +37,7 @@
             border: 10px solid var(--border-color) ;
             width: fit-content ;
             box-shadow: 10px 10px 20px 5px rgba(3, 120, 131, 0.5) ;
+            border-radius: 10px;
             
         }
 
@@ -62,11 +63,21 @@
 
         .chess-container{
             transition: transform 0.3s ease-in-out ; 
-            animation: ;
+            animation-name: spin-chess ;
+            animation-duration: 5s;
+            animation-timing-function: cubic-bezier();
+            animation-iteration-count: infinite ;
         }
 
         .chess-container:hover{
             transform: scale(1.4) ;
+        }
+
+        @keyframes spin-chess{
+            0%{
+                transform: rotate(360deg);
+            }
+
         }
 
         
