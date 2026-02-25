@@ -15,3 +15,25 @@
     align-items: center;
     padding: 20px ;
 }
+
+.grid-container2{
+    display: grid ;
+    grid-template-columns: repeat(2,25%);
+    grid-template-rows: repeat(3,100px) ;
+    gap: 10px ;
+    padding: 10px ;
+    border: 1px solid green ;
+    background-color: black;
+}
+
+.grid-item2{
+    border: #2196F3 solid 10px ;
+    background-color: red;
+    display: flex ; 
+    justify-content: center;
+    align-items: center;
+    padding: 10px ;
+    color: white ;
+
+
+}
