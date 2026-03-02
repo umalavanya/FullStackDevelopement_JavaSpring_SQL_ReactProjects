@@ -13,11 +13,27 @@
 <body>
     
     <button onclick="changeBackgroundColor()">Change Background</button>
+    <button onClick = "resetBackground()">Reset</button>
+    <button onClick = "randomColor()">Random Color</button>
 
     <script>
 
         function changeBackgroundColor(){
             document.body.style.backgroundColor = 'red' ;
+        }
+
+        function resetBackground(){
+            document.body.style.backgroundColor = '' ;//Back to Default
+
+        }
+
+        function randomColor(){
+            //Generate random RGB values
+            const r = Math.floor(Math.random() * 256) ;
+            const g = Math.floor(Math.random() * 256) ;
+            const b = Math.floor(Math.random() * 256) ;
+
+            document.body.style.backgroundColor = `rgb(${r},${g},${b})` ;
         }
          
 
