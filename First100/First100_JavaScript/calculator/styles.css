@@ -46,9 +46,20 @@ body{
 
     display: grid;
         grid-template-columns: repeat(4, 25%);
+        gap: 1px ;
 
 }
 
 .number{
-    background-color: aliceblue; 
+    background-color: rgb(69, 70, 71); 
+    height: 30px ;
+    width: 30px ;
+    border-radius: 5px ;
+    text-align: center ;
+    margin:2px ; 
+    font-size: 20px ;
+    color: white ;
+    font-weight: bold ;
+    padding: 10% ;
+    box-shadow: 2px 2px 2px 2px gray ;
 }
