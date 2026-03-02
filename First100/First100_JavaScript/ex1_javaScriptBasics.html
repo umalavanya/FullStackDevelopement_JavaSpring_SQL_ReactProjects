@@ -4,20 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Exercises. Live plain</title>
+    <style>
+        body{
+            transition: background-color 0.5s ease ;
+        }
+    </style>
 </head>
 <body>
-    <!-- 
-        INSTRUCTIONS: 
-        - pure JavaScript generates everything below.
-        - almost no HTML tags in body — only this comment and the <script>.
-        - exercises appear as structured Java practice problems.
-    -->
+    
+    <button onclick="changeBackgroundColor()">Change Background</button>
 
     <script>
 
-        (function(){
-            const root = document.body ;
-        })();
+        function changeBackgroundColor(){
+            document.body.style.backgroundColor = 'red' ;
+        }
+         
 
     </script>
     
