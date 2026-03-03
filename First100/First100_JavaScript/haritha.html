@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Haritha Mini Sudoku 6x6</title>
+<style>
+body { font-family: Arial; text-align: center; background: #f2f2f2; }
+h1 { margin: 10px; }
+#timer { font-size: 20px; margin: 10px; }
+
+table { border-collapse: collapse; margin: auto; }
+td {
+    width: 55px;
+    height: 55px;
+    border: 1px solid #444;
+}
+td.thick-right { border-right: 4px solid black; }
+td.thick-bottom { border-bottom: 4px solid black; }
+.block { background: #e6e6e6; }
+
+input {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 24px;
+    border: 1px solid black;
+    background: white;
+}
+input:focus { background: #d0ebff; }
+
+button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+
+/* Blink animation */
+@keyframes blink {
+  0% { background-color: #e6e6e6; }
+  50% { background-color: #90ee90; } /* green highlight */
+  100% { background-color: #e6e6e6; }
+}
+.blink {
+  animation: blink 1s ease-in-out 2;
+}
+</style>
+</head>
+<body>
+
+<h1>Haritha Sudoku</h1>
+<div id="timer">Time: 0</div>
+<table id="board"></table>
+
+<button onclick="newGame()">New Puzzle</button>
+
+<script>
+// Predefined solution grid
+let solution = [
+    [1,2,3,4,5,6],
+    [4,5,6,1,2,3],
+    [2,3,4,5,6,1],
+    [5,6,1,2,3,4],
+    [3,4,5,6,1,2],
+    [6,1,2,3,4,5]
+];
+
+let puzzle = [];
+let seconds = 0, timer;
+
+// Shuffle function for randomness
+function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+        let j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+}
+
+// Generate puzzle by removing random cells
+function generate(){
+    puzzle = JSON.parse(JSON.stringify(solution));
+    for(let i=0;i<12;i++){
+        let r=Math.floor(Math.random()*6);
+        let c=Math.floor(Math.random()*6);
+        puzzle[r][c]="";
+    }
+}
+
+// Draw the board
+function draw(){
+    let t=document.getElementById("board");
+    t.innerHTML="";
+    for(let r=0;r<6;r++){
+        let tr=document.createElement("tr");
+        for(let c=0;c<6;c++){
+            let td=document.createElement("td");
+
+            // Thick borders for blocks
+            if(c==2) td.classList.add("thick-right");
+            if(r==1 || r==3) td.classList.add("thick-bottom");
+
+            // Alternate light blocks
+            if(((Math.floor(r/2)+Math.floor(c/3))%2)==0) td.classList.add("block");
+
+            let inp=document.createElement("input");
+            inp.maxLength=1;
+            inp.dataset.r=r; inp.dataset.c=c;
+
+            // Fill numbers if preset
+            if(puzzle[r][c]!=""){
+                inp.value=puzzle[r][c];
+                inp.disabled=true;
+            } else {
+                inp.oninput = check;
+            }
+
+            td.appendChild(inp);
+            tr.appendChild(td);
+        }
+        t.appendChild(tr);
+    }
+}
+
+// Blink helper
+function blinkLine(cells){
+    cells.forEach(cell=>{
+        cell.classList.add("blink");
+        setTimeout(()=>cell.classList.remove("blink"), 2000);
+    });
+}
+
+// Check user input
+function check(){
+    let r = parseInt(this.dataset.r);
+    let c = parseInt(this.dataset.c);
+
+    if(this.value == solution[r][c]){
+        this.style.color="green";
+    } else {
+        this.style.color="red";
+    }
+
+    // Check row
+    let rowCells = [];
+    for(let i=0;i<6;i++){
+        let inp = document.querySelector(`input[data-r='${r}'][data-c='${i}']`);
+        if(inp.value == "" || inp.value != solution[r][i]) { rowCells = []; break; }
+        rowCells.push(inp);
+    }
+    if(rowCells.length == 6) blinkLine(rowCells);
+
+    // Check column
+    let colCells = [];
+    for(let i=0;i<6;i++){
+        let inp = document.querySelector(`input[data-r='${i}'][data-c='${c}']`);
+        if(inp.value == "" || inp.value != solution[i][c]) { colCells = []; break; }
+        colCells.push(inp);
+    }
+    if(colCells.length == 6) blinkLine(colCells);
+
+    // Check 2x3 block
+    let startRow = Math.floor(r/2)*2;
+    let startCol = Math.floor(c/3)*3;
+    let blockCells = [];
+    for(let i=0;i<2;i++){
+        for(let j=0;j<3;j++){
+            let inp = document.querySelector(`input[data-r='${startRow+i}'][data-c='${startCol+j}']`);
+            if(inp.value == "" || inp.value != solution[startRow+i][startCol+j]) { blockCells = []; break; }
+            blockCells.push(inp);
+        }
+    }
+    if(blockCells.length == 6) blinkLine(blockCells);
+
+    checkWin();
+}
+
+// Check win
+function checkWin(){
+    let inputs=document.querySelectorAll("input");
+    for(let i of inputs){
+        if(i.value=="" || i.value!=solution[i.dataset.r][i.dataset.c]) return;
+    }
+    clearInterval(timer);
+    alert("🎉 You Solved It!");
+}
+
+// Timer
+function startTimer(){
+    clearInterval(timer);
+    seconds=0;
+    timer=setInterval(()=>{
+        seconds++;
+        document.getElementById("timer").innerText="Time: "+seconds;
+    },1000);
+}
+
+// Start new game
+function newGame(){
+    generate();
+    draw();
+    startTimer();
+}
+
+// Initial game
+newGame();
+</script>
+
+</body>
+</html>
