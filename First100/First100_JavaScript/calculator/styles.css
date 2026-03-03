@@ -32,6 +32,7 @@ Inner Shadow: X 0, Y 6, Blur 8, Spread 0, #FFFFFF 10%
     margin: 0 ;
     padding: 0 ;
     box-sizing: border-box ;
+    
 }
 
 body{
@@ -39,6 +40,7 @@ body{
     justify-content: center;
     align-items: center ;
     height: 100vh ;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .div{
@@ -55,22 +57,24 @@ body{
     background: linear-gradient(#807ECE, #8E7ECE) ;
     display: flex ;
     justify-content: center;
-    justify-content: center ;
+    padding: 50px ;
     
 }
 
 .cal-container{
-    border: 2px solid black ;
+    border: 2px solid rgb(60, 47, 65) ;
     width: 356px ;
     height: 566px;
     top: 91px;
     left: 578px;;
     border-radius: 48px ;
-    background-color: rgb(4, 4, 13);
+    background-color: rgb(43, 34, 47);
     box-shadow: 10px 10px 10em 10px gray ;
     display: flex ;
     flex-direction: column;
     padding: 20px ;
+    border-top: 10px solid rgb(89, 64, 105)  ;
+    box-shadow:
 
 }
 
@@ -93,7 +97,7 @@ body{
 }
 
 .number{
-    background-color: rgb(69, 70, 71); 
+    background: radial-gradient(rgb(28, 27, 27), rgb(57, 57, 57)) ;
     height: 50px ;
     width: 50px ;
     border-radius: 50px ;
@@ -101,7 +105,7 @@ body{
     margin:2px ; 
     font-size: 20px ;
     color: white ;
-    font-weight: bold ;
     padding: 10% ;
-    box-shadow: 2px 2px 2px 2px gray ;
+    box-shadow: 0px 1px 5px 1px rgb(38, 37, 37) ;
+    border-top: 1px solid  rgb(65, 65, 65)
 }

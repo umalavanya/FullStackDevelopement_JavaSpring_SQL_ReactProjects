@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calculator · layout as image</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #3d3f45 0%, #2b2d32 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 16px;
+        }
+
+        /* main calculator card – colours exactly as described: warm neutral keys,
+       dark display panel, light operators, and the distinctive "CE 0 = ÷" row */
+        .calculator {
+            width: 340px;
+            background-color: #f0e9de;
+            /* creamy base, matches vintage calculator */
+            border-radius: 36px 36px 32px 32px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5), 0 6px 4px rgba(255, 255, 255, 0.1) inset,
+                0 -4px 8px rgba(0, 0, 0, 0.2) inset;
+            padding: 24px 20px 30px 20px;
+            border: 1px solid #bcb09d;
+        }
+
+        /* small brand / memory indicators – just for character */
+        .brand-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px 12px 6px;
+            color: #7a6e5f;
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-line span:first-child {
+            background: #b3a692;
+            color: #2e2b26;
+            padding: 2px 12px 2px 8px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 11px;
+            box-shadow: inset 0 1px 3px #5f5547;
+        }
+
+        .brand-line span:last-child {
+            background: #d8cfc0;
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #3d352b;
+            box-shadow: inset 0 0 4px #9a8e7b;
+        }
+
+        /* display panel – dark, almost black with subtle gradient */
+        .display {
+            background: #394033;
+            /* deep grey-green, like old LCD */
+            background: linear-gradient(165deg, #2b3327, #3d4837);
+            border-radius: 24px 24px 18px 18px;
+            padding: 12px 20px 8px 20px;
+            box-shadow: inset 0 -3px 6px #1b221a, inset 0 4px 6px #65755a, 0 4px 2px #9e8e78;
+            margin-bottom: 28px;
+            border: 2px solid #71634e;
+            color: #d1e0c9;
+            text-align: right;
+            font-size: 42px;
+            font-weight: 400;
+            font-family: 'Courier New', 'Lucida Console', monospace;
+            letter-spacing: 3px;
+            line-height: 1.2;
+            word-break: break-all;
+            min-height: 82px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+        .display .small-mem {
+            font-size: 16px;
+            color: #c5d6b3;
+            margin-bottom: 6px;
+            font-family: 'Segoe UI', monospace;
+            letter-spacing: 2px;
+            width: 100%;
+            border-bottom: 1px dashed #6f8263;
+            text-align: left;
+            padding-bottom: 2px;
+        }
+
+        .display .main-number {
+            font-size: 48px;
+            line-height: 1;
+            text-shadow: 0 0 5px #96a88b;
+        }
+
+        /* keypad grid — matches the given arrangement
+       4 columns, 5 rows */
+        .keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            justify-items: center;
+            align-items: center;
+        }
+
+        /* base button style */
+        .key {
+            width: 100%;
+            aspect-ratio: 1.1 / 1;
+            /* slightly wider than tall, like classic keys */
+            background: #e5dbcd;
+            /* light beige default for numbers */
+            border-radius: 30px 30px 24px 24px;
+            border: none;
+            box-shadow: 0 8px 0 #948b7a, 0 6px 10px rgba(40, 30, 20, 0.4), inset 0 -2px 4px #fff8e7,
+                inset 0 2px 6px white;
+            font-size: 32px;
+            font-weight: 600;
+            color: #362f27;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.04s ease;
+            cursor: default;
+            /* not interactive, just showing layout */
+            user-select: none;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            line-height: 1;
+            padding-bottom: 4px;
+            /* subtle key depression effect */
+        }
+
+        /* operator keys (×, −, +, ÷) — exactly as on image: light creamy grey with warm tone */
+        .key.operator {
+            background: #efe1cf;
+            box-shadow: 0 8px 0 #b9aa95, 0 6px 8px #322e28, inset 0 -2px 4px #fef6e6, inset 0 2px 6px white;
+            color: #2b4b3c;
+            /* dark greenish to stand out, but still readable */
+            font-size: 38px;
+            font-weight: 600;
+        }
+
+        /* special row: CE, 0, =, ÷  ( ÷ already operator, but we differentiate background if needed)
+       the image shows CE as same colour as numbers, 0 same as numbers, = light operator, ÷ light operator.
+       but to stay true to photo: = and ÷ look like operators (light). CE and 0 are normal number keys.
+       we'll use operator class for = and ÷, and keep default for CE and 0 */
+        .key.ce {
+            background: #e5dbcd;
+            /* same as numbers – matches 'CE' in image */
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .key.equal {
+            background: #efe1cf;
+            /* light like operators */
+            box-shadow: 0 8px 0 #b9aa95, 0 6px 8px #322e28, inset 0 -2px 4px #fef6e6, inset 0 2px 6px white;
+            color: #1d3d31;
+            font-size: 42px;
+            font-weight: 500;
+            padding-bottom: 8px;
+        }
+
+        /* ÷ already covered by .operator, but we ensure it's explicitly light */
+        .key.operator.divide {
+            background: #efe1cf;
+        }
+
+        /* to reproduce the original layout exactly, we place keys in grid cells accordingly
+       first row:  2  (but image shows "2" in top left? actually image shows:
+
+       2
+
+       7   8   9   ×
+       4   5   6   −
+       1   2   3   +
+       CE  0   =   ÷
+
+       The lonely '2' at the very top is probably the display? but image clearly
+       shows a large '2' above the key rows. Since we already have a display,
+       we'll interpret that the '2' is part of the display – the display shows "2".
+       Yes, in the given ascii the first line is just '2' – that's the display content.
+       So we set display to show "2" with memory indicator.
+
+       key rows exactly as described.
+    */
+
+        /* manually adjust positions using grid child order.
+       we have 4 columns, rows from top to bottom:
+       row1: 7, 8, 9, ×
+       row2: 4, 5, 6, −
+       row3: 1, 2, 3, +
+       row4: CE, 0, =, ÷
+    */
+        .key-row1-col1 {
+            grid-area: 1/1/2/2;
+        }
+
+        /* 7 */
+        .key-row1-col2 {
+            grid-area: 1/2/2/3;
+        }
+
+        /* 8 */
+        .key-row1-col3 {
+            grid-area: 1/3/2/4;
+        }
+
+        /* 9 */
+        .key-row1-col4 {
+            grid-area: 1/4/2/5;
+        }
+
+        /* × */
+
+        .key-row2-col1 {
+            grid-area: 2/1/3/2;
+        }
+
+        /* 4 */
+        .key-row2-col2 {
+            grid-area: 2/2/3/3;
+        }
+
+        /* 5 */
+        .key-row2-col3 {
+            grid-area: 2/3/3/4;
+        }
+
+        /* 6 */
+        .key-row2-col4 {
+            grid-area: 2/4/3/5;
+        }
+
+        /* − */
+
+        .key-row3-col1 {
+            grid-area: 3/1/4/2;
+        }
+
+        /* 1 */
+        .key-row3-col2 {
+            grid-area: 3/2/4/3;
+        }
+
+        /* 2 */
+        .key-row3-col3 {
+            grid-area: 3/3/4/4;
+        }
+
+        /* 3 */
+        .key-row3-col4 {
+            grid-area: 3/4/4/5;
+        }
+
+        /* + */
+
+        .key-row4-col1 {
+            grid-area: 4/1/5/2;
+        }
+
+        /* CE */
+        .key-row4-col2 {
+            grid-area: 4/2/5/3;
+        }
+
+        /* 0 */
+        .key-row4-col3 {
+            grid-area: 4/3/5/4;
+        }
+
+        /* = */
+        .key-row4-col4 {
+            grid-area: 4/4/5/5;
+        }
+
+        /* ÷ */
+
+        /* extra detail: small dot or indicator on some keys? not necessary */
+        .key:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #7e7362, 0 6px 10px #3b332a, inset 0 -2px 4px #ddd2c0;
+        }
+
+        /* bottom curve of calculator */
+        .calculator-foot {
+            text-align: center;
+            margin-top: 22px;
+            color: #8e8270;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            background: #dacfc0;
+            width: 90px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 4px 0;
+            border-radius: 40px;
+            box-shadow: inset 0 1px 4px #ae9f8b, 0 2px 4px #413e36;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator">
+        <!-- tiny top line: just style -->
+        <div class="brand-line">
+            <span>M+ M–</span>
+            <span>MRC</span>
+        </div>
+
+        <!-- display: shows the big "2" exactly like the image top -->
+        <div class="display">
+            <div class="small-mem">MEMORY</div>
+            <div class="main-number">2</div>
+        </div>
+
+        <!-- key grid, arranged exactly as the given layout:
+         7 8 9 ×
+         4 5 6 −
+         1 2 3 +
+         CE 0 = ÷
+    -->
+        <div class="keys">
+            <!-- 7 (row1, col1) -->
+            <div class="key key-row1-col1">7</div>
+            <!-- 8 (row1, col2) -->
+            <div class="key key-row1-col2">8</div>
+            <!-- 9 (row1, col3) -->
+            <div class="key key-row1-col3">9</div>
+            <!-- × operator (row1, col4) -->
+            <div class="key operator key-row1-col4">×</div>
+
+            <!-- 4 (row2, col1) -->
+            <div class="key key-row2-col1">4</div>
+            <!-- 5 (row2, col2) -->
+            <div class="key key-row2-col2">5</div>
+            <!-- 6 (row2, col3) -->
+            <div class="key key-row2-col3">6</div>
+            <!-- − minus (row2, col4) -->
+            <div class="key operator key-row2-col4">−</div>
+
+            <!-- 1 (row3, col1) -->
+            <div class="key key-row3-col1">1</div>
+            <!-- 2 (row3, col2) -->
+            <div class="key key-row3-col2">2</div>
+            <!-- 3 (row3, col3) -->
+            <div class="key key-row3-col3">3</div>
+            <!-- + plus (row3, col4) -->
+            <div class="key operator key-row3-col4">+</div>
+
+            <!-- CE (row4, col1) – special, keep number colour -->
+            <div class="key ce key-row4-col1">CE</div>
+            <!-- 0 (row4, col2) -->
+            <div class="key key-row4-col2">0</div>
+            <!-- = equals (row4, col3) – operator-like colour -->
+            <div class="key equal key-row4-col3">=</div>
+            <!-- ÷ divide (row4, col4) – operator colour -->
+            <div class="key operator divide key-row4-col4">÷</div>
+        </div>
+
+        <!-- subtle foot (just to mimic a vintage badge) -->
+        <div class="calculator-foot">LCD</div>
+    </div>
+
+    <!-- small description (not part of calc) -->
+    <div
+        style="position: fixed; bottom: 8px; right: 12px; color: #ccc; font-size: 12px; background: #2d2a24; padding: 4px 12px; border-radius: 40px; opacity: 0.7;">
+        design based on given layout
+    </div>
+</body>
+
+</html>
