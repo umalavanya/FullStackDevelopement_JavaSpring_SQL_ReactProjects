@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✖️ times table · 0–9 practice + tables</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2b5a7a, #1d3e55);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 16px;
+        }
+
+        .practice-box {
+            max-width: 1000px;
+            /* wider to accommodate two columns */
+            width: 100%;
+            background: #fef7e9;
+            border-radius: 70px 70px 50px 50px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5), 0 12px 0 #123140;
+            border: 5px solid #fabb7c;
+            padding: 30px 25px 35px 25px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            background: #fdd998;
+            padding: 15px 10px;
+            border-radius: 60px;
+            margin-bottom: 25px;
+            border: 4px solid #bb6b2a;
+            color: #1f4437;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            box-shadow: inset 0 -5px 0 #c17d41;
+        }
+
+        h1 span {
+            background: #255c78;
+            color: white;
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-size: 2rem;
+            border: 3px solid #f9cf9c;
+        }
+
+        /* two-column layout */
+        .main-dashboard {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .left-column {
+            flex: 2;
+            /* take ~2/3 for the game */
+            min-width: 320px;
+        }
+
+        .right-column {
+            flex: 1;
+            /* take ~1/3 for tables */
+            min-width: 220px;
+            background: #ffe6c9;
+            border-radius: 50px;
+            padding: 20px 15px;
+            border: 5px solid #e89f54;
+            box-shadow: inset 0 -3px 0 #b5601c;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-column h2 {
+            background: #1a4b64;
+            color: white;
+            padding: 12px 10px;
+            border-radius: 40px;
+            font-size: 1.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 3px solid #ffbc7c;
+            letter-spacing: 1px;
+        }
+
+        .table-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .table-btn {
+            background: #ffbc7c;
+            border: 4px solid #fef7d7;
+            font-size: 2.2rem;
+            font-weight: 800;
+            width: 70px;
+            height: 70px;
+            border-radius: 40px;
+            color: #1f3b44;
+            box-shadow: 0 5px 0 #aa5c27, 0 6px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: 0.06s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #aa5c27;
+        }
+
+        .table-btn.active {
+            background: #f08a3e;
+            color: white;
+            border-color: #ffeab0;
+            box-shadow: 0 3px 0 #7b4019;
+            transform: translateY(2px);
+        }
+
+        .table-display {
+            background: #fff2db;
+            border-radius: 40px;
+            padding: 18px 12px;
+            border: 4px solid #d38b47;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #003153;
+            box-shadow: inset 0 0 0 2px #fce3b5;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .table-display p {
+            margin: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dotted #ebb077;
+            padding: 6px 10px;
+        }
+
+        .table-display p:last-child {
+            border-bottom: none;
+        }
+
+        .table-display .table-header {
+            font-weight: 700;
+            background: #b3d2e3;
+            border-radius: 30px;
+            padding: 8px 15px;
+            margin-bottom: 8px;
+            justify-content: center;
+            border: 2px solid #f39c4b;
+        }
+
+        .score-panel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffe0b9;
+            border-radius: 50px;
+            padding: 18px 28px;
+            margin-bottom: 30px;
+            border: 4px solid #d38b47;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #003153;
+            box-shadow: inset 0 -3px 0 #b5601c;
+        }
+
+        .score-panel div {
+            background: #1a4b64;
+            color: white;
+            padding: 8px 30px;
+            border-radius: 40px;
+            border: 2px solid #ffbc7c;
+        }
+
+        .question-area {
+            background: #e3f0fc;
+            border-radius: 60px;
+            padding: 30px 20px;
+            border: 5px solid #faa75e;
+            box-shadow: inset 0 -6px 0 #be7a3a;
+            margin-bottom: 30px;
+        }
+
+        .big-equation {
+            font-size: 5rem;
+            text-align: center;
+            background: #fffbed;
+            border-radius: 50px;
+            padding: 20px 10px;
+            border: 4px dashed #e89f54;
+            margin-bottom: 35px;
+            font-weight: 800;
+            color: #1a3a47;
+            letter-spacing: 6px;
+            word-break: break-word;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .answer-input {
+            font-size: 3rem;
+            width: 200px;
+            text-align: center;
+            padding: 15px 10px;
+            border: 5px solid #cf8946;
+            border-radius: 60px;
+            background: #fffae6;
+            font-weight: 700;
+            color: #1b4e5e;
+            outline: none;
+            box-shadow: 0 6px 0 #a25f27, inset 0 2px 10px #ffdbb5;
+        }
+
+        .answer-input:focus {
+            border-color: #b33e9e;
+            background: #fffdf3;
+        }
+
+        .submit-btn {
+            background: #ff9f4b;
+            border: none;
+            font-size: 2.5rem;
+            padding: 15px 40px;
+            border-radius: 60px;
+            font-weight: 700;
+            border: 4px solid #fff3cf;
+            box-shadow: 0 7px 0 #964b0f, 0 10px 16px #965d2e;
+            cursor: pointer;
+            transition: 0.05s linear;
+            color: #1d3939;
+        }
+
+        .submit-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #964b0f;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            transform: translateY(2px);
+            box-shadow: 0 4px 0 #964b0f;
+            pointer-events: none;
+        }
+
+        .feedback {
+            font-size: 2rem;
+            text-align: center;
+            min-height: 4.5rem;
+            padding: 12px 8px;
+            background: #ffdbb7;
+            border-radius: 50px;
+            border: 3px solid #c47329;
+            margin: 25px 0 15px;
+            font-weight: 600;
+            color: #1b3645;
+        }
+
+        .restart-message {
+            font-size: 2rem;
+            text-align: center;
+            background: #f2cf8b;
+            padding: 20px;
+            border-radius: 50px;
+            border: 4px solid #b4601a;
+            font-weight: 700;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 18px;
+            color: #ffeec9;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="practice-box">
+        <h1>
+            ✖️ 0–9 MULTIPLY
+            <span>20 Q</span>
+        </h1>
+
+        <!-- two columns: left = game, right = multiplication tables -->
+        <div class="main-dashboard">
+            <!-- LEFT COLUMN: original game -->
+            <div class="left-column">
+                <!-- score & question counter -->
+                <div class="score-panel">
+                    <span>🏅 SCORE</span>
+                    <div id="scoreDisplay">0</div>
+                    <span id="counterDisplay">1 / 20</span>
+                </div>
+
+                <!-- main interactive area -->
+                <div class="question-area" id="questionArea">
+                    <div class="big-equation" id="equationText">7 × 6</div>
+                    <div class="input-group">
+                        <input type="number" id="answerInput" class="answer-input" placeholder="?" min="0" max="81"
+                            inputmode="numeric">
+                        <button class="submit-btn" id="submitBtn">✔️ CHECK</button>
+                    </div>
+                    <div class="feedback" id="feedbackMessage">✨ type answer, then press check</div>
+                </div>
+
+                <!-- this area shows only when 20 are done -->
+                <div id="gameoverPanel" style="display: none;"></div>
+            </div>
+
+            <!-- RIGHT COLUMN: multiplication tables (1–9) -->
+            <div class="right-column">
+                <h2>📋 TABLES</h2>
+                <div class="table-buttons" id="tableButtons">
+                    <!-- buttons 1..9 will be injected by js, but we can write static and attach events -->
+                </div>
+                <div class="table-display" id="tableDisplay">
+                    <p class="table-header">👆 click a number</p>
+                    <p>1 × 1 = 1</p>
+                    <p>1 × 2 = 2</p>
+                    <p>... up to 10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">⭐ each round 20 questions · click tables to learn ⭐</div>
+    </div>
+
+    <script>
+        (function () {
+            // ----- state for game (same as before) -----
+            let currentQuestion = 1;            // 1..20
+            let score = 0;
+            let num1 = 0, num2 = 0;             // current operands
+            let waitingForNext = false;         // after answer, block double submit
+
+            // DOM elements (game)
+            const equationEl = document.getElementById('equationText');
+            const answerInput = document.getElementById('answerInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const feedbackEl = document.getElementById('feedbackMessage');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const counterDisplay = document.getElementById('counterDisplay');
+            const questionArea = document.getElementById('questionArea');
+            const gameoverPanel = document.getElementById('gameoverPanel');
+
+            // ----- new DOM elements for table section -----
+            const tableButtonsDiv = document.getElementById('tableButtons');
+            const tableDisplayDiv = document.getElementById('tableDisplay');
+
+            // Generate table for a given digit (1-9) and show in tableDisplay
+            function showMultiplicationTable(digit) {
+                if (digit < 1 || digit > 9) return;
+                let html = `<p class="table-header">🔢 ${digit} times table (1–10)</p>`;
+                for (let i = 1; i <= 10; i++) {
+                    html += `<p><span>${digit} × ${i}</span> <span>= ${digit * i}</span></p>`;
+                }
+                tableDisplayDiv.innerHTML = html;
+            }
+
+            // Create buttons 1 through 9 dynamically
+            function initTableButtons() {
+                // clear loading placeholders if any
+                tableButtonsDiv.innerHTML = '';
+                for (let i = 1; i <= 9; i++) {
+                    const btn = document.createElement('button');
+                    btn.classList.add('table-btn');
+                    btn.textContent = i;
+                    btn.dataset.digit = i;
+                    btn.addEventListener('click', (e) => {
+                        // remove active class from all buttons
+                        document.querySelectorAll('.table-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const digit = parseInt(btn.dataset.digit, 10);
+                        showMultiplicationTable(digit);
+                    });
+                    tableButtonsDiv.appendChild(btn);
+                }
+                // optionally set default active (button 2)
+                const defaultBtn = document.querySelector('[data-digit="2"]');
+                if (defaultBtn) {
+                    defaultBtn.classList.add('active');
+                    showMultiplicationTable(2);
+                } else {
+                    // fallback: show table 2 anyway
+                    showMultiplicationTable(2);
+                }
+            }
+
+            // Helper: generate random 0..9
+            function randomDigit() {
+                return Math.floor(Math.random() * 10);
+            }
+
+            // create new operands (and update display)
+            function setNewQuestion() {
+                num1 = randomDigit();
+                num2 = randomDigit();
+                equationEl.textContent = `${num1} × ${num2}`;
+                // clear input & feedback, enable input
+                answerInput.value = '';
+                feedbackEl.textContent = '🤔 enter product ...';
+                answerInput.disabled = false;
+                submitBtn.disabled = false;
+                answerInput.focus();
+                waitingForNext = false;          // fresh question
+            }
+
+            // update score & counter on UI
+            function refreshUI() {
+                scoreDisplay.textContent = score;
+                counterDisplay.textContent = `${currentQuestion} / 20`;
+            }
+
+            // reset everything to start over (after 20 or manually)
+            function restartGame() {
+                currentQuestion = 1;
+                score = 0;
+                refreshUI();
+                setNewQuestion();
+
+                // ensure gameover panel hidden and question area visible
+                gameoverPanel.style.display = 'none';
+                gameoverPanel.innerHTML = '';           // clear any leftover message
+                questionArea.style.display = 'block';   // show question area
+            }
+
+            // finish 20 questions – show summary and then auto restart
+            function finishRound() {
+                // hide question area, show game over / restart message
+                questionArea.style.display = 'none';
+                const finalScore = score;
+                gameoverPanel.style.display = 'block';
+                gameoverPanel.innerHTML = `
+          <div class="restart-message">
+            🎉 20 done!  score: ${finalScore} / 20  🎉<br>
+            🔄 starting new round ...
+          </div>
+        `;
+
+                // after 2 seconds, restart the game (reset variables)
+                setTimeout(() => {
+                    restartGame();
+                }, 2000);
+            }
+
+            // handle answer submission
+            function checkAnswer() {
+                // if waiting (already answered) we ignore extra clicks
+                if (waitingForNext) {
+                    feedbackEl.textContent = '⏳ already answered! wait for next question.';
+                    return;
+                }
+
+                // get value from input
+                const rawValue = answerInput.value.trim();
+                if (rawValue === '') {
+                    feedbackEl.textContent = '🙏 type a number!';
+                    return;
+                }
+                const userAnswer = Number(rawValue);
+                if (isNaN(userAnswer)) {
+                    feedbackEl.textContent = '🔢 please enter a valid number';
+                    return;
+                }
+
+                // correct product
+                const correctProduct = num1 * num2;
+
+                // decide result
+                if (userAnswer === correctProduct) {
+                    score += 1;
+                    feedbackEl.textContent = `✅ correct!  ${num1} × ${num2} = ${correctProduct}`;
+                } else {
+                    feedbackEl.textContent = `❌ oops!  ${num1} × ${num2} = ${correctProduct}  (you typed ${userAnswer})`;
+                }
+
+                // increment question count (currentQuestion)
+                currentQuestion++;
+
+                // update score display
+                scoreDisplay.textContent = score;
+
+                // disable input & button to avoid double answer
+                answerInput.disabled = true;
+                submitBtn.disabled = true;
+                waitingForNext = true;    // block further answers for this question
+
+                // check if we have completed 20 questions (i.e., currentQuestion == 21 means we just did #20)
+                if (currentQuestion > 20) {
+                    // round finished
+                    finishRound();
+                } else {
+                    // update counter (now currentQuestion increased)
+                    counterDisplay.textContent = `${currentQuestion} / 20`;
+
+                    // after a short delay, load next question (auto advance)
+                    setTimeout(() => {
+                        setNewQuestion();
+                    }, 1000); // 1 sec delay to read feedback
+                }
+            }
+
+            // additional: handle Enter key
+            answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitBtn.click();
+                }
+            });
+
+            // submit click
+            submitBtn.addEventListener('click', checkAnswer);
+
+            // initialize table buttons & default view
+            initTableButtons();
+
+            // initial game start
+            restartGame();   // sets everything
+
+            // safety: if input disabled after finish, it's fine
+        })();
+    </script>
+</body>
+
+</html>
