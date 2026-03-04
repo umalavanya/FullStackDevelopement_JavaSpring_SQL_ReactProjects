@@ -169,3 +169,15 @@ div{
         60px 40px 0 black,
         80px 40px 0 black;
 }
+
+.pixel-art2{
+    width: 12px ;
+    height: 12px ;
+    background: black ;
+    border-radius: 50% 20% ;
+
+    box-shadow: 12px 0px 0 black,
+                20px 0px 0 red,
+                50px 0px 0 green,
+                2px  10px 0 brown
+}
