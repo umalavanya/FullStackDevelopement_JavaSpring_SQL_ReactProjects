@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple calculator · 7 8 9 x …</title>
+    <!-- styles.css is embedded inside the same file for a single‑file preview,
+         but you can easily split it – the explanation below shows the separate blocks. -->
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="calculator">
+        <!-- display -->
+        <div class="display">
+            <input type="text" id="calc-display" readonly value="0">
+        </div>
+
+        <!-- keypad layout exactly as requested: 7 8 9 x , 4 5 6 +, 1 2 3 -, CE 0 = / -->
+        <div class="keypad">
+            <!-- first row: 7 8 9 x -->
+            <button class="key" data-value="7">7</button>
+            <button class="key" data-value="8">8</button>
+            <button class="key" data-value="9">9</button>
+            <button class="key operator" data-value="×">×</button>
+
+            <!-- second row: 4 5 6 + -->
+            <button class="key" data-value="4">4</button>
+            <button class="key" data-value="5">5</button>
+            <button class="key" data-value="6">6</button>
+            <button class="key operator" data-value="+">+</button>
+
+            <!-- third row: 1 2 3 - -->
+            <button class="key" data-value="1">1</button>
+            <button class="key" data-value="2">2</button>
+            <button class="key" data-value="3">3</button>
+            <button class="key operator" data-value="−">−</button>
+
+            <!-- fourth row: CE 0 = /  (CE spans one column, 0 then = then /) -->
+            <button class="key clear" data-value="CE">CE</button>
+            <button class="key" data-value="0">0</button>
+            <button class="key equals" data-value="=">=</button>
+            <button class="key operator" data-value="÷">÷</button>
+        </div>
+    </div>
+
+    <!-- ===== script.js ===== -->
+    <script src="script.js">
+        
+    </script>
+</body>
+
+</html>
