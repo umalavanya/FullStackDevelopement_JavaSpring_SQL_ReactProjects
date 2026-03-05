@@ -90,6 +90,8 @@
                 shouldResetDisplay = true;
             }
 
+            
+
             // calculation helper
             function calculate(a, b, operator) {
                 let result;
