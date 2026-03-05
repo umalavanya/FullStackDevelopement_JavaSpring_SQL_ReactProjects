@@ -1,5 +1,5 @@
 (function () {
     // grab display element
-    const
-    console.log("hello")
+    const display = document.getElementById('calc-display') ;
+    console.log(display);
 })() ;
