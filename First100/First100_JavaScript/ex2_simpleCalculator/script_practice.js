@@ -159,6 +159,61 @@
     //listen to all key clicks
     document.querySelectorAll('.key').forEach(button => {
         const value = button.getAttribute('data-value') ;
+
+                    // handle different key types
+                    if (!isNaN(parseInt(value)) || value === '0') {   // numeric (0-9)
+                        inputDigit(value);
+                    }
+                    else if (value === 'CE') {
+                        clearEntry();
+                    }
+                    else if (value === '=') {
+                        handleEquals();
+                    }
+                    else if (value === '×' || value === '+' || value === '−' || value === '÷') {
+                        handleOperator(value);
+                    }
+                    // (no decimal point in this layout, but just in case)
+                    else if (value === '.') {
+                        // not used in this layout, but we can ignore
+                    }
+                });
+
+
+
+                 // optional: keyboard support (not required, but nice)
+            window.addEventListener('keydown', (e) => {
+                const key = e.key;
+                if (/^[0-9]$/.test(key)) {
+                    e.preventDefault();
+                    inputDigit(key);
+                } else if (key === '+' || key === '-') {
+                    e.preventDefault();
+                    // map '-' to '−' for consistency
+                    handleOperator(key === '-' ? '−' : '+');
+                } else if (key === '*' || key.toLowerCase() === 'x') {
+                    e.preventDefault();
+                    handleOperator('×');
+                } else if (key === '/') {
+                    e.preventDefault();
+                    handleOperator('÷');
+                } else if (key === 'Enter' || key === '=') {
+                    e.preventDefault();
+                    handleEquals();
+                } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                    e.preventDefault();
+                    allClear();
+                } else if (key === 'Backspace') {
+                    // not part of spec, but we treat as CE? not exactly, but we ignore to keep simple.
+                }
+            });
+
+
+            // initial display
+            updateDisplay('0');
+
+
+
     }) ;
 
 
