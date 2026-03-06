@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Developer Roadmap · Interactive Learning Path</title>
+    <meta name="description"
+        content="Interactive roadmap to master HTML, CSS, and JavaScript - track your progress as you learn">
+
+    <!-- We'll add CSS later -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Header Section: Project title and introduction -->
+    <header>
+        <h1>🛣️ Frontend Developer Roadmap</h1>
+        <p>Your interactive guide to mastering HTML, CSS, and JavaScript. <strong>Click on any skill</strong> to mark it
+            as completed.</p>
+        <div class="progress-indicator">
+            <span>Your Journey Progress: </span>
+            <span class="progress-count">0/30 skills completed</span>
+        </div>
+    </header>
+
+    <!-- Navigation: Quick access to different sections -->
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="#html-fundamentals">HTML</a></li>
+            <li><a href="#css-basics">CSS</a></li>
+            <li><a href="#javascript-essentials">JavaScript</a></li>
+            <li><a href="#advanced-topics">Advanced</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main content area containing all roadmap sections -->
+    <main>
+        <!-- HTML Fundamentals Section -->
+        <section id="html-fundamentals" class="roadmap-section">
+            <header class="section-header">
+                <h2>📄 HTML Fundamentals</h2>
+                <span class="skill-count">8 skills</span>
+            </header>
+
+            <!-- Semantic article for each skill category -->
+            <article class="skill-category">
+                <h3>Core HTML</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="html-doctype">
+                        <span class="skill-name">Document Structure & DOCTYPE</span>
+                        <span class="skill-description">Understand the basic skeleton of every HTML page</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="html-head">
+                        <span class="skill-name">Head, Meta Tags & Title</span>
+                        <span class="skill-description">Learn how to set page metadata and character encoding</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="html-headings">
+                        <span class="skill-name">Headings & Text Elements</span>
+                        <span class="skill-description">h1 to h6, paragraphs, and text formatting</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="skill-category">
+                <h3>Lists & Links</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="html-lists">
+                        <span class="skill-name">Ordered & Unordered Lists</span>
+                        <span class="skill-description">Create bullet points and numbered lists</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="html-links">
+                        <span class="skill-name">Anchor Tags & Navigation</span>
+                        <span class="skill-description">Create internal and external hyperlinks</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="skill-category">
+                <h3>Multimedia & Forms</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="html-images">
+                        <span class="skill-name">Images & Figures</span>
+                        <span class="skill-description">Embed images with img, figure, and figcaption</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="html-forms">
+                        <span class="skill-name">Form Elements & Input Types</span>
+                        <span class="skill-description">Build interactive forms with various input fields</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="html-semantic">
+                        <span class="skill-name">Semantic HTML5 (you're using it now!)</span>
+                        <span class="skill-description">Master header, main, section, article, aside, footer</span>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <!-- CSS Basics Section -->
+        <section id="css-basics" class="roadmap-section">
+            <header class="section-header">
+                <h2>🎨 CSS Basics to Advanced</h2>
+                <span class="skill-count">10 skills</span>
+            </header>
+
+            <article class="skill-category">
+                <h3>Selectors & Properties</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="css-selectors">
+                        <span class="skill-name">CSS Selectors (Class, ID, Elements)</span>
+                        <span class="skill-description">Target HTML elements with precision</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-box-model">
+                        <span class="skill-name">Box Model</span>
+                        <span class="skill-description">Master margin, border, padding, and content</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-typography">
+                        <span class="skill-name">Typography & Colors</span>
+                        <span class="skill-description">Fonts, text styling, and color systems</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="skill-category">
+                <h3>Layout Mastery</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="css-flexbox">
+                        <span class="skill-name">Flexbox</span>
+                        <span class="skill-description">Create flexible one-dimensional layouts</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-grid">
+                        <span class="skill-name">CSS Grid</span>
+                        <span class="skill-description">Build complex two-dimensional layouts</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-positioning">
+                        <span class="skill-name">Positioning (Relative, Absolute, Fixed)</span>
+                        <span class="skill-description">Control element positioning precisely</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="skill-category">
+                <h3>Advanced CSS</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="css-responsive">
+                        <span class="skill-name">Responsive Design & Media Queries</span>
+                        <span class="skill-description">Make websites work on all devices</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-animations">
+                        <span class="skill-name">Transitions & Animations</span>
+                        <span class="skill-description">Add smooth motion to your interfaces</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-variables">
+                        <span class="skill-name">CSS Custom Properties (Variables)</span>
+                        <span class="skill-description">Create maintainable, themeable styles</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="css-pseudo">
+                        <span class="skill-name">Pseudo-classes & Pseudo-elements</span>
+                        <span class="skill-description">Style special states and create decorative effects</span>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <!-- JavaScript Essentials Section -->
+        <section id="javascript-essentials" class="roadmap-section">
+            <header class="section-header">
+                <h2>⚡ JavaScript Essentials</h2>
+                <span class="skill-count">8 skills</span>
+            </header>
+
+            <article class="skill-category">
+                <h3>Core Concepts</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="js-basics">
+                        <span class="skill-name">Variables, Data Types & Operators</span>
+                        <span class="skill-description">let, const, strings, numbers, booleans</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="js-functions">
+                        <span class="skill-name">Functions & Scope</span>
+                        <span class="skill-description">Function declarations, expressions, and block scope</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="js-control">
+                        <span class="skill-name">Control Flow (if/else, loops)</span>
+                        <span class="skill-description">Make decisions and repeat actions</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="skill-category">
+                <h3>DOM Manipulation</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="js-dom-select">
+                        <span class="skill-name">Selecting DOM Elements</span>
+                        <span class="skill-description">querySelector, getElementById, etc.</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="js-events">
+                        <span class="skill-name">Event Listeners & Handling</span>
+                        <span class="skill-description">Respond to user clicks, scrolls, and inputs</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="js-modify">
+                        <span class="skill-name">Modifying DOM & Styles</span>
+                        <span class="skill-description">Change content, classes, and inline styles</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="skill-category">
+                <h3>Modern JavaScript</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="js-arrays">
+                        <span class="skill-name">Array Methods (map, filter, reduce)</span>
+                        <span class="skill-description">Transform and work with data elegantly</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="js-storage">
+                        <span class="skill-name">LocalStorage & SessionStorage</span>
+                        <span class="skill-description">Save data in the browser (future feature!)</span>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <!-- Advanced Topics Section -->
+        <section id="advanced-topics" class="roadmap-section">
+            <header class="section-header">
+                <h2>🚀 Advanced Topics</h2>
+                <span class="skill-count">4 skills</span>
+            </header>
+
+            <article class="skill-category">
+                <h3>Beyond the Basics</h3>
+                <ul class="skill-list">
+                    <li class="skill-item" data-skill-id="adv-fetch">
+                        <span class="skill-name">Fetch API & Async JavaScript</span>
+                        <span class="skill-description">Work with external data and promises</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="adv-git">
+                        <span class="skill-name">Git & GitHub Basics</span>
+                        <span class="skill-description">Version control and collaboration</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="adv-build">
+                        <span class="skill-name">Build Tools (Webpack, Vite)</span>
+                        <span class="skill-description">Modern development workflows</span>
+                    </li>
+                    <li class="skill-item" data-skill-id="adv-framework">
+                        <span class="skill-name">Framework Fundamentals (React/Vue)</span>
+                        <span class="skill-description">Your next step after mastering vanilla JS</span>
+                    </li>
+                </ul>
+            </article>
+        </section>
+    </main>
+
+    <!-- Footer with additional information -->
+    <footer>
+        <p>Interactive Frontend Developer Roadmap — Built with semantic HTML5, soon to be styled with CSS and brought to
+            life with JavaScript</p>
+        <p>🎯 Click any skill to track your progress | 💾 Your progress will be saved automatically</p>
+        <p class="copyright">© 2026 Your Name · Learning in Public</p>
+    </footer>
+
+    <!-- We'll add JavaScript later -->
+    <script src="script.js"></script>
+</body>
+
+</html>
