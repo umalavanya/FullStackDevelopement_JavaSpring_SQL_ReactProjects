@@ -1,1 +1,10 @@
-document.writeln("<h1 style:>Hello</h1>")
+function test() {
+	     if (1) {
+	        let m = 70;
+			// let m = 80; // redeclaration with let keyword is not	possible
+			var n = 80;
+			var n = 90; // redeclaration with var keyword is possible
+			document.writeln("m = " + m + ", n = " + n);
+		 }
+	  }
+      test();
