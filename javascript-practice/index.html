@@ -1,24 +1,8 @@
 <html>
     <body>
-        <p id="output"> </p>
-
+        <p id="output"></p>
         <script>
-            let output = document.getElementById("output") ;
-
-
-            function getNum(){
-                return 5 ;
-            }
-
-            function mul(p=5, q = getNum()){
-                 
-                return p*q ;
-
-            }
-
-            output.innerHTML += "mul(10) ->"+mul(10)+"</br>";
-            output.innerHTML += "mul() ->" + mul() + "</br>"; 
+            const divide = (x,y) => x/y ;
         </script>
-
     </body>
 </html>
