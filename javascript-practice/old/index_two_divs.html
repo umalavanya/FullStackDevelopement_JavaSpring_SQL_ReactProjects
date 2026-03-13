@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click · reveal</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            background: #f6f9fc;
+            min-height: 100vh;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            padding: 1rem;
+        }
+
+        div {
+            height: 140px;
+            /* slightly taller to fit text well */
+            width: 260px;
+            border: 2px solid #1e3a8a;
+            /* deeper blue for better visibility */
+            margin: 0;
+            /* reset, gap handled by body */
+            padding: 1rem 1.2rem;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0, 20, 50, 0.1);
+            transition: all 0.1s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* first div (left panel) */
+        div:first-of-type {
+            background: #f0f7ff;
+            justify-content: center;
+        }
+
+        /* second div (right panel – display area) */
+        div:last-of-type {
+            background: #fffef7;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #0b2b5c;
+            word-break: break-word;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 0.5rem;
+        }
+
+        ul li {
+            /* override any default text-decoration */
+            text-decoration: none;
+            /* your original rule */
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: #1e3a8a;
+            color: white;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            box-shadow: 0 5px 0 #0f1b4e, 0 8px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: 0.08s linear;
+            user-select: none;
+        }
+
+        ul li:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #0f1b4e, 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* simple state hint inside the second div (will be replaced) */
+        .display-placeholder {
+            opacity: 0.7;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #2c3e6d;
+        }
+
+        /* highlight for clicked item (soft feedback) */
+        ul li.highlight {
+            background: #ff9800;
+            box-shadow: 0 5px 0 #b45f06, 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* printed content inside right panel */
+        .printed-content {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            background: #e6f0ff;
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 60px;
+            align-self: flex-start;
+            margin-top: 0.2rem;
+            border: 2px dashed #1e3a8a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LEFT panel: clickable list -->
+    <div>
+        <ul>
+            <li id="one">1</li>
+            <li id="two">2</li>
+        </ul>
+        <p style="font-size:0.85rem; margin-top:8px; color:#1e3a8a; opacity:0.8;">⬇️ click a number</p>
+    </div>
+
+    <!-- RIGHT panel: displays the clicked <li> content -->
+    <div id="displayPanel">
+        <span class="display-placeholder">(clicked item will appear)</span>
+    </div>
+
+    <script>
+        (function () {
+            // get the two list items
+            const itemOne = document.getElementById('one');
+            const itemTwo = document.getElementById('two');
+            // get the display panel (second div)
+            const displayDiv = document.getElementById('displayPanel');
+
+            // helper function to remove highlight from both li's
+            function removeHighlight() {
+                itemOne.classList.remove('highlight');
+                itemTwo.classList.remove('highlight');
+            }
+
+            // function to update the right panel with the clicked text
+            function printContent(clickedLi) {
+                // get the text content, e.g. "1" or "2"
+                const liText = clickedLi.textContent;   // "1" or "2"
+
+                // clear the displayDiv and build fresh content
+                // we want to show: the <li> content here — exactly as requested.
+                // but also keep the original sentence "i want to print the <li> content here..."
+                // the original second div contains that sentence as plain text.
+                // we'll preserve the spirit: show the text + the clicked number prominently.
+
+                // Option A: keep the initial sentence and append the result
+                // But the sentence is part of the div's textContent.
+                // To keep layout clean, we'll reconstruct it with formatting.
+
+                // original text in second div was: 
+                // "i want to print the <li> content here, when the corresponing li is clicked"
+                // we'll keep it as a base, but replace the placeholder with actual value.
+
+                // Option B: put a clean representation: 
+                // first line: "i want to print the <li> content here:"
+                // second line: big digit with background.
+                // That matches both the request and the original description.
+
+                // But the second div initially contains only placeholder span.
+                // We'll replace the whole content with structured message.
+
+                displayDiv.innerHTML = '';   // clear
+
+                // create a container to keep wording + printed digit
+                const messageLine = document.createElement('div');
+                messageLine.style.marginBottom = '0.5rem';
+                messageLine.style.fontSize = '1.1rem';
+                messageLine.style.color = '#0b2b5c';
+                messageLine.style.lineHeight = '1.4';
+                // include the descriptive phrase (matches your request)
+                messageLine.textContent = 'i want to print the <li> content here:';
+                // but we need to show it's dynamic – we'll add the actual printed content after.
+
+                displayDiv.appendChild(messageLine);
+
+                // now create the printed value element (the <li> content)
+                const printedValue = document.createElement('span');
+                printedValue.className = 'printed-content';  // styled big box
+                printedValue.textContent = liText;           // "1" or "2"
+
+                // add a subtle note
+                const fromNote = document.createElement('span');
+                fromNote.style.fontSize = '1rem';
+                fromNote.style.marginLeft = '12px';
+                fromNote.style.color = '#3b4e7a';
+                fromNote.textContent = '← from clicked li';
+
+                // wrap them together
+                const valueWrapper = document.createElement('div');
+                valueWrapper.style.display = 'flex';
+                valueWrapper.style.alignItems = 'center';
+                valueWrapper.style.marginTop = '0.2rem';
+                valueWrapper.style.flexWrap = 'wrap';
+                valueWrapper.appendChild(printedValue);
+                valueWrapper.appendChild(fromNote);
+
+                displayDiv.appendChild(valueWrapper);
+
+                // optional: also show the original full sentence with proper html?
+                // the original sentence said: "i want to print the <li> content here, when the corresponing li is clicked"
+                // we can add that line below as a lighter footnote
+                const footnote = document.createElement('div');
+                footnote.style.marginTop = '0.8rem';
+                footnote.style.fontSize = '0.9rem';
+                footnote.style.fontStyle = 'italic';
+                footnote.style.opacity = '0.7';
+                footnote.style.borderTop = '1px dashed #a0b8d4';
+                footnote.style.paddingTop = '0.4rem';
+                footnote.textContent = '✔ triggered by clicking the corresponding li';
+                displayDiv.appendChild(footnote);
+            }
+
+            // click handler
+            function handleClick(event) {
+                const clickedLi = event.currentTarget;  // the li element
+
+                // remove highlight from both items
+                removeHighlight();
+
+                // add highlight to the clicked one
+                clickedLi.classList.add('highlight');
+
+                // print its content in the right panel
+                printContent(clickedLi);
+            }
+
+            // attach click listeners
+            itemOne.addEventListener('click', handleClick);
+            itemTwo.addEventListener('click', handleClick);
+
+            // (optional) initial state: show nothing, or keep the placeholder?
+            // we already have a placeholder inside #displayPanel via html.
+            // But if user never clicks, it shows "(clicked item will appear)".
+            // That's friendly.
+
+            // But for clarity, when page loads, the second div contains placeholder span.
+            // However our printContent completely rewrites innerHTML, so placeholder will be gone after first click.
+            // That's fine. We could also set a default printed nothing, but placeholder is good.
+
+            // to align with the description exactly: "i want to print the <li> content here, when the corresponing li is clicked"
+            // our implementation does that: after click, the right panel shows the digit with the phrase.
+
+            // However, there is a nuance: after click we replace the whole div content,
+            // losing the original text "i want to print the <li> content here". But we add it back programmatically.
+            // So it's exactly reproduced.
+
+            // one more detail: the initial second div contains that sentence as plain text.
+            // we store it in messageLine. Good.
+
+        })();
+    </script>
+
+    <!-- ensure that the initial sentence is also present in case JS fails, but we override after click anyway.
+         but the placeholder is already there. -->
+</body>
+
+</html>
