@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rows & columns · multiplication array</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f2e9fa 0%, #d9c9f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            max-width: 800px;
+            width: 90%;
+            background: rgba(255, 250, 255, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 60px;
+            padding: 2.2rem 2rem 2.8rem;
+            box-shadow: 0 30px 45px -15px #5d4180,
+                inset 0 1px 4px #fff8ff;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        h2 {
+            color: #34214b;
+            font-weight: 500;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            margin: 0 0 0.2rem;
+            text-shadow: 0 2px 5px white;
+        }
+
+        .equation {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #2d1949;
+            background: rgba(255, 240, 255, 0.5);
+            padding: 0.2rem 2rem;
+            border-radius: 100px;
+            display: inline-block;
+            margin: 0.5rem auto 1rem;
+            border: 2px solid white;
+            box-shadow: 0 6px 0 #8b74b0;
+        }
+
+        /* grid container – strict rows & columns */
+        .array-grid {
+            background: #cabbe0;
+            border-radius: 48px;
+            padding: 2rem 1.5rem;
+            margin: 1.5rem 0 1.8rem;
+            box-shadow: inset 0 5px 10px #a28ebb, 0 12px 18px rgba(58, 30, 80, 0.3);
+            border: 2px solid #ffffff;
+        }
+
+        .array-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .visual-row {
+            display: flex;
+            flex-wrap: wrap;
+            /* wraps nicely on tiny screens, still keeps columns */
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .unit-square {
+            width: 48px;
+            height: 48px;
+            background: #b197d4;
+            border-radius: 16px;
+            box-shadow: 0 6px 0 #624b82, 0 10px 14px rgba(0, 0, 0, 0.2);
+            border: 3px solid #f6ecff;
+            transition: 0.1s;
+        }
+
+        .unit-square:hover {
+            transform: scale(0.96);
+            background: #c7b0e6;
+        }
+
+        /* row labels inside grid */
+        .row-marker {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: #301f48;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid white;
+            backdrop-filter: blur(2px);
+            width: fit-content;
+            margin-bottom: 4px;
+        }
+
+        .answer-panel {
+            background: #e6d9f6;
+            border-radius: 56px;
+            padding: 1.8rem 2rem 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 2px 6px #ffffff, 0 12px 22px #9379b1;
+        }
+
+        .input-area {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-area label {
+            font-size: 2.2rem;
+            font-weight: 450;
+            color: #321f49;
+        }
+
+        #answerInput {
+            font-size: 2.4rem;
+            width: 150px;
+            text-align: center;
+            background: white;
+            border: none;
+            border-radius: 60px;
+            padding: 0.5rem 0.2rem;
+            font-weight: 600;
+            color: #1b1029;
+            box-shadow: inset 0 4px 10px #b7a2cf, 0 3px 0 #ffffff;
+            border: 3px solid #ffffff;
+            outline: none;
+        }
+
+        #answerInput:focus {
+            background: #fff9ff;
+            box-shadow: inset 0 4px 10px #ad93cb, 0 0 0 4px #cbb2ea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0.5rem 0 0.8rem;
+        }
+
+        button {
+            background: #f5ecff;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2.2rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #311f4a;
+            box-shadow: 0 7px 0 #6a5390, 0 10px 20px rgba(69, 40, 90, 0.3);
+            border: 2px solid white;
+            cursor: pointer;
+            transition: 0.05s linear;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #5d4580, 0 8px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        .feedback {
+            font-size: 2rem;
+            font-weight: 500;
+            min-height: 4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 60px;
+            transition: 0.1s;
+            color: #2f1b44;
+        }
+
+        .correct {
+            background: #b4e0b4e0;
+            color: #004d26;
+        }
+
+        .wrong {
+            background: #f4c3c3e0;
+            color: #991212;
+        }
+
+        .neutral {
+            background: transparent;
+        }
+
+        hr {
+            border: 2px solid #b49fd3;
+            width: 150px;
+            margin: 1.5rem auto 0.5rem;
+            border-radius: 20px;
+        }
+
+        .caption {
+            background: #d5c2ee;
+            border-radius: 40px;
+            padding: 0.2rem 2rem;
+            color: #281e38;
+            font-weight: 500;
+            width: fit-content;
+            margin: 0.8rem auto 0;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h2>✧ row · column array ✧</h2>
+        <div class="equation" id="eqDisplay">2 × 4 = ?</div>
+
+        <!-- rows & columns grid area -->
+        <div class="array-grid">
+            <div id="arrayContainer" class="array-container">
+                <!-- dynamic rows inserted as .visual-row -->
+            </div>
+        </div>
+
+        <div class="answer-panel">
+            <div class="input-area">
+                <label for="answerInput">=</label>
+                <input type="number" id="answerInput" placeholder="?" min="0" max="81" step="1">
+            </div>
+
+            <div class="button-group">
+                <button id="checkBtn">✔ check answer</button>
+                <button id="newBtn">⟳ new problem</button>
+            </div>
+
+            <div id="feedbackMsg" class="feedback neutral">✨ count the squares</div>
+        </div>
+        <hr>
+        <div class="caption">two random digits · 0 to 9</div>
+    </div>
+
+    <script>
+        (function () {
+            // state
+            let rows = 2;
+            let cols = 4;
+            let product = 8;
+
+            // DOM elements
+            const eqDisplay = document.getElementById('eqDisplay');
+            const arrayContainer = document.getElementById('arrayContainer');
+            const answerInput = document.getElementById('answerInput');
+            const feedback = document.getElementById('feedbackMsg');
+            const checkBtn = document.getElementById('checkBtn');
+            const newBtn = document.getElementById('newBtn');
+
+            // helper: random 0..9
+            function rand0to9() {
+                return Math.floor(Math.random() * 10);  // 0-9 inclusive
+            }
+
+            // render the array: rows = number of .visual-row divs, each with 'cols' squares
+            function renderArray(r, c) {
+                // clear container
+                arrayContainer.innerHTML = '';
+
+                for (let i = 0; i < r; i++) {
+                    // create a row wrapper (optional label inside row)
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'visual-row';
+
+                    // add squares = columns
+                    for (let j = 0; j < c; j++) {
+                        const square = document.createElement('div');
+                        square.className = 'unit-square';
+                        // add tiny attribute for column hint (not necessary, but playful)
+                        square.title = `row ${i + 1}, col ${j + 1}`;
+                        rowDiv.appendChild(square);
+                    }
+
+                    // optional small visual hint: we can prepend a tiny badge before the row
+                    // to make clear it's a row, but the squares alone already show rows.
+                    // to emphasize rows, we can wrap the row with a .row-marker container? 
+                    // but requirement: just two rows and four columns clear.
+                    // however we can add a subtle label inside the flow, but keep it minimal.
+                    // I'll add a small "⤵" marker on the left, but it's okay.
+                    // For better readability, we create a "row-marker" that contains a number + row.
+                    const rowMarker = document.createElement('div');
+                    rowMarker.className = 'row-marker';
+                    // we replace the simple rowDiv with a more explicit row grouping:
+                    // new structure: each visual row is inside a row-marker wrapper that shows "row i+1"
+                    const wrapper = document.createElement('div');
+                    wrapper.style.display = 'flex';
+                    wrapper.style.flexDirection = 'column';
+                    wrapper.style.alignItems = 'center';
+                    wrapper.style.gap = '4px';
+
+                    const labelSpan = document.createElement('span');
+                    labelSpan.style.fontSize = '1rem';
+                    labelSpan.style.fontWeight = '60';
+                    labelSpan.style.background = '#ffffffc0';
+                    labelSpan.style.padding = '0.1rem 1.1rem';
+                    labelSpan.style.borderRadius = '40px';
+                    labelSpan.style.border = '1px solid white';
+                    labelSpan.textContent = `row ${i + 1}`;
+
+                    wrapper.appendChild(labelSpan);
+                    wrapper.appendChild(rowDiv);
+                    arrayContainer.appendChild(wrapper);
+                }
+            }
+
+            // update everything with new random numbers
+            function newProblem() {
+                rows = rand0to9();
+                cols = rand0to9();
+                product = rows * cols;
+
+                eqDisplay.textContent = `${rows} × ${cols} = ?`;
+                renderArray(rows, cols);
+                answerInput.value = '';
+                feedback.textContent = '🔲 how many squares?';
+                feedback.classList.remove('correct', 'wrong');
+                feedback.classList.add('neutral');
+            }
+
+            // check answer
+            function checkAnswerHandler() {
+                const raw = answerInput.value.trim();
+                if (raw === '') {
+                    feedback.textContent = '✏️ type a number';
+                    feedback.classList.remove('correct', 'wrong');
+                    feedback.classList.add('neutral');
+                    return;
+                }
+                const num = Number(raw);
+                if (!Number.isInteger(num) || isNaN(num) || raw.includes('.')) {
+                    feedback.textContent = '❌ whole numbers only';
+                    feedback.classList.add('wrong');
+                    feedback.classList.remove('correct', 'neutral');
+                    return;
+                }
+
+                if (num === product) {
+                    feedback.textContent = `✅ perfect!  ${rows} × ${cols} = ${product}`;
+                    feedback.classList.add('correct');
+                    feedback.classList.remove('wrong', 'neutral');
+                } else {
+                    feedback.textContent = `❌ nope, try again`;
+                    feedback.classList.add('wrong');
+                    feedback.classList.remove('correct', 'neutral');
+                }
+            }
+
+            // attach events
+            checkBtn.addEventListener('click', checkAnswerHandler);
+            newBtn.addEventListener('click', () => {
+                newProblem();
+                answerInput.focus();
+            });
+
+            // press Enter in input to check
+            answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    checkAnswerHandler();
+                }
+            });
+
+            // initial render with random 0-9 digits instead of fixed 2x4
+            (function init() {
+                rows = rand0to9();
+                cols = rand0to9();
+                product = rows * cols;
+                eqDisplay.textContent = `${rows} × ${cols} = ?`;
+                renderArray(rows, cols);
+                answerInput.value = '';
+                feedback.textContent = '✨ 0 to 9 digits';
+                feedback.classList.remove('correct', 'wrong');
+                feedback.classList.add('neutral');
+            })();
+
+            // new problem already uses rand0to9
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+// type conversion  = change the datatype of a value to another 
+// (strings, numbers, booleans)
+
+let age = window.prompt("How old are you?") ;
+
+
+let x = "pizza" ;
+let y = "pizza"  ;
+let z = "pizza" ;
+

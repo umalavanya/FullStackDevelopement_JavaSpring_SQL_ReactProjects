@@ -1,0 +1,17 @@
+// let username ;
+
+// username = window.prompt("Whats's your username? ") ;
+// console.log(username) ;
+
+//easy way is promt
+// professional way = html textbox
+
+let username ;
+document.getElementById("mySubmit").onclick = function(){
+
+    username = document.getElementById("myText").value ;
+    document.getElementById("myH1").textContent += `Hello!!! ${username}` ;
+    console.log(username);
+
+
+}
