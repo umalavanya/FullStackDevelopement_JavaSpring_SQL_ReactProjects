@@ -5,6 +5,10 @@ let age = window.prompt("How old are you?") ;
 
 
 let x = "pizza" ;
-let y = "pizza"  ;
+let y = "pizza" ;
 let z = "pizza" ;
+
+x = Number(x) ;
+y = String(y) ;
+z = Boolean(z) ;
 
