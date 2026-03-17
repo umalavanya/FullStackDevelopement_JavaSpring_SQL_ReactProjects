@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Kaboom Game - Fruit Catch</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+
+        #game-container {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container"></div>
+
+    <!-- Import Kaboom from CDN -->
+    <script src="https://unpkg.com/kaboom@3000.0.1/dist/kaboom.js"></script>
+
+    <script>
+        // Initialize Kaboom
+        const k = kaboom({
+            container: "game-container",
+            width: 640,
+            height: 480,
+            background: [135, 206, 235], // Sky blue
+            global: true,
+            crisp: true
+        });
+
+        // Game variables
+        let score = 0;
+        let lives = 3;
+        let gameActive = true;
+
+        // Load sounds (using built-in browser sounds since we don't have files)
+        function playBeep() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+
+        // Start scene
+        scene("start", () => {
+            // Background
+            add([
+                rect(width(), height()),
+                color(100, 150, 250),
+                fixed()
+            ]);
+
+            // Title
+            add([
+                text("FRUIT CATCHER", { size: 48 }),
+                pos(width() / 2, height() / 2 - 100),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            // Instructions
+            add([
+                text("Move left/right with arrow keys", { size: 20 }),
+                pos(width() / 2, height() / 2),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            add([
+                text("Catch fruits to score points", { size: 20 }),
+                pos(width() / 2, height() / 2 + 30),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            add([
+                text("Don't let them hit the ground!", { size: 20 }),
+                pos(width() / 2, height() / 2 + 60),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            // Start button
+            const startBtn = add([
+                rect(200, 50),
+                pos(width() / 2, height() / 2 + 120),
+                anchor("center"),
+                color(76, 175, 80),
+                area(),
+                "startBtn"
+            ]);
+
+            add([
+                text("START GAME", { size: 20 }),
+                pos(width() / 2, height() / 2 + 120),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            // Click to start
+            onClick("startBtn", () => {
+                go("game");
+            });
+
+            // Also can press space
+            onKeyPress("space", () => {
+                go("game");
+            });
+        });
+
+        // Main game scene
+        scene("game", () => {
+            // Reset game state
+            score = 0;
+            lives = 3;
+            gameActive = true;
+
+            // Background gradient effect
+            for (let i = 0; i < 5; i++) {
+                add([
+                    rect(width(), 100),
+                    pos(0, i * 100),
+                    color(135 - i * 10, 206 - i * 10, 235),
+                    fixed(),
+                    opacity(0.5)
+                ]);
+            }
+
+            // UI elements
+            const scoreText = add([
+                text("Score: 0", { size: 24 }),
+                pos(20, 20),
+                fixed(),
+                color(255, 255, 255),
+                {
+                    update() {
+                        this.text = `Score: ${score}`;
+                    }
+                }
+            ]);
+
+            const livesText = add([
+                text("Lives: ❤️❤️❤️", { size: 24 }),
+                pos(20, 50),
+                fixed(),
+                color(255, 255, 255),
+                {
+                    update() {
+                        let hearts = "";
+                        for (let i = 0; i < lives; i++) {
+                            hearts += "❤️";
+                        }
+                        this.text = `Lives: ${hearts}`;
+                    }
+                }
+            ]);
+
+            // Create the basket (player)
+            const basket = add([
+                rect(100, 30),
+                pos(width() / 2, height() - 50),
+                anchor("center"),
+                color(139, 69, 19), // Brown
+                area(),
+                "basket",
+                {
+                    speed: 400
+                }
+            ]);
+
+            // Add basket rim (for decoration)
+            add([
+                rect(110, 10),
+                pos(basket.pos.x, basket.pos.y - 15),
+                anchor("center"),
+                color(160, 82, 45),
+                area(),
+                "basketRim"
+            ]);
+
+            // Make rim follow basket
+            onUpdate("basketRim", (rim) => {
+                rim.pos.x = basket.pos.x;
+            });
+
+            // Basket movement
+            onKeyDown("left", () => {
+                if (gameActive) {
+                    basket.move(-basket.speed, 0);
+                    if (basket.pos.x < 50) basket.pos.x = 50;
+                }
+            });
+
+            onKeyDown("right", () => {
+                if (gameActive) {
+                    basket.move(basket.speed, 0);
+                    if (basket.pos.x > width() - 50) basket.pos.x = width() - 50;
+                }
+            });
+
+            // Fruit spawner
+            const fruits = ["🍎", "🍌", "🍇", "🍊", "🍓"];
+
+            loop(0.5, () => {
+                if (!gameActive) return;
+
+                const fruit = fruits[Math.floor(Math.random() * fruits.length)];
+                const fruitX = rand(40, width() - 40);
+
+                const fruitObj = add([
+                    text(fruit, { size: 40 }),
+                    pos(fruitX, 40),
+                    anchor("center"),
+                    area(),
+                    "fruit",
+                    {
+                        speed: rand(100, 200)
+                    }
+                ]);
+
+                // Fruit falling
+                fruitObj.onUpdate(() => {
+                    if (!gameActive) return;
+
+                    fruitObj.pos.y += fruitObj.speed * dt();
+
+                    // Check if fruit hit the ground
+                    if (fruitObj.pos.y > height() - 30) {
+                        destroy(fruitObj);
+
+                        if (gameActive) {
+                            lives--;
+                            playBeep();
+
+                            if (lives <= 0) {
+                                gameActive = false;
+                                go("gameover", score);
+                            }
+                        }
+                    }
+                });
+
+                // Fruit collision with basket
+                fruitObj.onCollide("basket", () => {
+                    destroy(fruitObj);
+                    if (gameActive) {
+                        score += 10;
+                        playBeep();
+                    }
+                });
+            });
+
+            // Pause game with P key
+            onKeyPress("p", () => {
+                gameActive = !gameActive;
+
+                const pauseText = get("pauseText")[0];
+                if (!gameActive) {
+                    add([
+                        text("PAUSED", { size: 48 }),
+                        pos(width() / 2, height() / 2),
+                        anchor("center"),
+                        color(255, 255, 255),
+                        fixed(),
+                        "pauseText"
+                    ]);
+                } else {
+                    destroyAll("pauseText");
+                }
+            });
+        });
+
+        // Game over scene
+        scene("gameover", (finalScore) => {
+            // Dark overlay
+            add([
+                rect(width(), height()),
+                color(0, 0, 0),
+                opacity(0.7),
+                fixed()
+            ]);
+
+            add([
+                text("GAME OVER", { size: 48 }),
+                pos(width() / 2, height() / 2 - 80),
+                anchor("center"),
+                color(255, 100, 100)
+            ]);
+
+            add([
+                text(`Final Score: ${finalScore}`, { size: 32 }),
+                pos(width() / 2, height() / 2 - 20),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            // Play again button
+            const restartBtn = add([
+                rect(200, 50),
+                pos(width() / 2, height() / 2 + 50),
+                anchor("center"),
+                color(76, 175, 80),
+                area(),
+                "restartBtn"
+            ]);
+
+            add([
+                text("PLAY AGAIN", { size: 20 }),
+                pos(width() / 2, height() / 2 + 50),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            // Home button
+            const homeBtn = add([
+                rect(200, 50),
+                pos(width() / 2, height() / 2 + 120),
+                anchor("center"),
+                color(33, 150, 243),
+                area(),
+                "homeBtn"
+            ]);
+
+            add([
+                text("MAIN MENU", { size: 20 }),
+                pos(width() / 2, height() / 2 + 120),
+                anchor("center"),
+                color(255, 255, 255)
+            ]);
+
+            onClick("restartBtn", () => {
+                go("game");
+            });
+
+            onClick("homeBtn", () => {
+                go("start");
+            });
+        });
+
+        // Start the game
+        go("start");
+
+    </script>
+</body>
+
+</html>
