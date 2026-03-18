@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Pendulum with Matter.js</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: Arial, sans-serif;
+        }
+
+        #canvas-container {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="info">
+        <div>Simple Pendulum</div>
+        <div>Angle: <span id="angle">0</span>°</div>
+        <div>Velocity: <span id="velocity">0</span></div>
+    </div>
+
+    <div class="controls">
+        <button onclick="resetPendulum()">Reset</button>
+        <button onclick="togglePause()">Pause/Resume</button>
+        <label>
+            <input type="range" id="gravity" min="0" max="2" step="0.1" value="1">
+            Gravity
+        </label>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <!-- Import Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+    <script>
+        // Matter.js module aliases
+        const Engine = Matter.Engine;
+        const Render = Matter.Render;
+        const World = Matter.World;
+        const Bodies = Matter.Bodies;
+        const Body = Matter.Body;
+        const Constraint = Matter.Constraint;
+        const Runner = Matter.Runner;
+        const Events = Matter.Events;
+        const Mouse = Matter.Mouse;
+        const MouseConstraint = Matter.MouseConstraint;
+
+        // Create engine
+        const engine = Engine.create();
+        const world = engine.world;
+
+        // Make engine globally accessible for buttons
+        window.gameEngine = engine;
+
+        // Create renderer
+        const render = Render.create({
+            element: document.getElementById('canvas-container'),
+            engine: engine,
+            options: {
+                width: 800,
+                height: 500,
+                wireframes: false,
+                background: '#f0f0f0',
+                pixelRatio: 1
+            }
+        });
+
+        // Create ground (invisible, just for reference)
+        const ground = Bodies.rectangle(400, 450, 800, 20, {
+            isStatic: true,
+            restitution: 0.5,
+            friction: 0.5,
+            render: {
+                fillStyle: '#8B4513',
+                strokeStyle: '#5D3A1A',
+                lineWidth: 2
+            }
+        });
+
+        // Create pendulum anchor point (ceiling)
+        const anchor = Bodies.circle(400, 100, 10, {
+            isStatic: true,
+            restitution: 0,
+            friction: 0,
+            render: {
+                fillStyle: '#FFD700',
+                strokeStyle: '#B8860B',
+                lineWidth: 2
+            }
+        });
+
+        // Create pendulum bob (weight)
+        const bob = Bodies.circle(400, 300, 25, {
+            restitution: 0.3,
+            friction: 0.1,
+            density: 0.002,
+            render: {
+                fillStyle: '#FF6B6B',
+                strokeStyle: '#C0392B',
+                lineWidth: 2
+            }
+        });
+
+        // Add some decoration - a small chain link at the bob
+        const bobConnector = Bodies.circle(400, 275, 5, {
+            isStatic: false,
+            restitution: 0,
+            friction: 0,
+            render: {
+                fillStyle: '#95A5A6',
+                strokeStyle: '#7F8C8D',
+                lineWidth: 1
+            }
+        });
+
+        // Create the rope/rod constraint
+        const rope = Constraint.create({
+            pointA: { x: 400, y: 100 }, // Anchor point
+            bodyB: bob,
+            pointB: { x: 0, y: -25 }, // Attach to top of bob
+            length: 180,
+            stiffness: 0.9,
+            damping: 0.05,
+            render: {
+                visible: true,
+                lineWidth: 3,
+                strokeStyle: '#95A5A6'
+            }
+        });
+
+        // Create connector constraint between bob and connector
+        const connectorRope = Constraint.create({
+            bodyA: bob,
+            bodyB: bobConnector,
+            pointA: { x: 0, y: -25 },
+            pointB: { x: 0, y: 0 },
+            length: 5,
+            stiffness: 1,
+            render: {
+                visible: false
+            }
+        });
+
+        // Create a second rope for decoration
+        const rope2 = Constraint.create({
+            bodyA: anchor,
+            bodyB: bobConnector,
+            length: 170,
+            stiffness: 0.9,
+            damping: 0.05,
+            render: {
+                visible: true,
+                lineWidth: 2,
+                strokeStyle: '#BDC3C7'
+            }
+        });
+
+        // Add all bodies to world
+        World.add(world, [ground, anchor, bob, bobConnector, rope, rope2, connectorRope]);
+
+        // Add mouse control for interactive pendulum
+        const mouse = Mouse.create(render.canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: {
+                    visible: false
+                }
+            }
+        });
+
+        World.add(world, mouseConstraint);
+        render.mouse = mouse;
+
+        // Run the renderer
+        Render.run(render);
+
+        // Create runner
+        const runner = Runner.create();
+        Runner.run(runner, engine);
+
+        // Add some visual flair - particles when bob hits ground
+        Events.on(engine, 'collisionStart', (event) => {
+            const pairs = event.pairs;
+
+            pairs.forEach(pair => {
+                if ((pair.bodyA === bob && pair.bodyB === ground) ||
+                    (pair.bodyB === bob && pair.bodyA === ground)) {
+                    // Bob hit the ground - create some particles
+                    createParticles(bob.position.x, bob.position.y - 10);
+                }
+            });
+        });
+
+        // Function to create particles on impact
+        function createParticles(x, y) {
+            for (let i = 0; i < 5; i++) {
+                const particle = Bodies.circle(x + (Math.random() - 0.5) * 20, y, 2, {
+                    restitution: 0.5,
+                    friction: 0.1,
+                    density: 0.001,
+                    render: {
+                        fillStyle: '#FFD700',
+                        visible: true
+                    }
+                });
+
+                // Give it random velocity
+                Body.setVelocity(particle, {
+                    x: (Math.random() - 0.5) * 5,
+                    y: -Math.random() * 5
+                });
+
+                World.add(world, particle);
+
+                // Remove particle after 1 second
+                setTimeout(() => {
+                    if (particle) {
+                        World.remove(world, particle);
+                    }
+                }, 1000);
+            }
+        }
+
+        // Update angle display
+        Events.on(engine, 'afterUpdate', () => {
+            // Calculate angle from vertical
+            const dx = bob.position.x - anchor.position.x;
+            const dy = bob.position.y - anchor.position.y;
+            const angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+
+            // Get angular velocity
+            const velocity = bob.angularVelocity * 180 / Math.PI;
+
+            document.getElementById('angle').textContent = angle.toFixed(1);
+            document.getElementById('velocity').textContent = velocity.toFixed(1);
+        });
+
+        // Make pendulum interactive - click and drag to start motion
+        let isPaused = false;
+
+        // Initial push to start motion
+        Body.setVelocity(bob, { x: 5, y: 0 });
+
+        // Control functions
+        window.resetPendulum = () => {
+            Body.setPosition(bob, { x: 400, y: 300 });
+            Body.setVelocity(bob, { x: 5, y: 0 });
+            Body.setAngularVelocity(bob, 0);
+            Body.setPosition(bobConnector, { x: 400, y: 275 });
+        };
+
+        window.togglePause = () => {
+            isPaused = !isPaused;
+            runner.enabled = !isPaused;
+        };
+
+        // Gravity control
+        document.getElementById('gravity').addEventListener('input', (e) => {
+            engine.world.gravity.y = parseFloat(e.target.value);
+        });
+
+        // Add wind effect when moving mouse quickly
+        let lastMousePos = { x: 0, y: 0 };
+        let lastMouseTime = Date.now();
+
+        render.canvas.addEventListener('mousemove', (e) => {
+            const currentTime = Date.now();
+            const dt = currentTime - lastMouseTime;
+
+            if (dt > 0) {
+                const currentPos = {
+                    x: e.clientX - render.canvas.getBoundingClientRect().left,
+                    y: e.clientY - render.canvas.getBoundingClientRect().top
+                };
+
+                const speed = Math.sqrt(
+                    Math.pow(currentPos.x - lastMousePos.x, 2) +
+                    Math.pow(currentPos.y - lastMousePos.y, 2)
+                ) / dt;
+
+                // If moving mouse fast, add some wind to pendulum
+                if (speed > 0.5) {
+                    const force = {
+                        x: (currentPos.x - lastMousePos.x) * 0.01,
+                        y: (currentPos.y - lastMousePos.y) * 0.01
+                    };
+                    Body.applyForce(bob, bob.position, force);
+                }
+
+                lastMousePos = currentPos;
+                lastMouseTime = currentTime;
+            }
+        });
+
+        // Add some style to the rope
+        const ctx = render.canvas.getContext('2d');
+        const originalRender = Render.world;
+
+        // Custom rendering for chain effect
+        Render.world = (engine) => {
+            originalRender(engine);
+
+            // Draw chain links on the rope
+            if (!isPaused) {
+                const ropePoints = [];
+                const steps = 20;
+
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    const x = anchor.position.x * (1 - t) + bob.position.x * t;
+                    const y = anchor.position.y * (1 - t) + bob.position.y * t;
+                    ropePoints.push({ x, y });
+                }
+
+                ctx.beginPath();
+                ctx.strokeStyle = '#BDC3C7';
+                ctx.lineWidth = 4;
+                ctx.setLineDash([5, 5]);
+
+                ctx.moveTo(anchor.position.x, anchor.position.y);
+                ctx.lineTo(bob.position.x, bob.position.y - 25);
+                ctx.stroke();
+
+                ctx.setLineDash([]);
+            }
+        };
+
+        console.log('Simple Pendulum Simulation Started!');
+        console.log('Controls:');
+        console.log('- Click and drag the pendulum bob');
+        console.log('- Use gravity slider to change gravity');
+        console.log('- Reset button to restart');
+        console.log('- Move mouse quickly to create wind effect');
+    </script>
+</body>
+
+</html>

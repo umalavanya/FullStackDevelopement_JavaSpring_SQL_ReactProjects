@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,21 +15,20 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: Arial, sans-serif;
         }
-
+        
         #game-container {
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             border-radius: 10px;
             overflow: hidden;
         }
     </style>
 </head>
-
 <body>
     <div id="game-container"></div>
 
     <!-- Import Kaboom from CDN -->
     <script src="https://unpkg.com/kaboom@3000.0.1/dist/kaboom.js"></script>
-
+    
     <script>
         // Initialize Kaboom
         const k = kaboom({
@@ -52,13 +50,13 @@
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
-
+            
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
-
+            
             oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-
+            
             oscillator.start();
             oscillator.stop(audioCtx.currentTime + 0.1);
         }
@@ -222,13 +220,13 @@
 
             // Fruit spawner
             const fruits = ["🍎", "🍌", "🍇", "🍊", "🍓"];
-
+            
             loop(0.5, () => {
                 if (!gameActive) return;
 
                 const fruit = fruits[Math.floor(Math.random() * fruits.length)];
                 const fruitX = rand(40, width() - 40);
-
+                
                 const fruitObj = add([
                     text(fruit, { size: 40 }),
                     pos(fruitX, 40),
@@ -243,17 +241,17 @@
                 // Fruit falling
                 fruitObj.onUpdate(() => {
                     if (!gameActive) return;
-
+                    
                     fruitObj.pos.y += fruitObj.speed * dt();
-
+                    
                     // Check if fruit hit the ground
                     if (fruitObj.pos.y > height() - 30) {
                         destroy(fruitObj);
-
+                        
                         if (gameActive) {
                             lives--;
                             playBeep();
-
+                            
                             if (lives <= 0) {
                                 gameActive = false;
                                 go("gameover", score);
@@ -275,7 +273,7 @@
             // Pause game with P key
             onKeyPress("p", () => {
                 gameActive = !gameActive;
-
+                
                 const pauseText = get("pauseText")[0];
                 if (!gameActive) {
                     add([
@@ -364,5 +362,4 @@
 
     </script>
 </body>
-
 </html>
