@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM practice</title>
+    <style>
+        div {
+            border: 1px solid black;
+            height: 100px;
+            width: 300px;
+            background-color: green;
+            transition: background-color 1s;
+            /* Smooth transition */
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Javascript document.addEventListener() Method</h3>
+    <p>Hover here to change the background color</p>
+    <div id="mouse-over"></div>
+
+    <script>
+        const myDiv = document.getElementById("mouse-over");
+
+        myDiv.addEventListener('mouseover', function () {
+            myDiv.textContent = "Hello"; // Change text content
+            myDiv.style.backgroundColor = "yellow"; // Change background color
+        });
+
+        myDiv.addEventListener('mouseout', function () {
+            myDiv.textContent = ""; // Clear text
+            myDiv.style.backgroundColor = ""; // Reset background color
+        });
+    </script>
+
+</body>
+
+</html>
