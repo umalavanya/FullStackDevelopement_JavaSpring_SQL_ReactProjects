@@ -4,38 +4,1580 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOM practice</title>
+    <title>Complete DOM Methods Demonstration</title>
     <style>
-        div {
-            border: 1px solid black;
-            height: 100px;
-            width: 300px;
-            background-color: green;
-            transition: background-color 1s;
-            /* Smooth transition */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+            border-left: 5px solid #007bff;
+            padding-left: 15px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .method-card h3 {
+            margin-top: 0;
+            color: #28a745;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .method-card p {
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .demo-box {
+            border: 2px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f8f9fa;
+            min-height: 80px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button.reset {
+            background: #dc3545;
+        }
+
+        button.reset:hover {
+            background: #c82333;
+        }
+
+        input,
+        select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .output {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .note {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px;
+            margin: 10px 0;
         }
     </style>
 </head>
 
 <body>
-    <h3>Javascript document.addEventListener() Method</h3>
-    <p>Hover here to change the background color</p>
-    <div id="mouse-over"></div>
+    <h1>📚 Complete DOM Methods Demonstration (78 Methods)</h1>
+
+    <div class="note">
+        <strong>Note:</strong> Click each button to see the corresponding DOM method in action. Check the output area
+        for results.
+    </div>
+
+    <!-- Section 1: Element Methods (1-20) -->
+    <h2>📌 Element Methods (1-20)</h2>
+    <div class="container">
+        <!-- 1. toString() -->
+        <div class="method-card">
+            <h3>1. toString()</h3>
+            <p>Converts element to string</p>
+            <div id="toString-demo" class="demo-box">Element to string</div>
+            <button onclick="demoToString()">Test toString()</button>
+            <div id="toString-output" class="output"></div>
+        </div>
+
+        <!-- 2. setAttribute() -->
+        <div class="method-card">
+            <h3>2. setAttribute()</h3>
+            <p>Sets attribute on element</p>
+            <div id="setAttr-demo" class="demo-box">Hover over me</div>
+            <button onclick="demoSetAttribute()">Set title attribute</button>
+        </div>
+
+        <!-- 3. setAttributeNode() -->
+        <div class="method-card">
+            <h3>3. setAttributeNode()</h3>
+            <p>Sets attribute node</p>
+            <div id="setAttrNode-demo" class="demo-box">Attribute node demo</div>
+            <button onclick="demoSetAttributeNode()">Set attribute node</button>
+        </div>
+
+        <!-- 4. scrollIntoView() -->
+        <div class="method-card">
+            <h3>4. scrollIntoView()</h3>
+            <p>Scrolls element into view</p>
+            <div id="scroll-demo" class="demo-box" style="height: 50px;">Scroll target</div>
+            <button onclick="demoScrollIntoView()">Scroll to element</button>
+        </div>
+
+        <!-- 5. querySelector() -->
+        <div class="method-card">
+            <h3>5. querySelector()</h3>
+            <p>Selects first matching element</p>
+            <div class="demo-box">
+                <p class="query-demo">First paragraph</p>
+                <p class="query-demo">Second paragraph</p>
+            </div>
+            <button onclick="demoQuerySelector()">Select first .query-demo</button>
+            <div id="query-output" class="output"></div>
+        </div>
+
+        <!-- 6. querySelectorAll() -->
+        <div class="method-card">
+            <h3>6. querySelectorAll()</h3>
+            <p>Selects all matching elements</p>
+            <div class="demo-box">
+                <span class="query-all">Span 1</span>
+                <span class="query-all">Span 2</span>
+                <span class="query-all">Span 3</span>
+            </div>
+            <button onclick="demoQuerySelectorAll()">Count all .query-all</button>
+            <div id="queryAll-output" class="output"></div>
+        </div>
+
+        <!-- 7. remove() -->
+        <div class="method-card">
+            <h3>7. remove()</h3>
+            <p>Removes element from DOM</p>
+            <div id="remove-demo" class="demo-box">This will be removed</div>
+            <button onclick="demoRemove()">Remove element</button>
+            <button class="reset" onclick="resetRemove()">Reset</button>
+        </div>
+
+        <!-- 8. removeAttribute() -->
+        <div class="method-card">
+            <h3>8. removeAttribute()</h3>
+            <p>Removes attribute</p>
+            <div id="removeAttr-demo" class="demo-box" style="background: lightblue;" title="Tooltip">Has style and
+                title</div>
+            <button onclick="demoRemoveAttribute()">Remove style attribute</button>
+        </div>
+
+        <!-- 9. removeAttributeNode() -->
+        <div class="method-card">
+            <h3>9. removeAttributeNode()</h3>
+            <p>Removes attribute node</p>
+            <div id="removeAttrNode-demo" class="demo-box" align="center">Centered text</div>
+            <button onclick="demoRemoveAttributeNode()">Remove align attribute</button>
+        </div>
+
+        <!-- 10. removeChild() -->
+        <div class="method-card">
+            <h3>10. removeChild()</h3>
+            <p>Removes child element</p>
+            <div id="parent-demo" class="demo-box">
+                <span id="child-demo">Child element</span>
+            </div>
+            <button onclick="demoRemoveChild()">Remove child</button>
+            <button class="reset" onclick="resetChild()">Reset</button>
+        </div>
+
+        <!-- 11. removeEventListener() -->
+        <div class="method-card">
+            <h3>11. removeEventListener()</h3>
+            <p>Removes event listener</p>
+            <button id="listener-btn" class="demo-box">Click me (has listener)</button>
+            <button onclick="addClickListener()">Add listener</button>
+            <button onclick="removeClickListener()">Remove listener</button>
+            <div id="listener-output" class="output"></div>
+        </div>
+
+        <!-- 12. replaceChild() -->
+        <div class="method-card">
+            <h3>12. replaceChild()</h3>
+            <p>Replaces child element</p>
+            <div id="replace-parent" class="demo-box">
+                <span id="old-child">Old child</span>
+            </div>
+            <button onclick="demoReplaceChild()">Replace child</button>
+        </div>
+
+        <!-- 13. hasAttribute() -->
+        <div class="method-card">
+            <h3>13. hasAttribute()</h3>
+            <p>Checks if attribute exists</p>
+            <div id="hasAttr-demo" class="demo-box" data-test="value">Has data-test attribute</div>
+            <button onclick="demoHasAttribute()">Check data-test attribute</button>
+            <div id="hasAttr-output" class="output"></div>
+        </div>
+
+        <!-- 14. hasAttributes() -->
+        <div class="method-card">
+            <h3>14. hasAttributes()</h3>
+            <p>Checks if element has any attributes</p>
+            <div id="hasAttrs-demo" class="demo-box">No attributes</div>
+            <button onclick="demoHasAttributes()">Check attributes</button>
+            <div id="hasAttrs-output" class="output"></div>
+        </div>
+
+        <!-- 15. hasChildNodes() -->
+        <div class="method-card">
+            <h3>15. hasChildNodes()</h3>
+            <p>Checks if element has children</p>
+            <div id="hasChild-demo" class="demo-box">
+                <span>Child exists</span>
+            </div>
+            <button onclick="demoHasChildNodes()">Check children</button>
+            <div id="hasChild-output" class="output"></div>
+        </div>
+
+        <!-- 16. getAttribute() -->
+        <div class="method-card">
+            <h3>16. getAttribute()</h3>
+            <p>Returns attribute value</p>
+            <div id="getAttr-demo" class="demo-box" data-info="secret-value">Has data-info</div>
+            <button onclick="demoGetAttribute()">Get data-info</button>
+            <div id="getAttr-output" class="output"></div>
+        </div>
+
+        <!-- 17. getBoundingClientRect() -->
+        <div class="method-card">
+            <h3>17. getBoundingClientRect()</h3>
+            <p>Gets element position and size</p>
+            <div id="rect-demo" class="demo-box" style="width: 200px;">Get my rectangle</div>
+            <button onclick="demoGetBoundingClientRect()">Get dimensions</button>
+            <div id="rect-output" class="output"></div>
+        </div>
+
+        <!-- 18. closest() -->
+        <div class="method-card">
+            <h3>18. closest()</h3>
+            <p>Finds closest ancestor</p>
+            <div class="grandparent" style="border: 1px solid red; padding: 10px;">
+                Grandparent
+                <div class="parent" style="border: 1px solid blue; padding: 10px;">
+                    Parent
+                    <span id="closest-demo" class="child" style="display: block; padding: 5px;">Child (click me)</span>
+                </div>
+            </div>
+            <button onclick="demoClosest()">Find closest parent div</button>
+            <div id="closest-output" class="output"></div>
+        </div>
+
+        <!-- 19. contains() -->
+        <div class="method-card">
+            <h3>19. contains()</h3>
+            <p>Checks if element contains another</p>
+            <div id="container-demo" class="demo-box">
+                Container
+                <span id="inner-demo">Inner element</span>
+            </div>
+            <button onclick="demoContains()">Check if contains span</button>
+            <div id="contains-output" class="output"></div>
+        </div>
+
+        <!-- 20. click() -->
+        <div class="method-card">
+            <h3>20. click()</h3>
+            <p>Programmatically clicks element</p>
+            <button id="click-demo" class="demo-box" onclick="alert('Button clicked!')">Click me
+                programmatically</button>
+            <button onclick="demoClick()">Trigger click() method</button>
+        </div>
+    </div>
+
+    <!-- Section 2: Element Methods (21-40) -->
+    <h2>📌 Element Methods (21-40)</h2>
+    <div class="container">
+        <!-- 21. normalize() -->
+        <div class="method-card">
+            <h3>21. normalize()</h3>
+            <p>Combines adjacent text nodes</p>
+            <div id="normalize-demo" class="demo-box"></div>
+            <button onclick="demoNormalize()">Create and normalize text nodes</button>
+            <div id="normalize-output" class="output"></div>
+        </div>
+
+        <!-- 22. isDefaultNamespace() -->
+        <div class="method-card">
+            <h3>22. isDefaultNamespace()</h3>
+            <p>Checks default namespace</p>
+            <div id="namespace-demo" class="demo-box" xmlns="http://www.w3.org/1999/xhtml">Namespace demo</div>
+            <button onclick="demoIsDefaultNamespace()">Check namespace</button>
+            <div id="namespace-output" class="output"></div>
+        </div>
+
+        <!-- 23. isEqualNode() -->
+        <div class="method-card">
+            <h3>23. isEqualNode()</h3>
+            <p>Checks if nodes are equal</p>
+            <div id="equal1" class="demo-box">Same content</div>
+            <div id="equal2" class="demo-box">Same content</div>
+            <button onclick="demoIsEqualNode()">Compare nodes</button>
+            <div id="equal-output" class="output"></div>
+        </div>
+
+        <!-- 24. isSameNode() -->
+        <div class="method-card">
+            <h3>24. isSameNode()</h3>
+            <p>Checks if nodes are the same</p>
+            <div id="same-demo" class="demo-box">Single node</div>
+            <button onclick="demoIsSameNode()">Check same node reference</button>
+            <div id="same-output" class="output"></div>
+        </div>
+
+        <!-- 25. isSupported() -->
+        <div class="method-card">
+            <h3>25. isSupported()</h3>
+            <p>Checks feature support (deprecated but demonstrated)</p>
+            <button onclick="demoIsSupported()">Check feature support</button>
+            <div id="support-output" class="output"></div>
+        </div>
+
+        <!-- 26. insertAdjacentElement() -->
+        <div class="method-card">
+            <h3>26. insertAdjacentElement()</h3>
+            <p>Inserts element at position</p>
+            <div id="adjacent-demo" class="demo-box">Target element</div>
+            <button onclick="demoInsertAdjacentElement()">Insert before</button>
+            <div id="adjacent-output" class="output"></div>
+        </div>
+
+        <!-- 27. insertBefore() -->
+        <div class="method-card">
+            <h3>27. insertBefore()</h3>
+            <p>Inserts element before reference</p>
+            <ul id="insertBefore-list" class="demo-box">
+                <li>Item 2</li>
+                <li>Item 3</li>
+            </ul>
+            <button onclick="demoInsertBefore()">Insert Item 1 at beginning</button>
+        </div>
+
+        <!-- 28. blur() -->
+        <div class="method-card">
+            <h3>28. blur()</h3>
+            <p>Removes focus from element</p>
+            <input type="text" id="blur-input" class="demo-box" value="Click then blur">
+            <button onclick="demoBlur()">Blur input</button>
+        </div>
+
+        <!-- 29. matches() -->
+        <div class="method-card">
+            <h3>29. matches()</h3>
+            <p>Checks if element matches selector</p>
+            <div id="matches-demo" class="demo-box test-class">Check if matches .test-class</div>
+            <button onclick="demoMatches()">Test matches()</button>
+            <div id="matches-output" class="output"></div>
+        </div>
+
+        <!-- 30. insertAdjacentHTML() -->
+        <div class="method-card">
+            <h3>30. insertAdjacentHTML()</h3>
+            <p>Inserts HTML at position</p>
+            <div id="adjacentHTML-demo" class="demo-box">Target</div>
+            <button onclick="demoInsertAdjacentHTML()">Add HTML after</button>
+        </div>
+
+        <!-- 31. addEventListener() -->
+        <div class="method-card">
+            <h3>31. addEventListener()</h3>
+            <p>Adds event listener</p>
+            <button id="addEvent-demo" class="demo-box">Click me</button>
+            <button onclick="demoAddEventListener()">Add click listener</button>
+            <div id="addEvent-output" class="output"></div>
+        </div>
+
+        <!-- 32. cloneNode() -->
+        <div class="method-card">
+            <h3>32. cloneNode()</h3>
+            <p>Clones element</p>
+            <div id="clone-original" class="demo-box">
+                Original with <span>child</span>
+            </div>
+            <div id="clone-container" class="demo-box">Clones appear here</div>
+            <button onclick="demoCloneNode()">Clone with children</button>
+            <button onclick="demoCloneNode(false)">Clone without children</button>
+        </div>
+
+        <!-- 33. appendChild() -->
+        <div class="method-card">
+            <h3>33. appendChild()</h3>
+            <p>Appends child element</p>
+            <div id="append-parent" class="demo-box">Parent</div>
+            <button onclick="demoAppendChild()">Append new child</button>
+        </div>
+
+        <!-- 34. compareDocumentPosition() -->
+        <div class="method-card">
+            <h3>34. compareDocumentPosition()</h3>
+            <p>Compares document position</p>
+            <div id="pos1" class="demo-box">Element 1</div>
+            <div id="pos2" class="demo-box">Element 2</div>
+            <button onclick="demoComparePosition()">Compare positions</button>
+            <div id="compare-output" class="output"></div>
+        </div>
+
+        <!-- 35. focus() -->
+        <div class="method-card">
+            <h3>35. focus()</h3>
+            <p>Sets focus to element</p>
+            <input type="text" id="focus-input" class="demo-box" placeholder="Input will get focus">
+            <button onclick="demoFocus()">Focus input</button>
+        </div>
+
+        <!-- 36. getAttributeNode() -->
+        <div class="method-card">
+            <h3>36. getAttributeNode()</h3>
+            <p>Gets attribute node</p>
+            <div id="attrNode-demo" class="demo-box" title="Attribute node demo">Has title attribute</div>
+            <button onclick="demoGetAttributeNode()">Get title node</button>
+            <div id="attrNode-output" class="output"></div>
+        </div>
+
+        <!-- 37. getBoundingClientRect() (duplicate, but including) -->
+        <div class="method-card">
+            <h3>37. getBoundingClientRect()</h3>
+            <p>Gets position and size (duplicate)</p>
+            <div id="rect2-demo" class="demo-box">Get rectangle info</div>
+            <button onclick="demoGetBoundingClientRect2()">Get dimensions</button>
+            <div id="rect2-output" class="output"></div>
+        </div>
+
+        <!-- 38. getElementsByClassName() -->
+        <div class="method-card">
+            <h3>38. getElementsByClassName()</h3>
+            <p>Gets elements by class</p>
+            <div class="demo-box">
+                <div class="demo-class">Class item 1</div>
+                <div class="demo-class">Class item 2</div>
+                <div class="demo-class">Class item 3</div>
+            </div>
+            <button onclick="demoGetElementsByClassName()">Count .demo-class</button>
+            <div id="getClass-output" class="output"></div>
+        </div>
+
+        <!-- 39. getElementsByTagName() -->
+        <div class="method-card">
+            <h3>39. getElementsByTagName()</h3>
+            <p>Gets elements by tag name</p>
+            <div class="demo-box">
+                <span>Span 1</span>
+                <span>Span 2</span>
+                <span>Span 3</span>
+            </div>
+            <button onclick="demoGetElementsByTagName()">Count spans</button>
+            <div id="getTag-output" class="output"></div>
+        </div>
+
+        <!-- 40. insertAdjacentText() -->
+        <div class="method-card">
+            <h3>40. insertAdjacentText()</h3>
+            <p>Inserts text at position</p>
+            <div id="adjacentText-demo" class="demo-box">Target</div>
+            <button onclick="demoInsertAdjacentText()">Insert text after</button>
+        </div>
+    </div>
+
+    <!-- Section 3: Collection Methods (41-50) -->
+    <h2>📌 Collection Methods (41-50)</h2>
+    <div class="container">
+        <!-- 41. namedItem() -->
+        <div class="method-card">
+            <h3>41. namedItem()</h3>
+            <p>Gets item by name from collection</p>
+            <form id="named-form" class="demo-box">
+                <input type="text" name="username" value="john_doe">
+                <input type="email" name="email" value="john@example.com">
+            </form>
+            <button onclick="demoNamedItem()">Get username input</button>
+            <div id="named-output" class="output"></div>
+        </div>
+
+        <!-- 42. item() (HTMLCollection) -->
+        <div class="method-card">
+            <h3>42. item() - HTMLCollection</h3>
+            <p>Gets item by index from collection</p>
+            <div class="demo-box">
+                <div class="item-demo">Item 0</div>
+                <div class="item-demo">Item 1</div>
+                <div class="item-demo">Item 2</div>
+            </div>
+            <button onclick="demoItem()">Get item at index 1</button>
+            <div id="item-output" class="output"></div>
+        </div>
+
+        <!-- 43. entries() (HTMLCollection) -->
+        <div class="method-card">
+            <h3>43. entries() - HTMLCollection</h3>
+            <p>Gets iterator for collection</p>
+            <div class="demo-box">
+                <div class="entries-demo">Entry 1</div>
+                <div class="entries-demo">Entry 2</div>
+            </div>
+            <button onclick="demoEntries()">Iterate entries</button>
+            <div id="entries-output" class="output"></div>
+        </div>
+
+        <!-- 44. forEach() (HTMLCollection) -->
+        <div class="method-card">
+            <h3>44. forEach() - HTMLCollection</h3>
+            <p>Iterates over collection</p>
+            <div class="demo-box">
+                <div class="foreach-demo">A</div>
+                <div class="foreach-demo">B</div>
+                <div class="foreach-demo">C</div>
+            </div>
+            <button onclick="demoForEach()">Loop through elements</button>
+            <div id="foreach-output" class="output"></div>
+        </div>
+
+        <!-- 45. item() (NodeList) -->
+        <div class="method-card">
+            <h3>45. item() - NodeList</h3>
+            <p>Gets node by index from NodeList</p>
+            <div class="demo-box">
+                <p class="nodelist-item">Paragraph 1</p>
+                <p class="nodelist-item">Paragraph 2</p>
+                <p class="nodelist-item">Paragraph 3</p>
+            </div>
+            <button onclick="demoNodeListItem()">Get paragraph at index 2</button>
+            <div id="nodelist-item-output" class="output"></div>
+        </div>
+
+        <!-- 46. keys() (NodeList) -->
+        <div class="method-card">
+            <h3>46. keys() - NodeList</h3>
+            <p>Gets key iterator for NodeList</p>
+            <div class="demo-box">
+                <div class="keys-demo">Key item 1</div>
+                <div class="keys-demo">Key item 2</div>
+            </div>
+            <button onclick="demoKeys()">Get keys</button>
+            <div id="keys-output" class="output"></div>
+        </div>
+
+        <!-- 47. writeln() -->
+        <div class="method-card">
+            <h3>47. writeln()</h3>
+            <p>Writes with newline (in iframe)</p>
+            <iframe id="writeln-frame" class="demo-box" style="height: 100px;"></iframe>
+            <button onclick="demoWriteln()">Write to document</button>
+        </div>
+
+        <!-- 48. write() -->
+        <div class="method-card">
+            <h3>48. write()</h3>
+            <p>Writes to document (in iframe)</p>
+            <iframe id="write-frame" class="demo-box" style="height: 100px;"></iframe>
+            <button onclick="demoWrite()">Write to document</button>
+        </div>
+
+        <!-- 49. hasFocus() -->
+        <div class="method-card">
+            <h3>49. hasFocus()</h3>
+            <p>Checks if document has focus</p>
+            <input type="text" id="focus-check" placeholder="Focus here">
+            <button onclick="demoHasFocus()">Check focus</button>
+            <div id="focus-output" class="output"></div>
+        </div>
+
+        <!-- 50. renameNode() -->
+        <div class="method-card">
+            <h3>50. renameNode()</h3>
+            <p>Renames node (limited support)</p>
+            <div id="rename-demo" class="demo-box">Element to rename</div>
+            <button onclick="demoRenameNode()">Try rename (may not work)</button>
+            <div id="rename-output" class="output"></div>
+        </div>
+    </div>
+
+    <!-- Section 4: Document Methods (51-67) -->
+    <h2>📌 Document Methods (51-67)</h2>
+    <div class="container">
+        <!-- 51. open() -->
+        <div class="method-card">
+            <h3>51. open()</h3>
+            <p>Opens document for writing</p>
+            <iframe id="open-frame" class="demo-box" style="height: 100px;"></iframe>
+            <button onclick="demoOpen()">Open and write</button>
+        </div>
+
+        <!-- 52. normalizeDocument() -->
+        <div class="method-card">
+            <h3>52. normalizeDocument()</h3>
+            <p>Normalizes document (deprecated)</p>
+            <div id="normalizeDoc-demo" class="demo-box">Normalize document</div>
+            <button onclick="demoNormalizeDocument()">Try normalizeDocument</button>
+        </div>
+
+        <!-- 53. normalize() (duplicate, but included) -->
+        <div class="method-card">
+            <h3>53. normalize()</h3>
+            <p>Normalizes element (duplicate)</p>
+            <div id="normalize2-demo" class="demo-box"></div>
+            <button onclick="demoNormalize2()">Create and normalize</button>
+        </div>
+
+        <!-- 54. adoptNode() -->
+        <div class="method-card">
+            <h3>54. adoptNode()</h3>
+            <p>Adopts node from another document</p>
+            <iframe id="adopt-source" class="demo-box" style="height: 50px;"
+                srcdoc="<p id='adopt-me'>Adopt me!</p>"></iframe>
+            <div id="adopt-target" class="demo-box">Target container</div>
+            <button onclick="demoAdoptNode()">Adopt node</button>
+        </div>
+
+        <!-- 55. addEventListener() (duplicate) -->
+        <div class="method-card">
+            <h3>55. addEventListener()</h3>
+            <p>Document level event listener</p>
+            <button onclick="demoDocumentEventListener()">Add doc listener</button>
+            <button onclick="removeDocumentEventListener()">Remove doc listener</button>
+            <div id="docListener-output" class="output"></div>
+        </div>
+
+        <!-- 56. execCommand() -->
+        <div class="method-card">
+            <h3>56. execCommand()</h3>
+            <p>Executes command (deprecated)</p>
+            <div id="exec-demo" contenteditable="true" class="demo-box" style="min-height: 50px;">
+                Edit this text
+            </div>
+            <button onclick="demoExecCommand()">Make bold</button>
+        </div>
+
+        <!-- 57. createTextNode() -->
+        <div class="method-card">
+            <h3>57. createTextNode()</h3>
+            <p>Creates text node</p>
+            <div id="textNode-container" class="demo-box"></div>
+            <button onclick="demoCreateTextNode()">Add text node</button>
+        </div>
+
+        <!-- 58. createEvent() -->
+        <div class="method-card">
+            <h3>58. createEvent()</h3>
+            <p>Creates event object</p>
+            <button id="event-demo" class="demo-box">Click to trigger custom event</button>
+            <button onclick="demoCreateEvent()">Create and dispatch event</button>
+            <div id="event-output" class="output"></div>
+        </div>
+
+        <!-- 59. createDocumentFragment() -->
+        <div class="method-card">
+            <h3>59. createDocumentFragment()</h3>
+            <p>Creates document fragment</p>
+            <div id="fragment-container" class="demo-box"></div>
+            <button onclick="demoCreateDocumentFragment()">Add fragment with 3 items</button>
+        </div>
+
+        <!-- 60. createComment() -->
+        <div class="method-card">
+            <h3>60. createComment()</h3>
+            <p>Creates comment node</p>
+            <div id="comment-container" class="demo-box"></div>
+            <button onclick="demoCreateComment()">Add comment</button>
+            <button onclick="showComments()">Show comments</button>
+        </div>
+
+        <!-- 61. createAttribute() -->
+        <div class="method-card">
+            <h3>61. createAttribute()</h3>
+            <p>Creates attribute</p>
+            <div id="createAttr-demo" class="demo-box">Target element</div>
+            <button onclick="demoCreateAttribute()">Create and set attribute</button>
+        </div>
+
+        <!-- 62. close() -->
+        <div class="method-card">
+            <h3>62. close()</h3>
+            <p>Closes output stream</p>
+            <iframe id="close-frame" class="demo-box" style="height: 100px;"></iframe>
+            <button onclick="demoClose()">Open, write, close</button>
+        </div>
+
+        <!-- 63. getElementsByTagName() (document level) -->
+        <div class="method-card">
+            <h3>63. getElementsByTagName()</h3>
+            <p>Document level get by tag</p>
+            <button onclick="demoDocGetElementsByTagName()">Count all buttons</button>
+            <div id="docTag-output" class="output"></div>
+        </div>
+
+        <!-- 64. getElementsByName() -->
+        <div class="method-card">
+            <h3>64. getElementsByName()</h3>
+            <p>Gets elements by name</p>
+            <input type="radio" name="gender" value="male"> Male
+            <input type="radio" name="gender" value="female"> Female
+            <button onclick="demoGetElementsByName()">Get radio by name</button>
+            <div id="getName-output" class="output"></div>
+        </div>
+
+        <!-- 65. getElementsByClassName() (document level) -->
+        <div class="method-card">
+            <h3>65. getElementsByClassName()</h3>
+            <p>Document level get by class</p>
+            <div class="doc-class">Class element 1</div>
+            <div class="doc-class">Class element 2</div>
+            <button onclick="demoDocGetElementsByClassName()">Count .doc-class</button>
+            <div id="docClass-output" class="output"></div>
+        </div>
+
+        <!-- 66. getElementById() -->
+        <div class="method-card">
+            <h3>66. getElementById()</h3>
+            <p>Gets element by ID</p>
+            <div id="unique-id" class="demo-box">Element with unique-id</div>
+            <button onclick="demoGetElementById()">Get by ID</button>
+            <div id="getId-output" class="output"></div>
+        </div>
+
+        <!-- 67. createElement() -->
+        <div class="method-card">
+            <h3>67. createElement()</h3>
+            <p>Creates HTML element</p>
+            <div id="createElement-container" class="demo-box"></div>
+            <button onclick="demoCreateElement()">Create new div</button>
+        </div>
+    </div>
+
+    <!-- Section 5: DOMTokenList Methods (68-78) -->
+    <h2>📌 DOMTokenList Methods (68-78)</h2>
+    <div class="container">
+        <!-- 68. add() -->
+        <div class="method-card">
+            <h3>68. add() - DOMTokenList</h3>
+            <p>Adds token to class list</p>
+            <div id="token-add" class="demo-box">Element</div>
+            <button onclick="demoTokenAdd()">Add 'highlight' class</button>
+        </div>
+
+        <!-- 69. contains() - DOMTokenList -->
+        <div class="method-card">
+            <h3>69. contains() - DOMTokenList</h3>
+            <p>Checks if token exists</p>
+            <div id="token-contains" class="demo-box test-class">Has test-class</div>
+            <button onclick="demoTokenContains()">Check for test-class</button>
+            <div id="tokenContains-output" class="output"></div>
+        </div>
+
+        <!-- 70. entries() - DOMTokenList -->
+        <div class="method-card">
+            <h3>70. entries() - DOMTokenList</h3>
+            <p>Gets iterator for token list</p>
+            <div id="token-entries" class="class1 class2 class3">Multiple classes</div>
+            <button onclick="demoTokenEntries()">Iterate classes</button>
+            <div id="tokenEntries-output" class="output"></div>
+        </div>
+
+        <!-- 71. forEach() - DOMTokenList -->
+        <div class="method-card">
+            <h3>71. forEach() - DOMTokenList</h3>
+            <p>Iterates over tokens</p>
+            <div id="token-foreach" class="red blue green">Color classes</div>
+            <button onclick="demoTokenForEach()">Loop through classes</button>
+            <div id="tokenForEach-output" class="output"></div>
+        </div>
+
+        <!-- 72. item() - DOMTokenList -->
+        <div class="method-card">
+            <h3>72. item() - DOMTokenList</h3>
+            <p>Gets token by index</p>
+            <div id="token-item" class="first second third">Three classes</div>
+            <button onclick="demoTokenItem()">Get class at index 1</button>
+            <div id="tokenItem-output" class="output"></div>
+        </div>
+
+        <!-- 73. keys() - DOMTokenList -->
+        <div class="method-card">
+            <h3>73. keys() - DOMTokenList</h3>
+            <p>Gets key iterator</p>
+            <div id="token-keys" class="key1 key2 key3">Multiple classes</div>
+            <button onclick="demoTokenKeys()">Get keys</button>
+            <div id="tokenKeys-output" class="output"></div>
+        </div>
+
+        <!-- 74. remove() - DOMTokenList -->
+        <div class="method-card">
+            <h3>74. remove() - DOMTokenList</h3>
+            <p>Removes token</p>
+            <div id="token-remove" class="remove-me keep-me">Element with classes</div>
+            <button onclick="demoTokenRemove()">Remove 'remove-me' class</button>
+        </div>
+
+        <!-- 75. replace() - DOMTokenList -->
+        <div class="method-card">
+            <h3>75. replace() - DOMTokenList</h3>
+            <p>Replaces token</p>
+            <div id="token-replace" class="old-class">Has old-class</div>
+            <button onclick="demoTokenReplace()">Replace with new-class</button>
+        </div>
+
+        <!-- 76. supports() - DOMTokenList -->
+        <div class="method-card">
+            <h3>76. supports() - DOMTokenList</h3>
+            <p>Checks if token supported</p>
+            <button onclick="demoTokenSupports()">Check if 'color' supported</button>
+            <div id="tokenSupports-output" class="output"></div>
+        </div>
+
+        <!-- 77. toggle() - DOMTokenList -->
+        <div class="method-card">
+            <h3>77. toggle() - DOMTokenList</h3>
+            <p>Toggles token</p>
+            <div id="token-toggle" class="demo-box">Click to toggle class</div>
+            <button onclick="demoTokenToggle()">Toggle 'highlight' class</button>
+        </div>
+
+        <!-- 78. values() - DOMTokenList -->
+        <div class="method-card">
+            <h3>78. values() - DOMTokenList</h3>
+            <p>Gets value iterator</p>
+            <div id="token-values" class="value1 value2 value3">Multiple values</div>
+            <button onclick="demoTokenValues()">Get values</button>
+            <div id="tokenValues-output" class="output"></div>
+        </div>
+    </div>
 
     <script>
-        const myDiv = document.getElementById("mouse-over");
+        // ==================== 1-20: Element Methods ====================
 
-        myDiv.addEventListener('mouseover', function () {
-            myDiv.textContent = "Hello"; // Change text content
-            myDiv.style.backgroundColor = "yellow"; // Change background color
-        });
+        // 1. toString()
+        function demoToString() {
+            const element = document.getElementById('toString-demo');
+            document.getElementById('toString-output').textContent = element.toString();
+        }
 
-        myDiv.addEventListener('mouseout', function () {
-            myDiv.textContent = ""; // Clear text
-            myDiv.style.backgroundColor = ""; // Reset background color
-        });
+        // 2. setAttribute()
+        function demoSetAttribute() {
+            const element = document.getElementById('setAttr-demo');
+            element.setAttribute('title', 'This title was set by setAttribute()');
+            element.textContent = 'Title attribute added! Hover to see';
+        }
+
+        // 3. setAttributeNode()
+        function demoSetAttributeNode() {
+            const element = document.getElementById('setAttrNode-demo');
+            const attr = document.createAttribute('data-custom');
+            attr.value = 'Custom value';
+            element.setAttributeNode(attr);
+            element.textContent = 'Attribute node added!';
+        }
+
+        // 4. scrollIntoView()
+        function demoScrollIntoView() {
+            document.getElementById('scroll-demo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 5. querySelector()
+        function demoQuerySelector() {
+            const element = document.querySelector('.query-demo');
+            document.getElementById('query-output').textContent = 'Found: ' + element.textContent;
+        }
+
+        // 6. querySelectorAll()
+        function demoQuerySelectorAll() {
+            const elements = document.querySelectorAll('.query-all');
+            document.getElementById('queryAll-output').textContent = 'Found ' + elements.length + ' elements';
+        }
+
+        // 7. remove()
+        function demoRemove() {
+            document.getElementById('remove-demo').remove();
+        }
+
+        function resetRemove() {
+            const container = document.querySelector('.method-card:has(#remove-demo) .demo-box');
+            if (!document.getElementById('remove-demo')) {
+                const newDiv = document.createElement('div');
+                newDiv.id = 'remove-demo';
+                newDiv.className = 'demo-box';
+                newDiv.textContent = 'This will be removed';
+                container.parentNode.insertBefore(newDiv, container.nextSibling);
+            }
+        }
+
+        // 8. removeAttribute()
+        function demoRemoveAttribute() {
+            document.getElementById('removeAttr-demo').removeAttribute('style');
+        }
+
+        // 9. removeAttributeNode()
+        function demoRemoveAttributeNode() {
+            const element = document.getElementById('removeAttrNode-demo');
+            const attr = element.getAttributeNode('align');
+            if (attr) element.removeAttributeNode(attr);
+        }
+
+        // 10. removeChild()
+        function demoRemoveChild() {
+            const parent = document.getElementById('parent-demo');
+            const child = document.getElementById('child-demo');
+            parent.removeChild(child);
+        }
+
+        function resetChild() {
+            const parent = document.getElementById('parent-demo');
+            if (!document.getElementById('child-demo')) {
+                const newChild = document.createElement('span');
+                newChild.id = 'child-demo';
+                newChild.textContent = 'Child element';
+                parent.appendChild(newChild);
+            }
+        }
+
+        // 11. removeEventListener()
+        let clickHandler = null;
+
+        function addClickListener() {
+            const btn = document.getElementById('listener-btn');
+            clickHandler = function () {
+                document.getElementById('listener-output').textContent = 'Button clicked!';
+            };
+            btn.addEventListener('click', clickHandler);
+            document.getElementById('listener-output').textContent = 'Listener added';
+        }
+
+        function removeClickListener() {
+            const btn = document.getElementById('listener-btn');
+            if (clickHandler) {
+                btn.removeEventListener('click', clickHandler);
+                document.getElementById('listener-output').textContent = 'Listener removed';
+            }
+        }
+
+        // 12. replaceChild()
+        function demoReplaceChild() {
+            const parent = document.getElementById('replace-parent');
+            const oldChild = document.getElementById('old-child');
+            const newChild = document.createElement('span');
+            newChild.textContent = 'New child';
+            parent.replaceChild(newChild, oldChild);
+        }
+
+        // 13. hasAttribute()
+        function demoHasAttribute() {
+            const element = document.getElementById('hasAttr-demo');
+            document.getElementById('hasAttr-output').textContent = 'Has data-test: ' + element.hasAttribute('data-test');
+        }
+
+        // 14. hasAttributes()
+        function demoHasAttributes() {
+            const element = document.getElementById('hasAttrs-demo');
+            document.getElementById('hasAttrs-output').textContent = 'Has attributes: ' + element.hasAttributes();
+        }
+
+        // 15. hasChildNodes()
+        function demoHasChildNodes() {
+            const element = document.getElementById('hasChild-demo');
+            document.getElementById('hasChild-output').textContent = 'Has children: ' + element.hasChildNodes();
+        }
+
+        // 16. getAttribute()
+        function demoGetAttribute() {
+            const element = document.getElementById('getAttr-demo');
+            document.getElementById('getAttr-output').textContent = 'data-info: ' + element.getAttribute('data-info');
+        }
+
+        // 17. getBoundingClientRect()
+        function demoGetBoundingClientRect() {
+            const rect = document.getElementById('rect-demo').getBoundingClientRect();
+            document.getElementById('rect-output').textContent =
+                `Width: ${rect.width}, Height: ${rect.height}, Top: ${rect.top}`;
+        }
+
+        // 18. closest()
+        function demoClosest() {
+            const element = document.getElementById('closest-demo');
+            const closest = element.closest('.grandparent');
+            document.getElementById('closest-output').textContent =
+                closest ? 'Found: ' + closest.className : 'Not found';
+        }
+
+        // 19. contains()
+        function demoContains() {
+            const container = document.getElementById('container-demo');
+            const inner = document.getElementById('inner-demo');
+            document.getElementById('contains-output').textContent =
+                'Container contains inner: ' + container.contains(inner);
+        }
+
+        // 20. click()
+        function demoClick() {
+            document.getElementById('click-demo').click();
+        }
+
+        // ==================== 21-40: Element Methods ====================
+
+        // 21. normalize()
+        function demoNormalize() {
+            const container = document.getElementById('normalize-demo');
+            container.innerHTML = '';
+            container.appendChild(document.createTextNode('Hello'));
+            container.appendChild(document.createTextNode(' '));
+            container.appendChild(document.createTextNode('World'));
+            document.getElementById('normalize-output').textContent = 'Before normalize, child nodes: ' + container.childNodes.length;
+            container.normalize();
+            setTimeout(() => {
+                document.getElementById('normalize-output').textContent += ' After normalize: ' + container.childNodes.length;
+            }, 100);
+        }
+
+        // 22. isDefaultNamespace()
+        function demoIsDefaultNamespace() {
+            const element = document.getElementById('namespace-demo');
+            document.getElementById('namespace-output').textContent =
+                'Is default namespace: ' + element.isDefaultNamespace('http://www.w3.org/1999/xhtml');
+        }
+
+        // 23. isEqualNode()
+        function demoIsEqualNode() {
+            const el1 = document.getElementById('equal1');
+            const el2 = document.getElementById('equal2');
+            document.getElementById('equal-output').textContent =
+                'Nodes are equal: ' + el1.isEqualNode(el2);
+        }
+
+        // 24. isSameNode()
+        function demoIsSameNode() {
+            const el1 = document.getElementById('same-demo');
+            const el2 = document.getElementById('same-demo');
+            document.getElementById('same-output').textContent =
+                'Nodes are same: ' + el1.isSameNode(el2);
+        }
+
+        // 25. isSupported() (deprecated)
+        function demoIsSupported() {
+            const element = document.createElement('div');
+            document.getElementById('support-output').textContent =
+                'HTML feature supported: ' + (element.isSupported ? 'Method exists but deprecated' : 'Method not supported in modern browsers');
+        }
+
+        // 26. insertAdjacentElement()
+        function demoInsertAdjacentElement() {
+            const target = document.getElementById('adjacent-demo');
+            const newElement = document.createElement('div');
+            newElement.textContent = 'Inserted before';
+            newElement.style.background = '#e3f2fd';
+            target.insertAdjacentElement('beforebegin', newElement);
+        }
+
+        // 27. insertBefore()
+        function demoInsertBefore() {
+            const list = document.getElementById('insertBefore-list');
+            const newItem = document.createElement('li');
+            newItem.textContent = 'Item 1';
+            const firstItem = list.firstChild;
+            list.insertBefore(newItem, firstItem);
+        }
+
+        // 28. blur()
+        function demoBlur() {
+            document.getElementById('blur-input').blur();
+        }
+
+        // 29. matches()
+        function demoMatches() {
+            const element = document.getElementById('matches-demo');
+            document.getElementById('matches-output').textContent =
+                'Matches .test-class: ' + element.matches('.test-class');
+        }
+
+        // 30. insertAdjacentHTML()
+        function demoInsertAdjacentHTML() {
+            const target = document.getElementById('adjacentHTML-demo');
+            target.insertAdjacentHTML('afterend', '<div style="background: #c8e6c9; padding: 5px;">Inserted HTML</div>');
+        }
+
+        // 31. addEventListener()
+        function demoAddEventListener() {
+            const btn = document.getElementById('addEvent-demo');
+            btn.addEventListener('click', function showMessage() {
+                document.getElementById('addEvent-output').textContent = 'Event listener executed!';
+                btn.removeEventListener('click', showMessage);
+            });
+            document.getElementById('addEvent-output').textContent = 'Listener added, click the button';
+        }
+
+        // 32. cloneNode()
+        function demoCloneNode(deep = true) {
+            const original = document.getElementById('clone-original');
+            const clone = original.cloneNode(deep);
+            clone.style.background = deep ? '#d1c4e9' : '#ffccbc';
+            clone.textContent = deep ? 'Deep clone with children' : 'Shallow clone';
+            document.getElementById('clone-container').appendChild(clone);
+        }
+
+        // 33. appendChild()
+        function demoAppendChild() {
+            const parent = document.getElementById('append-parent');
+            const newChild = document.createElement('span');
+            newChild.textContent = ' - New child appended';
+            newChild.style.color = 'blue';
+            parent.appendChild(newChild);
+        }
+
+        // 34. compareDocumentPosition()
+        function demoComparePosition() {
+            const el1 = document.getElementById('pos1');
+            const el2 = document.getElementById('pos2');
+            const result = el1.compareDocumentPosition(el2);
+            let meaning = '';
+            if (result & 1) meaning += 'Not in document, ';
+            if (result & 2) meaning += 'Precedes, ';
+            if (result & 4) meaning += 'Follows, ';
+            if (result & 8) meaning += 'Contains, ';
+            if (result & 16) meaning += 'Is contained by, ';
+            document.getElementById('compare-output').textContent = 'Position code: ' + result + ' (' + meaning + ')';
+        }
+
+        // 35. focus()
+        function demoFocus() {
+            document.getElementById('focus-input').focus();
+        }
+
+        // 36. getAttributeNode()
+        function demoGetAttributeNode() {
+            const element = document.getElementById('attrNode-demo');
+            const attr = element.getAttributeNode('title');
+            document.getElementById('attrNode-output').textContent =
+                attr ? 'Title node: ' + attr.value : 'No title attribute';
+        }
+
+        // 37. getBoundingClientRect() duplicate
+        function demoGetBoundingClientRect2() {
+            const rect = document.getElementById('rect2-demo').getBoundingClientRect();
+            document.getElementById('rect2-output').textContent =
+                `X: ${rect.x}, Y: ${rect.y}, Width: ${Math.round(rect.width)}`;
+        }
+
+        // 38. getElementsByClassName()
+        function demoGetElementsByClassName() {
+            const elements = document.getElementsByClassName('demo-class');
+            document.getElementById('getClass-output').textContent =
+                'Found ' + elements.length + ' elements with class "demo-class"';
+        }
+
+        // 39. getElementsByTagName()
+        function demoGetElementsByTagName() {
+            const elements = document.getElementsByTagName('span');
+            document.getElementById('getTag-output').textContent =
+                'Found ' + elements.length + ' span elements in document';
+        }
+
+        // 40. insertAdjacentText()
+        function demoInsertAdjacentText() {
+            const target = document.getElementById('adjacentText-demo');
+            target.insertAdjacentText('afterend', ' - Text inserted after');
+        }
+
+        // ==================== 41-50: Collection Methods ====================
+
+        // 41. namedItem()
+        function demoNamedItem() {
+            const form = document.getElementById('named-form');
+            const elements = form.elements;
+            const named = elements.namedItem('username');
+            document.getElementById('named-output').textContent =
+                named ? 'Found input with name "username", value: ' + named.value : 'Not found';
+        }
+
+        // 42. item() - HTMLCollection
+        function demoItem() {
+            const elements = document.getElementsByClassName('item-demo');
+            const item = elements.item(1);
+            document.getElementById('item-output').textContent =
+                item ? 'Item at index 1: ' + item.textContent : 'Not found';
+        }
+
+        // 43. entries() - HTMLCollection
+        function demoEntries() {
+            const elements = document.getElementsByClassName('entries-demo');
+            const entries = elements.entries();
+            let result = '';
+            for (let [index, element] of entries) {
+                result += `Index ${index}: ${element.textContent}\n`;
+            }
+            document.getElementById('entries-output').textContent = result || 'No entries';
+        }
+
+        // 44. forEach() - HTMLCollection
+        function demoForEach() {
+            const elements = document.getElementsByClassName('foreach-demo');
+            let result = '';
+            Array.from(elements).forEach((el, i) => {
+                result += `${i}: ${el.textContent}\n`;
+            });
+            document.getElementById('foreach-output').textContent = result || 'No elements';
+        }
+
+        // 45. item() - NodeList
+        function demoNodeListItem() {
+            const nodes = document.querySelectorAll('.nodelist-item');
+            const item = nodes.item(2);
+            document.getElementById('nodelist-item-output').textContent =
+                item ? 'Item at index 2: ' + item.textContent : 'Not found';
+        }
+
+        // 46. keys() - NodeList
+        function demoKeys() {
+            const nodes = document.querySelectorAll('.keys-demo');
+            const keys = nodes.keys();
+            let result = '';
+            for (let key of keys) {
+                result += key + ' ';
+            }
+            document.getElementById('keys-output').textContent = 'Keys: ' + result;
+        }
+
+        // 47. writeln()
+        function demoWriteln() {
+            const frame = document.getElementById('writeln-frame');
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            doc.open();
+            doc.writeln('<p>Line 1</p>');
+            doc.writeln('<p>Line 2 (with newline in source)</p>');
+            doc.close();
+        }
+
+        // 48. write()
+        function demoWrite() {
+            const frame = document.getElementById('write-frame');
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            doc.open();
+            doc.write('<p>Written with write()</p>');
+            doc.close();
+        }
+
+        // 49. hasFocus()
+        function demoHasFocus() {
+            document.getElementById('focus-output').textContent =
+                'Document has focus: ' + document.hasFocus();
+        }
+
+        // 50. renameNode()
+        function demoRenameNode() {
+            try {
+                const element = document.getElementById('rename-demo');
+                // renameNode is not commonly supported in browsers
+                document.getElementById('rename-output').textContent =
+                    'renameNode() is not widely supported in browsers';
+            } catch (e) {
+                document.getElementById('rename-output').textContent = 'Error: ' + e.message;
+            }
+        }
+
+        // ==================== 51-67: Document Methods ====================
+
+        // 51. open()
+        function demoOpen() {
+            const frame = document.getElementById('open-frame');
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            doc.open();
+            doc.write('<p>Document opened and written</p>');
+            doc.close();
+        }
+
+        // 52. normalizeDocument()
+        function demoNormalizeDocument() {
+            // normalizeDocument is deprecated/not widely supported
+            alert('normalizeDocument() is deprecated and may not work in modern browsers');
+        }
+
+        // 53. normalize() duplicate
+        function demoNormalize2() {
+            const container = document.getElementById('normalize2-demo');
+            container.innerHTML = '';
+            container.appendChild(document.createTextNode('Text1'));
+            container.appendChild(document.createTextNode('Text2'));
+            alert('Child nodes before normalize: ' + container.childNodes.length);
+            container.normalize();
+            alert('Child nodes after normalize: ' + container.childNodes.length);
+        }
+
+        // 54. adoptNode()
+        function demoAdoptNode() {
+            const frame = document.getElementById('adopt-source');
+            const frameDoc = frame.contentDocument || frame.contentWindow.document;
+            const node = frameDoc.getElementById('adopt-me');
+            if (node) {
+                const adopted = document.adoptNode(node);
+                document.getElementById('adopt-target').appendChild(adopted);
+            }
+        }
+
+        // 55. addEventListener() - document level
+        let docHandler = null;
+
+        function demoDocumentEventListener() {
+            docHandler = function () {
+                document.getElementById('docListener-output').textContent = 'Document clicked!';
+            };
+            document.addEventListener('click', docHandler);
+            document.getElementById('docListener-output').textContent = 'Document listener added, click anywhere';
+        }
+
+        function removeDocumentEventListener() {
+            if (docHandler) {
+                document.removeEventListener('click', docHandler);
+                document.getElementById('docListener-output').textContent = 'Document listener removed';
+            }
+        }
+
+        // 56. execCommand()
+        function demoExecCommand() {
+            document.execCommand('bold', false, null);
+        }
+
+        // 57. createTextNode()
+        function demoCreateTextNode() {
+            const text = document.createTextNode('This is a text node');
+            document.getElementById('textNode-container').appendChild(text);
+        }
+
+        // 58. createEvent()
+        function demoCreateEvent() {
+            const event = document.createEvent('Event');
+            event.initEvent('customEvent', true, true);
+            const btn = document.getElementById('event-demo');
+            btn.addEventListener('customEvent', function () {
+                document.getElementById('event-output').textContent = 'Custom event triggered!';
+            });
+            btn.dispatchEvent(event);
+        }
+
+        // 59. createDocumentFragment()
+        function demoCreateDocumentFragment() {
+            const fragment = document.createDocumentFragment();
+            for (let i = 1; i <= 3; i++) {
+                const el = document.createElement('div');
+                el.textContent = 'Item ' + i;
+                el.style.background = '#ffe0b2';
+                el.style.margin = '2px';
+                fragment.appendChild(el);
+            }
+            document.getElementById('fragment-container').appendChild(fragment);
+        }
+
+        // 60. createComment()
+        function demoCreateComment() {
+            const comment = document.createComment('This is a comment');
+            document.getElementById('comment-container').appendChild(comment);
+        }
+
+        function showComments() {
+            const container = document.getElementById('comment-container');
+            alert('Container has ' + container.childNodes.length + ' child nodes');
+        }
+
+        // 61. createAttribute()
+        function demoCreateAttribute() {
+            const attr = document.createAttribute('data-created');
+            attr.value = 'Dynamically created';
+            document.getElementById('createAttr-demo').setAttributeNode(attr);
+            document.getElementById('createAttr-demo').textContent += ' - Attribute added!';
+        }
+
+        // 62. close()
+        function demoClose() {
+            const frame = document.getElementById('close-frame');
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            doc.open();
+            doc.write('<p>Writing...</p>');
+            doc.close();
+            alert('Document written and closed');
+        }
+
+        // 63. getElementsByTagName() - document level
+        function demoDocGetElementsByTagName() {
+            const buttons = document.getElementsByTagName('button');
+            document.getElementById('docTag-output').textContent =
+                'Total buttons in document: ' + buttons.length;
+        }
+
+        // 64. getElementsByName()
+        function demoGetElementsByName() {
+            const radios = document.getElementsByName('gender');
+            document.getElementById('getName-output').textContent =
+                'Found ' + radios.length + ' elements with name "gender"';
+        }
+
+        // 65. getElementsByClassName() - document level
+        function demoDocGetElementsByClassName() {
+            const elements = document.getElementsByClassName('doc-class');
+            document.getElementById('docClass-output').textContent =
+                'Found ' + elements.length + ' elements with class "doc-class"';
+        }
+
+        // 66. getElementById()
+        function demoGetElementById() {
+            const element = document.getElementById('unique-id');
+            document.getElementById('getId-output').textContent =
+                element ? 'Found element: ' + element.tagName : 'Not found';
+        }
+
+        // 67. createElement()
+        function demoCreateElement() {
+            const newDiv = document.createElement('div');
+            newDiv.textContent = 'Newly created element';
+            newDiv.style.background = '#b39ddb';
+            newDiv.style.padding = '5px';
+            newDiv.style.margin = '5px';
+            document.getElementById('createElement-container').appendChild(newDiv);
+        }
+
+        // ==================== 68-78: DOMTokenList Methods ====================
+
+        // 68. add()
+        function demoTokenAdd() {
+            document.getElementById('token-add').classList.add('highlight');
+            document.getElementById('token-add').style.background = '#fff3cd';
+        }
+
+        // 69. contains()
+        function demoTokenContains() {
+            const hasClass = document.getElementById('token-contains').classList.contains('test-class');
+            document.getElementById('tokenContains-output').textContent =
+                'Contains test-class: ' + hasClass;
+        }
+
+        // 70. entries()
+        function demoTokenEntries() {
+            const classList = document.getElementById('token-entries').classList;
+            const entries = classList.entries();
+            let result = '';
+            for (let entry of entries) {
+                result += entry[1] + ' ';
+            }
+            document.getElementById('tokenEntries-output').textContent = 'Classes: ' + result;
+        }
+
+        // 71. forEach()
+        function demoTokenForEach() {
+            const classList = document.getElementById('token-foreach').classList;
+            let result = '';
+            classList.forEach((value, index) => {
+                result += `${index}:${value} `;
+            });
+            document.getElementById('tokenForEach-output').textContent = result;
+        }
+
+        // 72. item()
+        function demoTokenItem() {
+            const classList = document.getElementById('token-item').classList;
+            const item = classList.item(1);
+            document.getElementById('tokenItem-output').textContent =
+                'Class at index 1: ' + item;
+        }
+
+        // 73. keys()
+        function demoTokenKeys() {
+            const classList = document.getElementById('token-keys').classList;
+            const keys = classList.keys();
+            let result = '';
+            for (let key of keys) {
+                result += key + ' ';
+            }
+            document.getElementById('tokenKeys-output').textContent = 'Keys: ' + result;
+        }
+
+        // 74. remove()
+        function demoTokenRemove() {
+            const element = document.getElementById('token-remove');
+            element.classList.remove('remove-me');
+            element.textContent = 'Class "remove-me" removed!';
+        }
+
+        // 75. replace()
+        function demoTokenReplace() {
+            const element = document.getElementById('token-replace');
+            if (element.classList.contains('old-class')) {
+                element.classList.replace('old-class', 'new-class');
+                element.textContent = 'Class replaced with new-class';
+            }
+        }
+
+        // 76. supports()
+        function demoTokenSupports() {
+            const supported = DOMTokenList.prototype.supports ?
+                'supports() method exists' : 'supports() not available in this browser';
+            document.getElementById('tokenSupports-output').textContent = supported;
+        }
+
+        // 77. toggle()
+        function demoTokenToggle() {
+            const element = document.getElementById('token-toggle');
+            element.classList.toggle('highlight');
+            if (element.classList.contains('highlight')) {
+                element.style.background = '#fff3cd';
+            } else {
+                element.style.background = '#f8f9fa';
+            }
+        }
+
+        // 78. values()
+        function demoTokenValues() {
+            const classList = document.getElementById('token-values').classList;
+            const values = classList.values();
+            let result = '';
+            for (let value of values) {
+                result += value + ' ';
+            }
+            document.getElementById('tokenValues-output').textContent = 'Values: ' + result;
+        }
+
+        // Helper function for reset buttons
+        window.resetRemove = resetRemove;
+        window.resetChild = resetChild;
     </script>
-
 </body>
 
 </html>
