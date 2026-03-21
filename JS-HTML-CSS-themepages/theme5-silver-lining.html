@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Silver Lining | Storm's Gentle Embrace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #1a1f2e;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', 'Inter', system-ui, sans-serif;
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .theme-overlay {
+            position: absolute;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            background: radial-gradient(ellipse at center, rgba(30, 35, 55, 0.5) 0%, rgba(20, 25, 45, 0) 80%);
+            padding: 1.8rem 1rem;
+        }
+
+        .theme-name {
+            font-size: clamp(1.6rem, 6.5vw, 3.8rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #E8E0C0, #F5E6B0, #C0B89A, #FFE8B5, #D4C88A);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: silverShimmer 12s ease infinite;
+            text-shadow: 0 0 25px rgba(255, 215, 120, 0.3);
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+        }
+
+        .sub {
+            font-size: clamp(0.7rem, 2.8vw, 0.95rem);
+            letter-spacing: 2px;
+            margin-top: 12px;
+            opacity: 0.92;
+            font-weight: 400;
+            background: linear-gradient(135deg, #E8E4D0, #C8C0A0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes silverShimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .cosmic-credit {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 12;
+            font-size: 10px;
+            color: rgba(200, 190, 150, 0.6);
+            font-family: monospace;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            background: rgba(25, 30, 45, 0.35);
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 700px) {
+            .theme-name {
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="stormCanvas"></canvas>
+    </div>
+
+    <div class="theme-overlay">
+        <div class="theme-name">☁️ SILVER LINING ☁️</div>
+        <div class="sub">deep clouds · golden white radiance · gentle storm's breath</div>
+    </div>
+    <div class="cosmic-credit">✦ light within the tempest · hope on the horizon ✦</div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('stormCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // --- Color Palette: deep dark clouds, silver, golden, white light ---
+            const COLORS = {
+                cloudDark1: [35, 40, 55],
+                cloudDark2: [45, 50, 70],
+                cloudMid: [65, 70, 95],
+                silverGlow: [210, 215, 225],
+                goldWarm: [245, 210, 120],
+                goldBright: [255, 235, 160],
+                whiteLight: [255, 252, 240],
+                stormBlue: [55, 60, 85]
+            };
+
+            // --- Cloud layers (deep, billowing, moving slowly) ---
+            let cloudLayers = [];
+            const LAYER_COUNT = 5;
+
+            // --- Silver lining particles (bright, shimmering edges) ---
+            let silverParticles = [];
+            const SILVER_COUNT = 220;
+
+            // --- Golden light rays (bursting from behind clouds) ---
+            let lightRays = [];
+            const RAY_COUNT = 32;
+
+            // --- Rain droplets (gentle, about to burst) ---
+            let rainDrops = [];
+            const RAIN_COUNT = 180;
+
+            // --- Occasional lightning glimmers (subtle flashes) ---
+            let lightningFlashes = [];
+
+            // --- Initialize cloud layers (deep, dark, moving slowly) ---
+            function initCloudLayers() {
+                cloudLayers = [];
+                for (let i = 0; i < LAYER_COUNT; i++) {
+                    const segments = [];
+                    const segmentCount = 8 + i * 2;
+                    for (let j = 0; j < segmentCount; j++) {
+                        segments.push({
+                            offsetX: j / segmentCount,
+                            offsetY: 0.3 + Math.random() * 0.5,
+                            radius: 0.08 + Math.random() * 0.12,
+                            stretchX: 0.8 + Math.random() * 0.7,
+                            stretchY: 0.5 + Math.random() * 0.4,
+                            driftSpeed: 0.02 + Math.random() * 0.04,
+                            phase: Math.random() * Math.PI * 2,
+                            darkness: 0.6 + Math.random() * 0.4
+                        });
+                    }
+                    cloudLayers.push({
+                        segments: segments,
+                        layerY: 0.3 + i * 0.12,
+                        layerSpeed: 0.008 + i * 0.003,
+                        opacity: 0.7 + i * 0.08,
+                        silverIntensity: 0.3 + (LAYER_COUNT - i) * 0.15
+                    });
+                }
+            }
+
+            // --- Silver lining particles (bright, shimmering on cloud edges) ---
+            function initSilverParticles() {
+                silverParticles = [];
+                for (let i = 0; i < SILVER_COUNT; i++) {
+                    silverParticles.push({
+                        x: Math.random(),
+                        y: 0.2 + Math.random() * 0.6,
+                        size: 1.5 + Math.random() * 4,
+                        alphaBase: 0.3 + Math.random() * 0.6,
+                        twinkleSpeed: 0.4 + Math.random() * 1.2,
+                        phase: Math.random() * Math.PI * 2,
+                        driftX: -0.01 + Math.random() * 0.02,
+                        driftY: 0.005 + Math.random() * 0.015,
+                        colorWarm: Math.random() > 0.6
+                    });
+                }
+            }
+
+            // --- Golden light rays (radiating from behind clouds) ---
+            function initLightRays() {
+                lightRays = [];
+                for (let i = 0; i < RAY_COUNT; i++) {
+                    lightRays.push({
+                        angle: (i / RAY_COUNT) * Math.PI * 2,
+                        length: 0.4 + Math.random() * 0.35,
+                        width: 3 + Math.random() * 8,
+                        intensity: 0.3 + Math.random() * 0.5,
+                        pulseSpeed: 0.2 + Math.random() * 0.6,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // --- Gentle rain droplets (about to burst) ---
+            function initRainDrops() {
+                rainDrops = [];
+                for (let i = 0; i < RAIN_COUNT; i++) {
+                    rainDrops.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        speed: 0.3 + Math.random() * 0.8,
+                        size: 1 + Math.random() * 3,
+                        opacity: 0.2 + Math.random() * 0.5,
+                        trail: Math.random() > 0.7
+                    });
+                }
+            }
+
+            // --- Resize handler ---
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            // --- Draw deep stormy sky gradient (dark, moody) ---
+            function drawStormSky(timestamp) {
+                const timeSec = timestamp * 0.0002;
+                const subtlePulse = 0.95 + Math.sin(timeSec * 0.1) * 0.02;
+
+                const gradSky = ctx.createLinearGradient(0, 0, 0, height);
+                gradSky.addColorStop(0, `rgb(${COLORS.cloudDark1[0]}, ${COLORS.cloudDark1[1]}, ${COLORS.cloudDark1[2]})`);
+                gradSky.addColorStop(0.4, `rgb(${COLORS.cloudDark2[0]}, ${COLORS.cloudDark2[1]}, ${COLORS.cloudDark2[2]})`);
+                gradSky.addColorStop(0.7, `rgb(${COLORS.stormBlue[0]}, ${COLORS.stormBlue[1]}, ${COLORS.stormBlue[2]})`);
+                gradSky.addColorStop(1, `rgb(${COLORS.cloudMid[0]}, ${COLORS.cloudMid[1]}, ${COLORS.cloudMid[2]})`);
+                ctx.fillStyle = gradSky;
+                ctx.fillRect(0, 0, width, height);
+
+                // Deep atmospheric haze
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.08;
+                ctx.fillStyle = `rgba(140, 150, 180, 0.15)`;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw deep dark clouds with silver linings (moving slowly) ---
+            function drawClouds(timestamp) {
+                const timeSec = timestamp * 0.001;
+
+                for (let layer of cloudLayers) {
+                    const layerOffsetX = timeSec * layer.layerSpeed;
+                    ctx.globalAlpha = layer.opacity;
+
+                    for (let segment of layer.segments) {
+                        const driftX = (segment.offsetX + layerOffsetX + segment.phase * 0.1) % 1;
+                        let cloudX = driftX * width;
+                        if (cloudX > width + 300) cloudX = -300;
+                        if (cloudX < -300) cloudX = width + 300;
+
+                        const cloudY = height * (layer.layerY + Math.sin(timeSec * 0.1 + segment.offsetX * 5) * 0.02);
+                        const cloudW = width * segment.radius * segment.stretchX * 1.5;
+                        const cloudH = height * segment.radius * segment.stretchY * 0.8;
+
+                        // Main cloud mass (dark)
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX, cloudY, cloudW, cloudH, 0, 0, Math.PI * 2);
+
+                        const darkValue = 35 + segment.darkness * 30;
+                        ctx.fillStyle = `rgba(${darkValue}, ${darkValue + 5}, ${darkValue + 15}, 0.85)`;
+                        ctx.fill();
+
+                        // Additional puffs for depth
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX - cloudW * 0.4, cloudY - cloudH * 0.2, cloudW * 0.6, cloudH * 0.7, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX + cloudW * 0.5, cloudY + cloudH * 0.1, cloudW * 0.55, cloudH * 0.65, 0, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // SILVER LINING - bright edge glow (golden-white)
+                        ctx.save();
+                        ctx.globalCompositeOperation = 'lighter';
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX - cloudW * 0.2, cloudY - cloudH * 0.35, cloudW * 0.5, cloudH * 0.4, 0, 0, Math.PI * 2);
+
+                        const silverGlow = 0.4 + 0.3 * Math.sin(timeSec * 0.8 + segment.offsetX * 8);
+                        const silverIntensity = layer.silverIntensity * silverGlow;
+
+                        ctx.fillStyle = `rgba(${COLORS.silverGlow[0]}, ${COLORS.silverGlow[1]}, ${COLORS.silverGlow[2]}, ${0.3 * silverIntensity})`;
+                        ctx.fill();
+
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX + cloudW * 0.3, cloudY - cloudH * 0.25, cloudW * 0.45, cloudH * 0.35, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${COLORS.goldWarm[0]}, ${COLORS.goldWarm[1]}, ${COLORS.goldWarm[2]}, ${0.25 * silverIntensity})`;
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw golden light rays (bursting from behind clouds) ---
+            function drawLightRays(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'screen';
+
+                // Central light source position (behind clouds, moving subtly)
+                const lightSourceX = width * (0.5 + Math.sin(timeSec * 0.05) * 0.05);
+                const lightSourceY = height * (0.4 + Math.cos(timeSec * 0.03) * 0.03);
+
+                for (let ray of lightRays) {
+                    const pulse = 0.5 + 0.5 * Math.sin(timeSec * ray.pulseSpeed + ray.phase);
+                    const intensity = ray.intensity * (0.4 + pulse * 0.6);
+
+                    const angle = ray.angle + timeSec * 0.02;
+                    const dx = Math.cos(angle);
+                    const dy = Math.sin(angle);
+                    const rayLength = Math.min(width, height) * ray.length * (0.7 + pulse * 0.5);
+
+                    const startX = lightSourceX;
+                    const startY = lightSourceY;
+                    const endX = lightSourceX + dx * rayLength;
+                    const endY = lightSourceY + dy * rayLength;
+
+                    const gradRay = ctx.createLinearGradient(startX, startY, endX, endY);
+                    gradRay.addColorStop(0, `rgba(${COLORS.goldBright[0]}, ${COLORS.goldBright[1]}, ${COLORS.goldBright[2]}, ${0.5 * intensity})`);
+                    gradRay.addColorStop(0.5, `rgba(${COLORS.goldWarm[0]}, ${COLORS.goldWarm[1]}, ${COLORS.goldWarm[2]}, ${0.25 * intensity})`);
+                    gradRay.addColorStop(1, `rgba(${COLORS.silverGlow[0]}, ${COLORS.silverGlow[1]}, ${COLORS.silverGlow[2]}, 0)`);
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.lineWidth = ray.width * (0.5 + pulse * 0.8);
+                    ctx.strokeStyle = gradRay;
+                    ctx.stroke();
+                }
+
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw silver lining particles (shimmering, bright) ---
+            function drawSilverParticles(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let particle of silverParticles) {
+                    // Gentle drifting motion
+                    let xPos = (particle.x + timeSec * particle.driftX * 0.1) % 1;
+                    let yPos = (particle.y + timeSec * particle.driftY * 0.08) % 1;
+                    if (xPos < 0) xPos = 1;
+                    if (yPos < 0) yPos = 1;
+
+                    const x = xPos * width;
+                    const y = yPos * height;
+                    const twinkle = 0.4 + 0.6 * Math.sin(timeSec * particle.twinkleSpeed + particle.phase);
+                    const alpha = particle.alphaBase * (0.3 + twinkle * 0.8);
+
+                    // Silver-gold gradient
+                    const r = particle.colorWarm ? COLORS.goldWarm[0] : COLORS.silverGlow[0];
+                    const g = particle.colorWarm ? COLORS.goldWarm[1] : COLORS.silverGlow[1];
+                    const b = particle.colorWarm ? COLORS.goldWarm[2] - 20 : COLORS.silverGlow[2];
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, particle.size * (0.5 + twinkle * 0.6), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.8})`;
+                    ctx.fill();
+
+                    // Bright core
+                    if (twinkle > 0.6) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, particle.size * 0.35, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 245, 200, ${alpha * 0.9})`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw gentle rain droplets (about to burst, slow fall) ---
+            function drawRainDrops(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'screen';
+
+                for (let drop of rainDrops) {
+                    let yPos = (drop.y + timeSec * drop.speed * 0.06) % 1;
+                    const x = drop.x * width;
+                    const y = yPos * height;
+
+                    const opacity = drop.opacity * (0.5 + Math.sin(timeSec * 3 + drop.x * 20) * 0.3);
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, drop.size * 0.8, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(210, 220, 235, ${opacity * 0.5})`;
+                    ctx.fill();
+
+                    if (drop.trail && opacity > 0.3) {
+                        ctx.beginPath();
+                        ctx.moveTo(x - drop.size * 0.5, y + drop.size);
+                        ctx.lineTo(x, y + drop.size * 2.5);
+                        ctx.lineTo(x + drop.size * 0.5, y + drop.size);
+                        ctx.fillStyle = `rgba(190, 205, 225, ${opacity * 0.4})`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Occasional lightning glimmers (subtle, silver-white flashes) ---
+            let lastFlashTime = 0;
+            let activeFlash = null;
+
+            function updateLightningFlashes(timestampMs) {
+                // Random gentle flashes (like distant lightning within clouds)
+                if (!activeFlash && (timestampMs - lastFlashTime) > 2800 + Math.random() * 4000) {
+                    lastFlashTime = timestampMs;
+                    activeFlash = {
+                        intensity: 0.7 + Math.random() * 0.5,
+                        life: 1.0,
+                        decay: 0.02 + Math.random() * 0.03,
+                        x: 0.2 + Math.random() * 0.6,
+                        y: 0.25 + Math.random() * 0.4
+                    };
+                }
+
+                if (activeFlash) {
+                    activeFlash.life -= activeFlash.decay;
+                    if (activeFlash.life <= 0) {
+                        activeFlash = null;
+                    }
+                }
+            }
+
+            function drawLightningFlash() {
+                if (!activeFlash) return;
+
+                const intensity = activeFlash.intensity * activeFlash.life;
+                const flashX = activeFlash.x * width;
+                const flashY = activeFlash.y * height;
+
+                ctx.globalCompositeOperation = 'lighter';
+
+                // Soft radial glow
+                const gradFlash = ctx.createRadialGradient(flashX, flashY, 20, flashX, flashY, Math.min(width, height) * 0.25);
+                gradFlash.addColorStop(0, `rgba(255, 245, 200, ${intensity * 0.7})`);
+                gradFlash.addColorStop(0.5, `rgba(220, 210, 170, ${intensity * 0.3})`);
+                gradFlash.addColorStop(1, `rgba(180, 170, 140, 0)`);
+                ctx.fillStyle = gradFlash;
+                ctx.fillRect(0, 0, width, height);
+
+                // Cloud-edge illumination
+                ctx.globalAlpha = intensity * 0.4;
+                ctx.fillStyle = `rgba(245, 235, 190, 0.3)`;
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Additional golden-white highlights (burst radiance) ---
+            let radiantBursts = [];
+            let lastBurstTime = 0;
+
+            function updateRadiantBursts(timestampMs) {
+                if (radiantBursts.length < 6 && (timestampMs - lastBurstTime) > 1800 + Math.random() * 2500) {
+                    lastBurstTime = timestampMs;
+                    radiantBursts.push({
+                        x: 0.3 + Math.random() * 0.4,
+                        y: 0.3 + Math.random() * 0.35,
+                        life: 1.0,
+                        decay: 0.025 + Math.random() * 0.04,
+                        size: 25 + Math.random() * 45
+                    });
+                }
+
+                for (let i = radiantBursts.length - 1; i >= 0; i--) {
+                    radiantBursts[i].life -= radiantBursts[i].decay;
+                    if (radiantBursts[i].life <= 0) {
+                        radiantBursts.splice(i, 1);
+                    }
+                }
+            }
+
+            function drawRadiantBursts() {
+                if (radiantBursts.length === 0) return;
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let burst of radiantBursts) {
+                    const x = burst.x * width;
+                    const y = burst.y * height;
+                    const intensity = burst.life * 0.8;
+                    const rad = burst.size * (0.5 + burst.life * 0.7) * (width / 1000);
+
+                    const gradBurst = ctx.createRadialGradient(x, y, 5, x, y, rad);
+                    gradBurst.addColorStop(0, `rgba(255, 240, 150, ${intensity * 0.8})`);
+                    gradBurst.addColorStop(0.5, `rgba(245, 210, 100, ${intensity * 0.4})`);
+                    gradBurst.addColorStop(1, `rgba(200, 170, 80, 0)`);
+                    ctx.fillStyle = gradBurst;
+                    ctx.fillRect(0, 0, width, height);
+
+                    // Ray bursts
+                    for (let a = 0; a < 12; a++) {
+                        const angle = (a / 12) * Math.PI * 2;
+                        const dx = Math.cos(angle);
+                        const dy = Math.sin(angle);
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + dx * rad * 1.2, y + dy * rad * 1.2);
+                        ctx.lineWidth = 3 + intensity * 5;
+                        ctx.strokeStyle = `rgba(255, 235, 140, ${intensity * 0.6})`;
+                        ctx.stroke();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Soft mist overlay (atmospheric depth) ---
+            function drawAtmosphericMist(timestamp) {
+                const timeSec = timestamp * 0.0005;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.12;
+
+                for (let i = 0; i < 40; i++) {
+                    const x = (i / 40) * width;
+                    const y = height * (0.6 + Math.sin(timeSec * 0.3 + i * 0.2) * 0.05);
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, 60, 25, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(170, 180, 200, 0.2)`;
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Main animation loop ---
+            function animate(nowMs) {
+                if (!ctx) return;
+                if (canvas.width !== width || canvas.height !== height) resizeCanvas();
+
+                // 1. Stormy sky background
+                drawStormSky(nowMs);
+
+                // 2. Golden light rays (bursting from behind)
+                drawLightRays(nowMs);
+
+                // 3. Deep dark clouds with silver linings
+                drawClouds(nowMs);
+
+                // 4. Silver lining particles (shimmering)
+                drawSilverParticles(nowMs);
+
+                // 5. Gentle rain droplets
+                drawRainDrops(nowMs);
+
+                // 6. Occasional lightning glimmers
+                updateLightningFlashes(nowMs);
+                drawLightningFlash();
+
+                // 7. Radiant golden-white bursts
+                updateRadiantBursts(nowMs);
+                drawRadiantBursts();
+
+                // 8. Atmospheric mist for depth
+                drawAtmosphericMist(nowMs);
+
+                // Final subtle glow overlay
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.05;
+                ctx.fillStyle = `rgba(210, 190, 130, 0.15)`;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+
+                requestAnimationFrame(animate);
+            }
+
+            // --- Initialize everything ---
+            function setup() {
+                resizeCanvas();
+                initCloudLayers();
+                initSilverParticles();
+                initLightRays();
+                initRainDrops();
+                window.addEventListener('resize', () => resizeCanvas());
+                requestAnimationFrame(animate);
+            }
+
+            setup();
+        })();
+    </script>
+</body>
+
+</html>

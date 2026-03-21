@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dawn's Embrace | Rising Hope</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #fdf8e7;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', 'Montserrat', system-ui, -apple-system, 'Inter', sans-serif;
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .theme-overlay {
+            position: absolute;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            background: radial-gradient(ellipse at center, rgba(255, 245, 210, 0.4) 0%, rgba(255, 235, 180, 0) 80%);
+            padding: 1.8rem 1rem;
+        }
+
+        .theme-name {
+            font-size: clamp(2rem, 8vw, 4.8rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #FFD966, #FFB347, #FFF5C4, #FFE484, #FFA559);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmerWarm 10s ease infinite;
+            text-shadow: 0 0 20px rgba(255, 200, 100, 0.5);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        .sub {
+            font-size: clamp(0.85rem, 3.5vw, 1.2rem);
+            color: #FFE4B5;
+            letter-spacing: 2px;
+            margin-top: 12px;
+            opacity: 0.95;
+            font-weight: 400;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(2px);
+            background: linear-gradient(135deg, #FFF9E8, #FFF0D0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+        }
+
+        @keyframes shimmerWarm {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .cosmic-credit {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 12;
+            font-size: 11px;
+            color: rgba(255, 220, 150, 0.7);
+            font-family: monospace;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 700px) {
+            .theme-name {
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="sunriseCanvas"></canvas>
+    </div>
+
+    <div class="theme-overlay">
+        <div class="theme-name">☀️ GOLDEN DAWN ☀️</div>
+        <div class="sub">rising hope · morning refresh · golden radiance</div>
+    </div>
+    <div class="cosmic-credit">✦ first light · infinite horizon ✦</div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('sunriseCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // --- Color Palette: sun shine golden, bright, white, eye shining reflections ---
+            const COLORS = {
+                skyTop: [255, 215, 150],      // warm golden at top horizon
+                skyMid: [255, 235, 180],       // soft buttery
+                skyHorizon: [255, 245, 210],   // bright near sun
+                sunCore: [255, 245, 200],      // brilliant white-gold
+                sunGlow: [255, 220, 130],      // rich golden glow
+                cloudWarm: [255, 240, 200],
+                reflectionGold: [255, 210, 110]
+            };
+
+            // Animation time variables
+            let timeOfDay = 0;          // gentle cyclical flow (0-2PI)
+            let animationFrameId = null;
+
+            // Sparkle / "eye shining" particles - like dewdrops or light reflections
+            let sparkles = [];
+            const SPARKLE_COUNT = 180;
+
+            // Floating light orbs (morning freshness)
+            let lightOrbs = [];
+            const ORB_COUNT = 45;
+
+            // Gentle cloud wisps for soft movement
+            let cloudLayers = [];
+
+            // --- Initialize sparkling particles (eye shining / reflective highlights) ---
+            function initSparkles() {
+                sparkles = [];
+                for (let i = 0; i < SPARKLE_COUNT; i++) {
+                    sparkles.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        size: 1.2 + Math.random() * 3.5,
+                        alphaBase: 0.3 + Math.random() * 0.6,
+                        speed: 0.2 + Math.random() * 0.8,
+                        phase: Math.random() * Math.PI * 2,
+                        twinkleSpeed: 0.8 + Math.random() * 1.5,
+                        colorWarm: Math.random() > 0.6
+                    });
+                }
+            }
+
+            // --- Light orbs floating (morning freshness, gentle buoyancy) ---
+            function initOrbs() {
+                lightOrbs = [];
+                for (let i = 0; i < ORB_COUNT; i++) {
+                    lightOrbs.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        radius: 3 + Math.random() * 12,
+                        alpha: 0.1 + Math.random() * 0.35,
+                        floatSpeedX: 0.1 + Math.random() * 0.3,
+                        floatSpeedY: 0.05 + Math.random() * 0.25,
+                        angleX: Math.random() * Math.PI * 2,
+                        angleY: Math.random() * Math.PI * 2,
+                        pulseSpeed: 0.5 + Math.random() * 1.2,
+                        pulsePhase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // --- Soft cloud layers for gentle drifting ---
+            function initClouds() {
+                cloudLayers = [];
+                // 3 layers of semi-transparent cloud wisps
+                for (let l = 0; l < 3; l++) {
+                    let cloudSegments = [];
+                    let segments = 12 + l * 4;
+                    for (let i = 0; i < segments; i++) {
+                        cloudSegments.push({
+                            offsetX: Math.random(),
+                            offsetY: 0.2 + Math.random() * 0.6,
+                            width: 60 + Math.random() * 120,
+                            height: 25 + Math.random() * 45,
+                            driftSpeed: 0.08 + l * 0.03,
+                            phase: Math.random() * Math.PI * 2,
+                            opacity: 0.12 + (l * 0.08)
+                        });
+                    }
+                    cloudLayers.push({
+                        segments: cloudSegments,
+                        layerSpeed: 0.02 + l * 0.015,
+                        yOffset: l * 0.12
+                    });
+                }
+            }
+
+            // --- Resize handler ---
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            // --- Draw main sunrise gradient (smooth, gentle transition) ---
+            function drawSkyGradient(timestamp) {
+                // Gentle time cycle for subtle horizon breathing (makes the sun "pulse" softly)
+                const breath = 0.92 + Math.sin(timestamp * 0.0012) * 0.04;
+                const sunIntensity = 0.85 + Math.sin(timestamp * 0.0008) * 0.08;
+
+                // Radial gradient centered at sun position (moving slightly to emulate gentle rising)
+                const sunX = width * (0.5 + Math.sin(timestamp * 0.0003) * 0.02);
+                const sunY = height * (0.38 + Math.cos(timestamp * 0.0002) * 0.012);
+
+                // Sky gradient from top to bottom (warm golden to bright white-yellow)
+                const gradSky = ctx.createLinearGradient(0, 0, 0, height);
+                gradSky.addColorStop(0, `rgb(255, 215, 140)`);
+                gradSky.addColorStop(0.3, `rgb(255, 230, 170)`);
+                gradSky.addColorStop(0.6, `rgb(255, 245, 200)`);
+                gradSky.addColorStop(1, `rgb(255, 250, 220)`);
+                ctx.fillStyle = gradSky;
+                ctx.fillRect(0, 0, width, height);
+
+                // Main sun glow: large radial gradient (golden bright)
+                const sunRadius = Math.min(width, height) * 0.28;
+                const gradSun = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, sunRadius);
+                gradSun.addColorStop(0, `rgba(255, 248, 210, ${0.95 * sunIntensity})`);
+                gradSun.addColorStop(0.25, `rgba(255, 235, 160, 0.85)`);
+                gradSun.addColorStop(0.55, `rgba(255, 210, 100, 0.65)`);
+                gradSun.addColorStop(0.85, `rgba(255, 190, 80, 0.35)`);
+                gradSun.addColorStop(1, `rgba(255, 170, 70, 0)`);
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.fillStyle = gradSun;
+                ctx.fillRect(0, 0, width, height);
+
+                // Extra bright core (eye shining effect)
+                const coreGlow = ctx.createRadialGradient(sunX, sunY, 2, sunX, sunY, sunRadius * 0.2);
+                coreGlow.addColorStop(0, `rgba(255, 255, 245, 0.95)`);
+                coreGlow.addColorStop(0.7, `rgba(255, 240, 150, 0.6)`);
+                coreGlow.addColorStop(1, `rgba(255, 210, 90, 0)`);
+                ctx.fillStyle = coreGlow;
+                ctx.fillRect(0, 0, width, height);
+
+                // Sun rays: gentle radiating lines (slowly rotating)
+                ctx.globalCompositeOperation = 'screen';
+                ctx.save();
+                ctx.shadowBlur = 0;
+                const rayCount = 24;
+                const rayLengthBase = Math.min(width, height) * 0.22;
+                const rayRotation = timestamp * 0.00025;
+                for (let i = 0; i < rayCount; i++) {
+                    const angle = (i / rayCount) * Math.PI * 2 + rayRotation;
+                    const dx = Math.cos(angle);
+                    const dy = Math.sin(angle);
+                    const startX = sunX + dx * (sunRadius * 0.25);
+                    const startY = sunY + dy * (sunRadius * 0.25);
+                    const endX = sunX + dx * (rayLengthBase + 15);
+                    const endY = sunY + dy * (rayLengthBase + 15);
+
+                    const gradRay = ctx.createLinearGradient(startX, startY, endX, endY);
+                    gradRay.addColorStop(0, `rgba(255, 220, 100, 0.5)`);
+                    gradRay.addColorStop(1, `rgba(255, 190, 70, 0)`);
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.lineWidth = 7 + Math.sin(angle * 3 + timestamp * 0.003) * 3;
+                    ctx.strokeStyle = gradRay;
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // Reset composite
+                ctx.globalCompositeOperation = 'source-over';
+
+                // Soft atmospheric haze (morning mist)
+                ctx.globalAlpha = 0.22;
+                const mistGrad = ctx.createLinearGradient(0, height * 0.5, 0, height);
+                mistGrad.addColorStop(0, `rgba(255, 245, 200, 0.2)`);
+                mistGrad.addColorStop(1, `rgba(255, 225, 150, 0.35)`);
+                ctx.fillStyle = mistGrad;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+            }
+
+            // --- Draw drifting clouds (smooth, gentle animation) ---
+            function drawClouds(timestamp) {
+                ctx.globalCompositeOperation = 'screen';
+                const timeSec = timestamp * 0.001;
+
+                cloudLayers.forEach((layer, idx) => {
+                    const layerOffset = timeSec * layer.layerSpeed;
+                    ctx.globalAlpha = 0.2 + idx * 0.08;
+                    layer.segments.forEach(segment => {
+                        const driftX = (timeSec * segment.driftSpeed + segment.phase) % 1;
+                        let cloudX = (segment.offsetX + driftX) * width;
+                        if (cloudX > width + 200) cloudX = -200;
+                        if (cloudX < -200) cloudX = width + 200;
+
+                        const cloudY = height * (segment.offsetY + layer.yOffset * 0.5);
+                        const cloudW = segment.width * (width / 1200);
+                        const cloudH = segment.height * (height / 800);
+
+                        // Soft cloud ellipse cluster
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX, cloudY, cloudW, cloudH, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 250, 225, 0.7)`;
+                        ctx.fill();
+
+                        // secondary smaller puff
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX - cloudW * 0.4, cloudY - cloudH * 0.2, cloudW * 0.6, cloudH * 0.7, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 248, 215, 0.65)`;
+                        ctx.fill();
+
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX + cloudW * 0.5, cloudY + cloudH * 0.1, cloudW * 0.55, cloudH * 0.65, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                });
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Sparkling particles (eye shining / dewdrop reflections) with blinking and shimmer ---
+            function drawSparkles(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let i = 0; i < sparkles.length; i++) {
+                    const s = sparkles[i];
+                    // Gentle floating movement
+                    const driftX = Math.sin(timeSec * 0.4 + s.phase) * 0.004;
+                    const driftY = Math.cos(timeSec * 0.35 + s.phase * 1.3) * 0.003;
+                    let sparkX = (s.x + driftX) * width;
+                    let sparkY = (s.y + driftY) * height;
+
+                    // wrap softly
+                    if (sparkX < -20) sparkX = width + 20;
+                    if (sparkX > width + 20) sparkX = -20;
+                    if (sparkY < -20) sparkY = height + 20;
+                    if (sparkY > height + 20) sparkY = -20;
+
+                    // Twinkling intensity (blink here and there)
+                    const twinkle = 0.5 + 0.55 * Math.sin(timeSec * s.twinkleSpeed + s.phase);
+                    const alpha = s.alphaBase * (0.5 + twinkle * 0.7);
+
+                    // Color: golden, white, shining
+                    let r = 255, g = 235, b = 180;
+                    if (s.colorWarm) {
+                        r = 255; g = 215 + Math.sin(s.phase) * 30; b = 140 + Math.cos(s.phase) * 30;
+                    } else {
+                        r = 255; g = 245; b = 210;
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(sparkX, sparkY, s.size * (0.7 + twinkle * 0.5), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.9})`;
+                    ctx.fill();
+
+                    // add small cross gleam for "eye shining" effect
+                    if (s.size > 2 && twinkle > 0.65) {
+                        ctx.beginPath();
+                        ctx.moveTo(sparkX - 3, sparkY);
+                        ctx.lineTo(sparkX + 3, sparkY);
+                        ctx.moveTo(sparkX, sparkY - 3);
+                        ctx.lineTo(sparkX, sparkY + 3);
+                        ctx.lineWidth = 1.2;
+                        ctx.strokeStyle = `rgba(255, 240, 170, ${alpha * 0.6})`;
+                        ctx.stroke();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Floating light orbs (morning freshness / reflective hope) ---
+            function drawLightOrbs(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'screen';
+
+                for (let orb of lightOrbs) {
+                    // Gentle sinusoidal motion
+                    const moveX = Math.sin(timeSec * orb.floatSpeedX + orb.angleX) * 0.012;
+                    const moveY = Math.cos(timeSec * orb.floatSpeedY + orb.angleY) * 0.008;
+                    let orbX = (orb.x + moveX) * width;
+                    let orbY = (orb.y + moveY) * height;
+
+                    if (orbX < -50) orbX = width + 50;
+                    if (orbX > width + 50) orbX = -50;
+                    if (orbY < -50) orbY = height + 50;
+                    if (orbY > height + 50) orbY = -50;
+
+                    // Pulse brightness
+                    const pulse = 0.5 + 0.5 * Math.sin(timeSec * orb.pulseSpeed + orb.pulsePhase);
+                    const currentAlpha = orb.alpha * (0.4 + pulse * 0.6);
+                    const radius = orb.radius * (0.7 + pulse * 0.5);
+
+                    const gradOrb = ctx.createRadialGradient(orbX, orbY, 1, orbX, orbY, radius);
+                    gradOrb.addColorStop(0, `rgba(255, 245, 180, ${currentAlpha + 0.2})`);
+                    gradOrb.addColorStop(0.6, `rgba(255, 210, 120, ${currentAlpha * 0.8})`);
+                    gradOrb.addColorStop(1, `rgba(255, 180, 80, 0)`);
+                    ctx.fillStyle = gradOrb;
+                    ctx.beginPath();
+                    ctx.arc(orbX, orbY, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Extra "eye shining" glitter: occasional bright flashes for hope feeling ---
+            let glints = [];
+            let lastGlintTime = 0;
+
+            function updateGlints(timestampMs) {
+                // Generate occasional bright glints (like light reflecting in eyes)
+                if (glints.length < 8 && (timestampMs - lastGlintTime) > 900 + Math.random() * 1500) {
+                    lastGlintTime = timestampMs;
+                    glints.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        life: 1.0,
+                        decay: 0.02 + Math.random() * 0.035,
+                        size: 5 + Math.random() * 12,
+                        bright: true
+                    });
+                }
+
+                for (let i = glints.length - 1; i >= 0; i--) {
+                    glints[i].life -= glints[i].decay;
+                    if (glints[i].life <= 0) {
+                        glints.splice(i, 1);
+                    }
+                }
+            }
+
+            function drawGlints(timestampMs, timestampSec) {
+                if (glints.length === 0) return;
+                ctx.globalCompositeOperation = 'lighter';
+                for (let g of glints) {
+                    let gX = g.x * width;
+                    let gY = g.y * height;
+                    const intensity = g.life * 0.9;
+                    const rad = g.size * (0.6 + g.life * 0.8);
+                    ctx.beginPath();
+                    ctx.arc(gX, gY, rad, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 245, 180, ${intensity * 0.85})`;
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(gX, gY, rad * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 230, ${intensity})`;
+                    ctx.fill();
+                    // star-like cross reflection
+                    ctx.beginPath();
+                    ctx.moveTo(gX - rad * 1.2, gY);
+                    ctx.lineTo(gX + rad * 1.2, gY);
+                    ctx.moveTo(gX, gY - rad * 1.2);
+                    ctx.lineTo(gX, gY + rad * 1.2);
+                    ctx.lineWidth = 1.8;
+                    ctx.strokeStyle = `rgba(255, 215, 130, ${intensity * 0.8})`;
+                    ctx.stroke();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Gentle radial light beams (refreshing morning atmosphere) ---
+            function drawMorningBeams(timestamp) {
+                const timeSec = timestamp * 0.0005;
+                ctx.globalCompositeOperation = 'overlay';
+                ctx.globalAlpha = 0.12;
+                const sunCenterX = width * (0.5 + Math.sin(timeSec * 0.15) * 0.01);
+                const sunCenterY = height * 0.38;
+
+                for (let i = 0; i < 16; i++) {
+                    const angle = (i / 16) * Math.PI * 2 + timeSec * 0.1;
+                    const dx = Math.cos(angle);
+                    const dy = Math.sin(angle);
+                    const startX = sunCenterX + dx * 40;
+                    const startY = sunCenterY + dy * 30;
+                    const endX = sunCenterX + dx * (width * 0.8);
+                    const endY = sunCenterY + dy * (height * 0.6);
+
+                    const gradBeam = ctx.createLinearGradient(startX, startY, endX, endY);
+                    gradBeam.addColorStop(0, `rgba(255, 210, 100, 0.25)`);
+                    gradBeam.addColorStop(1, `rgba(255, 190, 80, 0)`);
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.lineWidth = 18;
+                    ctx.strokeStyle = gradBeam;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Main animation loop ---
+            let lastFrameTime = 0;
+
+            function animate(nowMs) {
+                if (!ctx) return;
+                if (canvas.width !== width || canvas.height !== height) {
+                    resizeCanvas();
+                }
+
+                // 1. Sky & sun gradient (gentle moving)
+                drawSkyGradient(nowMs);
+
+                // 2. Clouds (smooth drift)
+                drawClouds(nowMs);
+
+                // 3. Morning light beams
+                drawMorningBeams(nowMs);
+
+                // 4. Floating light orbs (morning freshness)
+                drawLightOrbs(nowMs);
+
+                // 5. Sparkles (eye shining, twinkling)
+                drawSparkles(nowMs);
+
+                // 6. Update & draw random glints (bright hope flashes)
+                updateGlints(nowMs);
+                drawGlints(nowMs, nowMs * 0.001);
+
+                // final soft vignette for focus
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.globalAlpha = 0.18;
+                const vignette = ctx.createRadialGradient(width / 2, height / 2, width * 0.4, width / 2, height / 2, width * 0.9);
+                vignette.addColorStop(0, 'rgba(255,240,200,0)');
+                vignette.addColorStop(1, 'rgba(255,210,130,0.2)');
+                ctx.fillStyle = vignette;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+
+                requestAnimationFrame(animate);
+            }
+
+            // --- Setup everything ---
+            function setup() {
+                resizeCanvas();
+                initSparkles();
+                initOrbs();
+                initClouds();
+                window.addEventListener('resize', () => {
+                    resizeCanvas();
+                    // Reposition sparkles/orbs? keep relative mapping, fine.
+                });
+                requestAnimationFrame(animate);
+            }
+
+            setup();
+        })();
+    </script>
+</body>
+
+</html>

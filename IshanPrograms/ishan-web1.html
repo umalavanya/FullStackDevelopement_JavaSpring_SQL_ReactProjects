@@ -481,8 +481,8 @@
                 for (let i = 0; i < confettiCount; i++) {
                     const conf = document.createElement('div');
                     conf.style.position = 'absolute';
-                    conf.style.width = Math.random() * 10 + 5 + 'px';
-                    conf.style.height = Math.random() * 12 + 6 + 'px';
+                    conf.style.width = Math.random() * 100 + 5 + 'px';
+                    conf.style.height = Math.random() * 120 + 6 + 'px';
                     const colors = ['#FFB347', '#FF8C42', '#FFD966', '#FFA500', '#FF6F32', '#F4C542', '#FFC145'];
                     conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                     conf.style.top = '-20px';
@@ -526,7 +526,7 @@
                     spark.classList.add('click-spark');
                     spark.style.left = (x - 8 + (Math.random() * 20 - 10)) + 'px';
                     spark.style.top = (y - 8 + (Math.random() * 20 - 10)) + 'px';
-                    spark.style.width = Math.random() * 12 + 5 + 'px';
+                    spark.style.width = Math.random() * 50 + 5 + 'px';
                     spark.style.height = spark.style.width;
                     spark.style.background = `radial-gradient(circle, #FFD966, #FF6F32)`;
                     document.body.appendChild(spark);

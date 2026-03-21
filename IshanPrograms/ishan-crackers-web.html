@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ishan Karthi - Firecracker Surprise! 🎆</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #0a1f3e 0%, #030c1a 100%);
+            font-family: 'Poppins', 'Comic Neue', 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            cursor: pointer;
+        }
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* main card */
+        .surprise-card {
+            max-width: 850px;
+            width: 100%;
+            background: rgba(10, 25, 55, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 85px 85px 80px 80px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(255, 215, 0, 0.3), 0 0 0 8px rgba(255, 140, 0, 0.2);
+            padding: 30px 25px 45px 25px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(255, 200, 50, 0.5);
+            animation: floatGlow 3s infinite alternate ease-in-out;
+            z-index: 10;
+            margin: 20px auto;
+        }
+
+        @keyframes floatGlow {
+            0% {
+                transform: translateY(0px);
+                box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(255, 215, 0, 0.3);
+            }
+
+            100% {
+                transform: translateY(-12px);
+                box-shadow: 0 35px 55px rgba(0, 0, 0, 0.5), 0 0 0 8px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 100, 0, 0.5);
+            }
+        }
+
+        h1 {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #FFD966, #FFB347, #FFA500);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 12px rgba(255, 180, 50, 0.7);
+            letter-spacing: 2px;
+            animation: shimmer 2s infinite linear;
+            display: inline-block;
+            font-weight: 800;
+            background-size: 200% auto;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -100% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.7rem;
+            color: #FFD966;
+            text-shadow: 0 2px 8px #FF8C00;
+            font-weight: 600;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            padding: 0 20px;
+            border-radius: 60px;
+        }
+
+        .age-badge {
+            background: #FF8C42;
+            display: inline-block;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: #030c1a;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 0 #b45f1b;
+            transform: rotate(-2deg);
+        }
+
+        .message-box {
+            background: rgba(255, 245, 200, 0.9);
+            padding: 20px;
+            border-radius: 60px;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e2f5a;
+            box-shadow: inset 0 0 0 3px white, 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .big-orange {
+            color: #FF6F32;
+            font-size: 1.7rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 0 #FFD966;
+        }
+
+        .hero-illustration {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sun-burst {
+            background: radial-gradient(circle, #FFA500, #FF5E00);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px #ffaa33;
+            animation: spinGlow 6s infinite linear;
+        }
+
+        @keyframes spinGlow {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.05);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .sun-burst span {
+            font-size: 4rem;
+            display: block;
+            animation: counterSpin 6s infinite linear;
+        }
+
+        @keyframes counterSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+
+        .cute-emoji-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            font-size: 2.6rem;
+            margin: 20px 0 10px;
+            animation: bounceEmoji 1.2s infinite alternate;
+        }
+
+        @keyframes bounceEmoji {
+            0% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .firecracker-btn {
+            background: linear-gradient(120deg, #FF4500, #DC143C);
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: inherit;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+            box-shadow: 0 8px 0 #8B0000;
+            transform: translateY(-3px);
+            text-shadow: 2px 2px 0 #8B0000;
+        }
+
+        .firecracker-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 3px 0 #8B0000;
+        }
+
+        .extra-surprise {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 40px;
+            padding: 12px;
+            margin-top: 15px;
+            color: #FFD966;
+            font-weight: 500;
+        }
+
+        .highlight {
+            background: #FFB34740;
+            border-radius: 30px;
+            display: inline-block;
+            padding: 0 12px;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #ffd58c;
+        }
+
+        /* Fixed decorative elements */
+        .star {
+            position: fixed;
+            background: radial-gradient(circle, #FFF9C4, #FFD966);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: twinkleStar 2s infinite alternate;
+        }
+
+        @keyframes twinkleStar {
+            0% {
+                opacity: 0.2;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(2px);
+        }
+
+        @keyframes floatOrb {
+            0% {
+                transform: translate(0, 0) scale(0.8);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translate(30px, -40px) scale(1.2);
+                opacity: 0.7;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .message-box {
+                font-size: 1.1rem;
+            }
+
+            .big-orange {
+                font-size: 1.3rem;
+            }
+
+            .firecracker-btn {
+                font-size: 1.2rem;
+                padding: 12px 24px;
+            }
+
+            .cute-emoji-group {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="surprise-card">
+        <div class="name-glow">
+            <h1>✨ ISHAN KARTHI ✨</h1>
+        </div>
+        <div class="subtitle">🌟 My Bright Sunshine 🌟</div>
+        <div class="age-badge">
+            🎂 7 Years Old & Super Awesome! 🎂
+        </div>
+
+        <div class="hero-illustration">
+            <div class="sun-burst">
+                <span>☀️</span>
+            </div>
+            <div class="sun-burst" style="animation-delay: -1s; width:80px; height:80px;">
+                <span>⭐</span>
+            </div>
+        </div>
+
+        <div class="message-box" id="dynamicMessage">
+            <p>💙 To my dearest little superhero, 💙</p>
+            <p class="big-orange">You are my <span class="highlight">bright golden sun</span> and my <span
+                    class="highlight">vibrant orange energy</span>!</p>
+            <p>🎆 Click the BIG BUTTON for a REAL CRACKER SHOW! 🎆</p>
+            <p>✨ Watch the fireworks blast in the sky! ✨</p>
+        </div>
+
+        <div class="cute-emoji-group">
+            <span>🚀</span> <span>🎆</span> <span>🧡</span> <span>🌞</span> <span>✨</span> <span>🎇</span>
+        </div>
+
+        <button class="firecracker-btn" id="crackerBtn">🧨 LIGHT THE CRACKERS! 🎆</button>
+        <div class="extra-surprise" id="extraMsg">
+            💥 Click the button - Watch rockets fly up and BURST! 💥
+        </div>
+        <footer>
+            💖 With all my love, Amma 💖
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            // Fix overflow
+            document.documentElement.style.overflowX = 'hidden';
+            document.body.style.overflowX = 'hidden';
+
+            // Create decorative stars
+            function createStars() {
+                for (let i = 0; i < 100; i++) {
+                    let star = document.createElement('div');
+                    star.classList.add('star');
+                    let size = Math.random() * 5 + 2;
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDuration = Math.random() * 2 + 1 + 's';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    document.body.appendChild(star);
+                }
+            }
+
+            function createGlowOrbs() {
+                for (let i = 0; i < 20; i++) {
+                    let orb = document.createElement('div');
+                    orb.className = 'glow-orb';
+                    let size = Math.random() * 35 + 15;
+                    orb.style.width = size + 'px';
+                    orb.style.height = size + 'px';
+                    orb.style.background = `radial-gradient(circle, rgba(255,200,100,0.5), rgba(255,100,0,0.25))`;
+                    orb.style.left = Math.random() * 100 + '%';
+                    orb.style.top = Math.random() * 100 + '%';
+                    orb.style.animation = `floatOrb ${Math.random() * 20 + 12}s infinite alternate ease-in-out`;
+                    document.body.appendChild(orb);
+                }
+            }
+
+            createStars();
+            createGlowOrbs();
+
+            // ========== REALISTIC CRACKER SYSTEM ==========
+            // Rocket class: shoots from bottom to top, then bursts
+
+            class FireworkRocket {
+                constructor(startX, targetY, rocketColor, burstColors) {
+                    this.startX = startX;
+                    this.startY = window.innerHeight - 30;
+                    this.targetY = targetY;
+                    this.rocketColor = rocketColor;
+                    this.burstColors = burstColors;
+                    this.element = null;
+                    this.trailElements = [];
+                    this.progress = 0;
+                    this.speed = 0.012; // moves up quickly
+                    this.active = true;
+                    this.hasBurst = false;
+                    this.createRocket();
+                }
+
+                createRocket() {
+                    // Create rocket element
+                    this.element = document.createElement('div');
+                    this.element.style.position = 'fixed';
+                    this.element.style.width = '12px';
+                    this.element.style.height = '24px';
+                    this.element.style.background = `radial-gradient(circle at top, ${this.rocketColor}, ${this.rocketColor}99)`;
+                    this.element.style.borderRadius = '2px 2px 6px 6px';
+                    this.element.style.left = this.startX + 'px';
+                    this.element.style.top = this.startY + 'px';
+                    this.element.style.zIndex = '10000';
+                    this.element.style.pointerEvents = 'none';
+                    this.element.style.boxShadow = `0 0 8px ${this.rocketColor}`;
+                    this.element.style.transition = 'all 0.02s linear';
+
+                    // Add a little flame at bottom
+                    let flame = document.createElement('div');
+                    flame.style.position = 'absolute';
+                    flame.style.bottom = '-8px';
+                    flame.style.left = '-2px';
+                    flame.style.width = '16px';
+                    flame.style.height = '12px';
+                    flame.style.background = `radial-gradient(circle, #FF6600, #FF3300)`;
+                    flame.style.borderRadius = '50%';
+                    flame.style.filter = 'blur(2px)';
+                    flame.style.animation = 'flicker 0.05s infinite alternate';
+                    this.element.appendChild(flame);
+
+                    document.body.appendChild(this.element);
+
+                    // Add smoke trail effect (sparks)
+                    this.trailInterval = setInterval(() => {
+                        if (!this.active) return;
+                        this.addTrailSpark();
+                    }, 30);
+                }
+
+                addTrailSpark() {
+                    if (!this.element) return;
+                    const rect = this.element.getBoundingClientRect();
+                    const spark = document.createElement('div');
+                    spark.style.position = 'fixed';
+                    spark.style.width = '4px';
+                    spark.style.height = '4px';
+                    spark.style.background = `radial-gradient(circle, #FFA500, #FF4500)`;
+                    spark.style.borderRadius = '50%';
+                    spark.style.left = (rect.left + rect.width / 2 - 2) + 'px';
+                    spark.style.top = (rect.bottom - 5) + 'px';
+                    spark.style.zIndex = '9999';
+                    spark.style.pointerEvents = 'none';
+                    spark.style.opacity = '0.8';
+                    spark.style.animation = 'trailFade 0.5s forwards';
+                    document.body.appendChild(spark);
+                    setTimeout(() => spark.remove(), 500);
+                }
+
+                update() {
+                    if (!this.active) return false;
+
+                    this.progress += this.speed;
+                    if (this.progress >= 1) {
+                        // Reached target - BURST!
+                        this.burst();
+                        return false;
+                    }
+
+                    const currentY = this.startY - (this.startY - this.targetY) * this.progress;
+                    if (this.element) {
+                        this.element.style.top = currentY + 'px';
+                        // Add slight rotation for realism
+                        const rotation = Math.sin(Date.now() * 0.02) * 15;
+                        this.element.style.transform = `rotate(${rotation}deg)`;
+                    }
+                    return true;
+                }
+
+                burst() {
+                    if (this.hasBurst) return;
+                    this.hasBurst = true;
+                    this.active = false;
+
+                    if (this.element) {
+                        // Create explosion flash
+                        const flash = document.createElement('div');
+                        flash.style.position = 'fixed';
+                        const rect = this.element.getBoundingClientRect();
+                        flash.style.left = (rect.left + rect.width / 2 - 20) + 'px';
+                        flash.style.top = (rect.top + rect.height / 2 - 20) + 'px';
+                        flash.style.width = '40px';
+                        flash.style.height = '40px';
+                        flash.style.background = `radial-gradient(circle, white, ${this.rocketColor})`;
+                        flash.style.borderRadius = '50%';
+                        flash.style.zIndex = '10001';
+                        flash.style.pointerEvents = 'none';
+                        flash.style.animation = 'flashPop 0.2s forwards';
+                        document.body.appendChild(flash);
+                        setTimeout(() => flash.remove(), 200);
+
+                        this.element.remove();
+                    }
+
+                    if (this.trailInterval) clearInterval(this.trailInterval);
+
+                    // Create explosion particles (realistic burst)
+                    const burstX = this.startX;
+                    const burstY = this.targetY;
+                    this.createExplosionParticles(burstX, burstY);
+
+                    // Also add sound-like visual shockwave
+                    this.createShockwave(burstX, burstY);
+                }
+
+                createExplosionParticles(x, y) {
+                    const particleCount = 80 + Math.floor(Math.random() * 40);
+                    const colors = this.burstColors || ['#FF0000', '#FFA500', '#FFFF00', '#FF69B4', '#00FF00', '#FFD700', '#FF4500', '#DC143C', '#FF1493', '#32CD32', '#FF6347'];
+
+                    for (let i = 0; i < particleCount; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        const velocity = Math.random() * 8 + 3;
+                        const vx = Math.cos(angle) * velocity;
+                        const vy = Math.sin(angle) * velocity - 2; // slight upward bias
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        const size = Math.random() * 6 + 3;
+
+                        const particle = document.createElement('div');
+                        particle.style.position = 'fixed';
+                        particle.style.left = (x - size / 2) + 'px';
+                        particle.style.top = (y - size / 2) + 'px';
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        particle.style.background = `radial-gradient(circle, ${color}, ${color}cc)`;
+                        particle.style.borderRadius = '50%';
+                        particle.style.zIndex = '10000';
+                        particle.style.pointerEvents = 'none';
+                        particle.style.boxShadow = `0 0 6px ${color}`;
+                        document.body.appendChild(particle);
+
+                        let posX = x;
+                        let posY = y;
+                        let velX = vx;
+                        let velY = vy;
+                        let gravity = 0.2;
+                        let life = 1;
+                        let opacity = 1;
+
+                        const animateParticle = () => {
+                            if (life <= 0) {
+                                particle.remove();
+                                return;
+                            }
+
+                            posX += velX;
+                            posY += velY;
+                            velY += gravity;
+                            life -= 0.02;
+                            opacity = life * 0.9;
+
+                            particle.style.left = (posX - size / 2) + 'px';
+                            particle.style.top = (posY - size / 2) + 'px';
+                            particle.style.opacity = opacity;
+                            particle.style.transform = `scale(${0.8 + life * 0.5})`;
+
+                            requestAnimationFrame(animateParticle);
+                        };
+
+                        requestAnimationFrame(animateParticle);
+                    }
+                }
+
+                createShockwave(x, y) {
+                    const rings = [30, 50, 70];
+                    rings.forEach((radius, idx) => {
+                        setTimeout(() => {
+                            const ring = document.createElement('div');
+                            ring.style.position = 'fixed';
+                            ring.style.left = (x - radius) + 'px';
+                            ring.style.top = (y - radius) + 'px';
+                            ring.style.width = (radius * 2) + 'px';
+                            ring.style.height = (radius * 2) + 'px';
+                            ring.style.border = `3px solid rgba(255, 200, 100, 0.8)`;
+                            ring.style.borderRadius = '50%';
+                            ring.style.pointerEvents = 'none';
+                            ring.style.zIndex = '9999';
+                            ring.style.animation = 'shockwaveExpand 0.4s forwards';
+                            document.body.appendChild(ring);
+                            setTimeout(() => ring.remove(), 400);
+                        }, idx * 40);
+                    });
+                }
+            }
+
+            // Animation keyframes
+            const style = document.createElement('style');
+            style.textContent = `
+            @keyframes flicker {
+                0% { opacity: 0.8; transform: scale(1); }
+                100% { opacity: 1; transform: scale(1.2); }
+            }
+            @keyframes trailFade {
+                0% { opacity: 0.8; transform: scale(1); }
+                100% { opacity: 0; transform: scale(0.5); }
+            }
+            @keyframes flashPop {
+                0% { opacity: 1; transform: scale(0.5); }
+                100% { opacity: 0; transform: scale(1.5); }
+            }
+            @keyframes shockwaveExpand {
+                0% { opacity: 0.8; transform: scale(0.5); border-width: 4px; }
+                100% { opacity: 0; transform: scale(1.2); border-width: 1px; }
+            }
+        `;
+            document.head.appendChild(style);
+
+            // Main function to launch multiple crackers
+            let activeRockets = [];
+            let isLaunching = false;
+
+            function launchFirecrackers() {
+                if (isLaunching) return;
+                isLaunching = true;
+
+                // Burst confetti for extra celebration
+                burstConfetti();
+
+                // Launch multiple rockets at different positions
+                const rocketCount = 8 + Math.floor(Math.random() * 5); // 8-12 rockets
+                const colors = [
+                    '#FF4500', '#FF6347', '#FF0000', '#FFD700', '#FFA500',
+                    '#FF1493', '#DC143C', '#32CD32', '#00FF00', '#FFFF00',
+                    '#FF69B4', '#FF8C00', '#FFB347'
+                ];
+
+                const burstColorSets = [
+                    ['#FF0000', '#FFA500', '#FFFF00', '#FF4500'],
+                    ['#FF1493', '#FF69B4', '#FFB6C1', '#DC143C'],
+                    ['#32CD32', '#00FF00', '#ADFF2F', '#7CFC00'],
+                    ['#FFD700', '#FFA500', '#FF8C00', '#FFB347'],
+                    ['#00BFFF', '#1E90FF', '#4169E1', '#FF69B4'],
+                    ['#FF4500', '#FF6347', '#FF7F50', '#FFA07A']
+                ];
+
+                for (let i = 0; i < rocketCount; i++) {
+                    setTimeout(() => {
+                        const startX = 50 + Math.random() * (window.innerWidth - 100);
+                        const targetY = 80 + Math.random() * (window.innerHeight * 0.5); // burst in upper half
+                        const rocketColor = colors[Math.floor(Math.random() * colors.length)];
+                        const burstColors = burstColorSets[Math.floor(Math.random() * burstColorSets.length)];
+
+                        const rocket = new FireworkRocket(startX, targetY, rocketColor, burstColors);
+                        activeRockets.push(rocket);
+
+                        // Animate rocket
+                        const animateRocket = () => {
+                            if (rocket.active) {
+                                const stillActive = rocket.update();
+                                if (stillActive) {
+                                    requestAnimationFrame(animateRocket);
+                                }
+                            }
+                            // Remove from active array after burst
+                            const index = activeRockets.indexOf(rocket);
+                            if (index > -1 && !rocket.active) {
+                                activeRockets.splice(index, 1);
+                            }
+                        };
+                        requestAnimationFrame(animateRocket);
+                    }, i * 120); // staggered launch
+                }
+
+                // Also add a big grand finale effect after all rockets
+                setTimeout(() => {
+                    // Final burst - extra confetti
+                    burstConfetti();
+                    // Change message
+                    const msgDiv = document.getElementById('dynamicMessage');
+                    msgDiv.innerHTML = `
+                    <p>🎆✨ BOOM! WHAT A SPECTACULAR SHOW! ✨🎆</p>
+                    <p class="big-orange">🌟 YOU LIT UP THE SKY, MY LITTLE STAR! 🌟</p>
+                    <p>Happy Surprise Day, Ishan Karthi! 🎇🧡</p>
+                `;
+                    const extraDiv = document.getElementById('extraMsg');
+                    extraDiv.innerHTML = '🎉 WOW! The sky is full of colors! You are AMAZING! 🎉';
+
+                    // Reset button after a few seconds
+                    setTimeout(() => {
+                        isLaunching = false;
+                    }, 3000);
+                }, rocketCount * 120 + 1000);
+            }
+
+            // Simple confetti burst
+            function burstConfetti() {
+                const confettiContainer = document.createElement('div');
+                confettiContainer.style.position = 'fixed';
+                confettiContainer.style.top = '0';
+                confettiContainer.style.left = '0';
+                confettiContainer.style.width = '100%';
+                confettiContainer.style.height = '100%';
+                confettiContainer.style.pointerEvents = 'none';
+                confettiContainer.style.zIndex = '9998';
+                document.body.appendChild(confettiContainer);
+
+                const colors = ['#FFB347', '#FF8C42', '#FFD966', '#FFA500', '#FF6F32', '#F4C542', '#FF4500', '#FF1493', '#32CD32'];
+                for (let i = 0; i < 150; i++) {
+                    const conf = document.createElement('div');
+                    conf.style.position = 'absolute';
+                    conf.style.width = Math.random() * 10 + 5 + 'px';
+                    conf.style.height = Math.random() * 12 + 6 + 'px';
+                    conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    conf.style.top = '-20px';
+                    conf.style.left = Math.random() * window.innerWidth + 'px';
+                    conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    conf.style.opacity = '0.9';
+                    conf.style.animation = `fallConfetti ${Math.random() * 2 + 1.5}s linear forwards`;
+                    confettiContainer.appendChild(conf);
+
+                    setTimeout(() => conf.remove(), 2500);
+                }
+
+                setTimeout(() => confettiContainer.remove(), 3000);
+            }
+
+            // Add fall confetti keyframes
+            const confettiKeyframe = document.createElement('style');
+            confettiKeyframe.textContent = `
+            @keyframes fallConfetti {
+                0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(${window.innerHeight + 100}px) rotate(720deg); opacity: 0; }
+            }
+        `;
+            document.head.appendChild(confettiKeyframe);
+
+            // Button click handler
+            const crackerBtn = document.getElementById('crackerBtn');
+            crackerBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                launchFirecrackers();
+
+                // Add button click effect
+                crackerBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    crackerBtn.style.transform = '';
+                }, 150);
+            });
+
+            // Click anywhere for sparkles
+            function createSparkle(x, y) {
+                for (let i = 0; i < 8; i++) {
+                    let spark = document.createElement('div');
+                    spark.style.position = 'fixed';
+                    spark.style.width = Math.random() * 8 + 4 + 'px';
+                    spark.style.height = spark.style.width;
+                    spark.style.background = `radial-gradient(circle, #FFD966, #FF6F32)`;
+                    spark.style.borderRadius = '50%';
+                    spark.style.left = (x + (Math.random() * 30 - 15)) + 'px';
+                    spark.style.top = (y + (Math.random() * 30 - 15)) + 'px';
+                    spark.style.pointerEvents = 'none';
+                    spark.style.zIndex = '9999';
+                    spark.style.animation = 'sparkFade 0.6s forwards';
+                    document.body.appendChild(spark);
+                    setTimeout(() => spark.remove(), 600);
+                }
+            }
+
+            document.body.addEventListener('click', (e) => {
+                if (e.target === crackerBtn || crackerBtn.contains(e.target)) return;
+                createSparkle(e.clientX, e.clientY);
+            });
+
+            const sparkStyle = document.createElement('style');
+            sparkStyle.textContent = `
+            @keyframes sparkFade {
+                0% { transform: scale(0.2); opacity: 1; }
+                100% { transform: scale(2); opacity: 0; }
+            }
+        `;
+            document.head.appendChild(sparkStyle);
+
+            // Welcome effect
+            setTimeout(() => {
+                const welcomeSpark = () => {
+                    for (let i = 0; i < 20; i++) {
+                        setTimeout(() => {
+                            createSparkle(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                        }, i * 50);
+                    }
+                };
+                welcomeSpark();
+            }, 500);
+
+            // Badge animation
+            const badge = document.querySelector('.age-badge');
+            setInterval(() => {
+                if (badge) {
+                    badge.style.transform = 'rotate(-1deg) scale(1.02)';
+                    setTimeout(() => { if (badge) badge.style.transform = 'rotate(-2deg)'; }, 200);
+                }
+            }, 1800);
+
+            // H1 glow effect
+            setInterval(() => {
+                const h1El = document.querySelector('h1');
+                if (h1El) {
+                    h1El.style.textShadow = `0 0 ${Math.sin(Date.now() / 800) * 10 + 8}px #FFA500`;
+                }
+            }, 300);
+        })();
+    </script>
+</body>
+
+</html>

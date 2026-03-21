@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Above the Clouds | Aerial Serenity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #58a3ff;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', 'Inter', system-ui, sans-serif;
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Airplane window frame overlay */
+        .window-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .window-shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85vw;
+            height: 85vh;
+            max-width: 1100px;
+            max-height: 700px;
+            border-radius: 48px;
+            box-shadow:
+                inset 0 0 0 8px rgba(210, 180, 140, 0.4),
+                inset 0 0 0 12px rgba(100, 80, 60, 0.3),
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 0 100vmax rgba(30, 25, 35, 0.75);
+            backdrop-filter: blur(2px);
+        }
+
+        .window-shape::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border-radius: 68px;
+            background: radial-gradient(ellipse at center, rgba(80, 70, 60, 0.3) 0%, rgba(40, 35, 45, 0.6) 100%);
+            z-index: -1;
+        }
+
+        .window-shade {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            font-family: monospace;
+            color: #c0b8a8;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .window-shade:hover {
+            background: rgba(60, 55, 65, 0.8);
+            transform: scale(1.05);
+        }
+
+        .theme-overlay {
+            position: absolute;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 15;
+            pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.4), transparent);
+            padding: 1rem;
+        }
+
+        .theme-name {
+            font-size: clamp(1rem, 3vw, 1.6rem);
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #f0ecd8;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            background: rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 40px;
+            backdrop-filter: blur(5px);
+        }
+
+        .sub {
+            font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+            letter-spacing: 1px;
+            margin-top: 8px;
+            color: #d0c8b0;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .cosmic-credit {
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            z-index: 15;
+            font-size: 10px;
+            color: rgba(200, 190, 160, 0.6);
+            font-family: monospace;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 700px) {
+            .window-shape {
+                width: 92vw;
+                height: 80vh;
+                border-radius: 32px;
+            }
+
+            .window-shade {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                bottom: 12px;
+                right: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="skyCanvas"></canvas>
+    </div>
+
+    <div class="window-frame">
+        <div class="window-shape"></div>
+        <div class="window-shade" id="windowShadeBtn">🪟</div>
+    </div>
+
+    <div class="theme-overlay">
+        <div class="theme-name">✈️ ABOVE THE CLOUDS ✈️</div>
+        <div class="sub">deep blue sky · cotton clouds · aerial serenity</div>
+    </div>
+    <div class="cosmic-credit">✦ window seat view · endless horizon ✦</div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('skyCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // --- Color Palette: deep blue sky, pure white clouds ---
+            const COLORS = {
+                skyDeep: [20, 55, 95],
+                skyMid: [45, 95, 145],
+                skyLight: [85, 145, 195],
+                cloudWhite: [255, 255, 255],
+                cloudWarm: [255, 252, 255],
+                cloudShadow: [210, 215, 225],
+                horizonGold: [245, 210, 140]
+            };
+
+            // --- Cloud objects (pure cotton balls, floating gently) ---
+            let clouds = [];
+            const CLOUD_COUNT = 100;
+
+            // --- Distant haze clouds (background layers) ---
+            let distantClouds = [];
+            const DISTANT_COUNT = 28;
+
+            // --- Sunlight rays (subtle, from above) ---
+            let sunRays = [];
+
+            // --- Window reflection effects (subtle glare) ---
+            let windowGlare = 0.3;
+            let isShadeActive = false;
+
+            // --- Animation time variables ---
+            let timeOffset = 0;
+
+            // --- Cloud class for pure cotton-like appearance ---
+            class CottonCloud {
+                constructor(x, y, size, depth, speed) {
+                    this.x = x;           // normalized x (0-1)
+                    this.y = y;           // normalized y (0-1)
+                    this.size = size;     // relative size
+                    this.depth = depth;   // 0 = far, 1 = near
+                    this.speed = speed;   // drift speed
+                    this.phase = Math.random() * Math.PI * 2;
+                    this.puffs = [];
+
+                    // Generate multiple puffs for cotton-like appearance
+                    const puffCount = 4 + Math.floor(Math.random() * 5);
+                    for (let i = 0; i < puffCount; i++) {
+                        this.puffs.push({
+                            offsetX: (Math.random() - 0.5) * 1.2,
+                            offsetY: (Math.random() - 0.5) * 0.8,
+                            radius: 0.4 + Math.random() * 0.7,
+                            stretchX: 0.7 + Math.random() * 0.8,
+                            stretchY: 0.5 + Math.random() * 0.7
+                        });
+                    }
+                }
+
+                draw(ctx, xPos, yPos, scale, alpha) {
+                    ctx.save();
+                    ctx.globalAlpha = alpha * (0.7 + this.depth * 0.3);
+
+                    // Draw each puff to create fluffy cotton ball effect
+                    for (let puff of this.puffs) {
+                        const puffX = xPos + puff.offsetX * this.size * scale * 0.8;
+                        const puffY = yPos + puff.offsetY * this.size * scale * 0.6;
+                        const puffW = this.size * scale * puff.radius * puff.stretchX;
+                        const puffH = this.size * scale * puff.radius * puff.stretchY;
+
+                        ctx.beginPath();
+                        ctx.ellipse(puffX, puffY, puffW, puffH, 0, 0, Math.PI * 2);
+
+                        // Gradient for cotton-like softness
+                        const grad = ctx.createRadialGradient(
+                            puffX - puffW * 0.2, puffY - puffH * 0.2, puffW * 0.2,
+                            puffX, puffY, puffW * 0.8
+                        );
+                        grad.addColorStop(0, `rgba(${COLORS.cloudWhite[0]}, ${COLORS.cloudWhite[1]}, ${COLORS.cloudWhite[2]}, 1)`);
+                        grad.addColorStop(0.6, `rgba(${COLORS.cloudWarm[0]}, ${COLORS.cloudWarm[1]}, ${COLORS.cloudWarm[2]}, 0.95)`);
+                        grad.addColorStop(1, `rgba(${COLORS.cloudShadow[0]}, ${COLORS.cloudShadow[1]}, ${COLORS.cloudShadow[2]}, 0.7)`);
+                        ctx.fillStyle = grad;
+                        ctx.fill();
+
+                        // Soft highlight on top
+                        ctx.beginPath();
+                        ctx.ellipse(puffX - puffW * 0.15, puffY - puffH * 0.2, puffW * 0.25, puffH * 0.2, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 255, 250, 0.5)`;
+                        ctx.fill();
+                    }
+
+                    ctx.restore();
+                }
+            }
+
+            // --- Initialize clouds (cotton balls at different depths) ---
+            function initClouds() {
+                clouds = [];
+                for (let i = 0; i < CLOUD_COUNT; i++) {
+                    const depth = Math.random(); // 0 = far/smaller, 1 = near/larger
+                    const size = (0.08 + Math.random() * 0.12) * (0.6 + depth * 0.8);
+                    const speed = (0.02 + Math.random() * 0.05) * (1 - depth * 0.5);
+                    clouds.push(new CottonCloud(
+                        Math.random(),
+                        0.2 + Math.random() * 0.6,
+                        size,
+                        depth,
+                        speed
+                    ));
+                }
+
+                // Distant haze clouds (background layer)
+                distantClouds = [];
+                for (let i = 0; i < DISTANT_COUNT; i++) {
+                    distantClouds.push({
+                        x: Math.random(),
+                        y: 0.15 + Math.random() * 0.7,
+                        size: 0.12 + Math.random() * 0.18,
+                        speed: 0.008 + Math.random() * 0.02,
+                        alpha: 0.25 + Math.random() * 0.3
+                    });
+                }
+            }
+
+            // --- Initialize sunlight rays ---
+            function initSunRays() {
+                sunRays = [];
+                for (let i = 0; i < 24; i++) {
+                    sunRays.push({
+                        angle: -0.8 + (i / 24) * 1.6,
+                        length: 0.35 + Math.random() * 0.25,
+                        width: 2 + Math.random() * 5,
+                        intensity: 0.15 + Math.random() * 0.25
+                    });
+                }
+            }
+
+            // --- Resize handler ---
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            // --- Draw deep blue sky gradient (from deep to lighter at horizon) ---
+            function drawSkyGradient(timestamp) {
+                const timeSec = timestamp * 0.0002;
+                const subtleBreath = 0.98 + Math.sin(timeSec * 0.1) * 0.02;
+
+                const gradSky = ctx.createLinearGradient(0, 0, 0, height);
+                gradSky.addColorStop(0, `rgb(${COLORS.skyDeep[0]}, ${COLORS.skyDeep[1]}, ${COLORS.skyDeep[2]})`);
+                gradSky.addColorStop(0.4, `rgb(${COLORS.skyMid[0]}, ${COLORS.skyMid[1]}, ${COLORS.skyMid[2] * subtleBreath})`);
+                gradSky.addColorStop(0.75, `rgb(${COLORS.skyLight[0]}, ${COLORS.skyLight[1]}, ${COLORS.skyLight[2]})`);
+                gradSky.addColorStop(1, `rgb(${COLORS.horizonGold[0] - 40}, ${COLORS.horizonGold[1] - 30}, ${COLORS.horizonGold[2] - 60})`);
+                ctx.fillStyle = gradSky;
+                ctx.fillRect(0, 0, width, height);
+
+                // Distant horizon glow
+                ctx.globalCompositeOperation = 'screen';
+                const horizonGlow = ctx.createLinearGradient(0, height * 0.7, 0, height);
+                horizonGlow.addColorStop(0, `rgba(245, 210, 130, 0)`);
+                horizonGlow.addColorStop(1, `rgba(235, 190, 100, 0.2)`);
+                ctx.fillStyle = horizonGlow;
+                ctx.fillRect(0, height * 0.7, width, height * 0.3);
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw distant haze clouds (background layer, soft) ---
+            function drawDistantClouds(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'screen';
+
+                for (let cloud of distantClouds) {
+                    const driftX = (cloud.x + timeSec * cloud.speed) % 1;
+                    const x = driftX * width;
+                    const y = cloud.y * height;
+                    const size = cloud.size * Math.min(width, height) * 0.8;
+
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, size, size * 0.6, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(235, 240, 250, ${cloud.alpha * 0.5})`;
+                    ctx.fill();
+
+                    // Additional soft puffs
+                    ctx.beginPath();
+                    ctx.ellipse(x - size * 0.4, y - size * 0.15, size * 0.6, size * 0.45, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.ellipse(x + size * 0.45, y + size * 0.1, size * 0.55, size * 0.4, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw main clouds (cotton balls, floating gently) ---
+            function drawMainClouds(timestamp) {
+                const timeSec = timestamp * 0.001;
+
+                // Sort clouds by depth (far ones first for depth perception)
+                const sortedClouds = [...clouds].sort((a, b) => a.depth - b.depth);
+
+                for (let cloud of sortedClouds) {
+                    // Gentle floating motion
+                    const driftX = (cloud.x + timeSec * cloud.speed + Math.sin(timeSec * 0.2 + cloud.phase) * 0.003) % 1;
+                    const driftY = cloud.y + Math.sin(timeSec * 0.15 + cloud.phase * 1.3) * 0.002;
+
+                    let x = driftX * width;
+                    let y = Math.min(Math.max(driftY, 0.1), 0.85) * height;
+
+                    // Wrap around edges
+                    if (x < -200) x = width + 200;
+                    if (x > width + 200) x = -200;
+
+                    const scale = Math.min(width, height) * 0.9;
+                    const alpha = 0.85 + cloud.depth * 0.15;
+
+                    cloud.draw(ctx, x, y, scale, alpha);
+                }
+            }
+
+            // --- Draw sunlight rays (subtle, from above) ---
+            function drawSunRays(timestamp) {
+                const timeSec = timestamp * 0.0008;
+                ctx.globalCompositeOperation = 'screen';
+
+                const centerX = width * 0.7;
+                const centerY = height * 0.15;
+
+                for (let ray of sunRays) {
+                    const pulse = 0.7 + 0.3 * Math.sin(timeSec * 0.5 + ray.angle * 5);
+                    const intensity = ray.intensity * pulse;
+
+                    const angle = ray.angle + Math.sin(timeSec * 0.1) * 0.05;
+                    const dx = Math.sin(angle);
+                    const dy = Math.cos(angle);
+                    const rayLength = Math.min(width, height) * ray.length;
+
+                    const gradRay = ctx.createLinearGradient(
+                        centerX, centerY,
+                        centerX + dx * rayLength,
+                        centerY + dy * rayLength
+                    );
+                    gradRay.addColorStop(0, `rgba(255, 240, 170, ${intensity * 0.4})`);
+                    gradRay.addColorStop(0.5, `rgba(255, 220, 120, ${intensity * 0.2})`);
+                    gradRay.addColorStop(1, `rgba(210, 180, 100, 0)`);
+
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(centerX + dx * rayLength, centerY + dy * rayLength);
+                    ctx.lineWidth = ray.width * (0.5 + pulse * 0.7);
+                    ctx.strokeStyle = gradRay;
+                    ctx.stroke();
+                }
+
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw subtle sun glare (lens effect) ---
+            function drawSunGlare(timestamp) {
+                const timeSec = timestamp * 0.001;
+                const glareIntensity = 0.12 + Math.sin(timeSec * 0.3) * 0.04;
+
+                ctx.globalCompositeOperation = 'lighter';
+                const glareX = width * 0.72;
+                const glareY = height * 0.12;
+
+                const gradGlare = ctx.createRadialGradient(glareX, glareY, 15, glareX, glareY, 120);
+                gradGlare.addColorStop(0, `rgba(255, 245, 180, ${glareIntensity * 0.6})`);
+                gradGlare.addColorStop(0.5, `rgba(255, 220, 130, ${glareIntensity * 0.3})`);
+                gradGlare.addColorStop(1, `rgba(200, 170, 100, 0)`);
+                ctx.fillStyle = gradGlare;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw airplane window reflection (subtle glare on glass) ---
+            function drawWindowReflection() {
+                if (isShadeActive) return;
+
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = windowGlare * 0.25;
+
+                // Soft vignette effect (window edges)
+                const gradVignette = ctx.createRadialGradient(width / 2, height / 2, Math.min(width, height) * 0.3, width / 2, height / 2, Math.min(width, height) * 0.65);
+                gradVignette.addColorStop(0, `rgba(100, 120, 150, 0)`);
+                gradVignette.addColorStop(1, `rgba(70, 80, 100, 0.35)`);
+                ctx.fillStyle = gradVignette;
+                ctx.fillRect(0, 0, width, height);
+
+                // Window reflection highlight (soft)
+                ctx.beginPath();
+                ctx.ellipse(width * 0.15, height * 0.2, 40, 25, 0, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220, 230, 250, 0.15)`;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.ellipse(width * 0.88, height * 0.85, 35, 22, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw subtle floating particles (sunlight in air) ---
+            let particles = [];
+            const PARTICLE_COUNT = 80;
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        size: 0.5 + Math.random() * 2,
+                        speed: 0.05 + Math.random() * 0.15,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            function drawParticles(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.globalAlpha = 0.4;
+
+                for (let p of particles) {
+                    const yPos = (p.y + timeSec * p.speed * 0.05) % 1;
+                    const xPos = p.x + Math.sin(timeSec * 0.5 + p.phase) * 0.003;
+                    const x = xPos * width;
+                    const y = yPos * height;
+                    const twinkle = 0.5 + 0.5 * Math.sin(timeSec * 3 + p.phase);
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, p.size * twinkle, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 245, 200, ${0.3 * twinkle})`;
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Window shade interaction ---
+            function setupWindowShade() {
+                const shadeBtn = document.getElementById('windowShadeBtn');
+                shadeBtn.addEventListener('click', () => {
+                    isShadeActive = !isShadeActive;
+                    if (isShadeActive) {
+                        shadeBtn.style.background = "rgba(80, 70, 85, 0.9)";
+                        shadeBtn.style.color = "#e8e0c0";
+                        shadeBtn.innerHTML = "🪟✨";
+                    } else {
+                        shadeBtn.style.background = "rgba(40, 35, 45, 0.6)";
+                        shadeBtn.style.color = "#c0b8a8";
+                        shadeBtn.innerHTML = "🪟";
+                    }
+                });
+            }
+
+            // --- Apply window shade effect (dim the view) ---
+            function applyWindowShade() {
+                if (isShadeActive) {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.fillStyle = `rgba(25, 30, 40, 0.75)`;
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            // --- Gentle cloud shadows (subtle depth) ---
+            function drawCloudShadows() {
+                ctx.globalCompositeOperation = 'multiply';
+                ctx.globalAlpha = 0.08;
+                ctx.fillStyle = `rgba(70, 80, 100, 0.2)`;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Main animation loop ---
+            let animationId = null;
+
+            function animate(nowMs) {
+                if (!ctx) return;
+                if (canvas.width !== width || canvas.height !== height) resizeCanvas();
+
+                // 1. Deep blue sky gradient
+                drawSkyGradient(nowMs);
+
+                // 2. Distant haze clouds (background)
+                drawDistantClouds(nowMs);
+
+                // 3. Main cotton clouds
+                drawMainClouds(nowMs);
+
+                // 4. Sunlight rays
+                drawSunRays(nowMs);
+
+                // 5. Sun glare effect
+                drawSunGlare(nowMs);
+
+                // 6. Floating particles (airy atmosphere)
+                drawParticles(nowMs);
+
+                // 7. Subtle cloud shadows for depth
+                drawCloudShadows();
+
+                // 8. Window reflection (glass effect)
+                if (!isShadeActive) {
+                    drawWindowReflection();
+                }
+
+                // 9. Window shade overlay (if active)
+                applyWindowShade();
+
+                // Animate window glare intensity
+                windowGlare = 0.25 + Math.sin(nowMs * 0.0008) * 0.1;
+
+                requestAnimationFrame(animate);
+            }
+
+            // --- Initialize everything ---
+            function setup() {
+                resizeCanvas();
+                initClouds();
+                initSunRays();
+                initParticles();
+                setupWindowShade();
+                window.addEventListener('resize', () => resizeCanvas());
+                requestAnimationFrame(animate);
+            }
+
+            setup();
+        })();
+    </script>
+</body>
+
+</html>

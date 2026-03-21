@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Spring Awakening | Tender Green Dawn</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #e8f3e0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', 'Montserrat', system-ui, -apple-system, 'Inter', sans-serif;
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .theme-overlay {
+            position: absolute;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            background: radial-gradient(ellipse at center, rgba(210, 240, 180, 0.45) 0%, rgba(180, 220, 140, 0) 80%);
+            padding: 1.8rem 1rem;
+        }
+
+        .theme-name {
+            font-size: clamp(1.8rem, 7vw, 4.2rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #C5E0B4, #E8F0D0, #F9EEC1, #B8D9A6, #D4E8B0);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: springShimmer 12s ease infinite;
+            text-shadow: 0 0 15px rgba(180, 210, 120, 0.5);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        .sub {
+            font-size: clamp(0.8rem, 3.2vw, 1.1rem);
+            letter-spacing: 2px;
+            margin-top: 12px;
+            opacity: 0.92;
+            font-weight: 400;
+            background: linear-gradient(135deg, #FDF8E7, #E6F0D8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes springShimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .cosmic-credit {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 12;
+            font-size: 10px;
+            color: rgba(140, 170, 100, 0.7);
+            font-family: monospace;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            background: rgba(230, 245, 210, 0.25);
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 700px) {
+            .theme-name {
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="springCanvas"></canvas>
+    </div>
+
+    <div class="theme-overlay">
+        <div class="theme-name">🌱 TENDER GREEN AWAKENING 🌱</div>
+        <div class="sub">baby leaves · golden sunshine · fresh rain & cloud reflections</div>
+    </div>
+    <div class="cosmic-credit">✦ dewdrops glisten · spring's gentle breath ✦</div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('springCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // --- Color Palette: tender green, white, golden sunshine, wet reflections ---
+            const COLORS = {
+                springGreen1: [180, 215, 130],    // soft baby leaf green
+                springGreen2: [150, 195, 100],    // fresh leaf midtone
+                springGreen3: [200, 225, 150],    // light sage
+                goldenWarm: [245, 210, 120],      // sunshine gold
+                whiteSoft: [255, 252, 235],       // pure soft white
+                wetReflection: [210, 225, 170],   // wet shimmer
+                skyPale: [235, 245, 210]          // morning sky hint
+            };
+
+            // --- Animation elements ---
+            let timeOffset = 0;
+
+            // Dewdrops / water droplets (wetness and rain reflection)
+            let dewdrops = [];
+            const DEWDROP_COUNT = 240;
+
+            // Floating leaf particles (baby leaves drifting)
+            let leafParticles = [];
+            const LEAF_COUNT = 65;
+
+            // Cloud reflections on wet ground (simulated shimmering puddles)
+            let cloudReflections = [];
+            const REFLECTION_COUNT = 28;
+
+            // Rain sparkles (fine mist)
+            let rainMist = [];
+            const MIST_COUNT = 180;
+
+            // Gentle breeze sway for leaves
+            let breezeAngle = 0;
+
+            // --- Initialize dewdrops (wetness & shine) ---
+            function initDewdrops() {
+                dewdrops = [];
+                for (let i = 0; i < DEWDROP_COUNT; i++) {
+                    dewdrops.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        radius: 1.2 + Math.random() * 3.8,
+                        alpha: 0.4 + Math.random() * 0.55,
+                        shimmerSpeed: 0.5 + Math.random() * 1.2,
+                        phase: Math.random() * Math.PI * 2,
+                        highlight: Math.random() > 0.7,
+                        wobbleX: Math.random() * Math.PI * 2,
+                        wobbleY: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // --- Baby leaf particles (tender green, drifting gently) ---
+            function initLeafParticles() {
+                leafParticles = [];
+                for (let i = 0; i < LEAF_COUNT; i++) {
+                    leafParticles.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        size: 6 + Math.random() * 14,
+                        rotation: Math.random() * Math.PI * 2,
+                        rotSpeed: 0.005 + Math.random() * 0.015,
+                        driftSpeedX: 0.1 + Math.random() * 0.25,
+                        driftSpeedY: 0.05 + Math.random() * 0.15,
+                        phaseX: Math.random() * Math.PI * 2,
+                        phaseY: Math.random() * Math.PI * 2,
+                        greenVariation: 0.6 + Math.random() * 0.5,
+                        alphaLeaf: 0.35 + Math.random() * 0.45
+                    });
+                }
+            }
+
+            // --- Cloud reflections (wet ground shimmer) ---
+            function initCloudReflections() {
+                cloudReflections = [];
+                for (let i = 0; i < REFLECTION_COUNT; i++) {
+                    cloudReflections.push({
+                        x: Math.random(),
+                        y: 0.6 + Math.random() * 0.35, // lower part (ground area)
+                        width: 40 + Math.random() * 110,
+                        height: 15 + Math.random() * 35,
+                        opacity: 0.12 + Math.random() * 0.25,
+                        drift: 0.3 + Math.random() * 0.7,
+                        phase: Math.random() * Math.PI * 2,
+                        undulate: Math.random() * 0.02
+                    });
+                }
+            }
+
+            // --- Rain mist / wetness sparkles (tiny shimmering droplets) ---
+            function initRainMist() {
+                rainMist = [];
+                for (let i = 0; i < MIST_COUNT; i++) {
+                    rainMist.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        size: 0.8 + Math.random() * 2.2,
+                        alphaBase: 0.2 + Math.random() * 0.45,
+                        twinkleSpeed: 0.7 + Math.random() * 1.5,
+                        phaseShift: Math.random() * Math.PI * 2,
+                        floatSpeed: 0.05 + Math.random() * 0.2
+                    });
+                }
+            }
+
+            // --- Resize handler ---
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            // --- Draw soft spring gradient background (tender greens, golden sunshine) ---
+            function drawSpringBackground(timestamp) {
+                const timeSec = timestamp * 0.0006;
+                const warmthPulse = 0.92 + Math.sin(timeSec * 0.4) * 0.05;
+
+                // Gentle radial gradient (sunlight from top left)
+                const lightX = width * (0.25 + Math.sin(timeSec * 0.1) * 0.03);
+                const lightY = height * 0.2;
+
+                const gradBg = ctx.createLinearGradient(0, 0, width, height);
+                gradBg.addColorStop(0, `rgb(${COLORS.skyPale[0]}, ${COLORS.skyPale[1]}, ${COLORS.skyPale[2]})`);
+                gradBg.addColorStop(0.4, `rgb(${COLORS.springGreen1[0]}, ${COLORS.springGreen1[1]}, ${COLORS.springGreen1[2]})`);
+                gradBg.addColorStop(0.8, `rgb(${COLORS.springGreen2[0]}, ${COLORS.springGreen2[1]}, ${COLORS.springGreen2[2]})`);
+                gradBg.addColorStop(1, `rgb(${COLORS.springGreen3[0] - 15}, ${COLORS.springGreen3[1] - 10}, ${COLORS.springGreen3[2] - 20})`);
+                ctx.fillStyle = gradBg;
+                ctx.fillRect(0, 0, width, height);
+
+                // Golden sunshine glow (warm overlay)
+                const sunGlow = ctx.createRadialGradient(lightX, lightY, 20, lightX, lightY, Math.min(width, height) * 0.45);
+                sunGlow.addColorStop(0, `rgba(255, 235, 150, ${0.35 * warmthPulse})`);
+                sunGlow.addColorStop(0.5, `rgba(245, 210, 110, 0.2)`);
+                sunGlow.addColorStop(1, `rgba(210, 180, 90, 0)`);
+                ctx.globalCompositeOperation = 'screen';
+                ctx.fillStyle = sunGlow;
+                ctx.fillRect(0, 0, width, height);
+
+                // Additional soft rays of light
+                ctx.globalCompositeOperation = 'lighter';
+                for (let i = 0; i < 12; i++) {
+                    const angle = (i / 12) * Math.PI * 2 + timeSec * 0.08;
+                    const dx = Math.cos(angle);
+                    const dy = Math.sin(angle);
+                    const startX = lightX + dx * 25;
+                    const startY = lightY + dy * 20;
+                    const endX = lightX + dx * (width * 0.7);
+                    const endY = lightY + dy * (height * 0.5);
+                    const gradRay = ctx.createLinearGradient(startX, startY, endX, endY);
+                    gradRay.addColorStop(0, `rgba(255, 225, 130, 0.2)`);
+                    gradRay.addColorStop(1, `rgba(255, 200, 80, 0)`);
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.lineWidth = 12 + Math.sin(angle * 4) * 4;
+                    ctx.strokeStyle = gradRay;
+                    ctx.stroke();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+
+                // Wet ground effect: subtle glossy layer at bottom
+                const wetGrad = ctx.createLinearGradient(0, height * 0.65, 0, height);
+                wetGrad.addColorStop(0, `rgba(170, 200, 120, 0.1)`);
+                wetGrad.addColorStop(1, `rgba(140, 175, 95, 0.35)`);
+                ctx.fillStyle = wetGrad;
+                ctx.fillRect(0, height * 0.65, width, height * 0.35);
+            }
+
+            // --- Draw cloud reflections on wet ground (shimmering puddles) ---
+            function drawCloudReflections(timestamp) {
+                const timeSec = timestamp * 0.0008;
+                ctx.globalCompositeOperation = 'screen';
+
+                for (let ref of cloudReflections) {
+                    const driftX = (timeSec * ref.drift + ref.phase) % 1;
+                    let refX = (ref.x + driftX) * width;
+                    if (refX > width + 200) refX = -200;
+                    if (refX < -200) refX = width + 200;
+
+                    const refY = height * (ref.y + Math.sin(timeSec * 0.5 + ref.x * 8) * 0.02);
+                    const refW = ref.width * (width / 1400);
+                    const refH = ref.height * (height / 900);
+
+                    // Soft elliptical reflection
+                    ctx.beginPath();
+                    ctx.ellipse(refX, refY, refW, refH, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(220, 240, 180, ${ref.opacity * 0.7})`;
+                    ctx.fill();
+
+                    // Highlight edge (wet shimmer)
+                    ctx.beginPath();
+                    ctx.ellipse(refX - refW * 0.3, refY - refH * 0.2, refW * 0.4, refH * 0.3, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 250, 200, ${ref.opacity * 0.5})`;
+                    ctx.fill();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw dewdrops (wetness, rain reflection, sparkling) ---
+            function drawDewdrops(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let drop of dewdrops) {
+                    // Gentle movement like quivering droplets
+                    const wobbleX = Math.sin(timeSec * 0.8 + drop.wobbleX) * 0.003;
+                    const wobbleY = Math.cos(timeSec * 0.6 + drop.wobbleY) * 0.002;
+                    let dropX = (drop.x + wobbleX) * width;
+                    let dropY = (drop.y + wobbleY) * height;
+
+                    if (dropX < -20) dropX = width + 20;
+                    if (dropX > width + 20) dropX = -20;
+                    if (dropY < -20) dropY = height + 20;
+                    if (dropY > height + 20) dropY = -20;
+
+                    // Twinkling shimmer (wet reflection)
+                    const shimmer = 0.55 + 0.45 * Math.sin(timeSec * drop.shimmerSpeed + drop.phase);
+                    const alpha = drop.alpha * (0.5 + shimmer * 0.6);
+
+                    // Main droplet glow
+                    ctx.beginPath();
+                    ctx.arc(dropX, dropY, drop.radius * (0.7 + shimmer * 0.4), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 248, 210, ${alpha * 0.85})`;
+                    ctx.fill();
+
+                    // Highlight (sun catching on water)
+                    if (drop.highlight || shimmer > 0.7) {
+                        ctx.beginPath();
+                        ctx.arc(dropX - drop.radius * 0.3, dropY - drop.radius * 0.3, drop.radius * 0.35, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 255, 235, ${alpha * 0.7})`;
+                        ctx.fill();
+                    }
+
+                    // Tiny reflective spark
+                    ctx.beginPath();
+                    ctx.arc(dropX, dropY, drop.radius * 0.25, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 245, 180, ${alpha * 0.9})`;
+                    ctx.fill();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw baby leaves (tender green, drifting in spring breeze) ---
+            function drawLeafParticles(timestamp) {
+                const timeSec = timestamp * 0.001;
+                breezeAngle = Math.sin(timeSec * 0.3) * 0.3;
+
+                for (let leaf of leafParticles) {
+                    // Organic floating motion
+                    const moveX = Math.sin(timeSec * leaf.driftSpeedX + leaf.phaseX) * 0.008;
+                    const moveY = Math.cos(timeSec * leaf.driftSpeedY + leaf.phaseY) * 0.006;
+                    let leafX = (leaf.x + moveX + breezeAngle * 0.002) * width;
+                    let leafY = (leaf.y + moveY + Math.sin(timeSec * 0.5) * 0.002) * height;
+
+                    if (leafX < -50) leafX = width + 50;
+                    if (leafX > width + 50) leafX = -50;
+                    if (leafY < -50) leafY = height + 50;
+                    if (leafY > height + 50) leafY = -50;
+
+                    // Rotation adds liveliness
+                    const rotation = leaf.rotation + timeSec * leaf.rotSpeed;
+                    const leafSize = leaf.size * (0.85 + Math.sin(timeSec * 1.2 + leaf.phaseX) * 0.15);
+
+                    ctx.save();
+                    ctx.translate(leafX, leafY);
+                    ctx.rotate(rotation);
+
+                    // Draw leaf shape (simple ellipse with stem-like tip)
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, leafSize * 0.6, leafSize, 0, 0, Math.PI * 2);
+
+                    const greenShade = 130 + leaf.greenVariation * 50;
+                    const leafColor = `rgba(${140 + leaf.greenVariation * 40}, ${175 + leaf.greenVariation * 35}, ${100 + leaf.greenVariation * 35}, ${leaf.alphaLeaf * 0.85})`;
+                    ctx.fillStyle = leafColor;
+                    ctx.fill();
+
+                    // Vein detail
+                    ctx.beginPath();
+                    ctx.moveTo(0, -leafSize * 0.3);
+                    ctx.lineTo(0, leafSize * 0.4);
+                    ctx.lineWidth = 1.2;
+                    ctx.strokeStyle = `rgba(100, 130, 70, 0.4)`;
+                    ctx.stroke();
+
+                    // Golden sunlight touch on leaves
+                    ctx.beginPath();
+                    ctx.ellipse(leafSize * 0.2, -leafSize * 0.2, leafSize * 0.2, leafSize * 0.15, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(245, 210, 100, ${0.25 + leaf.alphaLeaf * 0.3})`;
+                    ctx.fill();
+
+                    ctx.restore();
+                }
+            }
+
+            // --- Draw rain mist / wetness sparkles (tiny shimmering droplets in air) ---
+            function drawRainMist(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'screen';
+
+                for (let mist of rainMist) {
+                    const floatY = (timeSec * mist.floatSpeed + mist.phaseShift) % 1;
+                    let mistX = mist.x * width;
+                    let mistY = (mist.y + floatY * 0.08) * height;
+                    if (mistY > height + 30) mistY = -30;
+
+                    const twinkle = 0.5 + 0.5 * Math.sin(timeSec * mist.twinkleSpeed + mist.phaseShift);
+                    const alpha = mist.alphaBase * (0.4 + twinkle * 0.7);
+
+                    ctx.beginPath();
+                    ctx.arc(mistX, mistY, mist.size * (0.6 + twinkle * 0.5), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(235, 245, 210, ${alpha * 0.8})`;
+                    ctx.fill();
+
+                    // Tiny glint
+                    if (twinkle > 0.65) {
+                        ctx.beginPath();
+                        ctx.arc(mistX - 1, mistY - 1, mist.size * 0.3, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 250, 200, ${alpha})`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw subtle wet ground reflections (mirror-like shimmer) ---
+            function drawWetGroundShimmer(timestamp) {
+                const timeSec = timestamp * 0.0012;
+                ctx.globalCompositeOperation = 'overlay';
+                ctx.globalAlpha = 0.18;
+
+                // Horizontal wavy lines (reflection of light on wet surface)
+                for (let i = 0; i < 35; i++) {
+                    const yPos = height * (0.68 + Math.sin(timeSec * 0.5 + i * 0.3) * 0.03);
+                    const waveX = Math.sin(timeSec * 0.8 + i) * 25;
+                    ctx.beginPath();
+                    ctx.moveTo(0, yPos);
+                    ctx.lineTo(width, yPos + Math.sin(timeSec * 0.6 + i) * 8);
+                    ctx.lineWidth = 1.5 + Math.sin(timeSec + i) * 1;
+                    ctx.strokeStyle = `rgba(215, 235, 150, ${0.25 + Math.sin(timeSec * 1.2 + i) * 0.1})`;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Extra sparkling reflections (raindrop splashes, golden glints) ---
+            let sparkleFlashes = [];
+            let lastFlashTime = 0;
+
+            function updateSparkleFlashes(nowMs) {
+                if (sparkleFlashes.length < 15 && (nowMs - lastFlashTime) > 600 + Math.random() * 1200) {
+                    lastFlashTime = nowMs;
+                    sparkleFlashes.push({
+                        x: Math.random(),
+                        y: 0.6 + Math.random() * 0.35,
+                        life: 1.0,
+                        decay: 0.025 + Math.random() * 0.045,
+                        size: 4 + Math.random() * 12
+                    });
+                }
+                for (let i = sparkleFlashes.length - 1; i >= 0; i--) {
+                    sparkleFlashes[i].life -= sparkleFlashes[i].decay;
+                    if (sparkleFlashes[i].life <= 0) {
+                        sparkleFlashes.splice(i, 1);
+                    }
+                }
+            }
+
+            function drawSparkleFlashes() {
+                if (sparkleFlashes.length === 0) return;
+                ctx.globalCompositeOperation = 'lighter';
+                for (let flash of sparkleFlashes) {
+                    const flashX = flash.x * width;
+                    const flashY = flash.y * height;
+                    const intensity = flash.life * 0.85;
+                    const rad = flash.size * (0.5 + flash.life * 0.8);
+                    ctx.beginPath();
+                    ctx.arc(flashX, flashY, rad, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 235, 140, ${intensity * 0.7})`;
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(flashX, flashY, rad * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 210, ${intensity})`;
+                    ctx.fill();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Final animation loop ---
+            let animationId = null;
+
+            function animate(nowMs) {
+                if (!ctx) return;
+                if (canvas.width !== width || canvas.height !== height) {
+                    resizeCanvas();
+                }
+
+                // 1. Background (tender green + golden sunshine)
+                drawSpringBackground(nowMs);
+
+                // 2. Cloud reflections on wet ground
+                drawCloudReflections(nowMs);
+
+                // 3. Wet ground shimmer lines
+                drawWetGroundShimmer(nowMs);
+
+                // 4. Rain mist (atmospheric wetness)
+                drawRainMist(nowMs);
+
+                // 5. Dewdrops (sparkling water droplets)
+                drawDewdrops(nowMs);
+
+                // 6. Baby leaves drifting
+                drawLeafParticles(nowMs);
+
+                // 7. Random sparkle flashes (rain reflection glints)
+                updateSparkleFlashes(nowMs);
+                drawSparkleFlashes();
+
+                // Final soft glow to unify
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.08;
+                ctx.fillStyle = `rgba(245, 240, 180, 0.2)`;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+
+                requestAnimationFrame(animate);
+            }
+
+            // --- Initialize all elements ---
+            function setup() {
+                resizeCanvas();
+                initDewdrops();
+                initLeafParticles();
+                initCloudReflections();
+                initRainMist();
+                window.addEventListener('resize', () => {
+                    resizeCanvas();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            setup();
+        })();
+    </script>
+</body>
+
+</html>

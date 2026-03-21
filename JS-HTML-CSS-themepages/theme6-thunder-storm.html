@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Thunderstorm | Rain & Lightning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0f1a;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', 'Inter', system-ui, sans-serif;
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .theme-overlay {
+            position: absolute;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            background: radial-gradient(ellipse at center, rgba(20, 25, 45, 0.55) 0%, rgba(10, 15, 30, 0) 80%);
+            padding: 1.8rem 1rem;
+        }
+
+        .theme-name {
+            font-size: clamp(1.8rem, 7vw, 4rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #B8C4E0, #E0E8FF, #90A0C0, #FFE6B0, #C0D0F0);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: stormShimmer 10s ease infinite;
+            text-shadow: 0 0 20px rgba(100, 120, 180, 0.5);
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+        }
+
+        .sub {
+            font-size: clamp(0.7rem, 2.8vw, 0.95rem);
+            letter-spacing: 2px;
+            margin-top: 12px;
+            opacity: 0.9;
+            font-weight: 400;
+            background: linear-gradient(135deg, #D0D8F0, #A0B0D0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+        }
+
+        @keyframes stormShimmer {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .cosmic-credit {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 12;
+            font-size: 10px;
+            color: rgba(150, 170, 210, 0.6);
+            font-family: monospace;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            background: rgba(15, 20, 35, 0.4);
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+        }
+
+        /* Thunder rumble effect via CSS (optional visual pulse) */
+        @keyframes rumblePulse {
+            0% {
+                text-shadow: 0 0 0px rgba(255, 255, 200, 0);
+            }
+
+            100% {
+                text-shadow: 0 0 15px rgba(255, 220, 100, 0.8);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .theme-name {
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="stormCanvas"></canvas>
+    </div>
+
+    <div class="theme-overlay">
+        <div class="theme-name">⛈️ THUNDERSTORM ⛈️</div>
+        <div class="sub">raging rain · lightning strikes · thunder's roar</div>
+    </div>
+    <div class="cosmic-credit">✦ electric fury · nature's symphony ✦</div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('stormCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // --- Audio context for thunder rumble (gentle, immersive) ---
+            let audioContext = null;
+            let thunderGain = null;
+            let isAudioInitialized = false;
+
+            // --- Color Palette: dark storm clouds, lightning whites, rain blues ---
+            const COLORS = {
+                stormDark: [15, 20, 35],
+                stormMid: [35, 40, 65],
+                cloudDark: [45, 50, 75],
+                lightningCore: [255, 250, 220],
+                lightningGlow: [200, 210, 255],
+                rainBlue: [170, 190, 225],
+                silverBolt: [220, 230, 255]
+            };
+
+            // --- Rain droplets (heavy, dynamic) ---
+            let rainDrops = [];
+            const RAIN_COUNT = 650;
+
+            // --- Lightning strikes data ---
+            let lightningStrikes = [];
+            let lastLightningTime = 0;
+            let thunderRumbleActive = false;
+            let rumbleTimeout = null;
+
+            // --- Wind effect for rain (dynamic sway) ---
+            let windStrength = 0;
+            let windTime = 0;
+
+            // --- Cloud layers (dark, heavy, moving) ---
+            let cloudLayers = [];
+            const CLOUD_LAYERS = 4;
+
+            // --- Rain splashes on ground ---
+            let splashes = [];
+            const MAX_SPLASHES = 80;
+
+            // --- Lightning bolt geometry (procedural) ---
+            class LightningBolt {
+                constructor(x, y, targetX, targetY, intensity = 1.0) {
+                    this.x = x;
+                    this.y = y;
+                    this.targetX = targetX;
+                    this.targetY = targetY;
+                    this.intensity = intensity;
+                    this.life = 1.0;
+                    this.decay = 0.08;
+                    this.segments = this.generateBolt();
+                }
+
+                generateBolt() {
+                    const segments = [];
+                    let currentX = this.x;
+                    let currentY = this.y;
+                    const steps = 12 + Math.floor(Math.random() * 8);
+                    const dx = (this.targetX - this.x) / steps;
+                    const dy = (this.targetY - this.y) / steps;
+
+                    for (let i = 0; i <= steps; i++) {
+                        let x = this.x + dx * i;
+                        let y = this.y + dy * i;
+                        // Add random jaggedness
+                        if (i > 0 && i < steps) {
+                            const offset = 15 * (1 - Math.abs(i - steps / 2) / steps) * Math.random();
+                            x += (Math.random() - 0.5) * offset * (this.intensity * 1.5);
+                            y += (Math.random() - 0.5) * offset * 0.8;
+                        }
+                        segments.push({ x, y });
+                    }
+                    return segments;
+                }
+
+                update() {
+                    this.life -= this.decay;
+                    return this.life > 0;
+                }
+
+                draw(ctx, width, height) {
+                    if (this.life <= 0) return;
+                    const alpha = this.life * 0.9 * this.intensity;
+
+                    // Main lightning bolt
+                    ctx.beginPath();
+                    ctx.moveTo(this.segments[0].x, this.segments[0].y);
+                    for (let i = 1; i < this.segments.length; i++) {
+                        ctx.lineTo(this.segments[i].x, this.segments[i].y);
+                    }
+                    ctx.lineWidth = 4 + (1 - this.life) * 6;
+                    ctx.strokeStyle = `rgba(${COLORS.lightningCore[0]}, ${COLORS.lightningCore[1]}, ${COLORS.lightningCore[2]}, ${alpha})`;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(this.segments[0].x, this.segments[0].y);
+                    for (let i = 1; i < this.segments.length; i++) {
+                        ctx.lineTo(this.segments[i].x, this.segments[i].y);
+                    }
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = `rgba(255, 255, 250, ${alpha * 0.8})`;
+                    ctx.stroke();
+
+                    // Glow effect
+                    for (let i = 0; i < this.segments.length; i++) {
+                        ctx.beginPath();
+                        ctx.arc(this.segments[i].x, this.segments[i].y, 6 * this.life, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${COLORS.lightningGlow[0]}, ${COLORS.lightningGlow[1]}, ${COLORS.lightningGlow[2]}, ${alpha * 0.4})`;
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // --- Initialize rain droplets ---
+            function initRain() {
+                rainDrops = [];
+                for (let i = 0; i < RAIN_COUNT; i++) {
+                    rainDrops.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        speed: 0.8 + Math.random() * 1.5,
+                        length: 8 + Math.random() * 12,
+                        thickness: 1 + Math.random() * 2,
+                        opacity: 0.4 + Math.random() * 0.5,
+                        windAffect: 0.5 + Math.random() * 0.8
+                    });
+                }
+            }
+
+            // --- Initialize cloud layers (heavy storm clouds) ---
+            function initClouds() {
+                cloudLayers = [];
+                for (let i = 0; i < CLOUD_LAYERS; i++) {
+                    const segments = [];
+                    const segCount = 10 + i * 2;
+                    for (let j = 0; j < segCount; j++) {
+                        segments.push({
+                            offsetX: j / segCount,
+                            yBase: 0.2 + i * 0.12 + Math.random() * 0.1,
+                            radius: 0.1 + Math.random() * 0.12,
+                            stretchX: 1.2 + Math.random() * 0.8,
+                            stretchY: 0.6 + Math.random() * 0.5,
+                            driftSpeed: 0.01 + Math.random() * 0.02,
+                            phase: Math.random() * Math.PI * 2,
+                            darkFactor: 0.6 + Math.random() * 0.4
+                        });
+                    }
+                    cloudLayers.push({
+                        segments: segments,
+                        layerSpeed: 0.005 + i * 0.002,
+                        opacity: 0.7 + i * 0.1,
+                        yOffset: i * 0.08
+                    });
+                }
+            }
+
+            // --- Initialize splashes ---
+            function addSplash(x, y) {
+                splashes.unshift({
+                    x: x,
+                    y: y,
+                    life: 1.0,
+                    size: 4 + Math.random() * 8
+                });
+                if (splashes.length > MAX_SPLASHES) splashes.pop();
+            }
+
+            // --- Update splashes ---
+            function updateSplashes() {
+                for (let i = splashes.length - 1; i >= 0; i--) {
+                    splashes[i].life -= 0.03;
+                    if (splashes[i].life <= 0) {
+                        splashes.splice(i, 1);
+                    }
+                }
+            }
+
+            // --- Draw splashes ---
+            function drawSplashes() {
+                for (let splash of splashes) {
+                    ctx.beginPath();
+                    ctx.arc(splash.x, splash.y, splash.size * (1 - splash.life) * 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(180, 200, 235, ${splash.life * 0.5})`;
+                    ctx.fill();
+
+                    for (let a = 0; a < 4; a++) {
+                        const angle = a * Math.PI / 2;
+                        const dx = Math.cos(angle) * splash.size * (1 - splash.life);
+                        const dy = Math.sin(angle) * splash.size * (1 - splash.life) * 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(splash.x, splash.y);
+                        ctx.lineTo(splash.x + dx, splash.y + dy);
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeStyle = `rgba(200, 215, 245, ${splash.life * 0.6})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // --- Draw stormy sky with flashing effect during lightning ---
+            let globalFlashIntensity = 0;
+
+            function drawStormSky(timestamp, flashIntensity) {
+                const timeSec = timestamp * 0.0002;
+
+                // Base dark gradient
+                const gradSky = ctx.createLinearGradient(0, 0, 0, height);
+                gradSky.addColorStop(0, `rgb(${COLORS.stormDark[0]}, ${COLORS.stormDark[1]}, ${COLORS.stormDark[2]})`);
+                gradSky.addColorStop(0.5, `rgb(${COLORS.stormMid[0]}, ${COLORS.stormMid[1]}, ${COLORS.stormMid[2]})`);
+                gradSky.addColorStop(1, `rgb(${COLORS.cloudDark[0] - 10}, ${COLORS.cloudDark[1] - 10}, ${COLORS.cloudDark[2] - 15})`);
+                ctx.fillStyle = gradSky;
+                ctx.fillRect(0, 0, width, height);
+
+                // Lightning flash overlay
+                if (flashIntensity > 0.05) {
+                    ctx.globalCompositeOperation = 'lighter';
+                    ctx.fillStyle = `rgba(220, 230, 255, ${flashIntensity * 0.6})`;
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+
+                // Rolling clouds movement
+                ctx.globalAlpha = 0.85;
+                for (let layer of cloudLayers) {
+                    const layerOffset = timestamp * 0.001 * layer.layerSpeed;
+                    for (let seg of layer.segments) {
+                        const driftX = (seg.offsetX + layerOffset) % 1;
+                        let cloudX = driftX * width;
+                        const cloudY = height * (seg.yBase + layer.yOffset + Math.sin(timestamp * 0.0005 + seg.offsetX * 8) * 0.01);
+                        const cloudW = width * seg.radius * seg.stretchX;
+                        const cloudH = height * seg.radius * seg.stretchY;
+
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX, cloudY, cloudW, cloudH, 0, 0, Math.PI * 2);
+                        const darkVal = 30 + seg.darkFactor * 35;
+                        ctx.fillStyle = `rgba(${darkVal}, ${darkVal + 5}, ${darkVal + 15}, 0.9)`;
+                        ctx.fill();
+
+                        // Additional cloud puffs
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX - cloudW * 0.4, cloudY - cloudH * 0.2, cloudW * 0.6, cloudH * 0.7, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.ellipse(cloudX + cloudW * 0.5, cloudY + cloudH * 0.1, cloudW * 0.55, cloudH * 0.65, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            // --- Draw rain (dynamic, with wind) ---
+            function drawRain(timestamp) {
+                const timeSec = timestamp * 0.001;
+                windStrength = Math.sin(timeSec * 0.15) * 0.6 + Math.sin(timeSec * 0.37) * 0.3;
+
+                ctx.globalCompositeOperation = 'screen';
+
+                for (let drop of rainDrops) {
+                    let yPos = (drop.y + timeSec * drop.speed * 0.12) % 1;
+                    let xOffset = windStrength * drop.windAffect * (1 - yPos) * 0.08;
+                    let xPos = (drop.x + xOffset + timeSec * 0.02) % 1;
+                    if (xPos < 0) xPos = 1;
+
+                    const x = xPos * width;
+                    const y = yPos * height;
+                    const alpha = drop.opacity * (0.6 + Math.sin(timeSec * 15 + drop.x * 30) * 0.3);
+
+                    // Rain streak
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    const angle = windStrength * 0.3;
+                    const dx = Math.sin(angle) * drop.length * 0.7;
+                    const dy = drop.length;
+                    ctx.lineTo(x + dx, y + dy);
+                    ctx.lineWidth = drop.thickness;
+                    ctx.strokeStyle = `rgba(${COLORS.rainBlue[0]}, ${COLORS.rainBlue[1]}, ${COLORS.rainBlue[2]}, ${alpha * 0.7})`;
+                    ctx.stroke();
+
+                    // Add splash when rain hits "ground" (bottom 8% of screen)
+                    if (yPos > 0.92 && Math.random() < 0.02) {
+                        addSplash(x, y);
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Generate lightning strike ---
+            function generateLightning() {
+                const startX = width * (0.2 + Math.random() * 0.6);
+                const startY = height * (0.05 + Math.random() * 0.2);
+                const endX = startX + (Math.random() - 0.5) * 150;
+                const endY = height * (0.7 + Math.random() * 0.25);
+                const intensity = 0.6 + Math.random() * 0.8;
+
+                lightningStrikes.push(new LightningBolt(startX, startY, endX, endY, intensity));
+
+                // Create secondary forks
+                if (intensity > 0.9) {
+                    for (let i = 0; i < 2; i++) {
+                        const forkX = endX + (Math.random() - 0.5) * 60;
+                        const forkY = endY + Math.random() * 40;
+                        lightningStrikes.push(new LightningBolt(endX, endY, forkX, forkY, intensity * 0.6));
+                    }
+                }
+
+                return intensity;
+            }
+
+            // --- Trigger thunder rumble (audio) ---
+            function triggerThunder(intensity) {
+                if (!isAudioInitialized) return;
+
+                try {
+                    const now = audioContext.currentTime;
+                    const gainVal = intensity * 0.35;
+                    thunderGain.gain.setValueAtTime(gainVal, now);
+                    thunderGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+                } catch (e) { /* silent fail */ }
+            }
+
+            // --- Initialize audio on first user interaction (browser policy) ---
+            function initAudio() {
+                if (isAudioInitialized) return;
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    thunderGain = audioContext.createGain();
+                    thunderGain.gain.value = 0;
+                    thunderGain.connect(audioContext.destination);
+
+                    // Create noise buffer for thunder rumble
+                    const bufferSize = audioContext.sampleRate * 2;
+                    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioContext.sampleRate * 0.8));
+                    }
+
+                    const noiseSource = audioContext.createBufferSource();
+                    noiseSource.buffer = buffer;
+                    noiseSource.loop = true;
+                    noiseSource.connect(thunderGain);
+                    noiseSource.start();
+
+                    isAudioInitialized = true;
+                } catch (e) { console.log("Audio not supported"); }
+            }
+
+            // --- Update lightning strikes and random generation ---
+            let lightningTimer = 0;
+
+            function updateLightning(timestamp) {
+                const now = timestamp;
+
+                // Update existing strikes
+                for (let i = lightningStrikes.length - 1; i >= 0; i--) {
+                    if (!lightningStrikes[i].update()) {
+                        lightningStrikes.splice(i, 1);
+                    }
+                }
+
+                // Random lightning generation (every 2-6 seconds)
+                if (now - lastLightningTime > 1800 + Math.random() * 4200) {
+                    lastLightningTime = now;
+                    const intensity = generateLightning();
+
+                    // Flash intensity for background
+                    globalFlashIntensity = intensity * 0.8;
+                    setTimeout(() => {
+                        globalFlashIntensity = 0;
+                    }, 150);
+
+                    // Trigger thunder sound
+                    triggerThunder(intensity);
+                }
+
+                // Decay flash
+                globalFlashIntensity *= 0.95;
+            }
+
+            // --- Draw lightning strikes and their glow ---
+            function drawLightning() {
+                for (let bolt of lightningStrikes) {
+                    bolt.draw(ctx, width, height);
+                }
+
+                // Global lightning flash effect
+                if (globalFlashIntensity > 0.05) {
+                    ctx.globalCompositeOperation = 'lighter';
+                    ctx.fillStyle = `rgba(210, 220, 255, ${globalFlashIntensity * 0.5})`;
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+            }
+
+            // --- Draw distant cloud-to-cloud lightning (subtle) ---
+            let distantFlash = 0;
+            let lastDistantFlash = 0;
+
+            function updateDistantLightning(timestamp) {
+                if (timestamp - lastDistantFlash > 4000 + Math.random() * 5000) {
+                    lastDistantFlash = timestamp;
+                    distantFlash = 0.4 + Math.random() * 0.5;
+                    setTimeout(() => { distantFlash = 0; }, 120);
+                }
+                distantFlash *= 0.92;
+            }
+
+            function drawDistantLightning() {
+                if (distantFlash > 0.05) {
+                    ctx.globalCompositeOperation = 'lighter';
+                    ctx.fillStyle = `rgba(160, 180, 220, ${distantFlash * 0.3})`;
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+            }
+
+            // --- Draw ground rain puddles and reflections ---
+            function drawGroundReflections() {
+                const groundY = height * 0.85;
+                ctx.globalAlpha = 0.25;
+                ctx.fillStyle = `rgba(50, 60, 85, 0.4)`;
+                ctx.fillRect(0, groundY, width, height - groundY);
+
+                // Wet reflections of lightning
+                for (let i = 0; i < 30; i++) {
+                    const x = (i / 30) * width;
+                    const y = groundY + Math.sin(x * 0.02 + Date.now() * 0.003) * 3;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + width / 30, y + Math.sin((x + 20) * 0.02 + Date.now() * 0.003) * 3);
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `rgba(140, 170, 210, 0.3)`;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            // --- Wind streaks (visual) ---
+            function drawWindStreaks(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.12;
+
+                for (let i = 0; i < 25; i++) {
+                    const x = (timeSec * 50 + i * 80) % (width + 200) - 100;
+                    const y = height * (0.3 + Math.sin(timeSec * 2 + i) * 0.2);
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + 40 + windStrength * 30, y + (windStrength * 15));
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = `rgba(180, 200, 240, 0.5)`;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Resize handler ---
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            // --- Main animation loop ---
+            let lastFrameTime = 0;
+
+            function animate(nowMs) {
+                if (!ctx) return;
+                if (canvas.width !== width || canvas.height !== height) resizeCanvas();
+
+                // Draw storm sky with flash intensity
+                drawStormSky(nowMs, globalFlashIntensity);
+
+                // Draw distant cloud lightning
+                updateDistantLightning(nowMs);
+                drawDistantLightning();
+
+                // Draw rain (falling)
+                drawRain(nowMs);
+
+                // Draw ground puddles and reflections
+                drawGroundReflections();
+
+                // Update and draw lightning strikes
+                updateLightning(nowMs);
+                drawLightning();
+
+                // Draw rain splashes
+                updateSplashes();
+                drawSplashes();
+
+                // Wind streaks for atmosphere
+                drawWindStreaks(nowMs);
+
+                // Final atmospheric overlay
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.08;
+                ctx.fillStyle = `rgba(80, 100, 140, 0.2)`;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+
+                requestAnimationFrame(animate);
+            }
+
+            // --- Setup and user interaction for audio ---
+            function setup() {
+                resizeCanvas();
+                initRain();
+                initClouds();
+
+                // Initialize audio on first click/tap
+                const initAudioOnInteraction = () => {
+                    initAudio();
+                    document.removeEventListener('click', initAudioOnInteraction);
+                    document.removeEventListener('touchstart', initAudioOnInteraction);
+                };
+                document.addEventListener('click', initAudioOnInteraction);
+                document.addEventListener('touchstart', initAudioOnInteraction);
+
+                window.addEventListener('resize', () => resizeCanvas());
+                requestAnimationFrame(animate);
+            }
+
+            setup();
+        })();
+    </script>
+</body>
+
+</html>
