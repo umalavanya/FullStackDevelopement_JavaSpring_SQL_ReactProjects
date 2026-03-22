@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Ethereal Paint Patches | 3D Smooth Color Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            /* prevents accidental text selection while enjoying art */
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #0a0c12, #030507);
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+            position: relative;
+        }
+
+        /* Canvas fills entire viewport, sits behind content if needed, but we'll use it as primary */
+        #paintCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            pointer-events: none;
+            /* so any text or UI can be clicked through, pure visual */
+        }
+
+        /* optional gentle overlay text to show theme, but doesn't interfere */
+        .art-credit {
+            position: fixed;
+            bottom: 18px;
+            right: 22px;
+            z-index: 2;
+            color: rgba(255, 255, 245, 0.5);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 14px;
+            border-radius: 60px;
+            font-weight: 300;
+            pointer-events: none;
+            font-family: monospace;
+        }
+
+        /* subtle glowing ambient hint */
+        .inspire {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 2;
+            color: rgba(230, 220, 210, 0.45);
+            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(3px);
+            padding: 5px 12px;
+            border-radius: 40px;
+            pointer-events: none;
+            font-weight: 300;
+        }
+
+        @media (max-width: 700px) {
+
+            .art-credit,
+            .inspire {
+                font-size: 0.65rem;
+                bottom: 12px;
+            }
+        }
+
+        /* optional: faint vignette to enhance depth */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="paintCanvas"></canvas>
+    <div class="vignette"></div>
+    <div class="inspire">✦ fluid pigment · living canvas ✦</div>
+    <div class="art-credit">deep parrot · royal pink · peacock · rangoli essence</div>
+
+    <script>
+        (function () {
+            // --------------------------------------------------------------
+            //  COLOR PALETTE — Deep, vibrant, majestic paint tones
+            //  "deep parrot green", "deep royal pink", "deep royal blue",
+            //  "deep peacock neck colors", "deep rangoli colors"
+            // --------------------------------------------------------------
+            const COLOR_PALETTE = [
+                { name: 'Parrot Green', rgb: 'rgb(20, 110, 50)' },      // deep parrot green: rich emerald/forest intensity
+                { name: 'Royal Pink', rgb: 'rgb(200, 40, 110)' },     // deep royal pink: magenta with punch
+                { name: 'Royal Blue', rgb: 'rgb(30, 60, 170)' },      // deep royal blue: sapphire depth
+                { name: 'Peacock Neck', rgb: 'rgb(0, 95, 115)' },       // deep peacock neck: teal with shimmer (peacock feather)
+                { name: 'Peacock Plume', rgb: 'rgb(20, 120, 130)' },     // variant: iridescent greenish-blue
+                { name: 'Rangoli Red', rgb: 'rgb(190, 40, 70)' },      // deep rangoli: vibrant ceremonial red-maroon
+                { name: 'Rangoli Gold', rgb: 'rgb(210, 125, 30)' },     // deep rangoli: burnt orange/saffron richness
+                { name: 'Rangoli Magenta', rgb: 'rgb(170, 40, 140)' },   // deep fuchsia, festive
+                { name: 'Deep Cyan', rgb: 'rgb(0, 125, 150)' },      // extra jewel tone
+                { name: 'Royal Purple', rgb: 'rgb(100, 30, 140)' }      // regal violet
+            ];
+
+            // ----- setup canvas & context -----
+            const canvas = document.getElementById('paintCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // ----- array to store all active paint patches -----
+            let patches = [];
+
+            // ----- animation control -----
+            let animationFrameId = null;
+            let lastTimestamp = 0;
+
+            // ----- parameters for gentle, organic spawning -----
+            const MAX_PATCHES = 38;             // keeps performance smooth but rich visual
+            const BASE_SPAWN_INTERVAL_MS = 1400; // new patch appears every ~1.4 sec (gentle rhythm)
+            const MIN_RADIUS = 55;
+            const MAX_RADIUS = 180;
+
+            // patch life: slow fade-out after full presence, total ~9 to 14 seconds
+            const MIN_LIFE = 7000;   // ms
+            const MAX_LIFE = 13000;
+
+            // fading parameters: patch appears smoothly, stays vibrant, then fades gently
+            // we use 'life' progress: 0 -> 1 (birth to death)
+            // alpha mapping: 
+            //   - birth phase: alpha goes from 0 to 1 over first 20% of life (rise)
+            //   - sustain: alpha = 1 for middle ~50%
+            //   - fade: alpha goes 1 -> 0 over final 30% of life.
+            // but we add randomness for organic look.
+
+            // also we store additional properties for 3D-like shading and blur/glow effects
+            // each patch gets its own unique color, position, radius, blur intensity, gradient offsets
+            // and also a subtle "light shift" for volumetric feel
+
+            class PaintPatch {
+                constructor(x, y, radius, colorRgb, lifespan, birthTime) {
+                    this.x = x;                // center x
+                    this.y = y;                // center y
+                    this.radius = radius;
+                    this.colorRgb = colorRgb;  // string "rgb(r,g,b)"
+                    this.lifespan = lifespan;  // total ms
+                    this.birthTime = birthTime; // performance.now() timestamp at creation
+                    // optional extra organic 3D warp: internal offset for 'light direction' simulated by radial gradient shift
+                    // create subtle asymmetry for realistic paint pool
+                    this.gradientShiftX = (Math.random() - 0.5) * radius * 0.35;
+                    this.gradientShiftY = (Math.random() - 0.5) * radius * 0.35;
+                    // soft edge randomness: adds to painterly feel
+                    this.edgeSoftness = 0.5 + Math.random() * 0.4;   // 0.5-0.9, influences blur/fade edges
+                    // shimmer factor for vibrant specular (simulate 3d sheen)
+                    this.sheenAngle = Math.random() * Math.PI * 2;
+                    this.sheenIntensity = 0.2 + Math.random() * 0.4;
+                }
+
+                // get current alpha based on elapsed time
+                getAlpha(currentTime) {
+                    const elapsed = currentTime - this.birthTime;
+                    if (elapsed >= this.lifespan) return 0;
+                    const t = elapsed / this.lifespan; // 0..1 progression
+                    // fade curve: rise, hold, fall smooth
+                    let alpha = 0;
+                    if (t < 0.25) {
+                        // rising phase: 0 -> 1 over first 25% of life (gentle entrance)
+                        alpha = t / 0.25;
+                        // ease out cubic for smoothness
+                        alpha = Math.pow(alpha, 1.2);
+                    } else if (t < 0.7) {
+                        // sustain full intensity (alpha = 1) from 25% to 70%
+                        alpha = 1.0;
+                    } else {
+                        // fading out: 1 -> 0 over last 30% (0.7 to 1.0)
+                        const fadeT = (t - 0.7) / 0.3;
+                        alpha = 1 - Math.pow(fadeT, 1.4);
+                    }
+                    // clamp and add tiny vibrancy boost (minimum 0)
+                    return Math.min(1.0, Math.max(0, alpha));
+                }
+
+                // check if fully dead
+                isAlive(currentTime) {
+                    return (currentTime - this.birthTime) < this.lifespan;
+                }
+            }
+
+            // ---------- helper: parse rgb string to r,g,b components ----------
+            function parseRgb(colorStr) {
+                const match = colorStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (match) {
+                    return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
+                }
+                return { r: 50, g: 80, b: 120 };
+            }
+
+            // ---------- draw a single patch with 3D realism, soft edges, radial gradients & light reflection ----------
+            function drawPatch(ctx, patch, currentTime) {
+                const alpha = patch.getAlpha(currentTime);
+                if (alpha <= 0.01) return;
+
+                const { x, y, radius, colorRgb, gradientShiftX, gradientShiftY, edgeSoftness, sheenAngle, sheenIntensity } = patch;
+                const rgbObj = parseRgb(colorRgb);
+
+                // For rich 3D paint effect: we draw using radial gradient that mimics a liquid droplet with light source
+                // create a main gradient that simulates a rounded 3D blob with specular highlight.
+                // Also add subtle inner shadow / outer glow.
+
+                // inner radial gradient from bright core to deeper edge
+                const centerX = x + gradientShiftX * 0.4;
+                const centerY = y + gradientShiftY * 0.4;
+                const highlightRadius = radius * 0.45;
+
+                // define colors: boosted luminance for highlight, deeper for periphery
+                const highlightColor = `rgba(${Math.min(255, rgbObj.r + 45)}, ${Math.min(255, rgbObj.g + 40)}, ${Math.min(255, rgbObj.b + 50)}, ${alpha})`;
+                const midColor = `rgba(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b}, ${alpha * 0.92})`;
+                const edgeColor = `rgba(${Math.max(0, rgbObj.r - 40)}, ${Math.max(0, rgbObj.g - 35)}, ${Math.max(0, rgbObj.b - 30)}, ${alpha * 0.75})`;
+
+                // secondary radial gradient for depth
+                const grad = ctx.createRadialGradient(centerX, centerY, radius * 0.2, x, y, radius);
+                grad.addColorStop(0, highlightColor);
+                grad.addColorStop(0.45, midColor);
+                grad.addColorStop(0.85, edgeColor);
+                grad.addColorStop(1, `rgba(${rgbObj.r - 25}, ${rgbObj.g - 20}, ${rgbObj.b - 20}, ${alpha * 0.5})`);
+
+                ctx.save();
+                ctx.beginPath();
+                // apply subtle ellipse squish for organic look? keep mostly circular but use soft shadow composite?
+                ctx.ellipse(x, y, radius, radius * (0.92 + Math.sin(patch.sheenAngle) * 0.05), 0, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // ---- extra 3D layer: glossy specular highlight (wet paint shimmer) ----
+                // create a smaller radial gradient for specular spot, depends on sheen direction
+                const sheenX = x + Math.cos(sheenAngle) * radius * 0.3;
+                const sheenY = y + Math.sin(sheenAngle) * radius * 0.25;
+                const specGrad = ctx.createRadialGradient(sheenX, sheenY, radius * 0.1, sheenX - 3, sheenY - 2, radius * 0.35);
+                specGrad.addColorStop(0, `rgba(255, 245, 210, ${alpha * sheenIntensity * 0.55})`);
+                specGrad.addColorStop(0.7, `rgba(255, 210, 150, ${alpha * sheenIntensity * 0.2})`);
+                specGrad.addColorStop(1, `rgba(255, 200, 100, 0)`);
+                ctx.fillStyle = specGrad;
+                ctx.fill();
+
+                // add soft outer glow / drop shadow for volumetric depth (blur effect)
+                // we use a semi-transparent dark aura to lift from background
+                ctx.shadowColor = `rgba(0, 0, 0, 0.35)`;
+                ctx.shadowBlur = radius * 0.2;
+                ctx.fill();
+                // reset shadow for next draws
+                ctx.shadowColor = 'transparent';
+
+                // additional fine texture: tiny speckles to imitate rich paint (rangoli essence)
+                if (alpha > 0.6) {
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let i = 0; i < 12; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        const dist = Math.random() * radius * 0.85;
+                        const speckX = x + Math.cos(angle) * dist;
+                        const speckY = y + Math.sin(angle) * dist;
+                        const speckSize = 1.5 + Math.random() * 4;
+                        ctx.beginPath();
+                        ctx.arc(speckX, speckY, speckSize, 0, Math.PI * 2);
+                        const sparkAlpha = alpha * (0.2 + Math.random() * 0.25);
+                        ctx.fillStyle = `rgba(255, 230, 170, ${sparkAlpha})`;
+                        ctx.fill();
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+
+                // tiny ring at edge to imitate thick paint stroke (optional)
+                ctx.beginPath();
+                ctx.ellipse(x, y, radius - 3, radius - 4, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 240, 200, ${alpha * 0.2})`;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            // ----- spawn a new patch at a nice random position, avoiding extreme edges? but full canvas coverage-----
+            function spawnPatch(now) {
+                if (patches.length >= MAX_PATCHES) return;
+
+                // get a random color from palette (deep & bright)
+                const colorObj = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
+                const colorRgb = colorObj.rgb;
+
+                // radius variation: medium to large to cover canvas
+                const radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
+                // ensure patch stays inside canvas with margins, but slight overflow allowed for organic feel
+                let x = Math.random() * (width + radius * 0.5) - radius * 0.25;
+                let y = Math.random() * (height + radius * 0.5) - radius * 0.25;
+                // clamp but not strictly, better blending
+                x = Math.min(width + radius * 0.3, Math.max(-radius * 0.3, x));
+                y = Math.min(height + radius * 0.3, Math.max(-radius * 0.3, y));
+
+                const lifespan = MIN_LIFE + Math.random() * (MAX_LIFE - MIN_LIFE);
+                const patch = new PaintPatch(x, y, radius, colorRgb, lifespan, now);
+                patches.push(patch);
+            }
+
+            // ----- remove dead patches (based on current time) -----
+            function removeDeadPatches(now) {
+                patches = patches.filter(patch => patch.isAlive(now));
+            }
+
+            // ----- draw all patches with blending for realism (global composite, preserve depth)-----
+            function drawAllPatches(now) {
+                if (!ctx) return;
+                // Clear canvas with transparent background to let body gradient show through? 
+                // Actually we want deep dynamic background: we use the body's radial gradient, but canvas is on top with transparent clear.
+                // We'll clear with fully transparent, then draw patches with blending that enhances vibrant colors.
+                ctx.clearRect(0, 0, width, height);
+
+                // Enable shadow/ blur optimization but set globalCompositeOperation for natural paint mixing
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.shadowBlur = 0;
+
+                // Sort patches maybe by radius descending for depth illusion? bigger patches behind? optional.
+                // Create depth effect: larger patches lower layer? but we want 3D overlapping, we draw them in order of creation.
+                // Actually for realistic paint patches, overlapping blends create rich texture.
+                // For more 3D, we draw all with slight blend mode "screen" or "lighten"? No, normal works best.
+                // But we also add custom blending for richness: using 'lighter' only for sparkle, already used inside.
+
+                for (let patch of patches) {
+                    drawPatch(ctx, patch, now);
+                }
+
+                // Additional tiny floating particles (rangoli shimmer) - optional, but adds magical feel
+                ctx.globalCompositeOperation = 'lighter';
+                if (Math.random() < 0.3) {
+                    for (let i = 0; i < 3; i++) {
+                        const fx = Math.random() * width;
+                        const fy = Math.random() * height;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, Math.random() * 3 + 1, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 200, 100, ${0.1 + Math.random() * 0.2})`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // ----- animation loop: update spawn and rendering, smooth frame timing -----
+            let lastSpawnTime = 0;
+
+            function animate(currentTimeMs) {
+                if (!canvas.isConnected) return;
+
+                const now = performance.now();
+
+                // resize handling: ensure canvas matches display size (if changed)
+                if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                    resizeCanvas();
+                }
+
+                // spawn new patches at gentle interval (avoid burst, but maintain between 12 to 38 patches)
+                if (patches.length < MAX_PATCHES && (now - lastSpawnTime) >= BASE_SPAWN_INTERVAL_MS) {
+                    spawnPatch(now);
+                    lastSpawnTime = now;
+                    // occasionally spawn an extra if too few (for lively canvas)
+                    if (patches.length < 8 && Math.random() < 0.5) {
+                        setTimeout(() => { if (patches.length < MAX_PATCHES) spawnPatch(performance.now()); }, 200);
+                    }
+                }
+
+                // gently remove expired patches
+                removeDeadPatches(now);
+
+                // draw all patches with smooth transitions
+                drawAllPatches(now);
+
+                // continue loop
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            // ----- resize canvas and adjust dimensions, also reposition patches? but we just clear and let new spawns adapt.
+            // However if window resizes, existing patches can remain but might be slightly off-screen but okay.
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                // Re-draw immediately to avoid flicker
+                if (ctx) {
+                    drawAllPatches(performance.now());
+                }
+            }
+
+            // ----- handle window resize, update dimensions with debounce for performance -----
+            let resizeTimeout;
+            function onWindowResize() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resizeCanvas();
+                }, 100);
+            }
+
+            // ----- setup: initial patches to create rich tapestry (warm up canvas) -----
+            function initializePatches(now) {
+                patches = [];
+                const initialCount = Math.min(MAX_PATCHES, 12);
+                for (let i = 0; i < initialCount; i++) {
+                    // spread creation times slightly offset for varied life stages
+                    const offset = i * 400;
+                    const colorObj = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
+                    const radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
+                    let x = Math.random() * (width + radius * 0.6) - radius * 0.3;
+                    let y = Math.random() * (height + radius * 0.6) - radius * 0.3;
+                    x = Math.min(width + radius * 0.3, Math.max(-radius * 0.3, x));
+                    y = Math.min(height + radius * 0.3, Math.max(-radius * 0.3, y));
+                    const lifespan = MIN_LIFE + Math.random() * (MAX_LIFE - MIN_LIFE);
+                    const patch = new PaintPatch(x, y, radius, colorObj.rgb, lifespan, now - offset);
+                    patches.push(patch);
+                }
+                lastSpawnTime = now;
+            }
+
+            // ----- start everything -----
+            function init() {
+                resizeCanvas();
+                const startTime = performance.now();
+                initializePatches(startTime);
+                lastSpawnTime = startTime;
+                animationFrameId = requestAnimationFrame(animate);
+
+                window.addEventListener('resize', onWindowResize);
+            }
+
+            // ----- graceful cleanup on page unload (optional)-----
+            window.addEventListener('beforeunload', () => {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+                window.removeEventListener('resize', onWindowResize);
+            });
+
+            init();
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Earth's Horizon | Space Station View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #020408;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', 'Inter', system-ui, sans-serif;
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Space station window frame */
+        .window-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .viewport {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            height: 85vh;
+            max-width: 1400px;
+            max-height: 850px;
+            border-radius: 36px;
+            box-shadow:
+                inset 0 0 0 3px rgba(120, 140, 170, 0.5),
+                inset 0 0 0 8px rgba(40, 50, 70, 0.6),
+                0 25px 50px rgba(0, 0, 0, 0.7),
+                0 0 0 100vmax rgba(3, 6, 14, 0.88);
+            backdrop-filter: blur(1px);
+        }
+
+        .viewport::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            border-radius: 48px;
+            background: radial-gradient(ellipse at center, rgba(80, 100, 130, 0.2) 0%, rgba(15, 20, 35, 0.7) 100%);
+            z-index: -1;
+        }
+
+        .instrument-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 25;
+            background: rgba(3, 8, 18, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 12px 22px;
+            font-family: monospace;
+            color: #8aacc8;
+            font-size: 12px;
+            letter-spacing: 1px;
+            border-left: 3px solid #ffaa55;
+            pointer-events: none;
+        }
+
+        .instrument-panel div {
+            margin: 4px 0;
+        }
+
+        .instrument-panel .label {
+            color: #ffaa66;
+            font-weight: bold;
+        }
+
+        .theme-overlay {
+            position: absolute;
+            bottom: 8%;
+            right: 5%;
+            text-align: right;
+            z-index: 15;
+            pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.55));
+            padding: 1rem 2rem;
+            border-radius: 12px;
+        }
+
+        .theme-name {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffdd99;
+            text-shadow: 0 0 20px rgba(255, 170, 70, 0.6);
+            font-family: 'Montserrat', monospace;
+        }
+
+        .sub {
+            font-size: clamp(0.6rem, 2vw, 0.85rem);
+            letter-spacing: 1px;
+            margin-top: 6px;
+            color: #bbd4ff;
+        }
+
+        .cosmic-credit {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 15;
+            font-size: 9px;
+            color: rgba(120, 150, 190, 0.5);
+            font-family: monospace;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+
+        @media (max-width: 700px) {
+            .viewport {
+                width: 95vw;
+                height: 80vh;
+                border-radius: 24px;
+            }
+
+            .instrument-panel {
+                bottom: 12px;
+                left: 12px;
+                padding: 6px 12px;
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas-container">
+        <canvas id="spaceCanvas"></canvas>
+    </div>
+
+    <div class="window-frame">
+        <div class="viewport"></div>
+        <div class="instrument-panel">
+            <div><span class="label">●</span> ISS CUPOLA | ALT: 408km</div>
+            <div><span class="label">⟁</span> EARTH'S LIMB | SOLAR TERMINATOR ARC</div>
+            <div><span class="label">◉</span> SUNRISE CORONA · ACTIVE</div>
+        </div>
+    </div>
+
+    <div class="theme-overlay">
+        <div class="theme-name">✦ EARTH'S RADIANT ARC ✦</div>
+        <div class="sub">where darkness meets light · the luminous horizon</div>
+    </div>
+    <div class="cosmic-credit">⦿ orbital perspective · edge of dawn ⦿</div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('spaceCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            // --- Color Palette: deep space, earth's curve, atmospheric glow, brilliant sun line ---
+            const COLORS = {
+                spaceBlack: [2, 4, 12],
+                spaceDeep: [6, 10, 24],
+                earthDark: [18, 28, 48],
+                earthOcean: [28, 52, 85],
+                earthCloud: [110, 135, 165],
+                atmosphereBlue: [70, 110, 170],
+                atmosphereGold: [245, 180, 80],
+                sunLineCore: [255, 235, 160],
+                sunLineMid: [255, 190, 85],
+                sunLineOuter: [255, 140, 55],
+                horizonGlow: [255, 110, 45]
+            };
+
+            // --- Earth curve parameters (arc spanning left to right) ---
+            let earthRadius = 0;
+            let earthCenterX = 0;
+            let earthCenterY = 0;
+
+            // --- Stars field (deep space) ---
+            let stars = [];
+            const STAR_COUNT = 2200;
+
+            // --- Twinkling stars ---
+            let twinklingStars = [];
+            const TWINKLE_COUNT = 500;
+
+            // --- Atmospheric particles (shimmering along horizon) ---
+            let horizonParticles = [];
+            const PARTICLE_COUNT = 400;
+
+            // --- Orbital glints ---
+            let orbitalGlints = [];
+            const GLINT_COUNT = 60;
+
+            // --- Animation time ---
+            let timeOffset = 0;
+
+            // --- Initialize stars ---
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        size: 0.6 + Math.random() * 1.8,
+                        alpha: 0.3 + Math.random() * 0.7
+                    });
+                }
+
+                twinklingStars = [];
+                for (let i = 0; i < TWINKLE_COUNT; i++) {
+                    twinklingStars.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        size: 1 + Math.random() * 2.2,
+                        baseAlpha: 0.4 + Math.random() * 0.6,
+                        twinkleSpeed: 0.4 + Math.random() * 1.6,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // --- Initialize horizon particles (shimmering along the arc) ---
+            function initHorizonParticles() {
+                horizonParticles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    // Position along the horizon arc (parameter t from 0 to 1 along the curve)
+                    horizonParticles.push({
+                        t: Math.random(), // position along arc
+                        offsetY: (Math.random() - 0.5) * 25,
+                        size: 1 + Math.random() * 3.5,
+                        alphaBase: 0.2 + Math.random() * 0.5,
+                        twinkleSpeed: 0.5 + Math.random() * 1.2,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // --- Initialize orbital glints ---
+            function initOrbitalGlints() {
+                orbitalGlints = [];
+                for (let i = 0; i < GLINT_COUNT; i++) {
+                    orbitalGlints.push({
+                        x: Math.random(),
+                        y: 0.05 + Math.random() * 0.35,
+                        size: 1.2 + Math.random() * 3,
+                        speed: 0.08 + Math.random() * 0.35,
+                        phase: Math.random() * Math.PI * 2,
+                        intensity: 0.3 + Math.random() * 0.7
+                    });
+                }
+            }
+
+            // --- Resize handler and update earth geometry ---
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+
+                // Earth geometry - large arc spanning left to right
+                // Earth center is positioned below the viewport to create a sweeping horizon arc
+                earthRadius = Math.min(width, height) * 0.95;
+                earthCenterX = width / 2;
+                earthCenterY = height * 1.25; // Center far below to create a gentle arc from left to right
+            }
+
+            // --- Function to get point on Earth's horizon arc (x coordinate from 0 to width) ---
+            function getHorizonPoint(x, offsetY = 0) {
+                // x from 0 to width, find corresponding y on the Earth's curved surface
+                const dx = x - earthCenterX;
+                // Earth's surface equation: (dx)^2 + (dy)^2 = radius^2
+                // dy = sqrt(radius^2 - dx^2) but we want the top of the arc (negative dy relative to center)
+                const maxDx = earthRadius * 0.98;
+                let dy = 0;
+                if (Math.abs(dx) <= earthRadius) {
+                    dy = -Math.sqrt(Math.max(0, earthRadius * earthRadius - dx * dx));
+                } else {
+                    // beyond the visible arc, just use horizon line
+                    dy = -Math.sqrt(earthRadius * earthRadius - maxDx * maxDx);
+                }
+                const y = earthCenterY + dy + offsetY;
+                return { x: x, y: y };
+            }
+
+            // --- Draw deep space background (starfield) ---
+            function drawStarfield(timestamp) {
+                const timeSec = timestamp * 0.001;
+
+                ctx.fillStyle = `rgb(${COLORS.spaceBlack[0]}, ${COLORS.spaceBlack[1]}, ${COLORS.spaceBlack[2]})`;
+                ctx.fillRect(0, 0, width, height);
+
+                // Static stars
+                for (let star of stars) {
+                    ctx.beginPath();
+                    ctx.arc(star.x * width, star.y * height, star.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 248, 225, ${star.alpha * 0.65})`;
+                    ctx.fill();
+                }
+
+                // Twinkling stars
+                for (let star of twinklingStars) {
+                    const twinkle = 0.5 + 0.5 * Math.sin(timeSec * star.twinkleSpeed + star.phase);
+                    const alpha = star.baseAlpha * (0.4 + twinkle * 0.8);
+                    ctx.beginPath();
+                    ctx.arc(star.x * width, star.y * height, star.size * (0.6 + twinkle * 0.4), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 245, 215, ${alpha})`;
+                    ctx.fill();
+                }
+            }
+
+            // --- Draw Earth's dark side (the massive curved body) ---
+            function drawEarthBody() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(earthCenterX, earthCenterY, earthRadius, earthRadius * 0.96, 0, 0, Math.PI * 2);
+                ctx.clip();
+
+                // Earth gradient - deep blues and dark tones
+                const gradEarth = ctx.createLinearGradient(
+                    earthCenterX - earthRadius * 0.5, earthCenterY - earthRadius * 0.3,
+                    earthCenterX + earthRadius * 0.6, earthCenterY + earthRadius * 0.4
+                );
+                gradEarth.addColorStop(0, `rgb(${COLORS.earthDark[0]}, ${COLORS.earthDark[1]}, ${COLORS.earthDark[2]})`);
+                gradEarth.addColorStop(0.4, `rgb(${COLORS.earthOcean[0]}, ${COLORS.earthOcean[1]}, ${COLORS.earthOcean[2]})`);
+                gradEarth.addColorStop(0.7, `rgb(${COLORS.earthDark[0] + 5}, ${COLORS.earthDark[1] + 5}, ${COLORS.earthDark[2] + 12})`);
+                gradEarth.addColorStop(1, `rgb(15, 25, 45)`);
+                ctx.fillStyle = gradEarth;
+                ctx.fillRect(0, 0, width, height);
+
+                // Subtle city lights (dots on dark side)
+                for (let i = 0; i < 400; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const rad = 0.75 + Math.random() * 0.23;
+                    const x = earthCenterX + Math.cos(angle) * earthRadius * rad;
+                    const y = earthCenterY + Math.sin(angle) * earthRadius * rad * 0.96;
+                    if (y > height * 0.55) continue;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 0.8 + Math.random() * 1.6, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 200, 100, ${0.12 + Math.random() * 0.2})`;
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+
+            // --- Draw the magnificent sun line along the entire horizon arc ---
+            function drawSunLine(timestamp) {
+                const timeSec = timestamp * 0.0006;
+                const pulse = 0.92 + Math.sin(timeSec * 0.8) * 0.08;
+
+                ctx.save();
+                ctx.globalCompositeOperation = 'lighter';
+
+                // Draw the main glowing arc along the entire visible horizon
+                // We'll create a path that follows the Earth's curvature from left edge to right edge
+                ctx.beginPath();
+
+                const startX = 0;
+                const endX = width;
+                const step = Math.max(1, Math.floor(width / 150)); // Smooth curve
+
+                let firstPoint = true;
+
+                for (let x = startX; x <= endX; x += step) {
+                    const point = getHorizonPoint(x, -8);
+                    if (firstPoint) {
+                        ctx.moveTo(point.x, point.y);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(point.x, point.y);
+                    }
+                }
+
+                // Main bright line (thick)
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = `rgba(${COLORS.sunLineCore[0]}, ${COLORS.sunLineCore[1]}, ${COLORS.sunLineCore[2]}, 0.98)`;
+                ctx.stroke();
+
+                // Secondary inner bright core
+                ctx.beginPath();
+                firstPoint = true;
+                for (let x = startX; x <= endX; x += step) {
+                    const point = getHorizonPoint(x, -5);
+                    if (firstPoint) {
+                        ctx.moveTo(point.x, point.y);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(point.x, point.y);
+                    }
+                }
+                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = `rgba(255, 250, 200, 1)`;
+                ctx.stroke();
+
+                // Outer glow - multiple layers creating the radiant "thin line of sun" effect
+                for (let layer = 1; layer <= 8; layer++) {
+                    ctx.beginPath();
+                    firstPoint = true;
+                    const offsetY = -4 - layer * 1.8;
+                    for (let x = startX; x <= endX; x += step) {
+                        const point = getHorizonPoint(x, offsetY);
+                        if (firstPoint) {
+                            ctx.moveTo(point.x, point.y);
+                            firstPoint = false;
+                        } else {
+                            ctx.lineTo(point.x, point.y);
+                        }
+                    }
+                    const alpha = 0.12 * (9 - layer) * pulse;
+                    ctx.lineWidth = 12 + layer * 2;
+                    ctx.strokeStyle = `rgba(${COLORS.sunLineMid[0]}, ${COLORS.sunLineMid[1]}, ${COLORS.sunLineMid[2]}, ${alpha})`;
+                    ctx.stroke();
+                }
+
+                // Additional warm outer aura
+                for (let layer = 1; layer <= 5; layer++) {
+                    ctx.beginPath();
+                    firstPoint = true;
+                    const offsetY = -2 - layer * 2.5;
+                    for (let x = startX; x <= endX; x += step) {
+                        const point = getHorizonPoint(x, offsetY);
+                        if (firstPoint) {
+                            ctx.moveTo(point.x, point.y);
+                            firstPoint = false;
+                        } else {
+                            ctx.lineTo(point.x, point.y);
+                        }
+                    }
+                    const alpha = 0.08 * (6 - layer) * pulse;
+                    ctx.lineWidth = 20 + layer * 3;
+                    ctx.strokeStyle = `rgba(${COLORS.sunLineOuter[0]}, ${COLORS.sunLineOuter[1]}, ${COLORS.sunLineOuter[2]}, ${alpha})`;
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+
+            // --- Draw atmospheric glow along the entire horizon ---
+            function drawAtmosphericGlow(timestamp) {
+                const timeSec = timestamp * 0.0005;
+                const breath = 0.8 + Math.sin(timeSec * 0.5) * 0.15;
+
+                ctx.save();
+                ctx.globalCompositeOperation = 'screen';
+
+                const startX = 0;
+                const endX = width;
+                const step = Math.max(1, Math.floor(width / 100));
+
+                // Blue atmospheric haze above the sun line
+                for (let layer = 1; layer <= 6; layer++) {
+                    ctx.beginPath();
+                    let firstPoint = true;
+                    const offsetY = -12 - layer * 6;
+                    for (let x = startX; x <= endX; x += step) {
+                        const point = getHorizonPoint(x, offsetY);
+                        if (firstPoint) {
+                            ctx.moveTo(point.x, point.y);
+                            firstPoint = false;
+                        } else {
+                            ctx.lineTo(point.x, point.y);
+                        }
+                    }
+                    const alpha = 0.04 * (7 - layer) * breath;
+                    ctx.lineWidth = 25 + layer * 4;
+                    ctx.strokeStyle = `rgba(${COLORS.atmosphereBlue[0]}, ${COLORS.atmosphereBlue[1]}, ${COLORS.atmosphereBlue[2]}, ${alpha})`;
+                    ctx.stroke();
+                }
+
+                // Golden atmospheric layer
+                for (let layer = 1; layer <= 4; layer++) {
+                    ctx.beginPath();
+                    let firstPoint = true;
+                    const offsetY = -5 - layer * 3;
+                    for (let x = startX; x <= endX; x += step) {
+                        const point = getHorizonPoint(x, offsetY);
+                        if (firstPoint) {
+                            ctx.moveTo(point.x, point.y);
+                            firstPoint = false;
+                        } else {
+                            ctx.lineTo(point.x, point.y);
+                        }
+                    }
+                    const alpha = 0.06 * (5 - layer) * breath;
+                    ctx.lineWidth = 18 + layer * 3;
+                    ctx.strokeStyle = `rgba(${COLORS.atmosphereGold[0]}, ${COLORS.atmosphereGold[1]}, ${COLORS.atmosphereGold[2]}, ${alpha})`;
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+
+            // --- Draw shimmering particles along the horizon arc ---
+            function drawHorizonParticles(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let particle of horizonParticles) {
+                    // Map t (0-1) to x coordinate (0 to width)
+                    const x = particle.t * width;
+                    const basePoint = getHorizonPoint(x, particle.offsetY);
+
+                    const twinkle = 0.4 + 0.6 * Math.sin(timeSec * particle.twinkleSpeed + particle.phase);
+                    const alpha = particle.alphaBase * (0.4 + twinkle * 0.8);
+
+                    if (twinkle > 0.45) {
+                        ctx.beginPath();
+                        ctx.arc(basePoint.x, basePoint.y - 3, particle.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 210, 120, ${alpha * 0.7})`;
+                        ctx.fill();
+
+                        ctx.beginPath();
+                        ctx.arc(basePoint.x, basePoint.y - 5, particle.size * 0.3, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 245, 180, ${alpha})`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw orbital glints (satellite reflections) ---
+            function drawOrbitalGlints(timestamp) {
+                const timeSec = timestamp * 0.001;
+                ctx.globalCompositeOperation = 'lighter';
+
+                for (let glint of orbitalGlints) {
+                    const driftX = (glint.x + timeSec * glint.speed * 0.1) % 1;
+                    const x = driftX * width;
+                    const y = glint.y * height;
+                    const pulse = 0.4 + 0.6 * Math.sin(timeSec * 2.2 + glint.phase);
+                    const intensity = glint.intensity * pulse;
+
+                    if (pulse > 0.45) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, glint.size * (0.5 + pulse * 0.6), 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 210, 130, ${intensity * 0.7})`;
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(x, y, glint.size * 0.3, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 245, 180, ${intensity})`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw sun rays emanating from the horizon arc ---
+            function drawSunRays(timestamp) {
+                const timeSec = timestamp * 0.0007;
+                const intensity = 0.4 + 0.2 * Math.sin(timeSec * 0.6);
+
+                ctx.save();
+                ctx.globalCompositeOperation = 'screen';
+
+                // Create rays emanating upward from various points along the horizon
+                const rayPoints = [0.15, 0.3, 0.45, 0.6, 0.75, 0.85];
+
+                for (let t of rayPoints) {
+                    const x = t * width;
+                    const horizonPoint = getHorizonPoint(x, -8);
+
+                    for (let i = 0; i < 5; i++) {
+                        const angle = -0.5 + (i / 5) * 0.8;
+                        const dx = Math.sin(angle);
+                        const dy = -Math.cos(angle);
+                        const length = 35 + Math.sin(timeSec * 1.2 + t * 10) * 12;
+
+                        ctx.beginPath();
+                        ctx.moveTo(horizonPoint.x, horizonPoint.y);
+                        ctx.lineTo(horizonPoint.x + dx * length, horizonPoint.y + dy * length);
+                        ctx.lineWidth = 1.2 + Math.sin(timeSec * 2 + t * 15) * 0.8;
+                        ctx.strokeStyle = `rgba(255, 200, 100, ${0.18 * intensity})`;
+                        ctx.stroke();
+                    }
+                }
+
+                ctx.restore();
+            }
+
+            // --- Draw star streaks (orbital motion effect) ---
+            let starStreaks = [];
+            const STREAK_COUNT = 80;
+
+            function initStarStreaks() {
+                starStreaks = [];
+                for (let i = 0; i < STREAK_COUNT; i++) {
+                    starStreaks.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        length: 3 + Math.random() * 8,
+                        angle: -0.2 + Math.random() * 0.4,
+                        alpha: 0.08 + Math.random() * 0.2
+                    });
+                }
+            }
+
+            function drawStarStreaks(timestamp) {
+                const timeSec = timestamp * 0.0002;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.4;
+
+                for (let streak of starStreaks) {
+                    const x = (streak.x + timeSec * 0.015) % 1 * width;
+                    const y = streak.y * height;
+                    const angle = streak.angle + Math.sin(timeSec * 0.4) * 0.08;
+                    const dx = Math.cos(angle) * streak.length;
+                    const dy = Math.sin(angle) * streak.length;
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + dx, y + dy);
+                    ctx.lineWidth = 0.7;
+                    ctx.strokeStyle = `rgba(210, 225, 255, ${streak.alpha})`;
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Draw window glare reflection ---
+            function drawWindowGlare(timestamp) {
+                const timeSec = timestamp * 0.0004;
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.06;
+
+                for (let i = 0; i < 20; i++) {
+                    const x = width * (0.08 + Math.sin(timeSec * 0.2 + i) * 0.03);
+                    const y = height * (0.12 + Math.cos(timeSec * 0.3 + i) * 0.05);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2.5 + Math.sin(timeSec * 1 + i) * 1, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(180, 200, 240, 0.4)`;
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Final vignette to focus on horizon ---
+            function drawVignette() {
+                ctx.globalCompositeOperation = 'multiply';
+                ctx.globalAlpha = 0.2;
+                const vignette = ctx.createRadialGradient(width / 2, height / 2, width * 0.25, width / 2, height / 2, width * 0.9);
+                vignette.addColorStop(0, `rgba(0,0,0,0)`);
+                vignette.addColorStop(1, `rgba(3,6,14,0.65)`);
+                ctx.fillStyle = vignette;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 1;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // --- Main animation loop ---
+            function animate(nowMs) {
+                if (!ctx) return;
+                if (canvas.width !== width || canvas.height !== height) resizeCanvas();
+
+                // 1. Deep space starfield
+                drawStarfield(nowMs);
+
+                // 2. Earth's dark curved body
+                drawEarthBody();
+
+                // 3. Atmospheric glow along horizon arc
+                drawAtmosphericGlow(nowMs);
+
+                // 4. The magnificent sun line (main feature - full arc left to right)
+                drawSunLine(nowMs);
+
+                // 5. Sun rays emanating upward
+                drawSunRays(nowMs);
+
+                // 6. Shimmering horizon particles
+                drawHorizonParticles(nowMs);
+
+                // 7. Orbital glints
+                drawOrbitalGlints(nowMs);
+
+                // 8. Star streaks (motion)
+                drawStarStreaks(nowMs);
+
+                // 9. Window glare
+                drawWindowGlare(nowMs);
+
+                // 10. Final vignette
+                drawVignette();
+
+                requestAnimationFrame(animate);
+            }
+
+            // --- Initialize all systems ---
+            function setup() {
+                resizeCanvas();
+                initStars();
+                initHorizonParticles();
+                initOrbitalGlints();
+                initStarStreaks();
+                window.addEventListener('resize', () => resizeCanvas());
+                requestAnimationFrame(animate);
+            }
+
+            setup();
+        })();
+    </script>
+</body>
+
+</html>

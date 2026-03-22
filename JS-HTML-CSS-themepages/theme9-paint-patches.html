@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Vivid Paint Splatter | Bold Organic Patches</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 30% 20%, #0a0c18, #010101);
+            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            position: relative;
+        }
+
+        #paintCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* subtle vignette for depth - but not too dark to preserve visibility */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 180px rgba(0, 0, 0, 0.25);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .art-title {
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            z-index: 2;
+            color: rgba(255, 245, 200, 0.85);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.35);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            pointer-events: none;
+            font-family: monospace;
+            border: 1px solid rgba(255, 200, 100, 0.3);
+        }
+
+        .palette-note {
+            position: fixed;
+            bottom: 20px;
+            left: 24px;
+            z-index: 2;
+            color: rgba(255, 220, 150, 0.85);
+            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
+            border-radius: 40px;
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        @media (max-width: 700px) {
+
+            .art-title,
+            .palette-note {
+                font-size: 0.7rem;
+                bottom: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="paintCanvas"></canvas>
+    <div class="vignette"></div>
+    <div class="art-title">✦ VIBRANT SPLATTER · FORCEFUL PIGMENTS ✦</div>
+    <div class="palette-note">parrot green · royal pink · peacock · rangoli deep</div>
+
+    <script>
+        (function () {
+            // ==============================================================
+            // ENHANCED COLOR PALETTE — Ultra vibrant, deep, high saturation
+            // These colors are INTENSIFIED for maximum visibility
+            // ==============================================================
+            const COLOR_PALETTE = [
+                { name: 'Deep Parrot Green', rgb: 'rgb(30, 180, 70)' },      // electric vivid green
+                { name: 'Royal Pink', rgb: 'rgb(235, 55, 135)' },      // intense hot pink
+                { name: 'Royal Blue', rgb: 'rgb(50, 85, 235)' },       // brilliant sapphire
+                { name: 'Peacock Neck', rgb: 'rgb(0, 175, 185)' },       // luminous turquoise-teal
+                { name: 'Peacock Emerald', rgb: 'rgb(45, 195, 155)' },      // vibrant green-blue
+                { name: 'Rangoli Crimson', rgb: 'rgb(225, 55, 85)' },       // bold festive red
+                { name: 'Rangoli Gold', rgb: 'rgb(245, 145, 35)' },      // blazing orange-gold
+                { name: 'Rangoli Magenta', rgb: 'rgb(210, 55, 175)' },      // electric purple-pink
+                { name: 'Royal Purple', rgb: 'rgb(145, 55, 215)' },      // deep majestic violet
+                { name: 'Electric Coral', rgb: 'rgb(255, 85, 95)' },       // fiery coral
+                { name: 'Vibrant Teal', rgb: 'rgb(30, 210, 190)' },      // intense cyan
+                { name: 'Sunset Orange', rgb: 'rgb(255, 105, 45)' }       // bold tangerine
+            ];
+
+            const canvas = document.getElementById('paintCanvas');
+            let ctx = canvas.getContext('2d');
+            let width, height;
+
+            let patches = [];
+            let animationId = null;
+
+            const MAX_PATCHES = 28;              // optimal for performance
+            const SPAWN_INTERVAL_MS = 1300;      // frequent but gentle
+            const MIN_SIZE = 90;                 // larger base size for visibility
+            const MAX_SIZE = 220;                // dramatic large splashes
+            const MIN_LIFE = 9000;               // 9 seconds
+            const MAX_LIFE = 15000;              // 15 seconds
+
+            // ------------------------------------------------------------------
+            // Enhanced SplatterPatch with BOLD, highly visible spikes
+            // ------------------------------------------------------------------
+            class SplatterPatch {
+                constructor(x, y, baseRadius, colorRgb, lifespan, birthTime) {
+                    this.x = x;
+                    this.y = y;
+                    this.baseRadius = baseRadius;
+                    this.colorRgb = colorRgb;
+                    this.lifespan = lifespan;
+                    this.birthTime = birthTime;
+
+                    // More spikes for dramatic splatter effect (15 to 32 spikes)
+                    this.spikeCount = 15 + Math.floor(Math.random() * 22);
+                    this.spikes = [];
+
+                    // Generate aggressive, visible spikes (like paint thrown with force)
+                    for (let i = 0; i < this.spikeCount; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        // Longer spikes for dramatic look (0.7x to 2.2x base radius)
+                        const lengthFactor = 0.8 + Math.random() * 1.6;
+                        const spikeLength = this.baseRadius * lengthFactor;
+                        // Thicker spikes for visibility
+                        const thickness = this.baseRadius * (0.3 + Math.random() * 0.55);
+                        const curveOffset = (Math.random() - 0.5) * this.baseRadius * 0.5;
+                        this.spikes.push({
+                            angle: angle,
+                            length: spikeLength,
+                            thickness: thickness,
+                            curveOffset: curveOffset,
+                            // add secondary bulge for organic look
+                            hasBulge: Math.random() > 0.6
+                        });
+                    }
+
+                    // Extra micro tendrils for organic richness
+                    this.microSpikes = [];
+                    const microCount = 8 + Math.floor(Math.random() * 14);
+                    for (let i = 0; i < microCount; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        const len = this.baseRadius * (0.4 + Math.random() * 0.9);
+                        this.microSpikes.push({ angle: angle, length: len });
+                    }
+
+                    // Core deformation for organic asymmetry
+                    this.coreSkewX = (Math.random() - 0.5) * this.baseRadius * 0.45;
+                    this.coreSkewY = (Math.random() - 0.5) * this.baseRadius * 0.45;
+
+                    // Gentle living motion
+                    this.wobbleSeed = Math.random() * Math.PI * 2;
+                    this.wobbleSpeed = 0.6 + Math.random() * 1.0;
+
+                    // 3D sheen for wet paint look
+                    this.sheenAngle = Math.random() * Math.PI * 2;
+                    this.sheenIntensity = 0.35 + Math.random() * 0.5;
+
+                    // Store initial alpha for reference (always full visibility at peak)
+                }
+
+                getAlpha(currentTime) {
+                    const elapsed = currentTime - this.birthTime;
+                    if (elapsed >= this.lifespan) return 0;
+                    const t = elapsed / this.lifespan;
+                    let alpha = 0;
+                    if (t < 0.2) {
+                        // Quick, smooth rise to full opacity
+                        alpha = t / 0.2;
+                        alpha = Math.pow(alpha, 0.9);
+                    } else if (t < 0.7) {
+                        // Long sustain at FULL opacity (1.0)
+                        alpha = 1.0;
+                    } else {
+                        // Gentle fade out over last 30%
+                        const fadeT = (t - 0.7) / 0.3;
+                        alpha = 1 - Math.pow(fadeT, 1.2);
+                    }
+                    return Math.min(1.0, Math.max(0, alpha));
+                }
+
+                isAlive(currentTime) {
+                    return (currentTime - this.birthTime) < this.lifespan;
+                }
+
+                getWobbleOffset(currentTime) {
+                    const phase = currentTime * 0.0022 * this.wobbleSpeed + this.wobbleSeed;
+                    const offX = Math.sin(phase) * this.baseRadius * 0.02;
+                    const offY = Math.cos(phase * 1.2) * this.baseRadius * 0.02;
+                    return { dx: offX, dy: offY };
+                }
+            }
+
+            function parseRgb(colorStr) {
+                const match = colorStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (match) {
+                    return { r: parseInt(match[1]), g: parseInt(match[2]), b: parseInt(match[3]) };
+                }
+                return { r: 200, g: 80, b: 120 };
+            }
+
+            // ----- DRAW BOLD, HIGHLY VISIBLE SPLATTER PATCH -----
+            function drawSplatterPatch(ctx, patch, currentTime) {
+                const alpha = patch.getAlpha(currentTime);
+                if (alpha <= 0.02) return;
+
+                const { x, y, baseRadius, spikes, microSpikes, colorRgb, coreSkewX, coreSkewY, sheenAngle, sheenIntensity } = patch;
+                const rgb = parseRgb(colorRgb);
+                const wobble = patch.getWobbleOffset(currentTime);
+                const centerX = x + wobble.dx;
+                const centerY = y + wobble.dy;
+
+                ctx.save();
+
+                // Build organic splatter outline with multiple spikes
+                let outlinePoints = [];
+
+                function addPointAtAngle(angle, distance) {
+                    const px = centerX + Math.cos(angle) * distance;
+                    const py = centerY + Math.sin(angle) * distance;
+                    outlinePoints.push({ x: px, y: py, angle: angle });
+                }
+
+                // 1) Main core points (distorted, organic)
+                const coreSteps = 32;
+                for (let i = 0; i <= coreSteps; i++) {
+                    const angle = (i / coreSteps) * Math.PI * 2;
+                    const dx = Math.cos(angle) * baseRadius * 0.88 + coreSkewX * 0.4;
+                    const dy = Math.sin(angle) * baseRadius * 0.88 + coreSkewY * 0.4;
+                    const dist = Math.hypot(dx, dy);
+                    const finalAngle = Math.atan2(dy, dx);
+                    addPointAtAngle(finalAngle, dist);
+                }
+
+                // 2) Add main spikes (long, dramatic)
+                for (let spike of spikes) {
+                    const spikeAngle = spike.angle;
+                    const totalLength = spike.length;
+                    const angleShift = Math.sin(spikeAngle * 2.5) * 0.1;
+                    const finalAngle = spikeAngle + angleShift + (spike.curveOffset * 0.03);
+
+                    addPointAtAngle(finalAngle, totalLength);
+
+                    // Add additional points for thickness/bulge
+                    if (spike.hasBulge) {
+                        addPointAtAngle(finalAngle + 0.1, totalLength * 0.85);
+                        addPointAtAngle(finalAngle - 0.09, totalLength * 0.85);
+                    }
+                    // Add mid-length point for organic shape
+                    addPointAtAngle(finalAngle + 0.05, totalLength * 0.65);
+                    addPointAtAngle(finalAngle - 0.04, totalLength * 0.7);
+                }
+
+                // 3) Micro spikes for extra organic detail
+                for (let micro of microSpikes) {
+                    const microAngle = micro.angle;
+                    const microLen = micro.length;
+                    addPointAtAngle(microAngle, microLen);
+                    addPointAtAngle(microAngle + 0.12, microLen * 0.75);
+                    addPointAtAngle(microAngle - 0.1, microLen * 0.72);
+                }
+
+                // Sort by angle for proper polygon
+                outlinePoints.sort((a, b) => a.angle - b.angle);
+
+                // Create and fill the shape
+                ctx.beginPath();
+                if (outlinePoints.length > 2) {
+                    ctx.moveTo(outlinePoints[0].x, outlinePoints[0].y);
+                    for (let i = 1; i < outlinePoints.length; i++) {
+                        const p1 = outlinePoints[i - 1];
+                        const p2 = outlinePoints[i];
+                        const midX = (p1.x + p2.x) / 2;
+                        const midY = (p1.y + p2.y) / 2;
+                        ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+                    }
+                    const last = outlinePoints[outlinePoints.length - 1];
+                    const first = outlinePoints[0];
+                    ctx.quadraticCurveTo(last.x, last.y, first.x, first.y);
+                    ctx.closePath();
+                } else {
+                    ctx.ellipse(centerX, centerY, baseRadius, baseRadius, 0, 0, Math.PI * 2);
+                }
+
+                // --- BOLD, VIBRANT GRADIENT with high saturation ---
+                // Brighter core for dramatic effect
+                const brightR = Math.min(255, rgb.r + 70);
+                const brightG = Math.min(255, rgb.g + 65);
+                const brightB = Math.min(255, rgb.b + 70);
+                const midR = rgb.r;
+                const midG = rgb.g;
+                const midB = rgb.b;
+                const darkR = Math.max(40, rgb.r - 35);
+                const darkG = Math.max(35, rgb.g - 30);
+                const darkB = Math.max(45, rgb.b - 30);
+
+                const grad = ctx.createRadialGradient(
+                    centerX - baseRadius * 0.2, centerY - baseRadius * 0.15, baseRadius * 0.2,
+                    centerX, centerY, baseRadius * 0.95
+                );
+                grad.addColorStop(0, `rgba(${brightR}, ${brightG}, ${brightB}, ${alpha})`);
+                grad.addColorStop(0.35, `rgba(${midR}, ${midG}, ${midB}, ${alpha * 0.98})`);
+                grad.addColorStop(0.7, `rgba(${darkR}, ${darkG}, ${darkB}, ${alpha * 0.92})`);
+                grad.addColorStop(1, `rgba(${darkR - 15}, ${darkG - 12}, ${darkB - 10}, ${alpha * 0.85})`);
+
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // --- STRONG SPECULAR HIGHLIGHT (wet, glossy finish) ---
+                const sheenX = centerX + Math.cos(sheenAngle) * baseRadius * 0.45;
+                const sheenY = centerY + Math.sin(sheenAngle) * baseRadius * 0.4;
+                const specGrad = ctx.createRadialGradient(sheenX, sheenY, baseRadius * 0.12, sheenX - 5, sheenY - 4, baseRadius * 0.5);
+                specGrad.addColorStop(0, `rgba(255, 255, 235, ${alpha * sheenIntensity * 0.85})`);
+                specGrad.addColorStop(0.5, `rgba(255, 240, 180, ${alpha * sheenIntensity * 0.45})`);
+                specGrad.addColorStop(1, `rgba(255, 220, 120, 0)`);
+                ctx.fillStyle = specGrad;
+                ctx.fill();
+
+                // --- DROP SHADOW for depth and pop ---
+                ctx.shadowColor = `rgba(0, 0, 0, 0.5)`;
+                ctx.shadowBlur = baseRadius * 0.22;
+                ctx.fill();
+                ctx.shadowColor = 'transparent';
+
+                // --- BOLD OUTLINE STROKE to enhance shape definition ---
+                ctx.beginPath();
+                if (outlinePoints.length > 2) {
+                    ctx.moveTo(outlinePoints[0].x, outlinePoints[0].y);
+                    for (let i = 1; i < outlinePoints.length; i++) {
+                        const p1 = outlinePoints[i - 1];
+                        const p2 = outlinePoints[i];
+                        const midX = (p1.x + p2.x) / 2;
+                        const midY = (p1.y + p2.y) / 2;
+                        ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+                    }
+                    ctx.quadraticCurveTo(last.x, last.y, first.x, first.y);
+                    ctx.closePath();
+                }
+                ctx.strokeStyle = `rgba(255, 245, 190, ${alpha * 0.55})`;
+                ctx.lineWidth = 3.5;
+                ctx.stroke();
+
+                // --- INNER GLOW for extra vibrancy ---
+                ctx.globalCompositeOperation = 'lighter';
+                for (let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    if (outlinePoints.length > 2) {
+                        ctx.moveTo(outlinePoints[0].x, outlinePoints[0].y);
+                        for (let j = 1; j < outlinePoints.length; j++) {
+                            const p1 = outlinePoints[j - 1];
+                            const p2 = outlinePoints[j];
+                            const midX = (p1.x + p2.x) / 2;
+                            const midY = (p1.y + p2.y) / 2;
+                            ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+                        }
+                        ctx.quadraticCurveTo(last.x, last.y, first.x, first.y);
+                        ctx.closePath();
+                    }
+                    ctx.fillStyle = `rgba(255, 210, 130, ${alpha * 0.12})`;
+                    ctx.fill();
+                }
+
+                // --- SPARKLES & RANGOLI GLITTER (festive, bright accents) ---
+                const sparkleCount = Math.floor(18 * alpha) + 6;
+                for (let i = 0; i < sparkleCount; i++) {
+                    const randAngle = Math.random() * Math.PI * 2;
+                    const radDist = Math.random() * baseRadius * 0.95;
+                    const speckX = centerX + Math.cos(randAngle) * radDist;
+                    const speckY = centerY + Math.sin(randAngle) * radDist;
+                    ctx.beginPath();
+                    ctx.arc(speckX, speckY, 1.5 + Math.random() * 4, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 235, 150, ${alpha * (0.5 + Math.random() * 0.45)})`;
+                    ctx.fill();
+                }
+
+                // Additional micro highlights on spike tips
+                for (let spike of spikes) {
+                    if (Math.random() > 0.65) {
+                        const tipAngle = spike.angle;
+                        const tipDist = spike.length;
+                        const tipX = centerX + Math.cos(tipAngle) * tipDist;
+                        const tipY = centerY + Math.sin(tipAngle) * tipDist;
+                        ctx.beginPath();
+                        ctx.arc(tipX, tipY, 2 + Math.random() * 5, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 245, 180, ${alpha * 0.65})`;
+                        ctx.fill();
+                    }
+                }
+
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.restore();
+            }
+
+            function drawAllPatches(now) {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, width, height);
+                ctx.globalCompositeOperation = 'source-over';
+
+                // Draw all patches (order gives natural overlap)
+                for (let patch of patches) {
+                    drawSplatterPatch(ctx, patch, now);
+                }
+
+                // Ambient floating particles (ethereal)
+                ctx.globalCompositeOperation = 'lighter';
+                if (Math.random() < 0.25) {
+                    for (let i = 0; i < 8; i++) {
+                        ctx.beginPath();
+                        ctx.arc(Math.random() * width, Math.random() * height, Math.random() * 2.5 + 1, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 200, 100, 0.2)`;
+                        ctx.fill();
+                    }
+                }
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            function spawnPatch(now) {
+                if (patches.length >= MAX_PATCHES) return;
+                const colorObj = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
+                const baseRadius = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
+                // Position with generous margins for full visibility
+                let x = Math.random() * (width + baseRadius * 0.5) - baseRadius * 0.25;
+                let y = Math.random() * (height + baseRadius * 0.5) - baseRadius * 0.25;
+                x = Math.min(width + baseRadius * 0.4, Math.max(-baseRadius * 0.3, x));
+                y = Math.min(height + baseRadius * 0.4, Math.max(-baseRadius * 0.3, y));
+                const lifespan = MIN_LIFE + Math.random() * (MAX_LIFE - MIN_LIFE);
+                const patch = new SplatterPatch(x, y, baseRadius, colorObj.rgb, lifespan, now);
+                patches.push(patch);
+            }
+
+            function removeDeadPatches(now) {
+                patches = patches.filter(p => p.isAlive(now));
+            }
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                if (ctx) drawAllPatches(performance.now());
+            }
+
+            let lastSpawnTime = 0;
+
+            function animate(timeMs) {
+                if (!canvas.isConnected) return;
+                const now = performance.now();
+
+                if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                    resizeCanvas();
+                }
+
+                // Spawn new patches at gentle interval
+                if (patches.length < MAX_PATCHES && (now - lastSpawnTime) >= SPAWN_INTERVAL_MS) {
+                    spawnPatch(now);
+                    lastSpawnTime = now;
+                    // Occasionally spawn an extra to maintain richness
+                    if (patches.length < 10 && Math.random() < 0.35) {
+                        setTimeout(() => {
+                            if (patches.length < MAX_PATCHES) spawnPatch(performance.now());
+                        }, 200);
+                    }
+                }
+
+                removeDeadPatches(now);
+                drawAllPatches(now);
+
+                animationId = requestAnimationFrame(animate);
+            }
+
+            function initializeSplashes(now) {
+                patches = [];
+                const initCount = Math.min(MAX_PATCHES, 100);
+                for (let i = 0; i < initCount; i++) {
+                    const offset = i * 3500;
+                    const colorObj = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
+                    const radius = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
+                    let x = Math.random() * (width + radius * 0.8) - radius * 0.25;
+                    let y = Math.random() * (height + radius * 0.9) - radius * 0.25;
+                    x = Math.min(width + radius * 0.4, Math.max(-radius * 0.3, x));
+                    y = Math.min(height + radius * 0.4, Math.max(-radius * 0.3, y));
+                    const lifespan = MIN_LIFE + Math.random() * (MAX_LIFE - MIN_LIFE);
+                    const patch = new SplatterPatch(x, y, radius, colorObj.rgb, lifespan, now - offset);
+                    patches.push(patch);
+                }
+                lastSpawnTime = now;
+            }
+
+            function start() {
+                resizeCanvas();
+                const startNow = performance.now();
+                initializeSplashes(startNow);
+                animationId = requestAnimationFrame(animate);
+                window.addEventListener('resize', () => {
+                    setTimeout(resizeCanvas, 80);
+                });
+            }
+
+            start();
+        })();
+    </script>
+</body>
+
+</html>
