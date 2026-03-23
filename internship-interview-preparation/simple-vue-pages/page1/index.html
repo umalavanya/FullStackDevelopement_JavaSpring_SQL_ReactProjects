@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>✔️ FlowTask | Simple To-Do App</title>
+    <!-- Google Fonts & simple reset + modern styling -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Vue 3 CDN (global build) -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f4ff 0%, #e9eef7 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* App card container */
+        .todo-card {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* header area */
+        .app-header {
+            background: #ffffff;
+            padding: 1.8rem 2rem 1.2rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .app-header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E2A5E, #55679C);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-header h1 i {
+            background: none;
+            color: #3b4e8c;
+            font-size: 1.8rem;
+            background-clip: unset;
+            -webkit-background-clip: unset;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a5b7a;
+        }
+
+        .stats span {
+            background: #eff3fc;
+            padding: 0.25rem 0.8rem;
+            border-radius: 40px;
+        }
+
+        /* input section */
+        .add-task {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+            background: #ffffff;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            background: #f8fafd;
+            border-radius: 60px;
+            padding: 0.25rem 0.25rem 0.25rem 1.2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .input-group:focus-within {
+            border-color: #7c8fc0;
+            box-shadow: 0 0 0 3px rgba(79, 114, 169, 0.2);
+            background: white;
+        }
+
+        .task-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.9rem 0;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            font-family: 'Inter', monospace;
+            color: #1e293b;
+        }
+
+        .task-input::placeholder {
+            color: #a0b3d9;
+            font-weight: 400;
+        }
+
+        .add-btn {
+            background: #1e2a5e;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0 1.6rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        .add-btn:hover {
+            background: #14204a;
+            transform: scale(0.97);
+        }
+
+        /* filter bar */
+        .filter-bar {
+            padding: 0.5rem 2rem 0rem 2rem;
+            background: white;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 1.1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 40px;
+            cursor: pointer;
+            color: #4a5b7a;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-btn.active {
+            background: #1e2a5e;
+            color: white;
+            box-shadow: 0 2px 6px rgba(30, 42, 94, 0.2);
+        }
+
+        .filter-btn:not(.active):hover {
+            background: #eef3fc;
+            color: #1f3a6b;
+        }
+
+        /* tasks list container */
+        .task-list-container {
+            background: #ffffff;
+            padding: 0.8rem 1.5rem 2rem 1.5rem;
+            max-height: 460px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fefefe;
+            margin: 0.7rem 0;
+            padding: 0.9rem 1.2rem;
+            border-radius: 1.2rem;
+            transition: all 0.2s;
+            border: 1px solid #eef2f9;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .task-item:hover {
+            background: #fafcff;
+            border-color: #cddcff;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .task-check {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #1e2a5e;
+            transform: scale(1.05);
+        }
+
+        .task-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-word;
+            transition: 0.1s;
+            flex: 1;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .edit-icon,
+        .delete-icon {
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 40px;
+            transition: 0.15s;
+            width: 32px;
+            color: #7f8ea3;
+        }
+
+        .edit-icon:hover {
+            background: #eef2ff;
+            color: #2c3e6d;
+            transform: scale(1.05);
+        }
+
+        .delete-icon:hover {
+            background: #ffe8ec;
+            color: #c2412c;
+            transform: scale(1.05);
+        }
+
+        /* edit inline mode */
+        .edit-input {
+            flex: 1;
+            font-size: 0.95rem;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1.5px solid #b9c8f0;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .edit-input:focus {
+            border-color: #1e2a5e;
+        }
+
+        .save-edit {
+            background: #1e2a5e;
+            border: none;
+            color: white;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: #8ca0bc;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            font-weight: 500;
+        }
+
+        /* scrollbar */
+        .task-list-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .task-list-container::-webkit-scrollbar-track {
+            background: #f1f1f5;
+            border-radius: 10px;
+        }
+
+        .task-list-container::-webkit-scrollbar-thumb {
+            background: #cbd5e6;
+            border-radius: 10px;
+        }
+
+        footer {
+            background: #fafcff;
+            padding: 1rem 2rem;
+            border-top: 1px solid #eef2f8;
+            font-size: 0.75rem;
+            text-align: center;
+            color: #6f7d98;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="todo-card">
+            <div class="app-header">
+                <h1>
+                    <i class="fas fa-check-circle"></i>
+                    FlowTask
+                </h1>
+                <div class="stats">
+                    <span><i class="far fa-calendar-alt"></i> {{ totalTasks }} total</span>
+                    <span><i class="far fa-circle-check"></i> {{ completedCount }} done</span>
+                    <span><i class="fas fa-hourglass-half"></i> {{ pendingCount }} pending</span>
+                </div>
+            </div>
+
+            <div class="add-task">
+                <div class="input-group">
+                    <input type="text" class="task-input" v-model="newTaskText" @keyup.enter="addTask"
+                        placeholder="Write a new task...">
+                    <button class="add-btn" @click="addTask">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <button v-for="filter in filters" :key="filter.value" class="filter-btn"
+                    :class="{ active: currentFilter === filter.value }" @click="currentFilter = filter.value">
+                    <i :class="filter.icon"></i> {{ filter.label }}
+                </button>
+            </div>
+
+            <div class="task-list-container">
+                <div v-if="filteredTasks.length === 0" class="empty-state">
+                    <i class="far fa-smile-wink"></i>
+                    <p>No tasks here ~ <br> add something nice!</p>
+                </div>
+                <div v-else v-for="task in filteredTasks" :key="task.id" class="task-item">
+                    <div class="task-left">
+                        <input type="checkbox" class="task-check" v-model="task.completed" @change="updateLocalStorage">
+                        <div v-if="editingId !== task.id" class="task-text" :class="{ completed: task.completed }">
+                            {{ task.title }}
+                        </div>
+                        <div v-else class="task-left" style="gap: 8px; flex:1;">
+                            <input type="text" v-model="editText" class="edit-input" @keyup.enter="saveEdit(task.id)"
+                                autofocus>
+                            <button class="save-edit" @click="saveEdit(task.id)">Save</button>
+                        </div>
+                    </div>
+                    <div class="task-actions" v-if="editingId !== task.id">
+                        <button class="edit-icon" @click="startEdit(task)" title="Edit task">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="delete-icon" @click="deleteTask(task.id)" title="Delete task">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <i class="fas fa-sync-alt"></i> auto-saved · double-click edit (via edit button)
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted, watch } = Vue;
+
+        createApp({
+            setup() {
+                // ---- DATA ----
+                const tasks = ref([]);
+                const newTaskText = ref('');
+                const currentFilter = ref('all');   // 'all', 'active', 'completed'
+                const editingId = ref(null);
+                const editText = ref('');
+
+                // Filter options
+                const filters = [
+                    { label: 'All', value: 'all', icon: 'fas fa-list-ul' },
+                    { label: 'Active', value: 'active', icon: 'far fa-clock' },
+                    { label: 'Completed', value: 'completed', icon: 'fas fa-check-double' }
+                ];
+
+                // Helper: generate unique id
+                const generateId = () => Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+
+                // Load from localStorage
+                const loadTasks = () => {
+                    const stored = localStorage.getItem('flowtasks_app');
+                    if (stored) {
+                        try {
+                            const parsed = JSON.parse(stored);
+                            if (Array.isArray(parsed)) {
+                                tasks.value = parsed;
+                            } else {
+                                tasks.value = [];
+                            }
+                        } catch (e) {
+                            tasks.value = [];
+                        }
+                    }
+                    if (tasks.value.length === 0) {
+                        // seed with few demo tasks for better showcase
+                        tasks.value = [
+                            { id: generateId(), title: '🌟 Explore Vue features', completed: false },
+                            { id: generateId(), title: '✅ Add new tasks', completed: true },
+                            { id: generateId(), title: '🎨 Edit or delete tasks', completed: false },
+                            { id: generateId(), title: '📱 Responsive design ready', completed: false }
+                        ];
+                    }
+                };
+
+                // Save to localStorage
+                const persistTasks = () => {
+                    localStorage.setItem('flowtasks_app', JSON.stringify(tasks.value));
+                };
+
+                // computed stats
+                const totalTasks = computed(() => tasks.value.length);
+                const completedCount = computed(() => tasks.value.filter(t => t.completed).length);
+                const pendingCount = computed(() => tasks.value.filter(t => !t.completed).length);
+
+                // Filtered tasks based on currentFilter
+                const filteredTasks = computed(() => {
+                    if (currentFilter.value === 'active') {
+                        return tasks.value.filter(t => !t.completed);
+                    } else if (currentFilter.value === 'completed') {
+                        return tasks.value.filter(t => t.completed);
+                    }
+                    return tasks.value;
+                });
+
+                // ---- ACTIONS ----
+                const addTask = () => {
+                    const title = newTaskText.value.trim();
+                    if (title === '') return;
+                    const newTask = {
+                        id: generateId(),
+                        title: title,
+                        completed: false
+                    };
+                    tasks.value.push(newTask);
+                    newTaskText.value = '';
+                    persistTasks();
+                };
+
+                const deleteTask = (id) => {
+                    tasks.value = tasks.value.filter(t => t.id !== id);
+                    // if editing mode and we delete the editing task, reset editingId
+                    if (editingId.value === id) {
+                        editingId.value = null;
+                        editText.value = '';
+                    }
+                    persistTasks();
+                };
+
+                const startEdit = (task) => {
+                    editingId.value = task.id;
+                    editText.value = task.title;
+                };
+
+                const saveEdit = (id) => {
+                    const newTitle = editText.value.trim();
+                    if (newTitle === '') {
+                        // optional: delete if empty? but better just ignore or revert
+                        editingId.value = null;
+                        editText.value = '';
+                        return;
+                    }
+                    const taskToUpdate = tasks.value.find(t => t.id === id);
+                    if (taskToUpdate) {
+                        taskToUpdate.title = newTitle;
+                    }
+                    editingId.value = null;
+                    editText.value = '';
+                    persistTasks();
+                };
+
+                // update storage when checkbox toggled (triggered by @change)
+                const updateLocalStorage = () => {
+                    persistTasks();
+                };
+
+                // Watch for deep changes (in case of any direct mutation outside checkbox, like bulk but not needed)
+                watch(tasks, () => {
+                    persistTasks();
+                }, { deep: true });
+
+                // on mount load tasks
+                onMounted(() => {
+                    loadTasks();
+                });
+
+                return {
+                    tasks,
+                    newTaskText,
+                    currentFilter,
+                    filters,
+                    editingId,
+                    editText,
+                    totalTasks,
+                    completedCount,
+                    pendingCount,
+                    filteredTasks,
+                    addTask,
+                    deleteTask,
+                    startEdit,
+                    saveEdit,
+                    updateLocalStorage
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
