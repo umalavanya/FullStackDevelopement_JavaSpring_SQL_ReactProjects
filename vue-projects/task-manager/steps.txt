@@ -1,0 +1,11 @@
+step 1.1: Install Node.js, MySQL, VS Code
+1.2: Create nuxt project
+npm create nuxt-app task-manager
+cd task-manager
+
+1.3
+install required dependencies
+npm install axios jsonwebtoken bcryptjs mysql2
+
+1.4
+Create MySQL Database - task-manager-database.MySQL
