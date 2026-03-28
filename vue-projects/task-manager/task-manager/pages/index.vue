@@ -131,6 +131,7 @@ const deleteTask = async (taskId) => {
 watch(isAuthenticated, (newVal) => {
   if (newVal) {
     fetchTasks();
+    fetchTasks();
   } else {
     tasks.value = [];
   }

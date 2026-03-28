@@ -9,3 +9,40 @@ npm install axios jsonwebtoken bcryptjs mysql2
 
 1.4
 Create MySQL Database - task-manager-database.MySQL
+
+------------------------------------------
+This application has the following features
+
+✅ Frontend: Vue 3 + Nuxt 3 with responsive UI
+
+✅ Backend: Nuxt server API routes
+
+✅ Database: MySQL with users and tasks tables
+
+✅ Authentication: JWT token-based auth
+
+✅ Authorization: Protected routes and task ownership
+
+✅ CRUD Operations: Create, read, update, delete tasks
+
+✅ State Management: Pinia store for auth state
+
+
+
+
+next steps to enhance the project
+Add task descriptions (modify the task model)
+
+Add due dates for tasks
+
+Add task categories/tags
+
+Implement task search and filter
+
+Add user profile editing
+
+Add password reset functionality
+
+Add email verification
+
+Deploy to a platform like Vercel or Netlify
