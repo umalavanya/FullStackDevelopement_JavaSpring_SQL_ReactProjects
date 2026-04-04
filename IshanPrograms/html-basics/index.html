@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .ishan{
+            width: 200px;
+            height: 200px;
+            background-color: red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2),
+                        0 6px 20px rgba(0, 0, 0, 0.19),
+                        0 8px 30px rgba(0, 0, 0, 0.17);
+            animation: ishanAnimation 2s infinite ;
+            transition: ease-in-out ;
+
+        }
+
+        @keyframes ishanAnimation {
+            0% {
+                transform: translateY(0);
+                background-color: red;
+            }
+            25% {
+                transform: translateY(-10px);
+                background-color: green;
+            }
+            50% {
+                transform: translateY(-20px);
+                background-color: blue;
+            }
+            75% {
+                transform: translateY(-10px);
+                background-color: yellow;
+            }
+            100% {
+                transform: translateY(0);
+                background-color: red;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ishan" id="ishan">Ishan</div>
+
+
+
+
+    <script>
+        document.getElementById("ishan").addEventListener("click", function() {
+            alert("Sameeksha clicked!");
+        });
+    </script>
+    
+</body>
+</html>
