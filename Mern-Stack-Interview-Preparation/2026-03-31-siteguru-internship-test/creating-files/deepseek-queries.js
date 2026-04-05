@@ -8,7 +8,7 @@ const { Document, Packer, Paragraph, TextRun } = require("docx");
 // 1. Initialize DeepSeek client
 const openai = new OpenAI({
   baseURL: 'https://api.deepseek.com',
-  apiKey: 'sk-04308d103172445bbe5e899c076f9de5' // Replace with your actual key
+  apiKey: 'key-goes-here' // Replace with your actual key
 });
 
 // 2. Helper function for the 2-minute delay
