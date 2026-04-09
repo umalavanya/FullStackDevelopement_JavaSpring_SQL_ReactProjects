@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello! this is to practice Ajax</h1>
+    
+    <script>
+        const newdiv = document.createElement("div") ;
+        newdiv.id = "newdiv" ;
+        newdiv.textContent = "Hello, I was created with Javascript" ;
+        newdiv.style.padding = "20px" ;
+        newdiv.style.border = "1px solid black" ;
+        document.body.appendChild(newdiv) ;
+
+        const button = document.createElement("button") ;
+        button.innerText = "Click Here" ;
+        button.id = "button" ;
+        button.addEventListener("click", changeRed)
+        document.body.appendChild(button);
+
+        function changeRed(){
+            var xhr = new XMLHttpRequest() ;
+            xhr.onreadystatechange = function(){
+
+            if(this.readyState == 4 && this.status == 200){
+                newdiv.style.backgroundColor = "red" ;
+                newdiv.style.color=  "white" ;
+            } 
+
+            xhr.open("GET", "https://jsonplaceholder.typicode.com/posts/1", true) ;
+            xhr.send() ;
+         
+
+        }
+        }
+
+
+        
+
+    </script>
+</body>
+</html> 
