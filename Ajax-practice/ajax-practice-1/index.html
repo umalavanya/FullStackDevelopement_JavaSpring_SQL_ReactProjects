@@ -3,34 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajax practice</title>
+    <title>Ajax-Practice</title>
+    <style>
+        div{
+            width: auto ;
+            height: auto ;
+            background-color: red;
+            margin: 10px ;
+        }
+    </style>
 </head>
 <body>
-    <h1>AJAX Practice</h1>
-    <div id="demo">
-        <h2>Let AJAX change this text</h2>
-        <button type="button" onclick="onLoad()">Change content</button>
+
+    <div id="box1">Before</div>
+    <div id="box2">After</div>
+    <button type="button" id="box1-button">Box1</button>
+    <button type="button" id="box2-button">Box2</button>
 
     <script>
 
-        function onLoad(){
+        var box1 = document.getElementById("box1");
+        var box2 = document.getElementById("box2");
+        var box1Button = document.getElementById("box1-button");
+        var box2Button = document.getElementById("box2-button");
 
-            var xhr = new XMLHttpRequest();
+        box1Button.addEventListener("click",function(){
 
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("demo").innerHTML = this.responseText;
+            var box1http = new XMLHttpRequest() ;
+
+            box1http.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    box1.innerHTML = this.responseText;
 
                 }
+        
+            }
+            box1http.open("GET","box1.txt",true);
+            box1http.send();
+
+        })
+
+        box2Button.addEventListener("click",function(){
+            var box2http = new XMLHttpRequest() ;
+            box2http.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    box2.innerHTML = this.responseText;
+
+                }
+        
             }
 
-            xhr.open("GET", "ajax_info.txt", true);
-            xhr.send();
+            box2http.open("POST","box2.txt",true);
+            box2http.setRequestHeader("Content-type", "application/json");
+            box2http.send(JSON.stringify({name:"box2",color:"blue"})); 
 
 
-        }
-        
-        </script>
+        })
+
+    </script>
     
 </body>
 </html>
