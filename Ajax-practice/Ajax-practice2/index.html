@@ -30,12 +30,13 @@
                 newdiv.style.backgroundColor = "red" ;
                 newdiv.style.color=  "white" ;
             } 
+        }
 
             xhr.open("GET", "https://jsonplaceholder.typicode.com/posts/1", true) ;
             xhr.send() ;
-         
+            console.log(xhr.responseText) ;
+        
 
-        }
         }
 
 
