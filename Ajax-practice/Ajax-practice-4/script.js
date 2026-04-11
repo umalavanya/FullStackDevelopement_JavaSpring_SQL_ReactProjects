@@ -311,6 +311,8 @@ if (window.location.pathname.includes('dashboard.html')) {
             window.location.href = 'login.html';
         }
     })();
+
+    
 }
 
 // Prevent access to login/register pages if already logged in
