@@ -312,6 +312,8 @@ if (window.location.pathname.includes('dashboard.html')) {
         }
     })();
 
+    // practicing ajax
+
     
 }
 
