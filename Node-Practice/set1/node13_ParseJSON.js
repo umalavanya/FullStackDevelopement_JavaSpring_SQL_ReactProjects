@@ -34,3 +34,9 @@ try{
 } catch (error) {
     console.error("Invalid JSON: ", error.message) ;
 }
+
+// Quick tips
+// JSON keys must be in double quotes : "key" not 'key' or just key
+// Strings in JSON must use double quotes : "value" not 'value'
+// Use try-catch when parsing JSON from untrusted sources
+// To go back to JSON string: JSON.stringify(obj)
