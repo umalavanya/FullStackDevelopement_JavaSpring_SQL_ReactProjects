@@ -11,3 +11,14 @@ const obj = JSON.parse(jsonString) ;
 console.log(obj.name) ;
 console.log(obj.age) ;
 console.log(obj.city) ;
+
+
+// Nested Properties
+
+const jsonStringNested = '{"user":{"name":"Alice", "address":{"city":"Boston", "zip":"02101"}}}' ;
+
+const objNested = JSON.parse(jsonStringNested) ;
+
+console.log(objNested.user.name) ;
+console.log(objNested.user.address.city) ;
+console.log(objNested.user.address.zip) ;
