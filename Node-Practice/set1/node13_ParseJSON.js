@@ -22,3 +22,15 @@ const objNested = JSON.parse(jsonStringNested) ;
 console.log(objNested.user.name) ;
 console.log(objNested.user.address.city) ;
 console.log(objNested.user.address.zip) ;
+
+// Error Handling
+
+const jsonStringE = '{"name":"John, age:30}' ;
+
+try{
+    const objE = JSON.parse(jsonStringE) ;
+    console.log(objE.name);
+
+} catch (error) {
+    console.error("Invalid JSON: ", error.message) ;
+}
