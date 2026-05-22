@@ -5,10 +5,12 @@ function myFunction(){
         sum += i ;
     }
     return sum ;
-    
+
 }
 
 // Measure execution time
 console.time('myFunction') ;
+
 myFunction() ;
+
 console.timeEnd('myFunction')
