@@ -32,6 +32,7 @@ try{
     console.log(objE.name);
 
 } catch (error) {
+    
     console.error("Invalid JSON: ", error.message) ;
 }
 
