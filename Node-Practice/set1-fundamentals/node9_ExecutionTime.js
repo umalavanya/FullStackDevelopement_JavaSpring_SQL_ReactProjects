@@ -5,6 +5,7 @@ function myFunction(){
         sum += i ;
     }
     return sum ;
+    
 }
 
 // Measure execution time
