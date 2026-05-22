@@ -6,6 +6,7 @@ const maxTimes = 5;
 const intervalId = setInterval(() => {
 
     timesRun++;
+    
     console.log(`Interval running: ${timesRun} time(s)`);
 
     // Clear when condition is met
