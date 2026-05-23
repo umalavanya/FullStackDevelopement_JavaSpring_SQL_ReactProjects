@@ -10,8 +10,7 @@ if (process.argv.length >= 3) {
 
 // These all work without any imports
 console.log(process.argv);  // Command line arguments
-console.log(process.env);  
-       // Environment variables
+console.log(process.env); // Environment variables
 console.log(process.cwd());       // Current working directory
 console.log(process.version);     // Node.js version
 console.log(process.pid);         // Process ID
