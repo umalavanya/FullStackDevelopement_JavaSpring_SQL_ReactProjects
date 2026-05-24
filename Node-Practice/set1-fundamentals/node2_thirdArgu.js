@@ -22,3 +22,6 @@ process.exit(1);
 process.on('exit', () => {
     console.log('Process exiting');
 });
+
+https://github.com/javascreamer/Angular--May
+
