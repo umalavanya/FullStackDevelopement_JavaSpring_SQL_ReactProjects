@@ -12,6 +12,7 @@ class Sample{
     }
 
     printName():void{
+        
         console.log(this.name) ;
     }
 } ;
