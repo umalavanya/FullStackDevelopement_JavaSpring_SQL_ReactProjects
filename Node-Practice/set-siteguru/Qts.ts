@@ -22,6 +22,6 @@ var sampleObject:Sample = new Sample("Uma") ;
 
 sampleObject.printName() ;
 
-sampleObject.setName("Ishan") ;
+sampleObject.setName("Rani") ;
 
 sampleObject.printName() ;
