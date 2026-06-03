@@ -12,8 +12,8 @@ class Sample{
     }
 
     printName():void{
-        
-        console.log(this.name) ;
+
+        console.log(this.name) ; //printing Name 
     }
 } ;
 
