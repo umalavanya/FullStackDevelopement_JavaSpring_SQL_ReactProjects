@@ -21,3 +21,7 @@ class Sample{
 var sampleObject:Sample = new Sample("Uma") ;
 
 sampleObject.printName() ;
+
+sampleObject.setName("Ishan") ;
+
+sampleObject.printName() ;
