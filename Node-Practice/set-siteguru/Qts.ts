@@ -1,7 +1,22 @@
+class Sample{
+    private name:string ;
+
+    constructor(name:string){
+        this.name = name ;
+    }
+
+    setName(name: string):void{
+
+        this.name = name ;
+
+    }
+
+    printName():void{
+        console.log(this.name) ;
+    }
+} ;
 
 
-var a:number = 67 ;
+var sampleObject:Sample = new Sample("Uma") ;
 
-var b: number = 19 ;
-
-console.log(a+b) ;
+sampleObject.printName() ;
