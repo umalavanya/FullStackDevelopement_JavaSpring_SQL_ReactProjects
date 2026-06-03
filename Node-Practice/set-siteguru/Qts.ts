@@ -4,6 +4,7 @@ class Sample{
 
     constructor(name:string, email: string){
         this.name = name ;
+        this.email = email ;
     }
 
     setName(name: string):void{
@@ -11,6 +12,10 @@ class Sample{
         this.name = name ;
 
 
+    }
+
+    setEmail(email:string):void{
+        this.email = email ;
     }
 
     printName():void{
