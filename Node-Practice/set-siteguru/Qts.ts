@@ -1,13 +1,15 @@
 class Sample{
     private name:string ;
+    private email:string ;
 
-    constructor(name:string){
+    constructor(name:string, email: string){
         this.name = name ;
     }
 
     setName(name: string):void{
 
         this.name = name ;
+
 
     }
 
@@ -25,3 +27,4 @@ sampleObject.printName() ;
 sampleObject.setName("Rani") ; // Change Name through setName
 
 sampleObject.printName() ; 
+
